@@ -1742,11 +1742,10 @@ int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
       if (ns < 2) break;
     }
   } else {  
-    char t[MAXSWUTF8L];
-    l1 = strlen(s1);
     l2 = strlen(s2);
     if (l2 == 0) return 0;
-    strcpy(t, s2);
+    l1 = strlen(s1);
+    char *t = mystrdup(s2);
     if (opt & NGRAM_LOWERING) mkallsmall(t, csconv);
     for (int j = 1; j <= n; j++) {
       ns = 0;
@@ -1759,6 +1758,7 @@ int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
       nscore = nscore + ns;
       if (ns < 2) break;
     }
+    free(t);
   }
   
   ns = 0;
