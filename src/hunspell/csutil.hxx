@@ -4,6 +4,7 @@
 // First some base level utility routines
 
 #include "w_char.hxx"
+#include "htypes.hxx"
 
 // casing
 #define NOCAP   0
@@ -43,16 +44,6 @@
 #define DEFAULTFLAGS   65510
 #define FORBIDDENWORD  65510
 #define ONLYUPCASEFLAG 65511
-
-// hash entry macros
-#define HENTRY_DATA(h) (h->var ? ((h->var & H_OPT_ALIASM) ? \
-    get_stored_pointer(&(h->word[0]) + h->blen + 1) : &(h->word[0]) + h->blen + 1) : NULL)
-// NULL-free version for warning-free OOo build
-#define HENTRY_DATA2(h) (h->var ? ((h->var & H_OPT_ALIASM) ? \
-    get_stored_pointer(&(h->word[0]) + h->blen + 1) : &(h->word[0]) + h->blen + 1) : "")
-#define HENTRY_FIND(h,p) (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL)
-
-#define w_char_eq(a,b) (((a).l == (b).l) && ((a).h == (b).h))
 
 // convert UTF-16 characters to UTF-8
 char * u16_u8(char * dest, int size, const w_char * src, int srclen);
@@ -212,6 +203,39 @@ int get_sfxcount(const char * morph);
 void store_pointer(char * dest, char * source);
 
 // conversion function for protected memory
-char * get_stored_pointer(char * s);
+char * get_stored_pointer(const char * s);
+
+// hash entry macros
+inline char* HENTRY_DATA(struct hentry *h)
+{
+    char *ret;
+    if (!h->var)
+        ret = NULL;
+    else if (h->var & H_OPT_ALIASM)
+        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
+    else 
+        ret = &(h->word[0]) + h->blen + 1;
+    return ret;
+}
+
+// NULL-free version for warning-free OOo build
+inline const char* HENTRY_DATA2(const struct hentry *h)
+{
+    const char *ret;
+    if (!h->var)
+        ret = "";
+    else if (h->var & H_OPT_ALIASM)
+        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
+    else
+        ret = &(h->word[0]) + h->blen + 1;
+    return ret;
+}
+
+inline char* HENTRY_FIND(struct hentry *h, const char *p)
+{
+    return (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL);
+}
+
+#define w_char_eq(a,b) (((a).l == (b).l) && ((a).h == (b).h))
 
 #endif

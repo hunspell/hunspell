@@ -681,7 +681,7 @@ void mkallcap_utf(w_char * u, int nc, int langnum) {
  }
 
  // conversion function for protected memory
- char * get_stored_pointer(char * s)
+ char * get_stored_pointer(const char * s)
  {
     char * p;
     memcpy(&p, s, sizeof(char *));
