@@ -3,8 +3,6 @@
 
 class AffEntry
 {
-public:
-
 protected:
     char *         appnd;
     char *         strip;

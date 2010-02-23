@@ -20,13 +20,16 @@ using namespace std;
 #define dupSFX        (1 << 0)
 #define dupPFX        (1 << 1)
 
+class PfxEntry;
+class SfxEntry;
+
 class AffixMgr
 {
 
-  AffEntry *          pStart[SETSIZE];
-  AffEntry *          sStart[SETSIZE];
-  AffEntry *          pFlag[SETSIZE];
-  AffEntry *          sFlag[SETSIZE];
+  PfxEntry *          pStart[SETSIZE];
+  SfxEntry *          sStart[SETSIZE];
+  PfxEntry *          pFlag[SETSIZE];
+  SfxEntry *          sFlag[SETSIZE];
   HashMgr *           pHMgr;
   HashMgr **          alldic;
   int *               maxdic;
@@ -79,8 +82,8 @@ class AffixMgr
   const char *        sfxappnd; // BUG: not stateless
   FLAG                sfxflag;  // BUG: not stateless
   char *              derived;  // BUG: not stateless
-  AffEntry *          sfx;      // BUG: not stateless
-  AffEntry *          pfx;      // BUG: not stateless
+  SfxEntry *          sfx;      // BUG: not stateless
+  PfxEntry *          pfx;      // BUG: not stateless
   int                 checknum;
   char *              wordchars;
   unsigned short *    wordchars_utf16;
@@ -117,24 +120,24 @@ public:
             char in_compound, const FLAG needflag = FLAG_NULL);
   inline int isRevSubset(const char * s1, const char * end_of_s2, int len);
   struct hentry *     suffix_check(const char * word, int len, int sfxopts,
-            AffEntry* ppfx, char ** wlst, int maxSug, int * ns,
+            PfxEntry* ppfx, char ** wlst, int maxSug, int * ns,
             const FLAG cclass = FLAG_NULL, const FLAG needflag = FLAG_NULL,
             char in_compound = IN_CPD_NOT);
   struct hentry *     suffix_check_twosfx(const char * word, int len,
-            int sfxopts, AffEntry* ppfx, const FLAG needflag = FLAG_NULL);
+            int sfxopts, PfxEntry* ppfx, const FLAG needflag = FLAG_NULL);
 
   char * affix_check_morph(const char * word, int len,
             const FLAG needflag = FLAG_NULL, char in_compound = IN_CPD_NOT);
   char * prefix_check_morph(const char * word, int len,
             char in_compound, const FLAG needflag = FLAG_NULL);
   char * suffix_check_morph (const char * word, int len, int sfxopts,
-            AffEntry * ppfx, const FLAG cclass = FLAG_NULL,
+            PfxEntry * ppfx, const FLAG cclass = FLAG_NULL,
             const FLAG needflag = FLAG_NULL, char in_compound = IN_CPD_NOT);
 
   char * prefix_check_twosfx_morph(const char * word, int len,
             char in_compound, const FLAG needflag = FLAG_NULL);
   char * suffix_check_twosfx_morph(const char * word, int len,
-            int sfxopts, AffEntry * ppfx, const FLAG needflag = FLAG_NULL);
+            int sfxopts, PfxEntry * ppfx, const FLAG needflag = FLAG_NULL);
 
   char * morphgen(char * ts, int wl, const unsigned short * ap,
             unsigned short al, char * morph, char * targetmorph, int level);
@@ -221,12 +224,12 @@ private:
   void debugflag(char * result, unsigned short flag);
   int condlen(char *);
   int encodeit(struct affentry * ptr, char * cs);
-  int build_pfxtree(AffEntry* pfxptr);
-  int build_sfxtree(AffEntry* sfxptr);
+  int build_pfxtree(PfxEntry* pfxptr);
+  int build_sfxtree(SfxEntry* sfxptr);
   int process_pfx_order();
   int process_sfx_order();
-  AffEntry * process_pfx_in_order(AffEntry * ptr, AffEntry * nptr);
-  AffEntry * process_sfx_in_order(AffEntry * ptr, AffEntry * nptr);
+  PfxEntry * process_pfx_in_order(PfxEntry * ptr, PfxEntry * nptr);
+  SfxEntry * process_sfx_in_order(SfxEntry * ptr, SfxEntry * nptr);
   int process_pfx_tree_to_list();
   int process_sfx_tree_to_list();
   int redundant_condition(char, char * strip, int stripl,
