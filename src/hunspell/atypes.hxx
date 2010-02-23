@@ -3,6 +3,7 @@
 
 #ifndef HUNSPELL_WARNING
 #ifdef HUNSPELL_WARNING_ON
+#include <stdio.h>
 #define HUNSPELL_WARNING fprintf
 #else
 // empty inline function to switch off warnings (instead of the C99 standard variadic macros)
