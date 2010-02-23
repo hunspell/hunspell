@@ -459,6 +459,10 @@ int HashMgr::load_tables(const char * tpath, const char * key)
         }
       } else {
         al = decode_flags(&flags, ap + 1, dict);
+        if (al == -1) {
+            HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
+            return 6;
+        }
         flag_qsort(flags, 0, al);
       }
     } else {
@@ -499,6 +503,11 @@ int HashMgr::hash(const char * word) const
 
 int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) {
     int len;
+    if (*flags == '\0') {
+        HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n", af->getlinenum());
+        *result = NULL;
+        return 0;
+    }
     switch (flag_mode) {
       case FLAG_LONG: { // two-character flags (1x2yZz -> 1x 2y Zz)
         len = strlen(flags);
