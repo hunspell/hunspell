@@ -646,7 +646,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        if (strncmp(line,"SFX",3) == 0) ft = complexprefixes ? 'P' : 'S';
        if (ft != ' ') {
           if (dupflags_ini) {
-            for (int i = 0; i < CONTSIZE; i++) dupflags[i] = 0;
+            memset(dupflags, 0, sizeof(dupflags));
             dupflags_ini = 0;
           }
           if (parse_affix(line, ft, afflst, dupflags)) {
