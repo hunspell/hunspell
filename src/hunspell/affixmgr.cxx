@@ -1866,8 +1866,8 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             if (wordnum < maxwordnum) {
                 rv = compound_check((st+i),strlen(st+i), wordnum+1,
                      numsyllable, maxwordnum, wnum + 1, words, 0, is_sug);
-                if (rv && numcheckcpd && (scpd == 0 && cpdpat_check(word, i, rv_first, rv) ||
-                   scpd != 0 && !cpdpat_check(word, i, rv_first, rv))) rv = NULL;
+                if (rv && numcheckcpd && ((scpd == 0 && cpdpat_check(word, i, rv_first, rv)) ||
+                   (scpd != 0 && !cpdpat_check(word, i, rv_first, rv)))) rv = NULL;
             } else {
                 rv=NULL;
             }
@@ -3234,7 +3234,7 @@ struct hentry * AffixMgr::lookup(const char * word)
 }
 
 // return the value of suffix
-const int AffixMgr::have_contclass()
+int AffixMgr::have_contclass()
 {
   return havecontclass;
 }
@@ -4276,7 +4276,7 @@ int AffixMgr::redundant_condition(char ft, char * strip, int stripl, const char 
             if (strip[i] == cond[j]) in = 1;
           } while ((j < (condl - 1)) && (cond[j] != ']'));
           if (j == (condl - 1) && (cond[j] != ']')) {
-            HUNSPELL_WARNING(stderr, "error: line %d: missing ] in condition:\n%s\n", linenum);
+            HUNSPELL_WARNING(stderr, "error: line %d: missing ] in condition:\n%s\n", linenum, cond);
             return 0;
           }
           if ((!neg && !in) || (neg && in)) {
@@ -4304,7 +4304,7 @@ int AffixMgr::redundant_condition(char ft, char * strip, int stripl, const char 
             if (strip[i] == cond[j]) in = 1;
           } while ((j > 0) && (cond[j] != '['));
           if ((j == 0) && (cond[j] != '[')) {
-            HUNSPELL_WARNING(stderr, "error: error: %d: missing ] in condition:\n%s\n", linenum);
+            HUNSPELL_WARNING(stderr, "error: line: %d: missing ] in condition:\n%s\n", linenum, cond);
             return 0;
           }
           neg = (cond[j+1] == '^') ? 1 : 0;

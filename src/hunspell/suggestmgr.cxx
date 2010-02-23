@@ -1924,8 +1924,8 @@ void SuggestMgr::lcs(const char * s, const char * s2, int * l1, int * l2, char *
   for (j = 0; j <= n; j++) c[j] = 0;
   for (i = 1; i <= m; i++) {
     for (j = 1; j <= n; j++) {
-      if ((utf8) && (*((short *) su+i-1) == *((short *)su2+j-1))
-          || (!utf8) && ((*(s+i-1)) == (*(s2+j-1)))) {
+      if ( ((utf8) && (*((short *) su+i-1) == *((short *)su2+j-1)))
+          || ((!utf8) && ((*(s+i-1)) == (*(s2+j-1))))) {
         c[i*(n+1) + j] = c[(i-1)*(n+1) + j-1]+1;
         b[i*(n+1) + j] = LCS_UPLEFT;
       } else if (c[(i-1)*(n+1) + j] >= c[i*(n+1) + j-1]) {

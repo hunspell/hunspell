@@ -118,7 +118,7 @@ struct hentry * HashMgr::lookup(const char *word) const
        dp = tableptr[hash(word)];
        if (!dp) return NULL;
        for (  ;  dp != NULL;  dp = dp->next) {
-          if (strcmp(word,&(dp->word)) == 0) return dp;
+          if (strcmp(word, dp->word) == 0) return dp;
        }
     }
     return NULL;
@@ -134,7 +134,7 @@ int HashMgr::add_word(const char * word, int wbl, int wcl, unsigned short * aff,
     struct hentry* hp = 
 	(struct hentry *) malloc (sizeof(struct hentry) + wbl + descl);
     if (!hp) return 1;
-    char * hpw = &(hp->word);
+    char * hpw = hp->word;
     strcpy(hpw, word);
     if (ignorechars != NULL) {
       if (utf8) {
@@ -178,7 +178,7 @@ int HashMgr::add_word(const char * word, int wbl, int wcl, unsigned short * aff,
          return 0;
        }
        while (dp->next != NULL) {
-         if ((!dp->next_homonym) && (strcmp(&(hp->word), &(dp->word)) == 0)) {
+         if ((!dp->next_homonym) && (strcmp(hp->word, dp->word) == 0)) {
     	    // remove hidden onlyupcase homonym
             if (!onlyupcase) {
 		if ((dp->astr) && TESTAFF(dp->astr, ONLYUPCASEFLAG, dp->alen)) {
@@ -196,7 +196,7 @@ int HashMgr::add_word(const char * word, int wbl, int wcl, unsigned short * aff,
          }
          dp=dp->next;
        }
-       if (strcmp(&(hp->word), &(dp->word)) == 0) {
+       if (strcmp(hp->word, dp->word) == 0) {
     	    // remove hidden onlyupcase homonym
             if (!onlyupcase) {
 		if ((dp->astr) && TESTAFF(dp->astr, ONLYUPCASEFLAG, dp->alen)) {

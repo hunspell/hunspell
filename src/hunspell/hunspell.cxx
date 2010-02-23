@@ -615,7 +615,7 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
             return NULL;
         }
         if (root) {
-            *root = mystrdup(&(he->word));
+            *root = mystrdup(he->word);
             if (*root && complexprefixes) {
                 if (utf8) reverseword_utf(*root); else reverseword(*root);
             }
@@ -634,7 +634,7 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
           // end of LANG speficic region
           if (he) {
                 if (root) {
-                    *root = mystrdup(&(he->word));
+                    *root = mystrdup(he->word);
                     if (*root && complexprefixes) {
                         if (utf8) reverseword_utf(*root); else reverseword(*root);
                     }

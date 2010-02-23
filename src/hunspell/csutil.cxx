@@ -5313,7 +5313,7 @@ int initialize_utf_tbl() {
   if (utf_tbl) return 0;
   utf_tbl = (unicode_info2 *) malloc(CONTSIZE * sizeof(unicode_info2));
   if (utf_tbl) {
-    int j;
+    size_t j;
     for (j = 0; j < CONTSIZE; j++) {
       utf_tbl[j].cletter = 0;
       utf_tbl[j].clower = (unsigned short) j;

@@ -46,10 +46,10 @@
 
 // hash entry macros
 #define HENTRY_DATA(h) (h->var ? ((h->var & H_OPT_ALIASM) ? \
-    get_stored_pointer(&(h->word) + h->blen + 1) : &(h->word) + h->blen + 1) : NULL)
+    get_stored_pointer(&(h->word[0]) + h->blen + 1) : &(h->word[0]) + h->blen + 1) : NULL)
 // NULL-free version for warning-free OOo build
 #define HENTRY_DATA2(h) (h->var ? ((h->var & H_OPT_ALIASM) ? \
-    get_stored_pointer(&(h->word) + h->blen + 1) : &(h->word) + h->blen + 1) : "")
+    get_stored_pointer(&(h->word[0]) + h->blen + 1) : &(h->word[0]) + h->blen + 1) : "")
 #define HENTRY_FIND(h,p) (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL)
 
 #define w_char_eq(a,b) (((a).l == (b).l) && ((a).h == (b).h))
