@@ -1017,7 +1017,6 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		i->next = dicwords;
 		dicwords = i;
 		// save
-		strcpy(buf,HOME);
 		if (HOME) strcpy(buf,HOME); else {
 		    fprintf(stderr, gettext("error - missing HOME variable\n"));
 		    break;
@@ -1148,7 +1147,6 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    }
 		    // save
 		    		    
-		    strcpy(buf,HOME);
 		    if (HOME) strcpy(buf,HOME); else {
 			fprintf(stderr, gettext("error - missing HOME variable\n"));
 			continue;
@@ -1532,7 +1530,7 @@ int main(int argc, char** argv)
 	path = add(path, PATHSEP);          // <- check path in root directory
 	if (getenv("DICPATH")) path = add(add(path, getenv("DICPATH")), PATHSEP);
 	path = add(add(path, LIBDIR), PATHSEP);
-	path = add(add(add(add(path, HOME), DIRSEP), USEROOODIR), PATHSEP);
+	if (HOME) path = add(add(add(add(path, HOME), DIRSEP), USEROOODIR), PATHSEP);
 	path = add(path, OOODIR);
 
 	if (!privdicname) privdicname = mystrdup(getenv("WORDLIST"));
