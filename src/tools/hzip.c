@@ -112,7 +112,7 @@ void get_codetable(struct item **l, int n, char ** table) {
     code2table(l[0], table, NULL, 0);
 }
 
-void write_bits(FILE *f, char * bitbuf, int *bits, char * code) {
+int write_bits(FILE *f, char * bitbuf, int *bits, char * code) {
     while (*code) {
         int b = (*bits) % 8;
         if (!b) bitbuf[(*bits) / 8] = ((*code) - '0') << 7;
@@ -120,13 +120,15 @@ void write_bits(FILE *f, char * bitbuf, int *bits, char * code) {
         (*bits)++;
         code++;
         if (*bits == BUFSIZE * 8) {
-            fwrite(bitbuf, sizeof(char), BUFSIZE, f);
+            if (BUFSIZE != fwrite(bitbuf, sizeof(char), BUFSIZE, f))
+                return 1;
             *bits = 0;
         }
     }
+    return 0;
 }
 
-void encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char * key) {
+int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char * key) {
     char bitbuf[BUFSIZE];
     int i, bits = 0;
     unsigned char cl, ch;
@@ -150,6 +152,7 @@ void encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, cha
     fprintf(f2, "%c%c", ch, cl);   // upper and lower byte of record count
     for (i = 0; i < BUFSIZE; i++) bitbuf[i] = '\0';
     for (i = 0; i < CODELEN + 1; i++) if (table[i]) {
+        int nmemb;
         unsigned short * d = (unsigned short *) &c;
         *d = (unsigned short) i;
         if (i == CODELEN) *d = tw;
@@ -161,7 +164,8 @@ void encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, cha
         }        
         fprintf(f2, "%c%c", c[0], c[1]); // 2-character code id
         bits = 0;
-        write_bits(f2, bitbuf, &bits, table[i]);
+        if (write_bits(f2, bitbuf, &bits, table[i]) != 0)
+            return 1;
         if (key) {
             if (*(++enc) == '\0') enc = key;            
             fprintf(f2, "%c", ((unsigned char) bits) ^ *enc);
@@ -169,8 +173,11 @@ void encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, cha
                 if (*(++enc) == '\0') enc = key;
                 bitbuf[cl] ^= *enc;
             }
-        } else fprintf(f2, "%c", (unsigned char) bits); // 1-byte code length
-        fwrite(bitbuf, sizeof(char), bits/8 + 1, f2);   // x-byte code
+        } else
+            fprintf(f2, "%c", (unsigned char) bits); // 1-byte code length
+        nmemb = bits/8 + 1;
+        if (fwrite(bitbuf, sizeof(char), bits/8 + 1, f2) != nmemb)   // x-byte code
+            return 1;
     }
 
     // file encoding 
@@ -178,14 +185,22 @@ void encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, cha
     while((cx[0] = getc(f)) != -1 && (cx[1] = getc(f)) != -1) {
         c[0] = cx[0];
         c[1] = cx[1];
-        write_bits(f2, bitbuf, &bits, table[*((unsigned short *) c)]);
+        if (write_bits(f2, bitbuf, &bits, table[*((unsigned short *) c)]) != 0)
+            return 1;
     }
     // terminal suffixes
-    write_bits(f2, bitbuf, &bits, table[CODELEN]);
-    if (bits > 0) fwrite(bitbuf, sizeof(char), bits/8 + 1, f2);
+    if (write_bits(f2, bitbuf, &bits, table[CODELEN]) != 0)
+        return 1;
+    if (bits > 0)
+    {
+        int nmemb = bits/8 + 1;
+        if (fwrite(bitbuf, sizeof(char), nmemb, f2) != nmemb)
+            return 1;
+    }
+    return 0;
 }
 
-void prefixcompress(FILE *f, FILE *tempfile) {
+int prefixcompress(FILE *f, FILE *tempfile) {
     char buf[BUFSIZE];
     char buf2[BUFSIZE * 2];
     char prev[BUFSIZE];
@@ -225,12 +240,19 @@ void prefixcompress(FILE *f, FILE *tempfile) {
             p++;
         }
         if (i > 0 && buf[i - 1] == '\n') {
+            size_t nmemb = p - buf2 + 1;
             *p = c;
-            fwrite(buf2, 1, p - buf2 + 1, tempfile);
-        } else fwrite(buf2, 1, p - buf2, tempfile);
+            if (fwrite(buf2, 1, nmemb, tempfile) != nmemb)
+                return 1;
+        } else {
+            size_t nmemb = p - buf2;
+            if (fwrite(buf2, 1, nmemb, tempfile) != nmemb)
+                return 1;
+        }
         memcpy(prev, buf, i);
         prevlen = i;
     }
+    return 0;
 }
 
 int hzip(const char * filename, char * key) {
@@ -245,18 +267,33 @@ int hzip(const char * filename, char * key) {
     f = fopen(filename, "r");
     if (!f) return fail("hzip: %s: Permission denied\n", filename);
     tempfile = tmpfile();
-    if (!tempfile) return fail("hzip: cannot create temporary file\n", NULL);
+    if (!tempfile) {
+        fclose(f);
+        return fail("hzip: cannot create temporary file\n", NULL);
+    }
     f2 = fopen(out, "wb");
-    if (!f2) return fail("hzip: %s: Permission denied\n", out);
+    if (!f2) {
+        fclose(tempfile);
+        fclose(f);
+        return fail("hzip: %s: Permission denied\n", out);
+    }
     for (n = 0; n < CODELEN; n++) table[n] = NULL;
-    prefixcompress(f, tempfile);
+    if (prefixcompress(f, tempfile) != 0) {
+        fclose(f2);
+        fclose(tempfile);
+        fclose(f);
+        return fail("hzip: cannot write file\n", NULL);
+    }
     rewind(tempfile);
     n = get_freqdata(&list, tempfile, &termword);
     get_codetable(list, n, table);
     rewind(tempfile);
-    encode_file(table, n, tempfile, f2, termword, key);
+    n = encode_file(table, n, tempfile, f2, termword, key);
     fclose(f2);
-    return 0;
+    fclose(tempfile);
+    fclose(f);
+    if (n != 0) return fail("hzip: cannot write file\n", NULL);
+    return n;
 }
 
 int main(int argc, char** argv) {
