@@ -60,20 +60,19 @@
 #
 #*************************************************************************
 
-PRJ = ..
+PRJ = ../../../../../..
 
 PRJNAME	= hunspell
 TARGET	= hunspell
-LIBTARGET=NO
+LIBTARGET=YES
+EXTERNAL_WARNINGS_NOT_ERRORS := TRUE
+UWINAPILIB=
 
 #----- Settings ---------------------------------------------------------
 
 .INCLUDE : settings.mk
 
 # --- Files --------------------------------------------------------
-
-# all_target: ALLTAR DICTIONARY
-all_target: ALLTAR
 
 ##CXXFLAGS += -I..$/..$/lingutil
 ##CFLAGSCXX += -I..$/..$/lingutil
@@ -89,6 +88,10 @@ SLOFILES=	\
 		$(SLO)$/utf_info.obj \
 		$(SLO)$/hashmgr.obj \
 		$(SLO)$/suggestmgr.obj \
+		$(SLO)$/phonet.obj \
+		$(SLO)$/hunzip.obj \
+		$(SLO)$/filemgr.obj \
+		$(SLO)$/replist.obj \
 		$(SLO)$/hunspell.obj
 
 LIB1TARGET= $(SLB)$/lib$(TARGET).lib
