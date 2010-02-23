@@ -273,7 +273,7 @@ int HashMgr::remove(const char * word)
     while (dp) {
         if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
             unsigned short * flags =
-                (unsigned short *) malloc(sizeof(short *) * (dp->alen + 1));
+                (unsigned short *) malloc(sizeof(short) * (dp->alen + 1));
             if (!flags) return 1;
             for (int i = 0; i < dp->alen; i++) flags[i] = dp->astr[i];
             flags[dp->alen] = forbiddenword;
