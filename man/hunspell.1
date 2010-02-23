@@ -309,9 +309,10 @@ Set password for encrypted dictionaries.
 
 .IP \fB\-p\ dict\fR
 Set path of personal dictionary.
-Default dictionary depends from the locale settings.
-Without locale support, the default personal dictionary is
-the $HOME/.hunspell_default.
+The default dictionary depends on the locale settings. The
+following environment variables are searched: LC_ALL,
+LC_MESSAGES, and LANG. If none are set then the default personal
+dictionary is $HOME/.hunspell_default.
 
 Setting
 .I \-d
@@ -360,6 +361,11 @@ Dictionary path.
 Equivalent to 
 .I \-p.
 .SH FILES
+The default dictionary depends on the locale settings. The
+following environment variables are searched: LC_ALL,
+LC_MESSAGES, and LANG. If none are set then the following
+fallbacks are used:
+
 .BI /usr/share/myspell/default.aff
 Path of default affix file. See hunspell(4).
 .PP

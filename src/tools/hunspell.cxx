@@ -168,7 +168,6 @@ int filter_mode = NORMAL;
 int printgood = 0; // print only good words and lines
 int showpath = 0;  // show detected path of the dictionary
 int checkurl = 0;  // check URLs and mail addresses
-char * ui_lang = NULL; // locale for default dic_name
 const char * ui_enc = NULL;  // locale character encoding (default for I/O)
 const char * io_enc = NULL;  // I/O character encoding
 
@@ -1381,7 +1380,7 @@ int main(int argc, char** argv)
 	
 #ifdef ENABLE_NLS
 #ifdef HAVE_LOCALE_H
-	ui_lang = setlocale(LC_ALL, "");
+	setlocale(LC_ALL, "");
 	textdomain("hunspell");
         ui_enc = nl_langinfo(CODESET);
 #endif
@@ -1555,13 +1554,26 @@ int main(int argc, char** argv)
 	
 	if (! dicname) {
 		if (! (dicname=getenv("DICTIONARY"))) {
-			if ((dicname=ui_lang) || (dicname=getenv("LANG"))) {
-			    dicname = mystrdup(dicname);
-			    char * dot = strchr(dicname, '.');
-			    if (dot) *dot = '\0';
-			    char * at = strchr(dicname, '@');
-			    if (at) *at = '\0';
-			} else {
+			/*
+			 * Search in order of LC_ALL, LC_MESSAGES &
+			 * LANG
+			*/
+			const char *tests[] = { "LC_ALL", "LC_MESSAGES", "LANG" };
+			for (size_t i = 0; i < sizeof(tests) / sizeof(const char*); ++i) {
+				if ((dicname=getenv(tests[i])) && strcmp(dicname, "") != 0) {
+					dicname = mystrdup(dicname);
+					char * dot = strchr(dicname, '.');
+					if (dot) *dot = '\0';
+					char * at = strchr(dicname, '@');
+					if (at) *at = '\0';
+					break;
+				}
+			}
+
+			if ((strcmp(dicname, "C") == 0) || (strcmp(dicname, "POSIX") == 0))
+			    dicname=mystrdup("en_US");
+
+			if (! dicname) {
 		            dicname=mystrdup(DEFAULTDICNAME);
 			}
 		} else {
@@ -1575,6 +1587,12 @@ int main(int argc, char** argv)
 	if (HOME) path = add(add(add(add(path, HOME), DIRSEP), USEROOODIR), PATHSEP);
 	path = add(path, OOODIR);
 
+	if (showpath) {
+		fprintf(stderr, gettext("SEARCH PATH:\n%s\n"), path);
+		fprintf(stderr, gettext("AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"));
+		search(path, NULL, NULL);
+	}
+
 	if (!privdicname) privdicname = mystrdup(getenv("WORDLIST"));
 
         int diclen = strlen(dicname);
@@ -1584,9 +1602,6 @@ int main(int argc, char** argv)
 	char * dic = search(path, dicname, ".dic");
 	if (aff && dic) {
 		if (showpath) {
-			fprintf(stderr, gettext("SEARCH PATH:\n%s\n"), path);
-			fprintf(stderr, gettext("AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"), path);
-			search(path, NULL, NULL);
 			fprintf(stderr, gettext("LOADED DICTIONARY:\n%s\n%s\n"), aff, dic);
 		}
 		pMS[0] = new Hunspell(aff, dic, key);
@@ -1609,7 +1624,7 @@ int main(int argc, char** argv)
                     } else if (dic) pMS[dmax-1]->add_dic(dic);
 		}
 	} else {
-		fprintf(stderr,gettext("Can't open affix or dictionary files.\n"));
+		fprintf(stderr,gettext("Can't open affix or dictionary files for dictionary named \"%s\".\n"), dicname);
 		exit(1);
 	}
 
