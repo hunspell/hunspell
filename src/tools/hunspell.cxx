@@ -97,21 +97,21 @@ char text_conv[MAXLNLEN];
 #endif
 
 #if ENABLE_NLS
-#ifdef HAVE_LOCALE_H
-#include <locale.h>
-#include <langinfo.h>
-#endif
-
-#ifdef HAVE_LIBINTL_H
-#include <libintl.h>
+#  ifdef HAVE_LOCALE_H
+#    include <locale.h>
+#    ifdef HAVE_LANGINFO_CODESET
+#      include <langinfo.h>
+#    endif
+#  endif
+#  ifdef HAVE_LIBINTL_H
+#    include <libintl.h>
+#  else
+#    include <../../intl/libintl.h>
+#  endif
 #else
-#include <../../intl/libintl.h>
-#endif
-
-#else
-#define gettext
-#undef HAVE_LOCALE_H
-#undef HAVE_LIBINTL_H
+#  define gettext
+#  undef HAVE_LOCALE_H
+#  undef HAVE_LIBINTL_H
 #endif
 
 #ifdef HAVE_CURSES_H
@@ -1380,11 +1380,13 @@ int main(int argc, char** argv)
 	int argstate = 0;
 	
 #ifdef ENABLE_NLS
-#ifdef HAVE_LOCALE_H
+#  ifdef HAVE_LOCALE_H
 	setlocale(LC_ALL, "");
 	textdomain("hunspell");
-        ui_enc = nl_langinfo(CODESET);
-#endif
+#    ifdef HAVE_LANGINFO_CODESET
+	ui_enc = nl_langinfo(CODESET);
+#    endif
+#  endif
 #endif
 
 #ifdef HAVE_READLINE
