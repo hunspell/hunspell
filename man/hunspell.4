@@ -1271,6 +1271,38 @@ UTF-16. Unicode text analysis and spell checking have a minimal (0-20%)
 time overhead and minimal or reasonable memory overhead depends from
 the language (its UTF-8 encoding and affixation).
 
+.SH "Conversion of aspell dictionaries"
+Aspell dictionaries can be easily converted into hunspell. Conversion steps:
+
+\fBdictionary (xx.cwl -> xx.wl):\fR
+
+.nf
+preunzip xx.cwl
+wc -l < xx.wl > xx.dic
+cat xx.wl >> xx.dic
+.fi
+
+\fBaffix file\fR
+
+If the affix file exists, copy it:
+.nf
+cp xx_affix.dat xx.aff
+.fi
+If not, create it with the suitable character encoding (see xx.dat)
+.nf
+echo "SET ISO8859-x" > xx.aff
+.fi
+or
+.nf
+echo "SET UTF-8" > xx.aff
+.fi
+
+It's useful to add a TRY option with the characters of the dictionary with
+frequency order to set edit distance suggestions:
+.nf
+echo "TRY qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM" >>xx.aff
+.fi
+
 .SH "SEE ALSO"
 .B hunspell (1),
 .B ispell (1),
