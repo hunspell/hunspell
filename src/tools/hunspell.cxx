@@ -1468,9 +1468,21 @@ int main(int argc, char** argv)
 			fprintf(stdout,gettext(HUNSPELL_PIPE_HEADING));
 			fflush(stdout);
 		} else if ((strcmp(argv[i],"-m")==0)) {
-			filter_mode = ANALYZE;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell:   Make possible root/affix combinations that aren't in the dictionary.
+             hunspell: Analyze the words of the input text
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = ANALYZE;
 		} else if ((strcmp(argv[i],"-s")==0)) {
-			filter_mode = STEM;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell:   Stop itself with a SIGTSTP signal after each line of input.
+             hunspell: Stem the words of the input text
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = STEM;
 		} else if ((strcmp(argv[i],"-t")==0)) {
 			format = FMT_LATEX;
 		} else if ((strcmp(argv[i],"-n")==0)) {
@@ -1480,15 +1492,45 @@ int main(int argc, char** argv)
 		} else if ((strcmp(argv[i],"-l")==0)) {
 			filter_mode = BADWORD;
 		} else if ((strcmp(argv[i],"-w")==0)) {
-			filter_mode = WORDFILTER;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell:   Specify additional characters that can be part of a word.
+             hunspell: Print mispelled words (= lines) from one word/line input
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = WORDFILTER;
 		} else if ((strcmp(argv[i],"-L")==0)) {
-			filter_mode = BADLINE;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell:   Number of lines of context to be shown at the bottom of the screen
+             hunspell: Print lines with mispelled words
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = BADLINE;
 		} else if ((strcmp(argv[i],"-u")==0)) {
-			filter_mode = AUTO0;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell: None
+             hunspell: Show typical misspellings
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = AUTO0;
 		} else if ((strcmp(argv[i],"-U")==0)) {
-			filter_mode = AUTO;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell: None
+             hunspell: Automatic correction of typical misspellings to stdout
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = AUTO;
 		} else if ((strcmp(argv[i],"-u2")==0)) {
-			filter_mode = AUTO2;
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell: None
+             hunspell: Print typical misspellings in sed format
+            */
+			if (filter_mode != PIPE)
+			    filter_mode = AUTO2;
 		} else if ((strcmp(argv[i],"-G")==0)) {
 			printgood = 1;
 		} else if ((strcmp(argv[i],"-1")==0)) {
