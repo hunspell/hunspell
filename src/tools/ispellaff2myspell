@@ -115,7 +115,7 @@ sub mylc{
 	    if ( not $lowercase and not $uppercase ){
 		die "Unsupported charset [$charset]
 
-use explicitely --lowercase=string and --uppercase=string
+Explicitly use --lowercase=string and --uppercase=string
 options. Remember that both string must match exactly, but 
 case changed.
 ";

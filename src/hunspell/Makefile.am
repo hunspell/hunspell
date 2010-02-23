@@ -14,4 +14,4 @@ libhunspell_1_2_include_HEADERS=affentry.hxx htypes.hxx affixmgr.hxx \
 
 libhunspell_1_2_la_DEPENDENCIES=utf_info.cxx
 
-EXTRA_DIST=hunspell.dsp makefile.mk README
+EXTRA_DIST=hunspell.dsp makefile.mk README utf_info.cxx

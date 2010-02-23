@@ -1,4 +1,4 @@
-bin_PROGRAMS=analyze chmorph example hunspell munch unmunch hzip hunzip
+bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
 
 INCLUDES=-I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
@@ -6,9 +6,8 @@ hzip_SOURCES=hzip.c
 hunzip_SOURCES=hunzip.cxx
 hunzip_LDADD = ../hunspell/libhunspell-1.2.la
 
-munch_SOURCES=munch.c
-unmunch_SOURCES=unmunch.c
-include_HEADERS=munch.h unmunch.h
+munch_SOURCES=munch.c munch.h
+unmunch_SOURCES=unmunch.c unmunch.h
 
 example_SOURCES=example.cxx
 example_LDADD = ../hunspell/libhunspell-1.2.la

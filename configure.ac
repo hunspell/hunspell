@@ -41,6 +41,7 @@ AC_CHECK_FUNCS([memchr setlocale strchr strstr])
 
 dnl internationalization macros
 AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.17)
 
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages], [
      AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")

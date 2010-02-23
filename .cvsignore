@@ -6,3 +6,4 @@ config.status
 hunspell.pc
 libtool
 stamp-h1
+hunspell-*.tar.gz
