@@ -1,0 +1,8 @@
+source of text data: Wikipedia
+http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+
+For testing Hunspell you need the extended en_US dictionary with phonetic table:
+http://hunspell.sourceforge.net/en_US.zip
+
+test:
+make -f Makefile.orig

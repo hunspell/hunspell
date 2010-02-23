@@ -1,0 +1,14 @@
+# With REP suggestions, we can fix typical language specific misspellings.
+
+# switch off ngram suggestion for testing
+MAXNGRAMSUGS 0
+
+REP 6
+REP f ph
+REP ph f
+REP ph f
+REP shun tion
+REP alot a_lot  # add the highest priority for "a lot" suggestion to "alot"
+REP ' _    # "un'alunno" -> "un alunno"
+
+WORDCHARS '

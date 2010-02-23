@@ -1,0 +1,8 @@
+# With MAP suggestion, Hunspell can add missing accents to a word.
+
+# switch off ngram suggestion for testing
+MAXNGRAMSUGS 0
+
+MAP 2
+MAP uúü
+MAP oóö

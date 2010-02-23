@@ -1,0 +1,23 @@
+#!/bin/sh
+# Check common misspellings
+# input file format:
+# word->word1, ...
+# Source: http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+
+function check() {
+cat $1 | awk 'BEGIN{maxord=0;FS="\t"}FILENAME=="-"{for (i=1; i<=NF; i++){a[NR,$(i)]=i};max=NR;next}{x1=a[NR-max,$2];x2=a[NR-max,$3];sug++;if($3)sug++;if (!x1&&!x2){mis2++;misrow=misrow"\n"$0};if(!x1||($3 && !x2))mis++;ord+=x1+x2;}END{
+print "Missed rows", misrow;
+print "======================================="
+print maxord, "max. suggestion for a word";
+print max, "input rows";
+print mis2, "missing rows";
+print sug, "expected suggestions";
+print mis, "missing suggestions";
+print ord/(sug-mis), "average ranking";
+}' - $2
+}
+
+check $1.4 $1.3 >result.aspell
+check $1.5 $1.3 >result.hunspell
+tail -6 result.aspell
+tail -6 result.hunspell

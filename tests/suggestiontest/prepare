@@ -1,0 +1,35 @@
+#!/bin/sh
+# Check common misspellings
+# input file format:
+# word->word1, ...
+# Source: http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+
+# remove bad words recognised by Hunspell as good
+cat $1 | sed 's/[-]>/	/' | hunspell -d en_US -1 -L |
+
+# remove items with dash for Aspell
+grep '^[^-]*	' |
+
+# remove spaces from end of lines
+sed 's/ *$//' >$1.1
+
+# remove bad words recognised by Aspell as good
+cut -f 1 -d '	' $1.1 | aspell -d en_US --list |
+awk 'FILENAME=="-"{a[$1]=1;next}a[$1]{print$0}' - $1.1 |
+
+# change commas with tabs
+sed 's/, */	/g' >$1.2
+
+# remove lines with unrecognised suggestions (except suggestion with spaces)
+cut -d '	' -f 2- $1.2 | tr "\t" "\n" | grep -v ' ' >x.1
+cat x.1 | hunspell -l -d en_US >x.2
+cat x.1 | aspell -d en_US --list >>x.2
+cat x.2 | awk 'BEGIN{FS="\t"}
+FILENAME=="-"{a[$1]=1;next}a[$2]!=1 && a[$3]!=1{print $0}' - $1.2 >$1.3
+
+cut -f 1 -d '	' $1.3 | aspell -d en_US -a | grep -v ^$ | sed -n '2,$p' |
+sed 's/^.*: //;s/, /	/g' >$1.4
+
+cat $1.3 | hunspell -d en_US -a -1 | grep -v ^$ | sed -n '2,$p' |
+sed 's/^.*: //;s/, /	/g' >$1.5
+
