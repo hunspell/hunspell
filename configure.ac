@@ -4,12 +4,12 @@
 m4_pattern_allow
 
 AC_PREREQ(2.59)
-AC_INIT([hunspell],[1.2.8],[nemeth@openoffice.org])
+AC_INIT([hunspell],[1.2.9],[nemeth@openoffice.org])
 
 AC_CANONICAL_SYSTEM
 AC_SUBST(XFAILED)
 
-AM_INIT_AUTOMAKE(hunspell, 1.2.8)
+AM_INIT_AUTOMAKE(hunspell, 1.2.9)
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
 AC_SUBST(HUNSPELL_VERSION_MAJOR)

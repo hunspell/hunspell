@@ -67,6 +67,7 @@
     "/usr/share/myspell:" \
     "/usr/share/myspell/dicts"
 #define USEROOODIR \
+    ".openoffice.org/3/user/wordbook:" \
     ".openoffice.org2/user/wordbook:" \
     ".openoffice.org2.0/user/wordbook"
 #define OOODIR \

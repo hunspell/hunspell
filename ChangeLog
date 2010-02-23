@@ -1,3 +1,15 @@
+2010-02-23 Caolán McNamara <cmc at OOo>:
+	* hun#2314461 improve ispell-alike mode
+	* hun#2784983 improve default language detection
+	* hun#2812045 fix some compiler warnings
+	* hun#2910695 survive missing HOME dir
+	* hun#2934195 fix suggestmgr crash
+	* hun#2921129 remove unused variables
+	* hun#2826164 make sure make check uses the in-tree libhunspell
+	* bump toolchain to support --disable-rpath
+	* hun#2843984 fix coverity warning
+	* hun#2843986 fix coverity warning
+	* hun#2077630 add iconv lib
 2008-11-01 Németh László <nemeth at OOo>:
 	* replist.*, hunspell.cxx, affixmgr.cxx: new input and output
           conversion support, see ICONV and OCONV keywords in the Hunspell(4)
