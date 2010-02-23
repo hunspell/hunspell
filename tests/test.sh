@@ -33,8 +33,8 @@ fi
 
 shopt -s expand_aliases
 
-alias hunspell='../src/tools/hunspell'
-alias analyze='../src/tools/analyze'
+alias hunspell='../libtool --mode=execute -dlopen ../src/hunspell/.libs/libhunspell*.la ../src/tools/hunspell'
+alias analyze='../libtool --mode=execute -dlopen ../src/hunspell/.libs/libhunspell*.la ../src/tools/analyze'
 
 if [ "$VALGRIND" != "" ]; then
   rm -f $TEMPDIR/test.pid*
