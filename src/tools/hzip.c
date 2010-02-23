@@ -191,7 +191,7 @@ void prefixcompress(FILE *f, FILE *tempfile) {
     char prev[BUFSIZE];
     int prevlen = 0;
     while(fgets(buf,BUFSIZE,f)) {
-        int i, j, k, m, c;
+        int i, j, k, m, c=0;
         int pfx = prevlen;
         char * p = buf2;
         m = j = 0;
