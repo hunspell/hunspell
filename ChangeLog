@@ -10,6 +10,8 @@
 	* hun#2843984 fix coverity warning
 	* hun#2843986 fix coverity warning
 	* hun#2077630 add iconv lib
+	* make gcc strict-aliasing warning free
+	* make cppcheck warning free
 2008-11-01 Németh László <nemeth at OOo>:
 	* replist.*, hunspell.cxx, affixmgr.cxx: new input and output
           conversion support, see ICONV and OCONV keywords in the Hunspell(4)
