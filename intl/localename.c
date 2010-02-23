@@ -140,6 +140,9 @@
 # ifndef LANG_SINDHI
 # define LANG_SINDHI 0x59
 # endif
+# ifndef LANG_SORBIAN
+# define LANG_SORBIAN 0x2e
+# endif
 # ifndef LANG_SLOVAK
 # define LANG_SLOVAK 0x1b
 # endif
