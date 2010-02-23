@@ -81,5 +81,6 @@ main(int argc, char** argv)
     }
 
     delete p;
+    fclose(f);
     return 0;
 }
