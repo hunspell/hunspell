@@ -1783,12 +1783,13 @@ int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
       u8_u16(su1, 1, s1);
       u8_u16(su2, 1, s2);
       unsigned short idx = (su2->h << 8) + su2->l;
-      if (*((short *)su1) != *((short *)su2) &&
-         (*((unsigned short *)su1) != unicodetolower(idx, langnum))) return 0;
+      unsigned short otheridx = (su1->h << 8) + su1->l;
+      if (otheridx != idx &&
+         (otheridx != unicodetolower(idx, langnum))) return 0;
       int l1 = u8_u16(su1, MAXSWL, s1);
       int l2 = u8_u16(su2, MAXSWL, s2);
       for(i = 1; (i < l1) && (i < l2) &&
-         (*((short *)(su1 + i)) == *((short *)(su2 + i))); i++);
+         (su1[i].l == su2[i].l) && (su1[i].h == su2[i].h); i++);
       return i;
     }
   } else {
