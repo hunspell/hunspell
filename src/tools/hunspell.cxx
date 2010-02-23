@@ -1595,7 +1595,6 @@ int main(int argc, char** argv)
 
 	if (!privdicname) privdicname = mystrdup(getenv("WORDLIST"));
 
-        int diclen = strlen(dicname);
         char * dicplus = strchr(dicname, ',');
         if (dicplus) *dicplus = '\0';
 	char * aff = search(path, dicname, ".aff");

@@ -3003,60 +3003,60 @@ int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts
 }
 
 // return length of replacing table
-int AffixMgr::get_numrep()
+int AffixMgr::get_numrep() const
 {
   return numrep;
 }
 
 // return replacing table
-struct replentry * AffixMgr::get_reptable()
+struct replentry * AffixMgr::get_reptable() const
 {
   if (! reptable ) return NULL;
   return reptable;
 }
 
 // return iconv table
-RepList * AffixMgr::get_iconvtable()
+RepList * AffixMgr::get_iconvtable() const
 {
   if (! iconvtable ) return NULL;
   return iconvtable;
 }
 
 // return oconv table
-RepList * AffixMgr::get_oconvtable()
+RepList * AffixMgr::get_oconvtable() const
 {
   if (! oconvtable ) return NULL;
   return oconvtable;
 }
 
 // return replacing table
-struct phonetable * AffixMgr::get_phonetable()
+struct phonetable * AffixMgr::get_phonetable() const
 {
   if (! phone ) return NULL;
   return phone;
 }
 
 // return length of character map table
-int AffixMgr::get_nummap()
+int AffixMgr::get_nummap() const
 {
   return nummap;
 }
 
 // return character map table
-struct mapentry * AffixMgr::get_maptable()
+struct mapentry * AffixMgr::get_maptable() const
 {
   if (! maptable ) return NULL;
   return maptable;
 }
 
 // return length of word break table
-int AffixMgr::get_numbreak()
+int AffixMgr::get_numbreak() const
 {
   return numbreak;
 }
 
 // return character map table
-char ** AffixMgr::get_breaktable()
+char ** AffixMgr::get_breaktable() const
 {
   if (! breaktable ) return NULL;
   return breaktable;
@@ -3070,48 +3070,48 @@ char * AffixMgr::get_encoding()
 }
 
 // return text encoding of dictionary
-int AffixMgr::get_langnum()
+int AffixMgr::get_langnum() const
 {
   return langnum;
 }
 
 // return double prefix option
-int AffixMgr::get_complexprefixes()
+int AffixMgr::get_complexprefixes() const
 {
   return complexprefixes;
 }
 
 // return FULLSTRIP option
-int AffixMgr::get_fullstrip()
+int AffixMgr::get_fullstrip() const
 {
   return fullstrip;
 }
 
-FLAG AffixMgr::get_keepcase()
+FLAG AffixMgr::get_keepcase() const
 {
   return keepcase;
 }
 
-int AffixMgr::get_checksharps()
+int AffixMgr::get_checksharps() const
 {
   return checksharps;
 }
 
-char * AffixMgr::encode_flag(unsigned short aflag)
+char * AffixMgr::encode_flag(unsigned short aflag) const
 {
   return pHMgr->encode_flag(aflag);
 }
 
 
 // return the preferred ignore string for suggestions
-char * AffixMgr::get_ignore()
+char * AffixMgr::get_ignore() const
 {
   if (!ignorechars) return NULL;
   return ignorechars;
 }
 
 // return the preferred ignore string for suggestions
-unsigned short * AffixMgr::get_ignore_utf16(int * len)
+unsigned short * AffixMgr::get_ignore_utf16(int * len) const
 {
   *len = ignorechars_utf16_len;
   return ignorechars_utf16;
@@ -3125,99 +3125,99 @@ char * AffixMgr::get_key_string()
 }
 
 // return the preferred try string for suggestions
-char * AffixMgr::get_try_string()
+char * AffixMgr::get_try_string() const
 {
   if (! trystring ) return NULL;
   return mystrdup(trystring);
 }
 
 // return the preferred try string for suggestions
-const char * AffixMgr::get_wordchars()
+const char * AffixMgr::get_wordchars() const
 {
   return wordchars;
 }
 
-unsigned short * AffixMgr::get_wordchars_utf16(int * len)
+unsigned short * AffixMgr::get_wordchars_utf16(int * len) const
 {
   *len = wordchars_utf16_len;
   return wordchars_utf16;
 }
 
 // is there compounding?
-int AffixMgr::get_compound()
+int AffixMgr::get_compound() const
 {
   return compoundflag || compoundbegin || numdefcpd;
 }
 
 // return the compound words control flag
-FLAG AffixMgr::get_compoundflag()
+FLAG AffixMgr::get_compoundflag() const
 {
   return compoundflag;
 }
 
 // return the forbidden words control flag
-FLAG AffixMgr::get_forbiddenword()
+FLAG AffixMgr::get_forbiddenword() const
 {
   return forbiddenword;
 }
 
 // return the forbidden words control flag
-FLAG AffixMgr::get_nosuggest()
+FLAG AffixMgr::get_nosuggest() const
 {
   return nosuggest;
 }
 
 // return the forbidden words flag modify flag
-FLAG AffixMgr::get_needaffix()
+FLAG AffixMgr::get_needaffix() const
 {
   return needaffix;
 }
 
 // return the onlyincompound flag
-FLAG AffixMgr::get_onlyincompound()
+FLAG AffixMgr::get_onlyincompound() const
 {
   return onlyincompound;
 }
 
 // return the compound word signal flag
-FLAG AffixMgr::get_compoundroot()
+FLAG AffixMgr::get_compoundroot() const
 {
   return compoundroot;
 }
 
 // return the compound begin signal flag
-FLAG AffixMgr::get_compoundbegin()
+FLAG AffixMgr::get_compoundbegin() const
 {
   return compoundbegin;
 }
 
 // return the value of checknum
-int AffixMgr::get_checknum()
+int AffixMgr::get_checknum() const
 {
   return checknum;
 }
 
 // return the value of prefix
-const char * AffixMgr::get_prefix()
+const char * AffixMgr::get_prefix() const
 {
   if (pfx) return ((PfxEntry *)pfx)->getKey();
   return NULL;
 }
 
 // return the value of suffix
-const char * AffixMgr::get_suffix()
+const char * AffixMgr::get_suffix() const
 {
   return sfxappnd;
 }
 
 // return the value of suffix
-const char * AffixMgr::get_version()
+const char * AffixMgr::get_version() const
 {
   return version;
 }
 
 // return lemma_present flag
-FLAG AffixMgr::get_lemma_present()
+FLAG AffixMgr::get_lemma_present() const
 {
   return lemma_present;
 }
@@ -3234,31 +3234,31 @@ struct hentry * AffixMgr::lookup(const char * word)
 }
 
 // return the value of suffix
-int AffixMgr::have_contclass()
+int AffixMgr::have_contclass() const
 {
   return havecontclass;
 }
 
 // return utf8
-int AffixMgr::get_utf8()
+int AffixMgr::get_utf8() const
 {
   return utf8;
 }
 
 // return nosplitsugs
-int AffixMgr::get_maxngramsugs(void)
+int AffixMgr::get_maxngramsugs(void) const
 {
   return maxngramsugs;
 }
 
 // return nosplitsugs
-int AffixMgr::get_nosplitsugs(void)
+int AffixMgr::get_nosplitsugs(void) const
 {
   return nosplitsugs;
 }
 
 // return sugswithdots
-int AffixMgr::get_sugswithdots(void)
+int AffixMgr::get_sugswithdots(void) const
 {
   return sugswithdots;
 }

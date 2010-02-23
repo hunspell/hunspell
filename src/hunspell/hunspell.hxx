@@ -155,7 +155,6 @@ public:
   /* spec. suggestions */
   int suggest_auto(char*** slst, const char * word);
   int suggest_pos_stems(char*** slst, const char * word);
-  char * get_possible_root();
 #endif
 
 private:
