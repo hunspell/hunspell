@@ -2133,7 +2133,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
         while ((rv) && ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||
                         !((compoundflag && !words && TESTAFF(rv->astr, compoundflag, rv->alen)) ||
                           (compoundend && !words && TESTAFF(rv->astr, compoundend, rv->alen)) ||
-                           (numdefcpd && defcpd_check(&words, wnum + 1, rv, NULL,1))))) {
+                           (numdefcpd && words && defcpd_check(&words, wnum + 1, rv, NULL,1))))) {
             rv = rv->next_homonym;
         }
 
