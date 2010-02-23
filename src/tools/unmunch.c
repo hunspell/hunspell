@@ -83,7 +83,10 @@ int main(int argc, char** argv)
   }
 
   /* skip over the hash table size */
-  if (! fgets(ts, MAX_LN_LEN-1,wrdlst)) return 2;
+  if (! fgets(ts, MAX_LN_LEN-1,wrdlst)) {
+    fclose(wrdlst);
+    return 2;
+  }
   mychomp(ts);
 
   while (fgets(ts,MAX_LN_LEN-1,wrdlst)) {
