@@ -67,20 +67,24 @@ struct item * newitem(int c, struct item * l, struct item * r, int t) {
 int get_freqdata(struct item *** dest, FILE * f, unsigned short * termword) {
     int freq[CODELEN];
     int i, j, k, n;
-    char c[2];
+    union {
+        char c[2];
+        unsigned short word;
+    } u;
     for (i = 0; i < CODELEN; i++) freq[i] = 0;
     while((j = getc(f)) != -1 && (k = getc(f)) != -1) {
-        c[0] = j;
-        c[1] = k;
-        freq[*((unsigned short *) c)]++;
+        u.c[0] = j;
+        u.c[1] = k;
+        freq[u.word]++;
     }
     if (j != -1) {
-        c[0] = 1;
-        c[1] = j;
+        u.c[0] = 1;
+        u.c[1] = j;
     } else {
-        c[0] = 0;
-        c[1] = 0;
+        u.c[0] = 0;
+        u.c[1] = 0;
     }
+
     *dest = (struct item **) malloc((CODELEN + 1) * sizeof(struct item *));
     if (!*dest) return -1;
     for (i = 0, n = 0; i < CODELEN; i++) if (freq[i]) {
@@ -90,7 +94,7 @@ int get_freqdata(struct item *** dest, FILE * f, unsigned short * termword) {
     }
     // terminal sequence (also contains the last odd byte of the file)
     (*dest)[n] = newitem(1, NULL, NULL, code_TERM);
-    *termword = *((unsigned short *) c);
+    *termword = u.word;
     return n + 1;
 }
 
@@ -133,7 +137,10 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     int i, bits = 0;
     unsigned char cl, ch;
     int cx[2];
-    char c[2];
+    union {
+        char c[2];
+        unsigned short word;
+    } u;
     char * enc = key;
 
     // header and codes
@@ -153,16 +160,15 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     for (i = 0; i < BUFSIZE; i++) bitbuf[i] = '\0';
     for (i = 0; i < CODELEN + 1; i++) if (table[i]) {
         int nmemb;
-        unsigned short * d = (unsigned short *) &c;
-        *d = (unsigned short) i;
-        if (i == CODELEN) *d = tw;
+        u.word = (unsigned short) i;
+        if (i == CODELEN) u.word = tw;
         if (key) {
             if (*(++enc) == '\0') enc = key;
-            c[0] ^= *enc;
+            u.c[0] ^= *enc;
             if (*(++enc) == '\0') enc = key;
-            c[1] ^= *enc;
+            u.c[1] ^= *enc;
         }        
-        fprintf(f2, "%c%c", c[0], c[1]); // 2-character code id
+        fprintf(f2, "%c%c", u.c[0], u.c[1]); // 2-character code id
         bits = 0;
         if (write_bits(f2, bitbuf, &bits, table[i]) != 0)
             return 1;
@@ -183,9 +189,9 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     // file encoding 
     bits = 0;
     while((cx[0] = getc(f)) != -1 && (cx[1] = getc(f)) != -1) {
-        c[0] = cx[0];
-        c[1] = cx[1];
-        if (write_bits(f2, bitbuf, &bits, table[*((unsigned short *) c)]) != 0)
+        u.c[0] = cx[0];
+        u.c[1] = cx[1];
+        if (write_bits(f2, bitbuf, &bits, table[u.word]) != 0)
             return 1;
     }
     // terminal suffixes
@@ -297,6 +303,7 @@ int hzip(const char * filename, char * key) {
 }
 
 int main(int argc, char** argv) {
+
     int i, j = 0;
     char * key = NULL;
     for (i = 1; i < argc; i++) {
