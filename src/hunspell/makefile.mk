@@ -74,10 +74,7 @@ UWINAPILIB=
 
 # --- Files --------------------------------------------------------
 
-##CXXFLAGS += -I..$/..$/lingutil
-##CFLAGSCXX += -I..$/..$/lingutil
-##CFLAGSCC += -I..$/..$/lingutil
-
+CFLAGS+=-I..$/..$/
 CDEFS+=-DOPENOFFICEORG
 
 SLOFILES=	\
@@ -85,7 +82,6 @@ SLOFILES=	\
 		$(SLO)$/affixmgr.obj \
 		$(SLO)$/dictmgr.obj \
 		$(SLO)$/csutil.obj \
-		$(SLO)$/utf_info.obj \
 		$(SLO)$/hashmgr.obj \
 		$(SLO)$/suggestmgr.obj \
 		$(SLO)$/phonet.obj \

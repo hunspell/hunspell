@@ -3,6 +3,7 @@
 
 // First some base level utility routines
 
+#include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
 

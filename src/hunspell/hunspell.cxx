@@ -1954,6 +1954,6 @@ int Hunspell_remove(Hunhandle *pHunspell, const char * word) {
         return ((Hunspell*)pHunspell)->remove(word);
 }
 
-void Hunspell_free_list(Hunhandle *pHunspell, char *** slst, int n) {
+void Hunspell_free_list(Hunhandle *, char *** slst, int n) {
         freelist(slst, n);
 }
