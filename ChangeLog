@@ -1,3 +1,12 @@
+2010-02-25 Németh László <nemeth at OOo>:
+	* hunspell/hunspell.cxx: add recursion limit for BREAK (fix OOo Issue 106267)
+
+	* hunspell/hunspell.cxx: fix crash in morphological analysis of
+	  capitalized words with ending dashes
+
+	* affixmgr.cxx: fix morphological analysis of long numbers combined with dash,
+	  eg. 45-00000045 (reported by a@freeblog.hu).
+
 2010-02-23 Caolán McNamara <cmc at OOo>:
 	* hun#2314461 improve ispell-alike mode
 	* hun#2784983 improve default language detection
@@ -12,6 +21,7 @@
 	* hun#2077630 add iconv lib
 	* make gcc strict-aliasing warning free
 	* make cppcheck warning free
+
 2008-11-01 Németh László <nemeth at OOo>:
 	* replist.*, hunspell.cxx, affixmgr.cxx: new input and output
           conversion support, see ICONV and OCONV keywords in the Hunspell(4)

@@ -496,8 +496,23 @@ int Hunspell::spell(const char * word, int * info, char ** root)
   if (wordbreak) {
     char * s;
     char r;
+    int nbr = 0;
     wl = strlen(cw);
     int numbreak = pAMgr ? pAMgr->get_numbreak() : 0;
+
+    // calculate break points for recursion limit
+    for (int j = 0; j < numbreak; j++) {
+      s = cw;
+      do {
+      	s = (char *) strstr(s, wordbreak[j]);
+      	if (s) { 
+		nbr++;
+		s++;
+	}
+      } while (s);
+    } 
+    if (nbr >= 10) return 0;
+
     // check boundary patterns (^begin and end$)
     for (int j = 0; j < numbreak; j++) {
       int plen = strlen(wordbreak[j]);
@@ -512,6 +527,7 @@ int Hunspell::spell(const char * word, int * info, char ** root)
 	    cw[wl - plen + 1] = r;
 	}
     }
+
     // other patterns
     for (int j = 0; j < numbreak; j++) {
       int plen = strlen(wordbreak[j]);
@@ -1463,7 +1479,10 @@ int Hunspell::analyze(char*** slst, const char * word)
       *dash='\0';
       // examine 2 sides of the dash
       if (dash[1] == '\0') { // base word ending with dash
-        if (spell(cw)) return line_tok(pSMgr->suggest_morph(cw), slst, MSEP_REC);
+        if (spell(cw)) {
+		char * p = pSMgr->suggest_morph(cw);
+		if (p) return line_tok(pSMgr->suggest_morph(cw), slst, MSEP_REC);
+	}
       } else if ((dash[1] == 'e') && (dash[2] == '\0')) { // XXX (HU) -e hat.
         if (spell(cw) && (spell("-e"))) {
                         st = pSMgr->suggest_morph(cw);
