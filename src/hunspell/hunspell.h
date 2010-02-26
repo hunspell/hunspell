@@ -7,7 +7,7 @@ extern "C" {
 
 typedef struct Hunhandle Hunhandle;
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #define DLL __declspec ( dllexport )
 #else
 #define DLL 

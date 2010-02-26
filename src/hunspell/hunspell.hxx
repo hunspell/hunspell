@@ -18,21 +18,15 @@
 #ifndef _MYSPELLMGR_HXX_
 #define _MYSPELLMGR_HXX_
 
-#ifdef HUNSPELL_STATIC
-	#define DLLEXPORT
+#if defined(HUNSPELL_STATIC)
+# define DLL
+#elif defined(_MSC_VER) || defined(__MINGW32__)
+# define DLL __declspec ( dllexport )
 #else
-	#ifdef HUNSPELL_EXPORTS
-		#define DLLEXPORT  __declspec( dllexport )
-	#else
-		#define DLLEXPORT  __declspec( dllimport )
-	#endif
+# define DLL 
 #endif
 
-#ifdef WIN32
-class DLLEXPORT Hunspell
-#else
-class Hunspell
-#endif
+class DLL Hunspell
 {
   AffixMgr*       pAMgr;
   HashMgr*        pHMgr[MAXDIC];
