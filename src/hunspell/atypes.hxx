@@ -2,8 +2,8 @@
 #define _ATYPES_HXX_
 
 #ifndef HUNSPELL_WARNING
-#ifdef HUNSPELL_WARNING_ON
 #include <stdio.h>
+#ifdef HUNSPELL_WARNING_ON
 #define HUNSPELL_WARNING fprintf
 #else
 // empty inline function to switch off warnings (instead of the C99 standard variadic macros)
