@@ -4,6 +4,8 @@
 #ifndef _HUNZIP_HXX_
 #define _HUNZIP_HXX_
 
+#include <stdio.h>
+
 #define BUFSIZE  65536
 #define HZIP_EXTENSION ".hz"
 

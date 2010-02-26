@@ -2,6 +2,7 @@
 #ifndef _FILEMGR_HXX_
 #define _FILEMGR_HXX_
 #include "hunzip.hxx"
+#include <stdio.h>
 
 class FileMgr
 {
