@@ -1,11 +1,7 @@
 #ifndef _HASHMGR_HXX_
 #define _HASHMGR_HXX_
 
-#ifndef MOZILLA_CLIENT
-#include <cstdio>
-#else
 #include <stdio.h>
-#endif
 
 #include "htypes.hxx"
 #include "filemgr.hxx"

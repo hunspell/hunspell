@@ -44,7 +44,7 @@ void code2table(struct item * tree, char **table, char * code, int deep) {
     if (tree->type != code_NODE) {
         int i = tree->word;
         code[deep] = '\0';
-        if (tree->type == code_TERM) i = CODELEN; // terminal code
+        if (tree->type == code_TERM) i = CODELEN; /* terminal code */
         table[i] = malloc((deep + 1) * sizeof(char));
 	strcpy(table[i], code);
     }        
@@ -63,7 +63,7 @@ struct item * newitem(int c, struct item * l, struct item * r, int t) {
     return ni;
 }
 
-// return length of the freq array
+/* return length of the freq array */
 int get_freqdata(struct item *** dest, FILE * f, unsigned short * termword) {
     int freq[CODELEN];
     int i, j, k, n;
@@ -92,7 +92,7 @@ int get_freqdata(struct item *** dest, FILE * f, unsigned short * termword) {
        (*dest)[n]->word = i;
        n++;
     }
-    // terminal sequence (also contains the last odd byte of the file)
+    /* terminal sequence (also contains the last odd byte of the file) */
     (*dest)[n] = newitem(1, NULL, NULL, code_TERM);
     *termword = u.word;
     return n + 1;
@@ -143,20 +143,20 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     } u;
     char * enc = key;
 
-    // header and codes
-    fprintf(f2, "%s", (key ? MAGIC_ENCRYPTED : MAGIC)); // 3-byte HEADER
+    /* header and codes */
+    fprintf(f2, "%s", (key ? MAGIC_ENCRYPTED : MAGIC)); /* 3-byte HEADER */
     cl = (unsigned char) (n & 0x00ff);
     ch = (unsigned char) (n >> 8);
     if (key) {
         unsigned char cs;
         for (cs = 0; *enc; enc++) cs ^= *enc;
-        fprintf(f2, "%c", cs);  // 1-byte check sum
+        fprintf(f2, "%c", cs);  /* 1-byte check sum */
         enc = key;        
         ch ^= *enc;
         if ((*(++enc)) == '\0') enc = key;
         cl ^= *enc;
     }
-    fprintf(f2, "%c%c", ch, cl);   // upper and lower byte of record count
+    fprintf(f2, "%c%c", ch, cl);   /* upper and lower byte of record count */
     for (i = 0; i < BUFSIZE; i++) bitbuf[i] = '\0';
     for (i = 0; i < CODELEN + 1; i++) if (table[i]) {
         int nmemb;
@@ -168,7 +168,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
             if (*(++enc) == '\0') enc = key;
             u.c[1] ^= *enc;
         }        
-        fprintf(f2, "%c%c", u.c[0], u.c[1]); // 2-character code id
+        fprintf(f2, "%c%c", u.c[0], u.c[1]); /* 2-character code id */
         bits = 0;
         if (write_bits(f2, bitbuf, &bits, table[i]) != 0)
             return 1;
@@ -180,13 +180,13 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
                 bitbuf[cl] ^= *enc;
             }
         } else
-            fprintf(f2, "%c", (unsigned char) bits); // 1-byte code length
+            fprintf(f2, "%c", (unsigned char) bits); /* 1-byte code length */
         nmemb = bits/8 + 1;
-        if (fwrite(bitbuf, sizeof(char), bits/8 + 1, f2) != nmemb)   // x-byte code
+        if (fwrite(bitbuf, sizeof(char), bits/8 + 1, f2) != nmemb)   /* x-byte code */
             return 1;
     }
 
-    // file encoding 
+    /* file encoding */
     bits = 0;
     while((cx[0] = getc(f)) != -1 && (cx[1] = getc(f)) != -1) {
         u.c[0] = cx[0];
@@ -194,7 +194,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
         if (write_bits(f2, bitbuf, &bits, table[u.word]) != 0)
             return 1;
     }
-    // terminal suffixes
+    /* terminal suffixes */
     if (write_bits(f2, bitbuf, &bits, table[CODELEN]) != 0)
         return 1;
     if (bits > 0)
@@ -222,11 +222,11 @@ int prefixcompress(FILE *f, FILE *tempfile) {
             } else pfx = 0;
         }
         if (i > 0 && buf[i - 1] == '\n') {
-            if (j == i) j--; // line duplicate
+            if (j == i) j--; /* line duplicate */
             if (j > 29) j = 29;
             c = j;
             if (c == '\t') c = 30;
-            // common suffix
+            /* common suffix */
             for (; buf[i - m - 2] == prev[prevlen - m - 2] && 
                 m < i - j - 1 && m < 15; m++);
             if (m == 1) m = 0;
@@ -242,7 +242,7 @@ int prefixcompress(FILE *f, FILE *tempfile) {
             *p = buf[k];
         }
         if (m > 0) {
-            *p = m + 31; // 33-46
+            *p = m + 31; /* 33-46 */
             p++;
         }
         if (i > 0 && buf[i - 1] == '\n') {

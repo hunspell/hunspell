@@ -1,12 +1,11 @@
-#include <cstring>
-
 // glibc < 3.0 (for mkstemp)
 #ifndef __USE_MISC
 #define __USE_MISC
 #endif
 
-#include <cstdlib>
-#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "config.h"
 #include "hunspell.hxx"
 #include "csutil.hxx"
@@ -135,8 +134,6 @@ extern char * mystrdup(const char * s);
 // file formats:
 
 enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST };
-
-//using namespace std;
 
 struct wordlist {
     char * word;

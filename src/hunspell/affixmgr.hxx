@@ -1,14 +1,7 @@
 #ifndef _AFFIXMGR_HXX_
 #define _AFFIXMGR_HXX_
 
-#ifdef MOZILLA_CLIENT
-#ifdef __SUNPRO_CC // for SunONE Studio compiler
-using namespace std;
-#endif
 #include <stdio.h>
-#else
-#include <cstdio>
-#endif
 
 #include "atypes.hxx"
 #include "baseaffix.hxx"

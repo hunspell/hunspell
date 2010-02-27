@@ -27,17 +27,10 @@
                 Porting from Aspell to Hunspell using C-like structs
 */
 
-#ifndef MOZILLA_CLIENT
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <cctype>
-#else
 #include <stdlib.h> 
 #include <string.h>
 #include <stdio.h> 
 #include <ctype.h>
-#endif
 
 #include "csutil.hxx"
 #include "phonet.hxx"

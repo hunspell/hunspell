@@ -1,31 +1,14 @@
 #include "license.hunspell"
 #include "license.myspell"
 
-#ifndef MOZILLA_CLIENT
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <cctype>
-#else
 #include <stdlib.h> 
 #include <string.h>
 #include <stdio.h> 
 #include <ctype.h>
-#endif
 
 #include "hashmgr.hxx"
 #include "csutil.hxx"
 #include "atypes.hxx"
-
-#ifdef MOZILLA_CLIENT
-#ifdef __SUNPRO_CC // for SunONE Studio compiler
-using namespace std;
-#endif
-#else
-#ifndef WIN32
-using namespace std;
-#endif
-#endif
 
 // build a hash table from a munched word list
 
