@@ -1,3 +1,9 @@
+2010-03-03 Németh László <nemeth at OOo>:
+	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence
+	  support for MAP suggestion, using parenthesized character groups
+	  in the syntax, eg. MAP ß(ss).
+	* man/hunspell.4, tests/map*: documentation and test files
+
 2010-02-25 Németh László <nemeth at OOo>:
 	* hunspell/hunspell.cxx: add recursion limit for BREAK (fix OOo Issue 106267)
 

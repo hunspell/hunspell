@@ -1,5 +1,6 @@
-2010-02-23: Hunspell 1.2.9 release:
+2010-03-0x: Hunspell 1.2.9 release:
   - Maintenance release bug fixes and warnings
+  - MAP support for composed characters or character sequences
 2008-11-01: Hunspell 1.2.8 release:
   - Default BREAK feature and better hyphenated word suggestion to accept
     and fix (compound) words with hyphen characters by spell checker

@@ -147,8 +147,10 @@ AffixMgr::~AffixMgr()
   encoding=NULL;
   if (maptable) {  
      for (int j=0; j < nummap; j++) {
-        if (maptable[j].set) free(maptable[j].set);
-        if (maptable[j].set_utf16) free(maptable[j].set_utf16);
+        for (int k=0; k < maptable[j].len; k++) {
+           if (maptable[j].set[k]) free(maptable[j].set[k]);
+        }
+        free(maptable[j].set);
         maptable[j].set = NULL;
         maptable[j].len = 0;
      }
@@ -3815,23 +3817,35 @@ int  AffixMgr::parse_maptable(char * line, FileMgr * af)
                              break;
                           }
                   case 1: {
-                            maptable[j].len = 0;
-                            maptable[j].set = NULL;
-                            maptable[j].set_utf16 = NULL;
-                            if (!utf8) {
-                                maptable[j].set = mystrdup(piece); 
-                                maptable[j].len = strlen(maptable[j].set);
-                            } else {
-                                w_char w[MAXWORDLEN];
-                                int n = u8_u16(w, MAXWORDLEN, piece);
-                                if (n > 0) {
-                                    flag_qsort((unsigned short *) w, 0, n);
-                                    maptable[j].set_utf16 = (w_char *) malloc(n * sizeof(w_char));
-                                    if (!maptable[j].set_utf16) return 1;
-                                    memcpy(maptable[j].set_utf16, w, n * sizeof(w_char));
-                                }
-                                maptable[j].len = n;
-                            }
+			    int setn = 0;
+			    int u8pos = -1;
+                            maptable[j].len = strlen(piece);
+                            maptable[j].set = (char **) malloc(maptable[j].len * sizeof(int));
+                            if (!maptable[j].set) return 1;
+			    for (int k = 0; k < maptable[j].len; k++) {
+				int chl = 1;
+				int chb = k;
+			        if (piece[k] == '(') {
+				    char * parpos = strchr(piece + k, ')');
+				    if (parpos != NULL) {
+					chb = k + 1;
+					chl = (parpos - piece) - k - 1;
+					k = k + chl + 1;
+				    }
+				} else {
+				    if (utf8 && (piece[k] & 0xc0) == 0xc0) {
+					for (k++; utf8 && (piece[k] & 0xc0) == 0x80; k++);
+					chl = k - chb;
+					k--;
+				    }
+				}
+				maptable[j].set[setn] = (char *) malloc(chl + 1);
+				if (!maptable[j].set[setn]) return 1;
+				strncpy(maptable[j].set[setn], piece + chb, chl);
+				maptable[j].set[setn][chl] = '\0';
+				setn++;
+			    }
+                            maptable[j].len = setn;
                             break; }
                   default: break;
                }
@@ -3839,7 +3853,7 @@ int  AffixMgr::parse_maptable(char * line, FileMgr * af)
            }
            piece = mystrsep(&tp, 0);
         }
-        if ((!(maptable[j].set || maptable[j].set_utf16)) || (!(maptable[j].len))) {
+        if (!maptable[j].set || !maptable[j].len) {
              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n", af->getlinenum());
              nummap = 0;
              return 1;

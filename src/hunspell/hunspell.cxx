@@ -1665,7 +1665,7 @@ int Hunspell::spellml(char*** slst, const char * word)
   if (!q2) return 0; // bad XML input
   if (check_xml_par(q, "type=", "analyze")) {
       int n = 0, s = 0;
-      if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN)) n = analyze(slst, cw);
+      if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 10)) n = analyze(slst, cw);
       if (n == 0) return 0;
       // convert the result to <code><a>ana1</a><a>ana2</a></code> format
       for (int i = 0; i < n; i++) s+= strlen((*slst)[i]);

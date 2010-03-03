@@ -78,8 +78,7 @@ struct guessword {
 };
 
 struct mapentry {
-  char * set;
-  w_char * set_utf16;
+  char ** set;
   int len;
 };
 

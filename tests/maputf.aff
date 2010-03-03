@@ -5,6 +5,7 @@ SET UTF-8
 # switch off ngram suggestion for testing
 MAXNGRAMSUGS 0
 
-MAP 2
+MAP 3
 MAP uúü
 MAP öóo
+MAP ß(ss)

@@ -90,8 +90,7 @@ private:
    int movechar_utf(char **, const w_char *, int, int, int);
 
    int mapchars(char**, const char *, int, int);
-   int map_related(const char *, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
-   int map_related_utf(w_char *, int, int, int, char ** wlst, int, const mapentry*, int, int *, clock_t *);
+   int map_related(const char *, char *, int, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
    int ngram(int n, char * s1, const char * s2, int opt);
    int mystrlen(const char * word);
    int leftcommonsubstring(char * s1, const char * s2);
