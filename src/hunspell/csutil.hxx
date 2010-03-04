@@ -158,7 +158,7 @@ void enmkallcap(char * d, const char * p, const char * encoding);
 // convert null terminated string to all little using encoding
 void enmkallsmall(char * d, const char * p, const char * encoding);
 
-// convert null terminated string to have intial capital using encoding
+// convert null terminated string to have initial capital using encoding
 void enmkinitcap(char * d, const char * p, const char * encoding);
 
 // convert null terminated string to all caps
@@ -167,7 +167,7 @@ void mkallcap(char * p, const struct cs_info * csconv);
 // convert null terminated string to all little
 void mkallsmall(char * p, const struct cs_info * csconv);
 
-// convert null terminated string to have intial capital
+// convert null terminated string to have initial capital
 void mkinitcap(char * p, const struct cs_info * csconv);
 
 // convert first nc characters of UTF-8 string to little

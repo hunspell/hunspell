@@ -14,7 +14,7 @@ PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
   // register affix manager
   pmyMgr = pmgr;
 
-  // set up its intial values
+  // set up its initial values
 
   aflag = dp->aflag;         // flag
   strip = dp->strip;         // string to strip
@@ -399,7 +399,7 @@ SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
   // register affix manager
   pmyMgr = pmgr;
 
-  // set up its intial values
+  // set up its initial values
   aflag = dp->aflag;         // char flag
   strip = dp->strip;         // string to strip
   appnd = dp->appnd;         // string to append

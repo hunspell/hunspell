@@ -673,7 +673,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
     // from entry.  One to take next if the current prefix is found (call it nexteq)
     // and one to take next if the current prefix is not found (call it nextne).
 
-    // Since we have built ordered lists, all that remains is to properly intialize 
+    // Since we have built ordered lists, all that remains is to properly initialize 
     // the nextne and nexteq pointers that relate them
 
     process_pfx_order();

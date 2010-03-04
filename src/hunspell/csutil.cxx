@@ -651,7 +651,7 @@ void mkallcap_utf(w_char * u, int nc, int langnum) {
     }
 }
  
- // convert null terminated string to have intial capital
+ // convert null terminated string to have initial capital
  void mkinitcap(char * p, const struct cs_info * csconv)
  {
    if (*p != '\0') *p = csconv[((unsigned char)*p)].cupper;
@@ -695,7 +695,7 @@ void mkallcap_utf(w_char * u, int nc, int langnum) {
    *d = '\0';
  }
 
- // convert null terminated string to have intial capital using encoding
+ // convert null terminated string to have initial capital using encoding
  void enmkinitcap(char * d, const char * p, const char * encoding)
  {
    struct cs_info * csconv = get_current_cs(encoding);
