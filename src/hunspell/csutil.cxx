@@ -219,11 +219,10 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
          *stringp = dp+1;
          int nc = (int)((unsigned long)dp - (unsigned long)mp);
          *(mp+nc) = '\0';
-         return mp;
       } else {
          *stringp = mp + strlen(mp);
-         return mp;
       }
+      return mp;
    }
    return NULL;
  }
@@ -233,13 +232,13 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
  {
    char * d = NULL;
    if (s) {
-      int sl = strlen(s);
-      d = (char *) malloc(((sl+1) * sizeof(char)));
+      int sl = strlen(s)+1;
+      d = (char *) malloc(sl);
       if (d) {
-         memcpy(d,s,((sl+1)*sizeof(char)));
-         return d;
+         memcpy(d,s,sl);
+      } else {
+         HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
       }
-      HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
    }
    return d;
  }

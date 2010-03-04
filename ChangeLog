@@ -2,6 +2,7 @@
 	* ooo#107768 fix crash in long strings in spellml mode
 	* hun#1999737 add some malloc checks
 	* hun#1999769 drop old buffer on realloc failure
+	* hun#2005643 tidy string functions
 
 2010-03-03 Németh László <nemeth at OOo>:
 	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence
