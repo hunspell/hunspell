@@ -5,6 +5,7 @@
 	* hun#2005643 tidy string functions
 	* hun#2005643 micro-opt
 	* hun#2006077 free strings on failed dict parse
+	* hun#2110783 ispell-alike verbose mode implementation
 
 2010-03-03 Németh László <nemeth at OOo>:
 	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence

@@ -491,6 +491,7 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid) {
   int bad;
   int lineno = 0;
   int terse_mode = 0;
+  int verbose_mode = 0;
   int d = 0;
 
   TextParser * parser = get_parser(format, NULL, pMS[0]);
@@ -516,8 +517,9 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
     if (filter_mode == PIPE) {
     pos = -1;
     switch (buf[0]) {
-    case '%': { terse_mode = 0; break; }
+    case '%': { verbose_mode = terse_mode = 0; break; }
     case '!': { terse_mode = 1; break; }
+    case '`': { verbose_mode = 1; break; }
     case '+': {
 		delete parser;
 		parser = get_parser(FMT_LATEX, NULL, pMS[0]);
@@ -678,7 +680,10 @@ if (pos >= 0) {
 		int info;
                 char * root = NULL;
 		if (check(pMS, &d, token, &info, &root)) {
-			if (!terse_mode) fprintf(stdout,"*\n");
+			if (!terse_mode) {
+				if (verbose_mode) fprintf(stdout,"* %s\n", token);
+				else fprintf(stdout,"*\n");
+			    }
 			fflush(stdout);
 		} else {
 			char ** wlst = NULL;
