@@ -1,3 +1,6 @@
+2010-03-04 Caolán McNamara <cmc at OOo>:
+	* ooo#107768 fix crash in long strings in spellml mode
+
 2010-03-03 Németh László <nemeth at OOo>:
 	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence
 	  support for MAP suggestion, using parenthesized character groups

@@ -1686,13 +1686,13 @@ int Hunspell::spellml(char*** slst, const char * word)
       (*slst)[0] = r;
       return 1;
   } else if (check_xml_par(q, "type=", "stem")) {
-      if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN)) return stem(slst, cw);
+      if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 1)) return stem(slst, cw);
   } else if (check_xml_par(q, "type=", "generate")) {
-      int n = get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN);
+      int n = get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 1);
       if (n == 0) return 0;
       char * q3 = strstr(q2 + 1, "<word");
       if (q3) {
-        if (get_xml_par(cw2, strchr(q3, '>'), MAXWORDUTF8LEN)) {
+        if (get_xml_par(cw2, strchr(q3, '>'), MAXWORDUTF8LEN - 1)) {
             return generate(slst, cw, cw2);
         }
       } else {
