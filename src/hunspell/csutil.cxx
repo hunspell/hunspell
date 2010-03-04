@@ -511,7 +511,7 @@ int get_sfxcount(const char * morph)
 int fieldlen(const char * r)
 {
     int n = 0;
-    while (r && *r != '\t' && *r != '\0' && *r != '\n' && *r != ' ') {
+    while (r && *r != ' ' && *r != '\t' && *r != '\0' && *r != '\n') {
         r++;
         n++;
     }

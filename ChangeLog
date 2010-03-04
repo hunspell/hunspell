@@ -3,6 +3,7 @@
 	* hun#1999737 add some malloc checks
 	* hun#1999769 drop old buffer on realloc failure
 	* hun#2005643 tidy string functions
+	* hun#2005643 micro-opt
 
 2010-03-03 Németh László <nemeth at OOo>:
 	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence
