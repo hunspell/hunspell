@@ -168,8 +168,10 @@ get_charset_aliases ()
 		}
 	      else
 		{
+		  char * res_ptr_temp = res_ptr;
 		  res_size += l1 + 1 + l2 + 1;
 		  res_ptr = (char *) realloc (res_ptr, res_size + 1);
+		  if (res_ptr == NULL) free (res_ptr_temp);
 		}
 	      if (res_ptr == NULL)
 		{
