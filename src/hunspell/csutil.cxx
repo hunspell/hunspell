@@ -276,6 +276,8 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
           char * q = d;
           while (p >= s) *q++ = *p--;
           *q = '\0';
+        } else {
+          HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
         }
      }
      return d;
