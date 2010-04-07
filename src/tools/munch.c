@@ -815,9 +815,9 @@ char * mystrdup(const char * s)
 {
   char * d = NULL;
   if (s) {
-    int sl = strlen(s);
-    d = (char *) malloc(((sl+1) * sizeof(char)));
-    if (d) memcpy(d,s,((sl+1)*sizeof(char)));
+    int sl = strlen(s)+1;
+    d = (char *) malloc(sl);
+    if (d) memcpy(d,s,sl);
   }
   return d;
 }
