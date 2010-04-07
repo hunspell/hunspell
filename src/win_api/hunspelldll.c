@@ -34,13 +34,11 @@
 #include "hunspelldll.h"
 #include <windows.h>
 
-#ifdef BORLAND
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
-#endif
 
 DLLEXPORT void * hunspell_initialize(char *aff_file, char *dict_file)
 {
