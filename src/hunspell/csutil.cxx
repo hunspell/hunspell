@@ -155,7 +155,7 @@ int u8_u16(w_char * dest, int size, const char * src) {
     u8++;
     u2++;
     }
-    return u2 - dest;
+    return (int)(u2 - dest);
 }
 
 void flag_qsort(unsigned short flags[], int begin, int end) {

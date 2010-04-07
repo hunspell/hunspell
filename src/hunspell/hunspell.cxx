@@ -1613,7 +1613,7 @@ int Hunspell::get_xml_par(char * dest, const char * par, int max)
    *d = '\0';
    mystrrep(dest, "&lt;", "<");
    mystrrep(dest, "&amp;", "&");
-   return d - dest;
+   return (int)(d - dest);
 }
 
 // return the beginning of the element (attr == NULL) or the attribute

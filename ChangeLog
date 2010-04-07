@@ -1,3 +1,7 @@
+2010-04-07 Caolán McNamara <cmc at OOo>:
+	* hun#2973827 apply win64 patch
+	* hun#2005643 fix broken mystrdup
+
 2010-03-04 Caolán McNamara <cmc at OOo>:
 	* ooo#107768 fix crash in long strings in spellml mode
 	* hun#1999737 add some malloc checks

@@ -1,12 +1,10 @@
 
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-#include <cstdio>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
 
 #include "dictmgr.hxx"
-
-using namespace std;
 
 DictMgr::DictMgr(const char * dictpath, const char * etype) : numdict(0)
 {

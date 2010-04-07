@@ -3829,7 +3829,7 @@ int  AffixMgr::parse_maptable(char * line, FileMgr * af)
 				    char * parpos = strchr(piece + k, ')');
 				    if (parpos != NULL) {
 					chb = k + 1;
-					chl = (parpos - piece) - k - 1;
+					chl = (int)(parpos - piece) - k - 1;
 					k = k + chl + 1;
 				    }
 				} else {

@@ -857,7 +857,7 @@ int SuggestMgr::longswapchar(char ** wlst, const char * word, int ns, int cpdsug
    strcpy(candidate, word);
    for (p = candidate;  *p != 0;  p++) {
     for (q = candidate;  *q != 0;  q++) {
-     if (abs(p-q) > 1) {
+     if (abs((int)(p-q)) > 1) {
       tmpc = *p;
       *p = *q;
       *q = tmpc;
@@ -884,7 +884,7 @@ int SuggestMgr::longswapchar_utf(char ** wlst, const w_char * word, int wl, int 
    memcpy (candidate_utf, word, wl * sizeof(w_char));
    for (p = candidate_utf;  p < (candidate_utf + wl);  p++) {
      for (q = candidate_utf;  q < (candidate_utf + wl);  q++) {
-       if (abs(p-q) > 1) {
+       if (abs((int)(p-q)) > 1) {
          tmpc = *p;
          *p = *q;
          *q = tmpc;
@@ -1743,7 +1743,7 @@ int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
       do {
         s1++; s2++;
       } while ((*s1 == *s2) && (*s1 != '\0'));
-      return s1 - olds;
+      return (int)(s1 - olds);
     }
   }
   return 0;
