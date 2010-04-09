@@ -1,3 +1,6 @@
+2010-04-09 Caolán McNamara <cmc at OOo>:
+	* fix titchy possible leak in command-line spellchecker
+
 2010-04-07 Caolán McNamara <cmc at OOo>:
 	* hun#2973827 apply win64 patch
 	* hun#2005643 fix broken mystrdup
