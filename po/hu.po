@@ -279,12 +279,12 @@ msgstr "  -i kód\tbemeneti karakterkódolás\n"
 
 #: src/tools/hunspell.cxx:1433
 #, c-format
-msgid "  -l\t\tprint mispelled words\n"
+msgid "  -l\t\tprint misspelled words\n"
 msgstr "  -l\t\tkiírja a hibás szavakat\n"
 
 #: src/tools/hunspell.cxx:1434
 #, c-format
-msgid "  -L\t\tprint lines with mispelled words\n"
+msgid "  -L\t\tprint lines with misspelled words\n"
 msgstr "  -L\t\tkiírja a hibás sorokat\n"
 
 #: src/tools/hunspell.cxx:1435
@@ -330,7 +330,7 @@ msgstr "  -vv\t\tkiírja a változat számát Ispell-szerűen\n"
 #: src/tools/hunspell.cxx:1447
 #, c-format
 msgid ""
-"  -w\t\tprint mispelled words (= lines) from one word/line input.\n"
+"  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 "\n"
 msgstr ""
 "  -w\t\tkiírja a hibás szavakat a soronként egy szavas bemenetből.\n"

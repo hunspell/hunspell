@@ -258,12 +258,12 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1433
 #, c-format
-msgid "  -l\t\tprint mispelled words\n"
+msgid "  -l\t\tprint misspelled words\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1434
 #, c-format
-msgid "  -L\t\tprint lines with mispelled words\n"
+msgid "  -L\t\tprint lines with misspelled words\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1435
@@ -309,7 +309,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1447
 #, c-format
 msgid ""
-"  -w\t\tprint mispelled words (= lines) from one word/line input.\n"
+"  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 "\n"
 msgstr ""
 

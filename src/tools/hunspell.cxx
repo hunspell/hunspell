@@ -1435,8 +1435,8 @@ int main(int argc, char** argv)
 			fprintf(stderr,gettext("  -h, --help\tdisplay this help and exit\n"));
 			fprintf(stderr,gettext("  -H\t\tHTML input file format\n"));
 			fprintf(stderr,gettext("  -i enc\tinput encoding\n"));
-			fprintf(stderr,gettext("  -l\t\tprint mispelled words\n"));
-			fprintf(stderr,gettext("  -L\t\tprint lines with mispelled words\n"));
+			fprintf(stderr,gettext("  -l\t\tprint misspelled words\n"));
+			fprintf(stderr,gettext("  -L\t\tprint lines with misspelled words\n"));
 			fprintf(stderr,gettext("  -m \t\tanalyze the words of the input text\n"));
 			fprintf(stderr,gettext("  -n\t\tnroff/troff input file format\n"));
 			fprintf(stderr,gettext("  -p dict\tset dict custom dictionary\n"));
@@ -1449,7 +1449,7 @@ int main(int argc, char** argv)
 //			fprintf(stderr,gettext("  -U\t\tautomatic correction of typical misspellings to stdout\n"));
 			fprintf(stderr,gettext("  -v, --version\tprint version number\n"));
 			fprintf(stderr,gettext("  -vv\t\tprint Ispell compatible version number\n"));
-			fprintf(stderr,gettext("  -w\t\tprint mispelled words (= lines) from one word/line input.\n\n"));
+			fprintf(stderr,gettext("  -w\t\tprint misspelled words (= lines) from one word/line input.\n\n"));
 			fprintf(stderr,gettext("Example: hunspell -d en_US file.txt    # interactive spelling\n"
                                                "         hunspell -l file.txt          # print misspelled words\n"
                                                "         hunspell -i utf-8 file.txt    # check UTF-8 encoded file\n\n"));
@@ -1499,7 +1499,7 @@ int main(int argc, char** argv)
             /*
              if -a was used, don't override, i.e. keep ispell compatability
              ispell:   Specify additional characters that can be part of a word.
-             hunspell: Print mispelled words (= lines) from one word/line input
+             hunspell: Print misspelled words (= lines) from one word/line input
             */
 			if (filter_mode != PIPE)
 			    filter_mode = WORDFILTER;
@@ -1507,7 +1507,7 @@ int main(int argc, char** argv)
             /*
              if -a was used, don't override, i.e. keep ispell compatability
              ispell:   Number of lines of context to be shown at the bottom of the screen
-             hunspell: Print lines with mispelled words
+             hunspell: Print lines with misspelled words
             */
 			if (filter_mode != PIPE)
 			    filter_mode = BADLINE;
