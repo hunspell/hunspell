@@ -1,5 +1,6 @@
 2010-04-13 Caolán McNamara <cmc at OOo>:
 	* hun#2806689 fix ironic misspellings
+	* hun#2836240 add Italian translations
 
 2010-04-09 Caolán McNamara <cmc at OOo>:
 	* fix titchy possible leak in command-line spellchecker
