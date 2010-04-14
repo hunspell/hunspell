@@ -777,7 +777,7 @@ if (parser) delete(parser);
 #ifndef WIN32
 
 #ifdef HAVE_READLINE
-static char * rltext;
+static const char * rltext;
 
 // set base text of input line
 static int set_rltext ()
@@ -785,7 +785,7 @@ static int set_rltext ()
   if (rltext)
     {
       rl_insert_text (rltext);
-      rltext = (char *)NULL;
+      rltext = NULL;
       rl_startup_hook = (rl_hook_func_t *)NULL;
     }
   return 0;
