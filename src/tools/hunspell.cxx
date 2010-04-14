@@ -685,6 +685,7 @@ if (pos >= 0) {
 				else fprintf(stdout,"*\n");
 			    }
 			fflush(stdout);
+			if (root) free(root);
 		} else {
 			char ** wlst = NULL;
 			int ns = pMS[d]->suggest(&wlst, token);
@@ -718,6 +719,7 @@ if (pos >= 0) {
 				fprintf(stdout,"*\n");
 			}			
 			fflush(stdout);
+			if (root) free(root);
 		} else {
 			char ** wlst = NULL;
 			int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
