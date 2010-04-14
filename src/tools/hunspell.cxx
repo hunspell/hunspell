@@ -621,7 +621,6 @@ if (pos >= 0) {
 					    chenc(token, io_enc, ui_enc));
 					fprintf(f, "%s\n",
 					    chenc(wlst[0], dic_enc[d], ui_enc));
-                                        free(wlst[0]);
                                 } else {
 					fprintf(f,"%ds/%s/%s/g; # %s\n", lineno,
 					    token, chenc(wlst[0], dic_enc[d], io_enc), buf);
