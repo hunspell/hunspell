@@ -3818,7 +3818,6 @@ int  AffixMgr::parse_maptable(char * line, FileMgr * af)
                           }
                   case 1: {
 			    int setn = 0;
-			    int u8pos = -1;
                             maptable[j].len = strlen(piece);
                             maptable[j].set = (char **) malloc(maptable[j].len * sizeof(int));
                             if (!maptable[j].set) return 1;
