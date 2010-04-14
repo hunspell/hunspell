@@ -1313,6 +1313,11 @@ int AffixMgr::defcpd_check(hentry *** words, short wnum, hentry * rv, hentry ** 
     w = 1;
     *words = def;
   }
+
+  if (!*words) {
+    return 0;
+  }
+
   (*words)[wnum] = rv;
 
   // has the last word COMPOUNDRULE flag?

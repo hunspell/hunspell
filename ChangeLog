@@ -1,6 +1,7 @@
 2010-04-15 Caolán McNamara <cmc at OOo>:
 	* hun#2613701 fix small leak in FileMgr::FileMgr
 	* fix small leak in tools/hunspell
+	* hun#2871300 avoid crash if def and words are NULL
 
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming
