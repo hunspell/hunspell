@@ -801,7 +801,7 @@ static int rl_escape (int count, int key)
 #ifdef HAVE_CURSES_H
 int expand_tab(char * dest, char * src, int limit) {
 	int i = 0;
-        int u8 = strcmp(ui_enc, "UTF-8") == 0 ? 1 : 0;
+        int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
         int chpos = 0;
 	for(int j = 0; (i < limit) && (src[j] != '\0') && (src[j] != '\r'); j++) {
 		dest[i] = src[j];
@@ -823,7 +823,7 @@ int expand_tab(char * dest, char * src, int limit) {
 
 // UTF-8 version of strncpy (but output is always null terminated)
 char * strncpyu8(char * dest, const char * src, int begin, size_t n) {
-        int u8 = strcmp(ui_enc, "UTF-8") == 0 ? 1 : 0;
+        int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
         for (int i = 0; i <= begin + n;) {
             if (!u8 || (*src & 0xc0) != 0x80) i++;
             if (i >= begin && i <= begin + n) {
