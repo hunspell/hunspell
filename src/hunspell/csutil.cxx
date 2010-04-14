@@ -287,6 +287,9 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
 // return number of lines
 int line_tok(const char * text, char *** lines, char breakchar) {
     int linenum = 0;
+    if (!text) {
+        return linenum;
+    }
     char * dup = mystrdup(text);
     char * p = strchr(dup, breakchar);
     while (p) {
