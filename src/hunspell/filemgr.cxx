@@ -23,6 +23,7 @@ FileMgr::FileMgr(const char * file, const char * key) {
             strcpy(st, file);
             strcat(st, HZIP_EXTENSION);
             hin = new Hunzip(st, key);
+            free(st);
         }
     }    
     if (!fin && !hin) fail(MSG_OPEN, file);

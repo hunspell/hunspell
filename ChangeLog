@@ -1,3 +1,6 @@
+2010-04-15 Caolán McNamara <cmc at OOo>:
+	* hun#2613701 fix small leak in FileMgr::FileMgr
+
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming
 
