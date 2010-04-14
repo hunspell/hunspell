@@ -21,6 +21,7 @@ static struct {
 	{ { "\\[", "\\]" } , 0 },
 	{ { "\\begin{displaymath}", "\\end{displaymath}" } , 0 },
 	{ { "\\begin{equation}", "\\end{equation}" } , 0 },
+	{ { "\\begin{equation*}", "\\end{equation*}" } , 0 },
 	{ { "\\cite", NULL } , 1 },
 	{ { "\\nocite", NULL } , 1 },
 	{ { "\\index", NULL } , 1 },
@@ -79,7 +80,10 @@ static struct {
 	{ { "\\fcolorbox", NULL } , 2 },
 	{ { "\\declaregraphicsextensions", NULL } , 1 },
 	{ { "\\psfig", NULL } , 1 },
-	{ { "\\url", NULL } , 1 }
+	{ { "\\url", NULL } , 1 },
+	{ { "\\eqref", NULL } , 1 },
+	{ { "\\vskip", NULL } , 1 },
+	{ { "\\vglue", NULL } , 1 }
 };
 
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
