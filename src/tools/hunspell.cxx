@@ -1010,7 +1010,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "U)ncap" before */
 	    if (c==(gettext("u"))[0]) {
-		*token = (pMS->get_csconv())[(*token)].clower;
+		*token = (pMS->get_csconv())[int(*token)].clower;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "U)ncap" and I)nsert before */
