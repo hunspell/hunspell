@@ -27,7 +27,6 @@
 
 #ifdef WIN32
 
-#define gettext
 #define LIBDIR "C:\\Hunspell\\"
 #define USEROOODIR "Application Data\\OpenOffice.org 2\\user\\wordbook"
 #define OOODIR \

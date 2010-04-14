@@ -3,6 +3,7 @@
 	* fix small leak in tools/hunspell
 	* hun#2871300 avoid crash if def and words are NULL
 	* hun#2904479 fix length of hzip file
+	* hun#2986756 mingw build fix
 
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming
