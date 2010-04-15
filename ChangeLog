@@ -9,6 +9,11 @@
 	* hun#2917914 add some extra words to the latexparser
 	* make some structs static
 	* C-api has duped symbol names
+	* regenerate gettext/intl with recent version
+	* hun#2796772 build a .dll under MinGW
+	* rhbz#502387 allow cross-compiling for MinGW target
+	* update .vcproj files to include replist.cxx
+	* unify visiblity/dll_export support across platforms
 
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming

@@ -13,7 +13,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #define OS2_AWARE
@@ -39,7 +39,7 @@ _nl_getenv (const char *name)
 }
 
 /* A fixed size buffer.  */
-char _nl_default_dirname__[MAXPATHLEN+1];
+char libintl_nl_default_dirname[MAXPATHLEN+1];
 
 char *_nlos2_libdir = NULL;
 char *_nlos2_localealiaspath = NULL;
@@ -94,5 +94,5 @@ nlos2_initialize ()
     }
 
   if (strlen (_nlos2_localedir) <= MAXPATHLEN)
-    strcpy (_nl_default_dirname__, _nlos2_localedir);
+    strcpy (libintl_nl_default_dirname, _nlos2_localedir);
 }

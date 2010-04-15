@@ -18,6 +18,8 @@
 #define NGRAM_ANY_MISMATCH  (1 << 1)
 #define NGRAM_LOWERING      (1 << 2)
 
+#include "hunvisapi.h"
+
 #include "atypes.hxx"
 #include "affixmgr.hxx"
 #include "hashmgr.hxx"
@@ -26,7 +28,7 @@
 
 enum { LCS_UP, LCS_LEFT, LCS_UPLEFT };
 
-class SuggestMgr
+class LIBHUNSPELL_DLL_EXPORTED SuggestMgr
 {
   char *          ckey;
   int             ckeyl;

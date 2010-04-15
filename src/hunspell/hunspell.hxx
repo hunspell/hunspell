@@ -1,3 +1,5 @@
+#include "hunvisapi.h"
+
 #include "hashmgr.hxx"
 #include "affixmgr.hxx"
 #include "suggestmgr.hxx"
@@ -18,15 +20,7 @@
 #ifndef _MYSPELLMGR_HXX_
 #define _MYSPELLMGR_HXX_
 
-#if defined(HUNSPELL_STATIC)
-# define DLL
-#elif defined(_MSC_VER) || defined(__MINGW32__)
-# define DLL __declspec ( dllexport )
-#else
-# define DLL 
-#endif
-
-class DLL Hunspell
+class LIBHUNSPELL_DLL_EXPORTED Hunspell
 {
   AffixMgr*       pAMgr;
   HashMgr*        pHMgr[MAXDIC];

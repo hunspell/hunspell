@@ -40,64 +40,64 @@
 #include <cstdlib>
 #include <cstdio>
 
-DLLEXPORT void * hunspell_initialize(char *aff_file, char *dict_file)
+LIBHUNSPELL_DLL_EXPORTED void * hunspell_initialize(char *aff_file, char *dict_file)
 {
     Hunspell * pMS = new Hunspell(aff_file, dict_file);
     return pMS;
 }
 
-DLLEXPORT void * hunspell_initialize_key(char *aff_file, char *dict_file, char * key)
+LIBHUNSPELL_DLL_EXPORTED void * hunspell_initialize_key(char *aff_file, char *dict_file, char * key)
 {
     Hunspell * pMS = new Hunspell(aff_file, dict_file, key);
     return pMS;
 }
 
-DLLEXPORT void hunspell_uninitialize(Hunspell *pMS)
+LIBHUNSPELL_DLL_EXPORTED void hunspell_uninitialize(Hunspell *pMS)
 {
     delete pMS;
 }
 
-DLLEXPORT int hunspell_spell(Hunspell *pMS, char *word)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_spell(Hunspell *pMS, char *word)
 {
     return pMS->spell(word);
 }
 
-DLLEXPORT int hunspell_suggest(Hunspell *pMS, char *word, char ***slst)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest(Hunspell *pMS, char *word, char ***slst)
 {
     return pMS->suggest(slst, word);
 }
 
 #ifdef HUNSPELL_EXPERIMENTAL
-DLLEXPORT int hunspell_suggest_auto(Hunspell *pMS, char *word, char ***slst)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest_auto(Hunspell *pMS, char *word, char ***slst)
 {
     return pMS->suggest_auto(slst, word);
 }
 #endif
 
-DLLEXPORT void hunspell_free_list(Hunspell *pMS, char ***slst, int len)
+LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell *pMS, char ***slst, int len)
 {
     pMS->free_list(slst, len);
 }
 
 // deprecated (use hunspell_free_list)
-DLLEXPORT void hunspell_suggest_free(Hunspell *pMS, char **slst, int len)
+LIBHUNSPELL_DLL_EXPORTED void hunspell_suggest_free(Hunspell *pMS, char **slst, int len)
 {
     for (int i = 0; i < len; i++) {
         free(slst[i]);
     }
 }
 
-DLLEXPORT char * hunspell_get_dic_encoding(Hunspell *pMS)
+LIBHUNSPELL_DLL_EXPORTED char * hunspell_get_dic_encoding(Hunspell *pMS)
 {
     return pMS->get_dic_encoding();
 }
 
-DLLEXPORT int hunspell_add(Hunspell *pMS, char *word)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell *pMS, char *word)
 {
     return pMS->add(word);
 }
 
-DLLEXPORT int hunspell_add_with_affix(Hunspell *pMS, char *word, char *modelword)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell *pMS, char *word, char *modelword)
 {
     return pMS->add_with_affix(word, modelword);
 }

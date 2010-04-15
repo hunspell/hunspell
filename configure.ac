@@ -22,6 +22,7 @@ AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_LIBTOOL
+AC_LIBTOOL_WIN32_DLL
 
 # Checks for libraries.
 
@@ -35,7 +36,6 @@ AC_C_INLINE
 
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
-AC_FUNC_MALLOC
 AC_HEADER_STDC
 AC_CHECK_FUNCS([memchr setlocale strchr strstr])
 
@@ -109,6 +109,7 @@ AC_CONFIG_FILES([Makefile
                  m4/Makefile
 		 src/Makefile
 		 src/hunspell/Makefile
+		 src/hunspell/hunvisapi.h
 		 src/parsers/Makefile
 		 src/tools/Makefile
 		 src/win_api/Makefile

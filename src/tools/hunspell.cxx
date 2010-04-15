@@ -772,9 +772,9 @@ if (parser) delete(parser);
 
 } // pipe_interface
 
-#ifndef WIN32
-
 #ifdef HAVE_READLINE
+
+#ifdef HAVE_CURSES_H
 static const char * rltext;
 
 // set base text of input line
@@ -788,6 +788,8 @@ static int set_rltext ()
     }
   return 0;
 }
+
+#endif
 
 // Readline escape 
 static int rl_escape (int count, int key)
@@ -1300,7 +1302,6 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
         free(tempname);
 }
 
-#endif
 #endif
 
 char * add(char * dest, const char * st) {

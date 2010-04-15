@@ -53,15 +53,15 @@ void init_phonet_hash(phonetable & parms)
     }
   }
 
-  // like strcpy but safe if the strings overlap
-  //   but only if dest < src
-  static inline void strmove(char * dest, char * src) {
-    while (*src) 
-      *dest++ = *src++;
-    *dest = '\0';
-  }
+// like strcpy but safe if the strings overlap
+//   but only if dest < src
+static inline void strmove(char * dest, char * src) {
+  while (*src) 
+    *dest++ = *src++;
+  *dest = '\0';
+}
 
-int myisalpha(char ch) {
+static int myisalpha(char ch) {
   if ((unsigned char) ch < 128) return isalpha(ch);
   return 1;
 }

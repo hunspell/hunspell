@@ -1,6 +1,8 @@
 #ifndef _AFFIXMGR_HXX_
 #define _AFFIXMGR_HXX_
 
+#include "hunvisapi.h"
+
 #include <stdio.h>
 
 #include "atypes.hxx"
@@ -16,7 +18,7 @@
 class PfxEntry;
 class SfxEntry;
 
-class AffixMgr
+class LIBHUNSPELL_DLL_EXPORTED AffixMgr
 {
 
   PfxEntry *          pStart[SETSIZE];

@@ -182,7 +182,7 @@
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="..\hunspell;."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;HUNSPELL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BUILDING_LIBHUNSPELL;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -265,7 +265,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\hunspell;."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;HUNSPELL_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;BUILDING_LIBHUNSPELL"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -325,6 +325,10 @@
 			>
 			<File
 				RelativePath=".\config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\hunvisapi.h"
 				>
 			</File>
 			<File
@@ -465,6 +469,14 @@
 			</File>
 			<File
 				RelativePath="..\hunspell\phonet.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\replist.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\replist.hxx"
 				>
 			</File>
 			<File

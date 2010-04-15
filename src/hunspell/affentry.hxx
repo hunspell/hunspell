@@ -1,13 +1,15 @@
 #ifndef _AFFIX_HXX_
 #define _AFFIX_HXX_
 
+#include "hunvisapi.h"
+
 #include "atypes.hxx"
 #include "baseaffix.hxx"
 #include "affixmgr.hxx"
 
 /* A Prefix Entry  */
 
-class PfxEntry : protected AffEntry
+class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry
 {
        AffixMgr*    pmyMgr;
 
@@ -63,7 +65,7 @@ public:
 
 /* A Suffix Entry */
 
-class SfxEntry : protected AffEntry
+class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry
 {
        AffixMgr*    pmyMgr;
        char *       rappnd;

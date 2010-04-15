@@ -13,14 +13,14 @@ example_SOURCES=example.cxx
 example_LDADD = ../hunspell/libhunspell-1.2.la
 
 hunspell_SOURCES=hunspell.cxx
-hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../hunspell/libhunspell-1.2.la \
-	../parsers/libparsers.a @CURSESLIB@ @READLINELIB@
+hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
+	../hunspell/libhunspell-1.2.la @CURSESLIB@ @READLINELIB@
 
 analyze_SOURCES=analyze.cxx
 analyze_LDADD = ../hunspell/libhunspell-1.2.la
 
 chmorph_SOURCES=chmorph.cxx
-chmorph_LDADD = ../hunspell/libhunspell-1.2.la ../parsers/libparsers.a
+chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.2.la
 
 noinst_PROGRAMS=example
 
