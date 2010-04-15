@@ -1592,7 +1592,7 @@ int main(int argc, char** argv)
 				}
 			}
 
-			if ((strcmp(dicname, "C") == 0) || (strcmp(dicname, "POSIX") == 0)) {
+			if (dicname && ((strcmp(dicname, "C") == 0) || (strcmp(dicname, "POSIX") == 0))) {
 			    free(dicname);
 			    dicname=mystrdup("en_US");
 			}
