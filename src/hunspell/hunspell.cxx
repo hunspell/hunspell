@@ -1901,7 +1901,7 @@ int Hunspell_stem(Hunhandle *pHunspell, char*** slst, const char * word)
         return ((Hunspell*)pHunspell)->stem(slst, word);
 }
 
-int Hunspell_stem(Hunhandle *pHunspell, char*** slst, char** desc, int n)
+int Hunspell_stem2(Hunhandle *pHunspell, char*** slst, char** desc, int n)
 {
         return ((Hunspell*)pHunspell)->stem(slst, desc, n);
 }
@@ -1912,7 +1912,7 @@ int Hunspell_generate(Hunhandle *pHunspell, char*** slst, const char * word,
         return ((Hunspell*)pHunspell)->generate(slst, word, word2);
 }
 
-int Hunspell_generate(Hunhandle *pHunspell, char*** slst, const char * word,
+int Hunspell_generate2(Hunhandle *pHunspell, char*** slst, const char * word,
     char** desc, int n)
 {
         return ((Hunspell*)pHunspell)->generate(slst, word, desc, n);

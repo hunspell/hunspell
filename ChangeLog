@@ -8,6 +8,7 @@
 	* hun#2059896 fix crash in interactive mode without nls
 	* hun#2917914 add some extra words to the latexparser
 	* make some structs static
+	* C-api has duped symbol names
 
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming
