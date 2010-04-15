@@ -14,6 +14,7 @@
 	* rhbz#502387 allow cross-compiling for MinGW target
 	* hun#2467643 update .vcproj files to include replist.?xx
 	* unify visiblity/dll_export support across platforms
+	* hun#2831289 sizeof(short) typo
 
 2010-04-14 Caolán McNamara <cmc at OOo>:
 	* hun#2813804 fix segfault on hu_HU stemming

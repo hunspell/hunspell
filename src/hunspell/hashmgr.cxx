@@ -278,7 +278,7 @@ int HashMgr::remove_forbidden_flag(const char * word) {
             if (dp->alen == 1) dp->alen = 0; // XXX forbidden words of personal dic.
             else {
                 unsigned short * flags2 =
-                    (unsigned short *) malloc(sizeof(short *) * (dp->alen - 1));
+                    (unsigned short *) malloc(sizeof(short) * (dp->alen - 1));
                 if (!flags2) return 1;
                 int i, j = 0;
                 for (i = 0; i < dp->alen; i++) {
