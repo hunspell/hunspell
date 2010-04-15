@@ -149,6 +149,7 @@ int wordchars_utf16_free = 0;
 int wordchars_utf16_len;
 char * dicname = NULL;
 char * privdicname = NULL;
+const char * currentfilename = NULL;
 
 int modified;   // modified file sign
 enum { NORMAL,
@@ -160,7 +161,8 @@ enum { NORMAL,
        PIPE,       // print only stars for LyX compatibility
        AUTO0,      // search typical error (based on SuggestMgr::suggest_auto())
        AUTO,       // automatic spelling to standard output
-       AUTO2	    };    // automatic spelling to standard output with sed log
+       AUTO2,      // automatic spelling to standard output with sed log
+       AUTO3   };  // automatic spelling to standard output with gcc error format
 int filter_mode = NORMAL;
 int printgood = 0; // print only good words and lines
 int showpath = 0;  // show detected path of the dictionary
@@ -374,7 +376,7 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
 #ifdef LOG
 void log(char * message)
 {
-        FILE *f = fopen(LOGFILE,"a");
+	FILE *f = fopen(LOGFILE,"a");
 	if (f) {
     	    fprintf(f,"%s\n",message);
     	    fclose(f);
@@ -606,28 +608,33 @@ if (pos >= 0) {
 			continue;
 		}
 
-                case AUTO0:
+		case AUTO0:
 		case AUTO:
-		case AUTO2: {
-                FILE * f = (filter_mode == AUTO) ? stderr : stdout;
-		if (!check(pMS, &d, token, NULL, NULL)) {
-			char ** wlst = NULL;
-			bad = 1;
-			int ns = pMS[d]->suggest_auto(&wlst, chenc(token, io_enc, dic_enc[d]));
-			if (ns > 0) {
-				parser->change_token(chenc(wlst[0], dic_enc[d], io_enc));
-				if (filter_mode != AUTO2) {
-					fprintf(f,gettext("Line %d: %s -> "), lineno,
-					    chenc(token, io_enc, ui_enc));
-					fprintf(f, "%s\n",
-					    chenc(wlst[0], dic_enc[d], ui_enc));
-                                } else {
-					fprintf(f,"%ds/%s/%s/g; # %s\n", lineno,
-					    token, chenc(wlst[0], dic_enc[d], io_enc), buf);
-                                }
+		case AUTO2:
+		case AUTO3: {
+			FILE * f = (filter_mode == AUTO) ? stderr : stdout;
+			if (!check(pMS, &d, token, NULL, NULL)) {
+				char ** wlst = NULL;
+				bad = 1;
+				int ns = pMS[d]->suggest_auto(&wlst, chenc(token, io_enc, dic_enc[d]));
+				if (ns > 0) {
+					parser->change_token(chenc(wlst[0], dic_enc[d], io_enc));
+					if (filter_mode == AUTO3) {
+						fprintf(f,"%s:%d: Locate: %s | Try: %s\n",
+							currentfilename, lineno,
+							token, chenc(wlst[0], dic_enc[d], io_enc));
+					} else if (filter_mode == AUTO2) {
+						fprintf(f,"%ds/%s/%s/g; # %s\n", lineno,
+							token, chenc(wlst[0], dic_enc[d], io_enc), buf);
+					} else {
+						fprintf(f,gettext("Line %d: %s -> "), lineno,
+							chenc(token, io_enc, ui_enc));
+						fprintf(f, "%s\n",
+							chenc(wlst[0], dic_enc[d], ui_enc));
+					}
+				}
+				pMS[d]->free_list(&wlst, ns);
 			}
-			pMS[d]->free_list(&wlst, ns);
-		}
 			free(token);
 			continue;			
 		}
@@ -1418,7 +1425,7 @@ int main(int argc, char** argv)
 			io_enc = argv[i];
 			argstate = 0;
 		} else if (argstate == 4) {
-		        key = argv[i];
+			key = argv[i];
 			argstate = 0;
 		} else if (strcmp(argv[i],"-d")==0) argstate=1;
 		else if (strcmp(argv[i],"-p")==0) argstate=2;
@@ -1447,6 +1454,7 @@ int main(int argc, char** argv)
 // experimental functions: missing Unicode support
 //			fprintf(stderr,gettext("  -u\t\tshow typical misspellings\n"));
 //			fprintf(stderr,gettext("  -u2\t\tprint typical misspellings in sed format\n"));
+//			fprintf(stderr,gettext("  -u3\t\tprint typical misspellings in gcc error format\n"));
 //			fprintf(stderr,gettext("  -U\t\tautomatic correction of typical misspellings to stdout\n"));
 			fprintf(stderr,gettext("  -v, --version\tprint version number\n"));
 			fprintf(stderr,gettext("  -vv\t\tprint Ispell compatible version number\n"));
@@ -1536,6 +1544,14 @@ int main(int argc, char** argv)
             */
 			if (filter_mode != PIPE)
 			    filter_mode = AUTO2;
+		} else if ((strcmp(argv[i],"-u3")==0)) {         
+            /*
+             if -a was used, don't override, i.e. keep ispell compatability
+             ispell: None
+             hunspell: Print typical misspellings in gcc error format
+            */
+			if (filter_mode != PIPE)
+				filter_mode = AUTO3;
 		} else if ((strcmp(argv[i],"-G")==0)) {
 			printgood = 1;
 		} else if ((strcmp(argv[i],"-1")==0)) {
@@ -1658,57 +1674,56 @@ int main(int argc, char** argv)
 
 	if (arg_files==-1) {
 		pipe_interface(pMS, format, stdin);
-	} else {
-#ifndef WIN32
-#ifdef HAVE_CURSES_H
-		if (filter_mode == NORMAL) {
-		    initscr();
-		    cbreak();
-		    noecho();
-		    nonl();
-		    intrflush(stdscr,FALSE);
+	} else if (filter_mode != NORMAL) {
+		for (int i = arg_files; i < argc; i++) {
+			if (exist(argv[i])) {
+				modified = 0;
+				currentfilename = argv[i];
+				FILE * f = fopen(argv[i], "r");
+				pipe_interface(pMS, format, f);
+				fclose(f);
+			} else {
+				fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);
+				exit(1);
+			}
 		}
+	} else if (filter_mode == NORMAL) {
+#ifdef HAVE_CURSES_H
+	    initscr();
+	    cbreak();
+	    noecho();
+	    nonl();
+	    intrflush(stdscr,FALSE);
 		
 		for (int i = arg_files; i < argc; i++) {
 			if (exist(argv[i])) {
 				modified = 0;
-				if (filter_mode != NORMAL) {
-                                        FILE * f = fopen(argv[i], "r");
-                                	pipe_interface(pMS, format, f);
-                                        fclose(f);
-				} else {
-					interactive_interface(pMS, argv[i], format);
-				}
+				interactive_interface(pMS, argv[i], format);
 			} else {
-	    			fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);
+				fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);
 				endwin();
 				exit(1);
 			}
 		}
 
-		if (filter_mode == NORMAL) {
 		clear();
 		refresh();
 		endwin();
-		}
 #else
-        fprintf(stderr, gettext("Hunspell has been compiled without Ncurses user interface.\n"));
-#endif
-#else
-        fprintf(stderr, gettext("Hunspell has been compiled without Ncurses user interface.\n"));
+		fprintf(stderr, gettext("Hunspell has been compiled without Ncurses user interface.\n"));
 #endif
 	}
 
-        if (dicname) free(dicname);
-        if (privdicname) free(privdicname);
-        if (path) free(path);
-        if (aff) free(aff);
-        if (dic) free(dic);
+	if (dicname) free(dicname);
+	if (privdicname) free(privdicname);
+	if (path) free(path);
+	if (aff) free(aff);
+	if (dic) free(dic);
 	if (wordchars) free(wordchars);
 	if (wordchars_utf16_free) free(wordchars_utf16);
 #ifdef HAVE_ICONV
 	free_utf_tbl();
 #endif
-        for (int i = 0; i < dmax; i++) delete pMS[i];
+	for (int i = 0; i < dmax; i++) delete pMS[i];
 	return 0;
 }
