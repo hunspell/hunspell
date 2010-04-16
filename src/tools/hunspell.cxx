@@ -830,21 +830,39 @@ int expand_tab(char * dest, char * src, int limit) {
 	return chpos;
 }
 
-// UTF-8 version of strncpy (but output is always null terminated)
-char * strncpyu8(char * dest, const char * src, int begin, size_t n) {
-        int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
-        for (int i = 0; i <= begin + n;) {
-            if (!u8 || (*src & 0xc0) != 0x80) i++;
-            if (i >= begin && i <= begin + n) {
-                if (*src) {
-                    *dest = *src;
-                    src++;
-                } else *dest = '\0';
-                dest++;
-            }
-        }
-        if (n) *(dest - 1) = '\0'; else *dest = '\0';
-        return dest;
+// UTF-8-aware version of strncpy (but output is always null terminated)
+// What we should deal in is cursor position cells in a terminal emulator,
+// i.e. the number of visual columns occupied like wcwidth/wcswidth does
+// What we're really current doing is to deal in the number of characters,
+// like mbstowcs which isn't quite correct, but close enough for western
+// text in UTF-8
+void strncpyu8(char * dest, const char * src, int begin, int n) {
+	int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
+	int i = 0;
+	while (i < begin + n) {
+		if (i >= begin)
+		{
+			if (!*src)
+				break;
+			*dest++ = *src;
+		}
+		if (!u8 || (*src & 0xc0) != 0x80)
+			i++;
+		++src;
+	}
+	*dest = '\0';
+}
+
+//See strncpyu8 for gotchas
+int strlenu8(const char * src) {
+	int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
+	int i = 0;
+	while (*src) {
+		if (!u8 || (*src & 0xc0) != 0x80)
+			i++;
+		++src;
+	}
+	return i;
 }
 
 void dialogscreen(TextParser * parser, char * token,
@@ -886,11 +904,12 @@ void dialogscreen(TextParser * parser, char * token,
 		rowindex--;
 		if (rowindex == -1) {
 			prevline++;
-			rowindex = strlen(lines[prevline]) / x;
+			rowindex = strlenu8(lines[prevline]) / x;
 		}
 	}
 
-	strncpyu8(line, lines[0], x * rowindex, (tokenbeg + 1) % x);
+	int linestartpos = tokenbeg - (tokenbeg % x);
+	strncpyu8(line, lines[0], x * rowindex + linestartpos, tokenbeg % x);
 	mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line);
 	attron(A_REVERSE);    
 	printw("%s", chenc(token, io_enc, ui_enc));

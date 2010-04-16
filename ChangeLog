@@ -1,5 +1,6 @@
 2010-04-16 Caolán McNamara <cmc at OOo>:
 	* hun#2344123 fix U)ncap in utf-8 locale
+	* fix up hunspell text UI and lines wider than terminal
 
 2010-04-15 Caolán McNamara <cmc at OOo>:
 	* hun#2613701 fix small leak in FileMgr::FileMgr
