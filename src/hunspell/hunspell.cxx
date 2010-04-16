@@ -1616,6 +1616,11 @@ int Hunspell::get_xml_par(char * dest, const char * par, int max)
    return (int)(d - dest);
 }
 
+int Hunspell::get_langnum() const
+{
+   return langnum;
+}
+
 // return the beginning of the element (attr == NULL) or the attribute
 const char * Hunspell::get_xml_pos(const char * s, const char * attr)
 {

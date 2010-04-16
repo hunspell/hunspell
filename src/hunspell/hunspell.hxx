@@ -132,6 +132,8 @@ public:
 
   struct cs_info * get_csconv();
   const char * get_version();
+
+  int get_langnum() const;
   
   /* experimental and deprecated functions */
 

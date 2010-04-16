@@ -911,6 +911,27 @@ void dialogscreen(TextParser * parser, char * token,
 		gettext("\n[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"));
 }
 
+char * lower_first_char(char *token, const char *ui_enc, int langnum)
+{
+	const char *utf8str = chenc(token, ui_enc, "UTF-8");
+	int max = strlen(utf8str);
+	w_char *u = new w_char[max];
+	int len = u8_u16(u, max, utf8str);
+	unsigned short idx = (u[0].h << 8) + u[0].l;
+	idx = unicodetolower(idx, langnum);
+	u[0].h = (unsigned char) (idx >> 8);
+	u[0].l = (unsigned char) (idx & 0x00FF);
+	char *scratch = (char*)malloc(max + 1 + 4);
+	u16_u8(scratch, max+4, u, len);
+	delete[] u;
+	char *result = chenc(scratch, "UTF-8", ui_enc);
+	if (result != scratch)
+	{
+		free (scratch);
+		result = mystrdup(result);
+	}
+	return result;
+}
 
  // for terminal interface
 int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
@@ -1014,17 +1035,14 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		
 		return 2; // replace
 	    }
-/* TRANSLATORS: translate this letter according to the shortcut letter used
-   previously in the  translation of "U)ncap" before */
-	    if (c==(gettext("u"))[0]) {
-		*token = (pMS->get_csconv())[int(*token)].clower;
-	    }
-/* TRANSLATORS: translate this letter according to the shortcut letter used
+/* TRANSLATORS: translate these letters according to the shortcut letter used
    previously in the  translation of "U)ncap" and I)nsert before */
-	    if ((c==(gettext("u"))[0]) || (c==(gettext("i"))[0])) {
-		struct wordlist* i = 
-		    (struct wordlist *) malloc (sizeof(struct wordlist));
-    		i->word = mystrdup(token);
+	    int u_key = gettext("u")[0];
+	    int i_key = gettext("i")[0];
+
+	    if (c==u_key || c==i_key) {
+		struct wordlist* i = (struct wordlist *) malloc (sizeof(struct wordlist));
+    		i->word = (c==i_key) ? mystrdup(token) : lower_first_char(token, ui_enc, pMS->get_langnum());
 		i->next = dicwords;
 		dicwords = i;
 		// save
