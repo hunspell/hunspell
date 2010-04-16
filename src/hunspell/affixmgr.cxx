@@ -272,9 +272,9 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* remove byte order mark */
        if (firstline) {
          firstline = 0;
+         // Affix file begins with byte order mark: possible incompatibility with old Hunspell versions
          if (strncmp(line,"\xEF\xBB\xBF",3) == 0) {
             memmove(line, line+3, strlen(line+3)+1);
-            HUNSPELL_WARNING(stderr, "warning: affix file begins with byte order mark: possible incompatibility with old Hunspell versions\n");
          }
        }
 
