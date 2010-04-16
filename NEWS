@@ -1,3 +1,5 @@
+2010-04-0x: Hunspell 1.2.10 release:
+  - Maintenance release bug fixes
 2010-03-0x: Hunspell 1.2.9 release:
   - Maintenance release bug fixes and warnings
   - MAP support for composed characters or character sequences

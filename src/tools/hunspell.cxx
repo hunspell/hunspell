@@ -930,9 +930,9 @@ void dialogscreen(TextParser * parser, char * token,
 		gettext("\n[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"));
 }
 
-char * lower_first_char(char *token, const char *ui_enc, int langnum)
+char * lower_first_char(char *token, const char *io_enc, int langnum)
 {
-	const char *utf8str = chenc(token, ui_enc, "UTF-8");
+	const char *utf8str = chenc(token, io_enc, "UTF-8");
 	int max = strlen(utf8str);
 	w_char *u = new w_char[max];
 	int len = u8_u16(u, max, utf8str);
@@ -943,7 +943,7 @@ char * lower_first_char(char *token, const char *ui_enc, int langnum)
 	char *scratch = (char*)malloc(max + 1 + 4);
 	u16_u8(scratch, max+4, u, len);
 	delete[] u;
-	char *result = chenc(scratch, "UTF-8", ui_enc);
+	char *result = chenc(scratch, "UTF-8", io_enc);
 	if (result != scratch)
 	{
 		free (scratch);
@@ -1061,7 +1061,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 
 	    if (c==u_key || c==i_key) {
 		struct wordlist* i = (struct wordlist *) malloc (sizeof(struct wordlist));
-    		i->word = (c==i_key) ? mystrdup(token) : lower_first_char(token, ui_enc, pMS->get_langnum());
+    		i->word = (c==i_key) ? mystrdup(token) : lower_first_char(token, io_enc, pMS->get_langnum());
 		i->next = dicwords;
 		dicwords = i;
 		// save
