@@ -389,6 +389,8 @@ void log(char * message)
 int putdic(char * word, Hunspell * pMS)
 {
     char * w;
+
+    word = chenc(word, ui_enc, dic_enc[0]);
     
     if (((w = strstr(word + 1, "/")) == NULL)) {
         if (*word == '*') return pMS->remove(word + 1);
@@ -443,9 +445,10 @@ int save_privdic(char * filename, char * filename2, wordlist * w)
     }
     if (! dic) return 0;
     while (w != NULL) {
-	fprintf(dic,"%s\n",w->word);
+	char *word = chenc(w->word, io_enc, ui_enc);
+	fprintf(dic,"%s\n",word);
 #ifdef LOG
-	log(w->word);log("\n");
+	log(word);log("\n");
 #endif
 	r = w;
 	free(w->word);
