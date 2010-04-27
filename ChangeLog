@@ -3,6 +3,7 @@
 	* moz#430900 phone is dereferenced before oom check
 	* moz#418348 ckey_utf alloc is used unchecked in SuggestMgr::badcharkey_utf
 	* CID#1487 pointer "rl" dereferenced before NULL check
+	* CID#1464 Returned without freeing storage "ptr"
 
 2010-04-16 Caolán McNamara <cmc at OOo>:
 	* hun#2344123 fix U)ncap in utf-8 locale

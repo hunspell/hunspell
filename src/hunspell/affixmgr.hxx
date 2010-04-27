@@ -218,7 +218,7 @@ private:
   void reverse_condition(char *);
   void debugflag(char * result, unsigned short flag);
   int condlen(char *);
-  int encodeit(struct affentry * ptr, char * cs);
+  int encodeit(affentry &entry, char * cs);
   int build_pfxtree(PfxEntry* pfxptr);
   int build_sfxtree(SfxEntry* sfxptr);
   int process_pfx_order();

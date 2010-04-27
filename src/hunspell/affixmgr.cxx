@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <vector>
+
 #include "affixmgr.hxx"
 #include "affentry.hxx"
 #include "langnum.hxx"
@@ -1014,20 +1016,20 @@ int AffixMgr::condlen(char * st)
   return l;
 }
 
-int AffixMgr::encodeit(struct affentry * ptr, char * cs)
+int AffixMgr::encodeit(affentry &entry, char * cs)
 {
   if (strcmp(cs,".") != 0) {
-    ptr->numconds = (char) condlen(cs);
-    strncpy(ptr->c.conds, cs, MAXCONDLEN);
+    entry.numconds = (char) condlen(cs);
+    strncpy(entry.c.conds, cs, MAXCONDLEN);
     // long condition (end of conds padded by strncpy)
-    if (ptr->c.conds[MAXCONDLEN - 1] && cs[MAXCONDLEN]) {
-      ptr->opts += aeLONGCOND;
-      ptr->c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
-      if (!ptr->c.l.conds2) return 1;
+    if (entry.c.conds[MAXCONDLEN - 1] && cs[MAXCONDLEN]) {
+      entry.opts += aeLONGCOND;
+      entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
+      if (!entry.c.l.conds2) return 1;
     }
   } else {
-    ptr->numconds = 0;
-    ptr->c.conds[0] = '\0';
+    entry.numconds = 0;
+    entry.c.conds[0] = '\0';
   }
   return 0;
 }
@@ -3981,8 +3983,7 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
    unsigned short aflag = 0;      // affix char identifier
 
    char ff=0;
-   struct affentry * ptr= NULL;
-   struct affentry * nptr= NULL;
+   std::vector<affentry> affentries;
 
    char * tp = line;
    char * nl = line;
@@ -4034,13 +4035,12 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                            }
                            return 1;
                        }
-                       ptr = (struct affentry *) malloc(numents * sizeof(struct affentry));
-                       if (!ptr) return 1;
-                       ptr->opts = ff;
-                       if (utf8) ptr->opts += aeUTF8;
-                       if (pHMgr->is_aliasf()) ptr->opts += aeALIASF;
-                       if (pHMgr->is_aliasm()) ptr->opts += aeALIASM;
-                       ptr->aflag = aflag;
+                       affentries.resize(numents);
+                       affentries[0].opts = ff;
+                       if (utf8) affentries[0].opts += aeUTF8;
+                       if (pHMgr->is_aliasf()) affentries[0].opts += aeALIASF;
+                       if (pHMgr->is_aliasm()) affentries[0].opts += aeALIASM;
+                       affentries[0].aflag = aflag;
                      }
 
              default: break;
@@ -4056,15 +4056,13 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
             HUNSPELL_WARNING(stderr, "error: line %d: missing data\n", af->getlinenum());
             free(err);
        }
-       free(ptr);
        return 1;
    }
  
-   // store away ptr to first affentry
-   nptr = ptr;
-
    // now parse numents affentries for this affix
-   for (int j=0; j < numents; j++) {
+   std::vector<affentry>::iterator start = affentries.begin();
+   std::vector<affentry>::iterator end = affentries.end();
+   for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
       if (!(nl = af->getline())) return 1;
       mychomp(nl);
       tp = nl;
@@ -4079,7 +4077,7 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                 // piece 1 - is type
                 case 0: { 
                           np++;
-                          if (nptr != ptr) nptr->opts = ptr->opts &
+                          if (entry != start) entry->opts = start->opts &
                              (char) (aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM);
                           break;
                         }
@@ -4097,7 +4095,7 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                               return 1;
                           }
 
-                          if (nptr != ptr) nptr->aflag = ptr->aflag;
+                          if (entry != start) entry->aflag = start->aflag;
                           break;
                         }
 
@@ -4107,12 +4105,12 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                           if (complexprefixes) {
                             if (utf8) reverseword_utf(piece); else reverseword(piece);
                           }
-                          nptr->strip = mystrdup(piece);
-                          nptr->stripl = (unsigned char) strlen(nptr->strip);
-                          if (strcmp(nptr->strip,"0") == 0) {
-                              free(nptr->strip);
-                              nptr->strip=mystrdup("");
-                              nptr->stripl = 0;
+                          entry->strip = mystrdup(piece);
+                          entry->stripl = (unsigned char) strlen(entry->strip);
+                          if (strcmp(entry->strip,"0") == 0) {
+                              free(entry->strip);
+                              entry->strip=mystrdup("");
+                              entry->stripl = 0;
                           }   
                           break; 
                         }
@@ -4120,9 +4118,9 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                 // piece 4 - is affix string or 0 for null
                 case 3: { 
                           char * dash;  
-                          nptr->morphcode = NULL;
-                          nptr->contclass = NULL;
-                          nptr->contclasslen = 0;
+                          entry->morphcode = NULL;
+                          entry->contclass = NULL;
+                          entry->contclasslen = 0;
                           np++;
                           dash = strchr(piece, '/');
                           if (dash) {
@@ -4139,21 +4137,21 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                             if (complexprefixes) {
                                 if (utf8) reverseword_utf(piece); else reverseword(piece);
                             }
-                            nptr->appnd = mystrdup(piece);
+                            entry->appnd = mystrdup(piece);
 
                             if (pHMgr->is_aliasf()) {
                                 int index = atoi(dash + 1);
-                                nptr->contclasslen = (unsigned short) pHMgr->get_aliasf(index, &(nptr->contclass), af);
-                                if (!nptr->contclasslen) HUNSPELL_WARNING(stderr, "error: bad affix flag alias: \"%s\"\n", dash+1);
+                                entry->contclasslen = (unsigned short) pHMgr->get_aliasf(index, &(entry->contclass), af);
+                                if (!entry->contclasslen) HUNSPELL_WARNING(stderr, "error: bad affix flag alias: \"%s\"\n", dash+1);
                             } else {
-                                nptr->contclasslen = (unsigned short) pHMgr->decode_flags(&(nptr->contclass), dash + 1, af);
-                                flag_qsort(nptr->contclass, 0, nptr->contclasslen);
+                                entry->contclasslen = (unsigned short) pHMgr->decode_flags(&(entry->contclass), dash + 1, af);
+                                flag_qsort(entry->contclass, 0, entry->contclasslen);
                             }
                             *dash = '/';
 
                             havecontclass = 1;
-                            for (unsigned short _i = 0; _i < nptr->contclasslen; _i++) {
-                              contclasses[(nptr->contclass)[_i]] = 1;
+                            for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
+                              contclasses[(entry->contclass)[_i]] = 1;
                             }
                           } else {
                             if (ignorechars) {
@@ -4167,14 +4165,14 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                             if (complexprefixes) {
                                 if (utf8) reverseword_utf(piece); else reverseword(piece);
                             }
-                            nptr->appnd = mystrdup(piece);
+                            entry->appnd = mystrdup(piece);
                           }
 
-                          nptr->appndl = (unsigned char) strlen(nptr->appnd);
-                          if (strcmp(nptr->appnd,"0") == 0) {
-                              free(nptr->appnd);
-                              nptr->appnd=mystrdup("");
-                              nptr->appndl = 0;
+                          entry->appndl = (unsigned char) strlen(entry->appnd);
+                          if (strcmp(entry->appnd,"0") == 0) {
+                              free(entry->appnd);
+                              entry->appnd=mystrdup("");
+                              entry->appndl = 0;
                           }   
                           break; 
                         }
@@ -4186,14 +4184,14 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                             if (utf8) reverseword_utf(piece); else reverseword(piece);
                             reverse_condition(piece);
                           }
-                          if (nptr->stripl && (strcmp(piece, ".") != 0) &&
-                            redundant_condition(at, nptr->strip, nptr->stripl, piece, af->getlinenum()))
+                          if (entry->stripl && (strcmp(piece, ".") != 0) &&
+                            redundant_condition(at, entry->strip, entry->stripl, piece, af->getlinenum()))
                                 strcpy(piece, ".");
                           if (at == 'S') {
                             reverseword(piece);
                             reverse_condition(piece);
                           }
-                          if (encodeit(nptr, piece)) return 1;
+                          if (encodeit(*entry, piece)) return 1;
                          break;
                 }
 
@@ -4201,7 +4199,7 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                           np++;
                           if (pHMgr->is_aliasm()) {
                             int index = atoi(piece);
-                            nptr->morphcode = pHMgr->get_aliasm(index);
+                            entry->morphcode = pHMgr->get_aliasm(index);
                           } else {
                             if (complexprefixes) { // XXX - fix me for morph. gen.
                                 if (utf8) reverseword_utf(piece); else reverseword(piece);
@@ -4211,8 +4209,8 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                                 *(tp - 1) = ' ';
                                 tp = tp + strlen(tp);
                             }
-                            nptr->morphcode = mystrdup(piece);
-                            if (!nptr->morphcode) return 1;
+                            entry->morphcode = mystrdup(piece);
+                            if (!entry->morphcode) return 1;
                           }
                           break; 
                 }
@@ -4230,37 +4228,32 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
                 af->getlinenum(), err);
             free(err);
           }
-          free(ptr);
           return 1;
       }
 
 #ifdef DEBUG
       // detect unnecessary fields, excepting comments
       if (basefieldnum) {
-        int fieldnum = !(nptr->morphcode) ? 5 : ((*(nptr->morphcode)=='#') ? 5 : 6);
+        int fieldnum = !(entry->morphcode) ? 5 : ((*(entry->morphcode)=='#') ? 5 : 6);
           if (fieldnum != basefieldnum) 
             HUNSPELL_WARNING(stderr, "warning: line %d: bad field number\n", af->getlinenum());
       } else {
-        basefieldnum = !(nptr->morphcode) ? 5 : ((*(nptr->morphcode)=='#') ? 5 : 6);
+        basefieldnum = !(entry->morphcode) ? 5 : ((*(entry->morphcode)=='#') ? 5 : 6);
       }
 #endif
-      nptr++;
    }
  
    // now create SfxEntry or PfxEntry objects and use links to
    // build an ordered (sorted by affix string) list
-   nptr = ptr;
-   for (int k = 0; k < numents; k++) {
+   for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
       if (at == 'P') {
-          PfxEntry * pfxptr = new PfxEntry(this,nptr);
+          PfxEntry * pfxptr = new PfxEntry(this,&(*entry));
           build_pfxtree(pfxptr);
       } else {
-          SfxEntry * sfxptr = new SfxEntry(this,nptr);
+          SfxEntry * sfxptr = new SfxEntry(this,&(*entry));
           build_sfxtree(sfxptr); 
       }
-      nptr++;
    }
-   free(ptr);
    return 0;
 }
 
