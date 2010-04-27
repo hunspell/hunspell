@@ -23,6 +23,7 @@ Hunzip::Hunzip(const char * file, const char * key) {
     inc = 0;
     outc = 0;
     dec = NULL;
+    fin = NULL;
     filename = (char *) malloc(strlen(file) + 1);
     if (filename) strcpy(filename, file);
     if (getcode(key) == -1) bufsiz = -1;
@@ -34,6 +35,8 @@ int Hunzip::getcode(const char * key) {
     int i, j, n, p;
     int allocatedbit = BASEBITREC;
     const char * enc = key;
+
+    if (!filename) return -1;
 
     fin = fopen(filename, "rb");
     if (!fin) return -1;
