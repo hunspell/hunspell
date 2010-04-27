@@ -8,6 +8,7 @@
 	* CID#1443 Avoid any chance of dereferencing *slst
 	* CID#1442 Unsafe to have a null morph
 	* CID#1440 Avoid null filenames
+	* CID#1302 Dereferencing NULL value "apostrophe"
 
 2010-04-16 Caolán McNamara <cmc at OOo>:
 	* hun#2344123 fix U)ncap in utf-8 locale

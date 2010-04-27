@@ -390,21 +390,24 @@ int Hunspell::spell(const char * word, int * info, char ** root)
 	    // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
             if (pAMgr && strchr(cw, '\'')) {
                 wl = mkallsmall2(cw, unicw, nc);
-        	char * apostrophe = strchr(cw, '\'');
-                if (utf8) {
-            	    w_char tmpword[MAXWORDLEN];
-            	    *apostrophe = '\0';
-            	    wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
-            	    *apostrophe = '\'';
-		    if (wl2 < nc) {
-		        mkinitcap2(apostrophe + 1, unicw + wl2 + 1, nc - wl2 - 1);
-			rv = checkword(cw, info, root);
-			if (rv) break;
+        	//There are no really sane circumstances where this could fail,
+        	//but anyway...
+        	if (char * apostrophe = strchr(cw, '\'')) {
+                    if (utf8) {
+            	        w_char tmpword[MAXWORDLEN];
+            	        *apostrophe = '\0';
+            	        wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
+            	        *apostrophe = '\'';
+		        if (wl2 < nc) {
+		            mkinitcap2(apostrophe + 1, unicw + wl2 + 1, nc - wl2 - 1);
+			    rv = checkword(cw, info, root);
+			    if (rv) break;
+		        }
+                    } else {
+		        mkinitcap2(apostrophe + 1, unicw, nc);
+		        rv = checkword(cw, info, root);
+		        if (rv) break;
 		    }
-                } else {
-		    mkinitcap2(apostrophe + 1, unicw, nc);
-		    rv = checkword(cw, info, root);
-		    if (rv) break;
 		}
 		mkinitcap2(cw, unicw, nc);
 		rv = checkword(cw, info, root);
