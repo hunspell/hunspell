@@ -56,6 +56,7 @@ SuggestMgr::SuggestMgr(const char * tryme, int maxn,
         ckeyl = u8_u16(t, MAXSWL, ckey);
         ckey_utf = (w_char *) malloc(ckeyl * sizeof(w_char));
         if (ckey_utf) memcpy(ckey_utf, t, ckeyl * sizeof(w_char));
+        else ckeyl = 0;
     } else {
         ckeyl = strlen(ckey);
     }
