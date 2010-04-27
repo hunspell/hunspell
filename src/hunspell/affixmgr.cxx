@@ -3506,16 +3506,20 @@ int  AffixMgr::parse_phonetable(char * line, FileMgr * af)
              case 0: { np++; break; }
              case 1: { 
                        phone = (phonetable *) malloc(sizeof(struct phonetable));
+                       if (!phone) return 1;
                        phone->num = atoi(piece);
                        phone->rules = NULL;
                        phone->utf8 = (char) utf8;
-                       if (!phone) return 1;
                        if (phone->num < 1) {
                           HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n", af->getlinenum());
                           return 1;
                        }
                        phone->rules = (char * *) malloc(2 * (phone->num + 1) * sizeof(char *));
-                       if (!phone->rules) return 1;
+                       if (!phone->rules) {
+                          free(phone);
+                          phone = NULL;
+                          return 1;
+                       }
                        np++;
                        break;
                      }
