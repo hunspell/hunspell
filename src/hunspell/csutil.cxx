@@ -5175,7 +5175,7 @@ struct cs_info * get_current_cs(const char * es) {
   if (NS_FAILED(rv))
     return nsnull;
 
-  ccs = (struct cs_info *) malloc(256 * sizeof(cs_info));
+  ccs = new cs_info[256];
 
   PRInt32 charLength = 256;
   PRInt32 uniLength = 512;
@@ -5237,7 +5237,7 @@ char * get_casechars(const char * enc) {
     }
     *p = '\0';
 #ifdef MOZILLA_CLIENT
-    delete csconv;
+    delete [] csconv;
 #endif
     return mystrdup(expw);
 }

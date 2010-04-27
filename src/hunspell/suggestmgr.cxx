@@ -20,6 +20,8 @@ SuggestMgr::SuggestMgr(const char * tryme, int maxn,
   // try when building candidate suggestions
   pAMgr = aptr;
 
+  csconv = NULL;
+
   ckeyl = 0;
   ckey = NULL;
   ckey_utf = NULL;
@@ -87,6 +89,9 @@ SuggestMgr::~SuggestMgr()
   ctry_utf = NULL;
   ctryl = 0;
   maxSug = 0;
+#ifdef MOZILLA_CLIENT
+  delete [] csconv;
+#endif
 }
 
 int SuggestMgr::testsug(char** wlst, const char * candidate, int wl, int ns, int cpdsuggest,

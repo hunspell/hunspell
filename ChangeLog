@@ -1,3 +1,6 @@
+2010-04-27 Caolán McNamara <cmc at OOo>:
+	* moz#465612 mozilla-specific code leaks
+
 2010-04-16 Caolán McNamara <cmc at OOo>:
 	* hun#2344123 fix U)ncap in utf-8 locale
 	* fix up hunspell text UI and lines wider than terminal

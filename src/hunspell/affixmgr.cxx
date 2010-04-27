@@ -21,6 +21,7 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   keystring = NULL;
   trystring = NULL;
   encoding=NULL;
+  csconv=NULL;
   utf8 = 0;
   complexprefixes = 0;
   maptable = NULL;
@@ -111,7 +112,6 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
 
 AffixMgr::~AffixMgr() 
 {
- 
   // pass through linked prefix entries and clean up
   for (int i=0; i < SETSIZE ;i++) {
        pFlag[i] = NULL;
@@ -238,6 +238,9 @@ AffixMgr::~AffixMgr()
   if (ignorechars_utf16) free(ignorechars_utf16);
   if (version) free(version);
   checknum=0;
+#ifdef MOZILLA_CLIENT
+  delete [] csconv;
+#endif
 }
 
 

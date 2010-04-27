@@ -90,6 +90,10 @@ HashMgr::~HashMgr()
   
   if (ignorechars) free(ignorechars);
   if (ignorechars_utf16) free(ignorechars_utf16);
+
+#ifdef MOZILLA_CLIENT
+    delete [] csconv;
+#endif
 }
 
 // lookup a root word in the hashtable
