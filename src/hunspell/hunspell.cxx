@@ -816,7 +816,7 @@ int Hunspell::suggest(char*** slst, const char * word)
   // END OF LANG_hu section
 
   // try ngram approach since found nothing
-  if ((ns == 0 || onlycmpdsug) && pAMgr && (pAMgr->get_maxngramsugs() != 0)) {
+  if ((ns == 0 || onlycmpdsug) && pAMgr && (pAMgr->get_maxngramsugs() != 0) && (*slst)) {
       switch(captype) {
           case NOCAP: {
               ns = pSMgr->ngsuggest(*slst, cw, ns, pHMgr, maxdic);
@@ -856,8 +856,10 @@ int Hunspell::suggest(char*** slst, const char * word)
      char ** nlst = NULL;
      int nn = 0;
      int last = 0;
-     for (int j = 0; j < ns && nodashsug == 1; j++) {
-        if (strchr((*slst)[j], '-')) nodashsug = 0;
+     if (*slst) {
+        for (int j = 0; j < ns && nodashsug == 1; j++) {
+           if (strchr((*slst)[j], '-')) nodashsug = 0;
+        }
      }
      while (nodashsug && !last) {
 	if (*pos == '\0') last = 1; else *pos = '\0';
