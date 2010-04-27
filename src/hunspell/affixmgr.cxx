@@ -2799,7 +2799,7 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
     char * stemmorphcatpos;
     char mymorph[MAXLNLEN];
 
-    if (!morph && !targetmorph) return NULL;
+    if (!morph) return NULL;
 
     // check substandard flag
     if (TESTAFF(ap, substandard, al)) return NULL;

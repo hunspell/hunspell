@@ -6,6 +6,7 @@
 	* CID#1464 Returned without freeing storage "ptr"
 	* CID#1459 Avoid duplicate strchr
 	* CID#1443 Avoid any chance of dereferencing *slst
+	* CID#1442 Unsafe to have a null morph
 
 2010-04-16 Caolán McNamara <cmc at OOo>:
 	* hun#2344123 fix U)ncap in utf-8 locale
