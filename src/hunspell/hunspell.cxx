@@ -850,8 +850,7 @@ int Hunspell::suggest(char*** slst, const char * word)
   }
 
   // try dash suggestion (Afo-American -> Afro-American)
-  if (strchr(cw, '-')) {
-     char * pos = strchr(cw, '-');
+  if (char * pos = strchr(cw, '-')) {
      char * ppos = cw;
      int nodashsug = 1;
      char ** nlst = NULL;
