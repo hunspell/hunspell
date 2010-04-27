@@ -3430,7 +3430,7 @@ int  AffixMgr::parse_convtable(char * line, FileMgr * af, RepList ** rl, const c
                           return 1;
                        }
                        *rl = new RepList(numrl);
-                       if (!rl) return 1;
+                       if (!*rl) return 1;
                        np++;
                        break;
                      }
