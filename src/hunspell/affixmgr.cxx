@@ -2626,7 +2626,7 @@ char * AffixMgr::suffix_check_morph(const char * word, int len,
                        ep->getContLen())))
               )
             ))
-            rv = se->checkword(word,len, sfxopts, ppfx, NULL, 0, 0, cclass, needflag);
+            rv = se->checkword(word, len, sfxopts, ppfx, NULL, 0, 0, cclass, needflag);
          while (rv) {
            if (ppfx) {
                 if (ppfx->getMorph()) {

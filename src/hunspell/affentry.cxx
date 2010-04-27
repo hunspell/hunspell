@@ -619,9 +619,9 @@ struct hentry * SfxEntry::checkword(const char * word, int len, int optflags,
                         if ((TESTAFF(he->astr, aflag, he->alen) || (ep && ep->getCont() &&
                                     TESTAFF(ep->getCont(), aflag, ep->getContLen()))) &&
                             (((optflags & aeXPRODUCT) == 0) ||
-                            TESTAFF(he->astr, ep->getFlag(), he->alen) ||
+                            (ep && TESTAFF(he->astr, ep->getFlag(), he->alen)) ||
                              // enabled by prefix
-                            ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
+                            ((contclass) && (ep && TESTAFF(contclass, ep->getFlag(), contclasslen)))
                             ) &&
                             // handle cont. class
                             ((!cclass) ||
