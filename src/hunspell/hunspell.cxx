@@ -1657,7 +1657,10 @@ int Hunspell::get_xml_list(char ***slst, char * list, const char * tag) {
         int l = strlen(p);
         (*slst)[n] = (char *) malloc(l + 1);
         if (!(*slst)[n]) return (n > 0 ? n - 1 : 0);
-        get_xml_par((*slst)[n], p + strlen(tag) - 1, l);
+        if (!get_xml_par((*slst)[n], p + strlen(tag) - 1, l)) {
+            free((*slst)[n]);
+            break;
+        }
     }
     return n;
 }

@@ -1,3 +1,6 @@
+2010-04-28 Caolán McNamara <cmc at OOo>:
+	* moz#550942 get_xml_list doesn't handle failure from get_xml_par
+
 2010-04-27 Caolán McNamara <cmc at OOo>:
 	* moz#465612 mozilla-specific code leaks
 	* moz#430900 phone is dereferenced before oom check
