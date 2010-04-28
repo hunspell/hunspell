@@ -628,7 +628,7 @@ void add_affix_char(struct hentry * ep, char ac)
   int i;
   char * tmp;
   if (ep->affstr == NULL) {
-     ep->affstr = (char *) malloc(2*sizeof(char));
+     ep->affstr = (char *) malloc(2);
      *(ep->affstr) = ac;
      *((ep->affstr)+1) = '\0';
      return;
@@ -636,7 +636,7 @@ void add_affix_char(struct hentry * ep, char ac)
   al = strlen(ep->affstr);
   for (i=0; i< al; i++)
     if (ac == (ep->affstr)[i]) return;
-  tmp = calloc((al+2),sizeof(char));
+  tmp = calloc(al+2,1);
   memcpy(tmp,ep->affstr,(al+1));
   *(tmp+al) = ac;
   *(tmp+al+1)='\0';

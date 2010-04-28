@@ -37,7 +37,7 @@ void code2table(struct item * tree, char **table, char * code, int deep) {
     int first = 0;
     if (!code) {
         first = 1;
-        code = malloc(sizeof(char) * CODELEN);
+        code = malloc(CODELEN);
     }
     code[deep] = '1';
     if (tree->left) code2table(tree->left, table, code, deep + 1);
@@ -45,7 +45,7 @@ void code2table(struct item * tree, char **table, char * code, int deep) {
         int i = tree->word;
         code[deep] = '\0';
         if (tree->type == code_TERM) i = CODELEN; /* terminal code */
-        table[i] = malloc((deep + 1) * sizeof(char));
+        table[i] = malloc(deep + 1);
 	strcpy(table[i], code);
     }        
     code[deep] = '0';
@@ -124,7 +124,7 @@ int write_bits(FILE *f, char * bitbuf, int *bits, char * code) {
         (*bits)++;
         code++;
         if (*bits == BUFSIZE * 8) {
-            if (BUFSIZE != fwrite(bitbuf, sizeof(char), BUFSIZE, f))
+            if (BUFSIZE != fwrite(bitbuf, 1, BUFSIZE, f))
                 return 1;
             *bits = 0;
         }
@@ -182,7 +182,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
         } else
             fprintf(f2, "%c", (unsigned char) bits); /* 1-byte code length */
         nmemb = bits/8 + 1;
-        if (fwrite(bitbuf, sizeof(char), bits/8 + 1, f2) != nmemb)   /* x-byte code */
+        if (fwrite(bitbuf, 1, bits/8 + 1, f2) != nmemb)   /* x-byte code */
             return 1;
     }
 
@@ -200,7 +200,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     if (bits > 0)
     {
         int nmemb = bits/8 + 1;
-        if (fwrite(bitbuf, sizeof(char), nmemb, f2) != nmemb)
+        if (fwrite(bitbuf, 1, nmemb, f2) != nmemb)
             return 1;
     }
     return 0;

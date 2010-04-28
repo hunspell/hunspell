@@ -270,7 +270,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
      char * d = NULL;
      if (s) {
         int sl = strlen(s);
-        d = (char *) malloc((sl+1) * sizeof(char));
+        d = (char *) malloc(sl+1);
         if (d) {
           const char * p = s + sl - 1;
           char * q = d;
@@ -5179,10 +5179,10 @@ struct cs_info * get_current_cs(const char * es) {
 
   PRInt32 charLength = 256;
   PRInt32 uniLength = 512;
-  char *source = (char *)malloc(charLength * sizeof(char));
+  char *source = (char *)malloc(charLength);
   PRUnichar *uni = (PRUnichar *)malloc(uniLength * sizeof(PRUnichar));
-  char *lower = (char *)malloc(charLength * sizeof(char));
-  char *upper = (char *)malloc(charLength * sizeof(char));
+  char *lower = (char *)malloc(charLength);
+  char *upper = (char *)malloc(charLength);
 
   // Create a long string of all chars.
   unsigned int i;
