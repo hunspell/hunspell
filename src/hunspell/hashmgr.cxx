@@ -373,7 +373,7 @@ int HashMgr::load_tables(const char * tpath, const char * key)
   /* remove byte order mark */
   if (strncmp(ts,"\xEF\xBB\xBF",3) == 0) {
     memmove(ts, ts+3, strlen(ts+3)+1);
-    HUNSPELL_WARNING(stderr, "warning: dic file begins with byte order mark: possible incompatibility with old Hunspell versions\n");
+    // warning: dic file begins with byte order mark: possible incompatibility with old Hunspell versions
   }
 
   tablesize = atoi(ts);
