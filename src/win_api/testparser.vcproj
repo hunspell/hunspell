@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\hunspell;..\parsers;."
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="W32;WIN32;_DEBUG;_CONSOLE;HUNSPELL_STATIC;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -120,7 +120,7 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="..\hunspell;..\parsers;."
 				InlineFunctionExpansion="2"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="W32;WIN32;NDEBUG;_CONSOLE;HUNSPELL_STATIC;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
@@ -178,10 +178,6 @@
 		<Filter
 			Name="parsers"
 			>
-			<File
-				RelativePath=".\hunvisapi.h"
-				>
-			</File>
 			<File
 				RelativePath="..\parsers\firstparser.cxx"
 				>

@@ -179,10 +179,6 @@
 			Name="tools"
 			>
 			<File
-				RelativePath=".\hunvisapi.h"
-				>
-			</File>
-			<File
 				RelativePath="..\tools\hunspell.cxx"
 				>
 			</File>

@@ -239,8 +239,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = hunspelldll.h hunspelldll.c hunspelldll.dev README \
-		      config.h Hunspell.rc Hunspell.sln Makefile.cygwin \
-		      hunspell.vcproj libhunspell.vcproj testparser.vcproj
+	config.h Hunspell.rc Hunspell.sln Makefile.cygwin \
+	hunspell.vcproj libhunspell.vcproj testparser.vcproj
 
 all: all-am
 

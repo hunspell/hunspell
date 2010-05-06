@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: hunspell 1.2.10\n"
+"Project-Id-Version: hunspell 1.2.11\n"
 "Report-Msgid-Bugs-To: nemeth@openoffice.org\n"
-"POT-Creation-Date: 2010-04-16 16:09+0100\n"
+"POT-Creation-Date: 2010-05-06 11:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

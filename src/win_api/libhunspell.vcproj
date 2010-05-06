@@ -328,10 +328,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\hunvisapi.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Hunspell.rc"
 				>
 			</File>
