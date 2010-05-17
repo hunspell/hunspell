@@ -1,3 +1,7 @@
+2010-05-17 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: fix bad limitation of parenthesized flags at
+	  COMPOUNDRULEs. Windows crash reported by Ruud Baars and Simon Brouwer.
+
 2010-05-05 Caolán McNamara <cmc at OOo>:
 	* rhbz#589326 malloc of int that should have been of char**
 	* hun#2997388 fix ironic misspellings
