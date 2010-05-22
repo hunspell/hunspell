@@ -1,3 +1,6 @@
+2010-05-22 Caolán McNamara <cmc at OOo>:
+	* moz#525581 apply mozilla's current preferred get_current_cs impl
+
 2010-05-17 Németh László <nemeth at OOo>:
 	* affixmgr.cxx: fix bad limitation of parenthesized flags at
 	  COMPOUNDRULEs. Windows crash reported by Ruud Baars and Simon Brouwer.
