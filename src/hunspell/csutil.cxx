@@ -217,7 +217,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
       }
       if (dp) {
          *stringp = dp+1;
-         int nc = (int)((unsigned long)dp - (unsigned long)mp);
+         size_t nc = dp - mp;
          *(mp+nc) = '\0';
       } else {
          *stringp = mp + strlen(mp);
@@ -232,7 +232,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
  {
    char * d = NULL;
    if (s) {
-      int sl = strlen(s)+1;
+      size_t sl = strlen(s)+1;
       d = (char *) malloc(sl);
       if (d) {
          memcpy(d,s,sl);
@@ -258,7 +258,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
  // remove cross-platform text line end characters
  void mychomp(char * s)
  {
-   int k = strlen(s);
+   size_t k = strlen(s);
    if ((k > 0) && ((*(s+k-1)=='\r') || (*(s+k-1)=='\n'))) *(s+k-1) = '\0';
    if ((k > 1) && (*(s+k-2) == '\r')) *(s+k-2) = '\0';
  }
@@ -269,7 +269,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
  {
      char * d = NULL;
      if (s) {
-        int sl = strlen(s);
+        size_t sl = strlen(s);
         d = (char *) malloc(sl+1);
         if (d) {
           const char * p = s + sl - 1;
