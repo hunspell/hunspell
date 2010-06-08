@@ -217,8 +217,7 @@ int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
       }
       if (dp) {
          *stringp = dp+1;
-         size_t nc = dp - mp;
-         *(mp+nc) = '\0';
+         *dp = '\0';
       } else {
          *stringp = mp + strlen(mp);
       }
