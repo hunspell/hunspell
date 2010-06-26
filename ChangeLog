@@ -1,3 +1,7 @@
+2010-06-26 Caolán McNamara <cmc at OOo>:
+	* moz#571728 keep new[]/delete[] wrappers in sync for embedded in moz
+	case
+
 2010-06-13 Caolán McNamara <cmc at OOo>:
 	* moz#571728 keep new[]/delete[] wrappers in sync for embedded in moz
 	case
