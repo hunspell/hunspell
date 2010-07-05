@@ -378,7 +378,8 @@ morph.test \
 1975530.test \
 fullstrip.test \
 iconv.test \
-oconv.test
+oconv.test \
+korean.test
 
 EXTRA_DIST = \
 test.sh \
@@ -861,7 +862,12 @@ oconv.dic \
 oconv.good \
 oconv.sug \
 oconv.test \
-oconv.wrong
+oconv.wrong \
+korean.aff \
+korean.dic \
+korean.good \
+korean.wrong \
+korean.test
 
 all: all-recursive
 

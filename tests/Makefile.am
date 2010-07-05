@@ -100,7 +100,8 @@ morph.test \
 1975530.test \
 fullstrip.test \
 iconv.test \
-oconv.test
+oconv.test \
+korean.test
 # infixes.test
 
 distclean-local:
@@ -587,7 +588,12 @@ oconv.dic \
 oconv.good \
 oconv.sug \
 oconv.test \
-oconv.wrong
+oconv.wrong \
+korean.aff \
+korean.dic \
+korean.good \
+korean.wrong \
+korean.test
 # infixes.aff
 # infixes.dic
 # infixes.good
