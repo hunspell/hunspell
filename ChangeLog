@@ -1,3 +1,7 @@
+2010-07-17 Caolán McNamara <cmc at OOo>:
+	* remove ununsed get_default_enc and avoid potential misrecognition of
+	three letter language ids
+
 2010-07-05 Caolán McNamara <cmc at OOo>:
 	* hun#2286060 add Hangul syllables to unicode tables
 

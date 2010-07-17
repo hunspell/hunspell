@@ -10,6 +10,13 @@
 #include "atypes.hxx"
 #include "langnum.hxx"
 
+// Unicode character encoding information
+struct unicode_info {
+  unsigned short c;
+  unsigned short cupper;
+  unsigned short clower;
+};
+
 #ifdef OPENOFFICEORG
 #  include <unicode/uchar.h>
 #else
@@ -32,6 +39,12 @@
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 static NS_DEFINE_CID(kUnicharUtilCID, NS_UNICHARUTIL_CID);
 #endif
+
+struct unicode_info2 {
+  char cletter;
+  unsigned short cupper;
+  unsigned short clower;
+};
 
 static struct unicode_info2 * utf_tbl = NULL;
 static int utf_tbl_count = 0; // utf_tbl can be used by multiple Hunspell instances
@@ -5116,6 +5129,11 @@ static struct cs_info iscii_devanagari_tbl[] = {
 { 0x00, 0xff, 0xff }
 };
 
+struct enc_entry {
+  const char * enc_name;
+  struct cs_info * cs_table;
+};
+
 static struct enc_entry encds[] = {
 {"ISO8859-1",iso1_tbl},
 {"ISO8859-2",iso2_tbl},
@@ -5254,51 +5272,46 @@ char * get_casechars(const char * enc) {
     return mystrdup(expw);
 }
 
+// language to encoding default map
 
-
-static struct lang_map lang2enc[] = {
-{"ar", "UTF-8", LANG_ar},
-{"az", "UTF-8", LANG_az},
-{"bg", "microsoft-cp1251", LANG_bg},
-{"ca", "ISO8859-1", LANG_ca},
-{"cs", "ISO8859-2", LANG_cs},
-{"da", "ISO8859-1", LANG_da},
-{"de", "ISO8859-1", LANG_de},
-{"el", "ISO8859-7", LANG_el},
-{"en", "ISO8859-1", LANG_en},
-{"es", "ISO8859-1", LANG_es},
-{"eu", "ISO8859-1", LANG_eu},
-{"gl", "ISO8859-1", LANG_gl},
-{"fr", "ISO8859-15", LANG_fr},
-{"hr", "ISO8859-2", LANG_hr},
-{"hu", "ISO8859-2", LANG_hu},
-{"it", "ISO8859-1", LANG_it},
-{"la", "ISO8859-1", LANG_la},
-{"lv", "ISO8859-13", LANG_lv},
-{"nl", "ISO8859-1", LANG_nl},
-{"pl", "ISO8859-2", LANG_pl},
-{"pt", "ISO8859-1", LANG_pt},
-{"sv", "ISO8859-1", LANG_sv},
-{"tr", "UTF-8", LANG_tr},
-{"ru", "KOI8-R", LANG_ru},
-{"uk", "KOI8-U", LANG_uk}
+struct lang_map {
+  const char * lang;
+  int num;
 };
 
+static struct lang_map lang2enc[] = {
+{"ar", LANG_ar},
+{"az", LANG_az},
+{"bg", LANG_bg},
+{"ca", LANG_ca},
+{"cs", LANG_cs},
+{"da", LANG_da},
+{"de", LANG_de},
+{"el", LANG_el},
+{"en", LANG_en},
+{"es", LANG_es},
+{"eu", LANG_eu},
+{"gl", LANG_gl},
+{"fr", LANG_fr},
+{"hr", LANG_hr},
+{"hu", LANG_hu},
+{"it", LANG_it},
+{"la", LANG_la},
+{"lv", LANG_lv},
+{"nl", LANG_nl},
+{"pl", LANG_pl},
+{"pt", LANG_pt},
+{"sv", LANG_sv},
+{"tr", LANG_tr},
+{"ru", LANG_ru},
+{"uk", LANG_uk}
+};
 
-const char * get_default_enc(const char * lang) {
-  int n = sizeof(lang2enc) / sizeof(lang2enc[0]);
-  for (int i = 0; i < n; i++) {
-    if (strcmp(lang,lang2enc[i].lang) == 0) {
-      return lang2enc[i].def_enc;
-    }
-  }
-  return NULL;
-}
 
 int get_lang_num(const char * lang) {
   int n = sizeof(lang2enc) / sizeof(lang2enc[0]);
   for (int i = 0; i < n; i++) {
-    if (strncmp(lang,lang2enc[i].lang,2) == 0) {
+    if (strcmp(lang, lang2enc[i].lang) == 0) {
       return lang2enc[i].num;
     }
   }
