@@ -5135,34 +5135,72 @@ struct enc_entry {
 };
 
 static struct enc_entry encds[] = {
-{"ISO8859-1",iso1_tbl},
-{"ISO8859-2",iso2_tbl},
-{"ISO8859-3",iso3_tbl},
-{"ISO8859-4",iso4_tbl},
-{"ISO8859-5",iso5_tbl},
-{"ISO8859-6",iso6_tbl},
-{"ISO8859-7",iso7_tbl},
-{"ISO8859-8",iso8_tbl},
-{"ISO8859-9",iso9_tbl},
-{"ISO8859-10",iso10_tbl},
-{"KOI8-R",koi8r_tbl},
-{"KOI8-U",koi8u_tbl},
-{"microsoft-cp1251",cp1251_tbl},
-{"ISO8859-13", iso13_tbl},
-{"ISO8859-14", iso14_tbl},
-{"ISO8859-15", iso15_tbl},
-{"ISCII-DEVANAGARI", iscii_devanagari_tbl}
+  {"iso88591",iso1_tbl},                     //ISO-8859-1
+  {"iso88592",iso2_tbl},                     //ISO-8859-2
+  {"iso88593",iso3_tbl},                     //ISO-8859-3
+  {"iso88594",iso4_tbl},                     //ISO-8859-4
+  {"iso88595",iso5_tbl},                     //ISO-8859-5
+  {"iso88596",iso6_tbl},                     //ISO-8859-6
+  {"iso88597",iso7_tbl},                     //ISO-8859-7
+  {"iso88598",iso8_tbl},                     //ISO-8859-8
+  {"iso88599",iso9_tbl},                     //ISO-8859-9
+  {"iso885910",iso10_tbl},                   //ISO-8859-10
+  {"iso885913", iso13_tbl},                  //ISO-8859-13
+  {"iso885914", iso14_tbl},                  //ISO-8859-14
+  {"iso885915", iso15_tbl},                  //ISO-8859-15
+  {"koi8r",koi8r_tbl},                       //KOI8-R
+  {"koi8u",koi8u_tbl},                       //KOI8-U
+  {"cp1251",cp1251_tbl},                     //CP-1251
+  {"microsoftcp1251",cp1251_tbl},            //microsoft-cp1251
+  {"xisciias", iscii_devanagari_tbl},        //x-iscii-as
+  {"isciidevanagari", iscii_devanagari_tbl}  //ISCII-DEVANAGARI
 };
 
+/* map to lower case and remove non alphanumeric chars */
+static void toAsciiLowerAndRemoveNonAlphanumeric( const char* pName, char* pBuf )
+{
+    while ( *pName )
+    {
+        /* A-Z */
+        if ( (*pName >= 0x41) && (*pName <= 0x5A) )
+        {
+            *pBuf = (*pName)+0x20;  /* toAsciiLower */
+            pBuf++;
+        }
+        /* a-z, 0-9 */
+        else if ( ((*pName >= 0x61) && (*pName <= 0x7A)) ||
+                  ((*pName >= 0x30) && (*pName <= 0x39)) )
+        {
+            *pBuf = *pName;
+            pBuf++;
+        }
+
+        pName++;
+    }
+
+    *pBuf = '\0';
+}
+
 struct cs_info * get_current_cs(const char * es) {
-  struct cs_info * ccs = encds[0].cs_table;
+  char *normalized_encoding = new char[strlen(es)+1];
+  toAsciiLowerAndRemoveNonAlphanumeric(es, normalized_encoding);
+
+  struct cs_info * ccs = NULL;
   int n = sizeof(encds) / sizeof(encds[0]);
   for (int i = 0; i < n; i++) {
-    if (strcmp(es,encds[i].enc_name) == 0) {
+    if (strcmp(normalized_encoding,encds[i].enc_name) == 0) {
       ccs = encds[i].cs_table;
       break;
     }
   }
+
+  delete[] normalized_encoding;
+
+  if (!ccs) {
+    HUNSPELL_WARNING(stderr, "error: unknown encoding %s: using %s as fallback\n", es, encds[0].enc_name);
+    ccs = encds[0].cs_table;
+  }
+
   return ccs;
 }
 #else

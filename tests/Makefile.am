@@ -101,6 +101,7 @@ morph.test \
 fullstrip.test \
 iconv.test \
 oconv.test \
+encoding.test \
 korean.test
 # infixes.test
 
@@ -593,7 +594,11 @@ korean.aff \
 korean.dic \
 korean.good \
 korean.wrong \
-korean.test
+korean.test \
+encoding.aff \
+encoding.dic \
+encoding.good \
+encoding.test
 # infixes.aff
 # infixes.dic
 # infixes.good
