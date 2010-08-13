@@ -1,3 +1,7 @@
+2010-08-13 Caolán McNamara <cmc at OOo>:
+	* moz#586671 AffixMgr::parse_convtable leaks pattern/pattern2 if it
+	can't create both
+
 2010-08-10 Caolán McNamara <cmc at OOo>:
 	* hun#3022860 fix remove duplicate code
 
