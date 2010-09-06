@@ -191,9 +191,9 @@ LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry *h)
     if (!h->var)
         ret = NULL;
     else if (h->var & H_OPT_ALIASM)
-        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
     else 
-        ret = &(h->word[0]) + h->blen + 1;
+        ret = HENTRY_WORD(h) + h->blen + 1;
     return ret;
 }
 
@@ -204,9 +204,9 @@ LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA2(const struct hentry *h)
     if (!h->var)
         ret = "";
     else if (h->var & H_OPT_ALIASM)
-        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
     else
-        ret = &(h->word[0]) + h->blen + 1;
+        ret = HENTRY_WORD(h) + h->blen + 1;
     return ret;
 }
 
