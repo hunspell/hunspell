@@ -1,3 +1,16 @@
+2010-10-07 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: 
+	- hun#2970239 fix bad suggestion of forbidden compound words
+	- hun#2999224 fix keepcase feature on compound words (only partial
+	  fix for COMPOUNDRULE based compounding)
+	- fix checkcompoundrep feature in compound words (check also last
+	  but one boundary)
+	  Problems reported by Ruud Baars.
+	  
+	* tests/opentaal_forbiddenword[12]*, tests/opentaal_keepcase*:
+	  new test files for the previous fixes
+	* tests/checkcompoundrep: extended test file.
+
 2010-09-05 Caolán McNamara <cmc at OOo>:
 	* moz#583582 fix double buffer gcc fortify issue
 

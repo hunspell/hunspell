@@ -1462,6 +1462,7 @@ void AffixMgr::setcminmax(int * cmin, int * cmax, const char * word, int len) {
     }
 }
 
+
 // check if compound word is correctly spelled
 // hu_mov_rule = spec. Hungarian rule (XXX)
 struct hentry * AffixMgr::compound_check(const char * word, int len, 
@@ -1577,7 +1578,8 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
               ) checked_prefix = 1;
         // else check forbiddenwords and needaffix
         } else if (rv->astr && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
-            TESTAFF(rv->astr, needaffix, rv->alen) || 
+            TESTAFF(rv->astr, needaffix, rv->alen) ||
+            TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
             (is_sug && nosuggest && TESTAFF(rv->astr, nosuggest, rv->alen))
              )) {
                 st[i] = ch;
@@ -1619,6 +1621,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
 
         // check forbiddenwords
         if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
+            TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
             (is_sug && nosuggest && TESTAFF(rv->astr, nosuggest, rv->alen)))) {
                 return NULL;
             }
@@ -1728,6 +1731,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
 
             // check forbiddenwords
             if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
+                TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
                (is_sug && nosuggest && TESTAFF(rv->astr, nosuggest, rv->alen)))) return NULL;
 
             // second word is acceptable, as a root?
@@ -1800,6 +1804,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
 
             // check forbiddenwords
             if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
+                TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
                (is_sug && nosuggest && TESTAFF(rv->astr, nosuggest, rv->alen)))) return NULL;
 
             // pfxappnd = prefix of word+i, or NULL
@@ -1872,7 +1877,26 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             }
             if (rv) {
                 // forbid compound word, if it is a non compound word with typical fault
-                if (checkcompoundrep && cpdrep_check(word, len)) return NULL;
+                if (checkcompoundrep || forbiddenword) {
+                    struct hentry * rv2 = NULL;
+                    if (checkcompoundrep && cpdrep_check(word, len)) return NULL;
+                    // check first part
+                    if (strncmp(rv->word, word + i, rv->blen) == 0) {
+                        char r = *(st + i + rv->blen);
+                        *(st + i + rv->blen) = '\0';
+                        if (checkcompoundrep && cpdrep_check(st, i + rv->blen)) return NULL;
+                        if (forbiddenword) {
+                    	    rv2 = lookup(word);
+                    	    if (!rv2) rv2 = affix_check(word, len);
+                    	    if (rv2 && rv2->astr && TESTAFF(rv2->astr, forbiddenword, rv2->alen) && 
+                    		(strncmp(rv2->word, st, i + rv->blen) == 0)) {
+                		    return NULL;
+                	    }
+                	}
+                	*(st + i + rv->blen) = r;
+                    }
+                }
+
                 return rv_first;
             }
           } while (striple && !checkedstriple); // end of striple loop
@@ -2026,6 +2050,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             }
         // else check forbiddenwords
         } else if (rv->astr && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
+            TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
             TESTAFF(rv->astr, needaffix, rv->alen))) {
                 st[i] = ch;
                 continue;
@@ -2065,7 +2090,8 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             }       
 
         // check forbiddenwords
-        if ((rv) && (rv->astr) && TESTAFF(rv->astr, forbiddenword, rv->alen)) continue;
+        if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen)
+            || TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen))) continue;
 
         // increment word number, if the second root has a compoundroot flag
         if ((rv) && (compoundroot) && 
@@ -2173,7 +2199,8 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             }
 
             // check forbiddenwords
-            if ((rv) && (rv->astr) && TESTAFF(rv->astr, forbiddenword, rv->alen)) {
+            if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
+                TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen))) {
                 st[i] = ch;
                 continue;
             }
@@ -2267,7 +2294,8 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             }
 
             // check forbiddenwords
-            if ((rv) && (rv->astr) && (TESTAFF(rv->astr,forbiddenword,rv->alen))
+            if ((rv) && (rv->astr) && (TESTAFF(rv->astr,forbiddenword,rv->alen) ||
+                    TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen))
                     && (! TESTAFF(rv->astr, needaffix, rv->alen))) {
                         st[i] = ch;
                         continue;
@@ -2837,7 +2865,8 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
                     if (newword) {
                         hentry * check = pHMgr->lookup(newword); // XXX extra dic
                         if (!check || !check->astr || 
-                            !TESTAFF(check->astr, forbiddenword, check->alen)) {
+                            !(TESTAFF(check->astr, forbiddenword, check->alen) || 
+                              TESTAFF(check->astr, ONLYUPCASEFLAG, check->alen))) {
                                 return newword;
                         }
                         free(newword);

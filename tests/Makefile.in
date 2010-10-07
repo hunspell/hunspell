@@ -380,7 +380,10 @@ fullstrip.test \
 iconv.test \
 oconv.test \
 encoding.test \
-korean.test
+korean.test \
+opentaal_forbiddenword1.test \
+opentaal_forbiddenword2.test \
+opentaal_keepcase.test
 
 EXTRA_DIST = \
 test.sh \
@@ -872,7 +875,31 @@ korean.test \
 encoding.aff \
 encoding.dic \
 encoding.good \
-encoding.test
+encoding.test \
+opentaal_forbiddenword1.aff \
+opentaal_forbiddenword1.dic \
+opentaal_forbiddenword1.good \
+opentaal_forbiddenword1.sug \
+opentaal_forbiddenword1.test \
+opentaal_forbiddenword1.wrong \
+opentaal_forbiddenword2.aff \
+opentaal_forbiddenword2.dic \
+opentaal_forbiddenword2.good \
+opentaal_forbiddenword2.sug \
+opentaal_forbiddenword2.test \
+opentaal_forbiddenword2.wrong \
+opentaal_forbiddenword2.aff \
+opentaal_forbiddenword2.dic \
+opentaal_forbiddenword2.good \
+opentaal_forbiddenword2.sug \
+opentaal_forbiddenword2.test \
+opentaal_forbiddenword2.wrong \
+opentaal_keepcase.aff \
+opentaal_keepcase.dic \
+opentaal_keepcase.good \
+opentaal_keepcase.sug \
+opentaal_keepcase.test \
+opentaal_keepcase.wrong
 
 all: all-recursive
 
