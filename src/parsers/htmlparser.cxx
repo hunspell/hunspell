@@ -141,7 +141,7 @@ char * HTMLParser::next_token()
 			} 			
 			break;
 		case ST_CHAR_ENTITY: // SGML element
-			if ((tolower(line[actual][head]) < 'a') || (tolower(line[actual][head]) > 'z')) {
+			if ((tolower(line[actual][head]) == ';')) {
 				state = prevstate;
 				head--;
 			}
