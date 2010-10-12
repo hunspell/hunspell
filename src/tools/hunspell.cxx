@@ -686,14 +686,13 @@ if (pos >= 0) {
 
 		case PIPE: {
 		int info;
-                char * root = NULL;
+		char * root = NULL;
 		if (check(pMS, &d, token, &info, &root)) {
 			if (!terse_mode) {
 				if (verbose_mode) fprintf(stdout,"* %s\n", token);
 				else fprintf(stdout,"*\n");
 			    }
 			fflush(stdout);
-			if (root) free(root);
 		} else {
 			char ** wlst = NULL;
 			int ns = pMS[d]->suggest(&wlst, token);
@@ -712,6 +711,7 @@ if (pos >= 0) {
 			fprintf(stdout, "\n");
 			fflush(stdout);
 		}
+		if (root) free(root);
 		free(token);
 		continue;
 		}

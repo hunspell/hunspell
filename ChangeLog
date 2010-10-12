@@ -1,5 +1,6 @@
 2010-10-12 Caolán McNamara <cmc at OOo>:
 	* moz#603311 HashMgr::load_tables leaks dict when decode_flags fails
+	* fix mem leak found with new tests
 
 2010-10-07 Németh László <nemeth at OOo>:
 	* affixmgr.cxx: 
