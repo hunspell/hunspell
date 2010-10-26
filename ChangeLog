@@ -8,6 +8,10 @@
 	  hun#3018929 (requested by Ruud Baars): REP with more than 2 words:
 	  REP morethantwo more_than_two
 
+	* suggestmgr.cxx: fix incomplete suggestion list for capitalized words,
+	  eg. missing Machtstrijd->Machtsstrijd in the Dutch dictionary
+	  (reported by Ruud Bars)
+
 	* tests, man: related updates
 
 2010-10-12 Caolán McNamara <cmc at OOo>:
