@@ -1,3 +1,15 @@
+2010-10-27 Németh László <nemeth at OOo>:
+	* hun#3000055 (requested by Ruud Baars) add REP boundary specifiation:
+	  REP ^word$ xxxx
+	  REP ^wordstarting xxxx
+	  REP wordending$ xxxx
+
+	* hun#3008434 (requested by Adrián Chaves Fernández) and
+	  hun#3018929 (requested by Ruud Baars): REP with more than 2 words:
+	  REP morethantwo more_than_two
+
+	* tests, man: related updates
+
 2010-10-12 Caolán McNamara <cmc at OOo>:
 	* moz#603311 HashMgr::load_tables leaks dict when decode_flags fails
 	* fix mem leak found with new tests

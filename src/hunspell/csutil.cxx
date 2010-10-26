@@ -554,8 +554,9 @@ char * copy_field(char * dest, const char * morph, const char * var)
 char * mystrrep(char * word, const char * pat, const char * rep) {
     char * pos = strstr(word, pat);
     if (pos) {
-        int replen = strlen(rep);
-        int patlen = strlen(pat);
+      int replen = strlen(rep);
+      int patlen = strlen(pat);
+      while (pos) {
         if (replen < patlen) {
             char * end = word + strlen(word);
             char * next = pos + replen;
@@ -569,6 +570,8 @@ char * mystrrep(char * word, const char * pat, const char * rep) {
             for (; prev >= end; *next = *prev, prev--, next--);
         }
         strncpy(pos, rep, replen);
+        pos = strstr(word, pat);
+      }
     }
     return word;
 }

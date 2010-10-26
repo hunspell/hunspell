@@ -3420,7 +3420,16 @@ int  AffixMgr::parse_reptable(char * line, FileMgr * af)
                              }
                              break;
                           }
-                  case 1: { reptable[j].pattern = mystrrep(mystrdup(piece),"_"," "); break; }
+                  case 1: {
+                            if (*piece == '^') reptable[j].start = true; else reptable[j].start = false;
+                            reptable[j].pattern = mystrrep(mystrdup(piece + int(reptable[j].start)),"_"," ");
+                            int lr = strlen(reptable[j].pattern) - 1;
+                            if (reptable[j].pattern[lr] == '$') {
+                                reptable[j].end = true;
+                                reptable[j].pattern[lr] = '\0';
+                            } else reptable[j].end = false;
+                            break;
+                          }
                   case 2: { reptable[j].pattern2 = mystrrep(mystrdup(piece),"_"," "); break; }
                   default: break;
                }

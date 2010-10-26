@@ -229,35 +229,33 @@ First REP is the header of this table and one or more REP data
 line are following it. With this table, Hunspell can suggest the right forms for the typical 
 faults of spelling when the incorrect form differs by more, 
 than 1 letter from the right form.
+The search string supports the regex boundary signs (^ and $).
 For example a possible English replacement table definition
 to handle misspelled consonants:
 .PP
 .RS
 .nf
-REP 8
+REP 5
 REP f ph
 REP ph f
-REP f gh
-REP gh f
-REP j dg
-REP dg j
-REP k ch
-REP ch k
+REP tion$ shun
+REP ^cooccurr co-occurr
+REP ^alot$ a_lot
 .fi
 .RE
 .PP
+
 Note I: It's very useful to define replacements for the most typical one-character mistakes, too:
 with REP you can add higher priority to a subset of the TRY suggestions (suggestion list
 begins with the REP suggestions).
 
-Note II: Suggesting separated words by REP, you can specify a space with an
-underline:
+Note II: Suggesting separated words, specify spaces with underlines:
 
 .PP
 .RS
 .nf
 REP 1
-REP alot a_lot
+REP onetwothree one_two_three
 .fi
 .RE
 .PP

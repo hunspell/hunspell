@@ -124,7 +124,7 @@ int SuggestMgr::suggest(char*** slst, const char * w, int nsug,
   char ** wlst;    
   w_char word_utf[MAXSWL];
   int wl = 0;
-
+  int nsugorig = nsug;
   char w2[MAXWORDUTF8LEN];
   const char * word = w;
 
@@ -185,7 +185,7 @@ int SuggestMgr::suggest(char*** slst, const char * w, int nsug,
     }
 
     // only suggest compound words when no other suggestion
-    if ((cpdsuggest == 0) && (nsug > 0)) nocompoundtwowords=1;
+    if ((cpdsuggest == 0) && (nsug > nsugorig)) nocompoundtwowords=1;
 
     // did we add a char that should not be there
     if ((nsug < maxSug) && (nsug > -1)) {
@@ -395,7 +395,8 @@ int SuggestMgr::replchars(char** wlst, const char * word, int ns, int cpdsuggest
       lenr = strlen(reptable[i].pattern2);
       lenp = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
-      while ((r=strstr(r, reptable[i].pattern)) != NULL) {
+      while ((r=strstr(r, reptable[i].pattern)) != NULL && (!reptable[i].end || strlen(r) == strlen(reptable[i].pattern)) &&
+        (!reptable[i].start || r == word)) {
           strcpy(candidate, word);
           if (r-word + lenr + strlen(r+lenp) >= MAXSWUTF8L) break;
           strcpy(candidate+(r-word),reptable[i].pattern2);
@@ -405,19 +406,24 @@ int SuggestMgr::replchars(char** wlst, const char * word, int ns, int cpdsuggest
           // check REP suggestions with space
           char * sp = strchr(candidate, ' ');
           if (sp) {
-            *sp = '\0';
-            if (checkword(candidate, strlen(candidate), 0, NULL, NULL)) {
-              int oldns = ns;
-              *sp = ' ';
-              ns = testsug(wlst, sp + 1, strlen(sp + 1), ns, cpdsuggest, NULL, NULL);
-              if (ns == -1) return -1;
-              if (oldns < ns) {
-                free(wlst[ns - 1]);
-                wlst[ns - 1] = mystrdup(candidate);
-                if (!wlst[ns - 1]) return -1;
+            char * prev = candidate;
+            while (sp) {
+              *sp = '\0';
+              if (checkword(prev, strlen(prev), 0, NULL, NULL)) {
+                int oldns = ns;
+                *sp = ' ';
+                ns = testsug(wlst, sp + 1, strlen(sp + 1), ns, cpdsuggest, NULL, NULL);
+                if (ns == -1) return -1;
+                if (oldns < ns) {
+                  free(wlst[ns - 1]);
+                  wlst[ns - 1] = mystrdup(candidate);
+                  if (!wlst[ns - 1]) return -1;
+                }
               }
-            }            
-            *sp = ' ';
+              *sp = ' ';
+              prev = sp + 1;
+              sp = strchr(prev, ' ');
+            }
           }
           r++; // search for the next letter
       }

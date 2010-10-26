@@ -58,6 +58,8 @@ int RepList::add(char * pat1, char * pat2) {
     if (r == NULL) return 1;
     r->pattern = mystrrep(pat1, "_", " ");
     r->pattern2 = mystrrep(pat2, "_", " ");
+    r->start = false;
+    r->end = false;
     dat[pos++] = r;
     for (int i = pos - 1; i > 0; i--) {
       r = dat[i];
