@@ -1,3 +1,6 @@
+2010-11-03 Caolán McNamara <cmc at OOo>:
+	* logically we shouldn't need a csconv table in utf-8 mode
+
 2010-10-27 Németh László <nemeth at OOo>:
 	* hun#3000055 (requested by Ruud Baars) add REP boundary specifiation:
 	  REP ^word$ xxxx

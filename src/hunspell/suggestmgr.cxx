@@ -39,14 +39,18 @@ SuggestMgr::SuggestMgr(const char * tryme, int maxn,
   maxngramsugs = MAXNGRAMSUGS;
 
   if (pAMgr) {
-        char * enc = pAMgr->get_encoding();
-        csconv = get_current_cs(enc);
-        free(enc);
         langnum = pAMgr->get_langnum();
         ckey = pAMgr->get_key_string();
         nosplitsugs = pAMgr->get_nosplitsugs();
-        if (pAMgr->get_maxngramsugs() >= 0) maxngramsugs = pAMgr->get_maxngramsugs();
+        if (pAMgr->get_maxngramsugs() >= 0)
+            maxngramsugs = pAMgr->get_maxngramsugs();
         utf8 = pAMgr->get_utf8();
+        if (!utf8)
+        {
+            char * enc = pAMgr->get_encoding();
+            csconv = get_current_cs(enc);
+            free(enc);
+        }
         complexprefixes = pAMgr->get_complexprefixes();
   }
 

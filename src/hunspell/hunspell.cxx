@@ -33,9 +33,10 @@ Hunspell::Hunspell(const char * affpath, const char * dpath, const char * key)
     /* encoding from the Affix Manager for that dictionary */
     char * try_string = pAMgr->get_try_string();
     encoding = pAMgr->get_encoding();
-    csconv = get_current_cs(encoding);
     langnum = pAMgr->get_langnum();
     utf8 = pAMgr->get_utf8();
+    if (!utf8)
+        csconv = get_current_cs(encoding);
     complexprefixes = pAMgr->get_complexprefixes();
     wordbreak = pAMgr->get_breaktable();
 
