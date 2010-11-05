@@ -1,3 +1,6 @@
+2010-11-05 Caolán McNamara <cmc at OOo>:
+	* rhbz#648740 don't warn on empty flagvector
+
 2010-11-03 Caolán McNamara <cmc at OOo>:
 	* logically we shouldn't need a csconv table in utf-8 mode
 
