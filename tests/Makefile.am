@@ -105,7 +105,8 @@ encoding.test \
 korean.test \
 opentaal_forbiddenword1.test \
 opentaal_forbiddenword2.test \
-opentaal_keepcase.test
+opentaal_keepcase.test \
+arabic.test
 # infixes.test
 
 distclean-local:
@@ -625,7 +626,10 @@ opentaal_keepcase.dic \
 opentaal_keepcase.good \
 opentaal_keepcase.sug \
 opentaal_keepcase.test \
-opentaal_keepcase.wrong
+opentaal_keepcase.wrong \
+arabic.aff \
+arabic.dic \
+arabic.bad
 # infixes.aff
 # infixes.dic
 # infixes.good

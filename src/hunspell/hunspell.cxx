@@ -570,6 +570,11 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
      word = w2;
   } else word = w;
 
+  len = strlen(word);
+
+  if (!len)
+      return NULL;
+
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
     if (word != w2) {
@@ -607,7 +612,6 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
   // check with affixes
   if (!he && pAMgr) {
      // try stripping off affixes */
-     len = strlen(word);
      he = pAMgr->affix_check(word, len, 0);
 
      // check compound restriction and onlyupcase
