@@ -9,7 +9,11 @@
 #  
 # 2. open a Cygwin shell, cd into this directory and run make
 #
-
+#
+# NOTE: newer MINGW libraries may have a compilation error, where the solution
+# is removing the "using ::swprintf" and "using ::vswprintf" lines from 
+# /usr/lib/gcc/i686-pc-mingw32/3.4.x/include/c++/cwchar
+#
 
 #CC=gcc 
 #CXX=g++
@@ -41,7 +45,8 @@ csutil.o \
 phonet.o \
 hunspell.o \
 filemgr.o \
-hunzip.o
+hunzip.o \
+replist.o
 
 OBJS2 = \
 textparser.o \
@@ -83,6 +88,7 @@ distclean:	clean
 
 hunspell.hxx:
 	ln -s $(OBJ)/*xx $(OBJ)/hunspell.h $(OBJ)/license* $(OBJ2)/*xx ./
+	ln -s $(OBJ)/hunvisapi.h ./
 	ln -s  $(OBJ3)/hunspell.cxx ./hunspellprg.cxx
 	ln -s  $(OBJ3)/hunzip.cxx ./hunzipprg.cxx
 	ln -s  $(OBJ3)/example.cxx $(OBJ3)/hzip.c ./

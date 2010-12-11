@@ -106,7 +106,9 @@ korean.test \
 opentaal_forbiddenword1.test \
 opentaal_forbiddenword2.test \
 opentaal_keepcase.test \
-arabic.test
+arabic.test \
+2970240.test \
+2970242.test
 # infixes.test
 
 distclean-local:
@@ -594,11 +596,6 @@ oconv.good \
 oconv.sug \
 oconv.test \
 oconv.wrong \
-korean.aff \
-korean.dic \
-korean.good \
-korean.wrong \
-korean.test \
 encoding.aff \
 encoding.dic \
 encoding.good \
@@ -629,7 +626,18 @@ opentaal_keepcase.test \
 opentaal_keepcase.wrong \
 arabic.aff \
 arabic.dic \
-arabic.bad
+arabic.wrong \
+arabic.test \
+2970240.aff \
+2970240.dic \
+2970240.good \
+2970240.wrong \
+2970240.test \
+2970242.aff \
+2970242.dic \
+2970242.good \
+2970242.wrong \
+2970242.test
 # infixes.aff
 # infixes.dic
 # infixes.good
