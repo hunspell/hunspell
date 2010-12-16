@@ -1,3 +1,14 @@
+2010-12-16 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: 
+        - improved fix of hun#2970242 (supporting
+          zero affixes, reported by Ruud Baars
+        - tests/opentaal_cpdpat{,2}: test files
+
+        - switching off default BREAK parameters by BREAK 0,
+          reported by Ruud Baars
+
+        - hun#2999225, reported by Ruud Baars
+
 2010-12-11 Németh László <nemeth at OOo>:
         * affixmgr.cxx: fix hun#2970242 (CHECKCOMPOUNDPATTERN only with flags),
           the bug reported by Ruud Baars

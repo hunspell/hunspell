@@ -1,4 +1,4 @@
-.TH hunspell 4 "2010-03-03"
+.TH hunspell 4 "2010-12-16"
 .LO 1
 .SH NAME
 hunspell \- format of Hunspell dictionaries and affix files
@@ -348,13 +348,22 @@ BREAK -
 .fi
 .RE
 .PP
-W
+
+Switching off the default values:
+.PP
+.RS
+.nf
+BREAK 0
+.fi
+.RE
+.PP
+
 Note II: COMPOUNDRULE is better (or will be better) for handling dashes and
 other  compound joining characters or character strings. Use BREAK, if you
-want check words with dashes or other joining characters and there is no time
+want to check words with dashes or other joining characters and there is no time
 or possibility to describe precise compound rules with COMPOUNDRULE
-(COMPOUNDRULE has handled only the last suffixation of
-the compound word yet).
+(COMPOUNDRULE handles only the suffixation of the last word part of a
+compound word).
 
 Note III: For command line spell checking of words with extra characters,
 set WORDCHARS parameters: WORDCHARS -\fB--\fR (see tests/break.*) example
@@ -429,6 +438,16 @@ the old German orthography: Schiff|fahrt -> Schiffahrt).
 Forbid compounding, if the first word in the compound ends with endchars, and
 next word begins with beginchars and (optionally) they have the requested flags.
 The optional replacement parameter allows simplified compound form.
+
+The special "endchars" pattern 0 (zero) limits the rule to the unmodified stems (stems
+and stems with zero affixes):
+.PP
+.RS
+.nf
+CHECKCOMPOUNDPATTERN 0/x /y
+.fi
+.RE
+.PP
 Note: COMPOUNDMIN doesn't work correctly with the compound word alternation,
 so it may need to set COMPOUNDMIN to lower value.
 .IP "COMPOUNDSYLLABLE max_syllable vowels"

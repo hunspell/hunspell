@@ -108,7 +108,11 @@ opentaal_forbiddenword2.test \
 opentaal_keepcase.test \
 arabic.test \
 2970240.test \
-2970242.test
+2970242.test \
+breakoff.test \
+opentaal_cpdpat.test \
+opentaal_cpdpat2.test \
+2999225.test
 # infixes.test
 
 distclean-local:
@@ -637,7 +641,26 @@ arabic.test \
 2970242.dic \
 2970242.good \
 2970242.wrong \
-2970242.test
+2970242.test \
+breakoff.aff \
+breakoff.dic \
+breakoff.good \
+breakoff.wrong \
+breakoff.test \
+opentaal_cpdpat.aff \
+opentaal_cpdpat.dic \
+opentaal_cpdpat.good \
+opentaal_cpdpat.wrong \
+opentaal_cpdpat.test \
+opentaal_cpdpat2.aff \
+opentaal_cpdpat2.dic \
+opentaal_cpdpat2.good \
+opentaal_cpdpat2.wrong \
+opentaal_cpdpat2.test \
+2999225.aff \
+2999225.dic \
+2999225.good \
+2999225.test
 # infixes.aff
 # infixes.dic
 # infixes.good
