@@ -143,7 +143,8 @@ public:
 
   short       get_syllable (const char * word, int wlen);
   int         cpdrep_check(const char * word, int len);
-  int         cpdpat_check(const char * word, int len, hentry * r1, hentry * r2);
+  int         cpdpat_check(const char * word, int len, hentry * r1, hentry * r2,
+                    const char affixed);
   int         defcpd_check(hentry *** words, short wnum, hentry * rv,
                     hentry ** rwords, char all);
   int         cpdcase_check(const char * word, int len);
