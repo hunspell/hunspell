@@ -1,3 +1,6 @@
+2010-12-20 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: hun#3140784
+
 2010-12-16 Németh László <nemeth at OOo>:
         * affixmgr.cxx: 
         - improved fix of hun#2970242 (supporting

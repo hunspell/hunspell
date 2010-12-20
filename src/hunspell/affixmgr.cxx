@@ -1848,7 +1848,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
                     switch (sfxflag) {
                         case 'c': { numsyllable+=2; break; }
                         case 'J': { numsyllable += 1; break; }
-                        case 'I': { if (TESTAFF(rv->astr, 'J', rv->alen)) numsyllable += 1; break; }
+                        case 'I': { if (rv && TESTAFF(rv->astr, 'J', rv->alen)) numsyllable += 1; break; }
                     }
                 }
             }
