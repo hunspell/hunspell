@@ -1,3 +1,7 @@
+2011-01-03: Hunspell 1.2.13 release:
+  - bug fixes
+  - improved compound handling and
+    other improvements supported by OpenTaal Foundation, Netherlands
 2010-07-15: Hunspell 1.2.12 release
 2010-05-06: Hunspell 1.2.11 release:
   - Maintenance release bug fixes
