@@ -934,7 +934,12 @@ opentaal_cpdpat2.test \
 2999225.aff \
 2999225.dic \
 2999225.good \
-2999225.test
+2999225.test \
+korean.aff \
+korean.dic \
+korean.good \
+korean.wrong \
+korean.test
 
 all: all-recursive
 
@@ -1380,6 +1385,7 @@ uninstall-am:
 
 distclean-local:
 	-rm -rf testSubDir
+
 # infixes.aff
 # infixes.dic
 # infixes.good
