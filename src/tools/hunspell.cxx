@@ -178,16 +178,26 @@ int dmax = 0;                // dictionary count
 
 // functions
 
+#ifdef HAVE_ICONV
+static const char* fix_encoding_name(const char *enc)
+{
+    if (strcmp(enc, "TIS620-2533") == 0)
+        enc = "TIS620";
+    return enc;
+}
+#endif
+
 /* change character encoding */
 char * chenc(char * st, const char * enc1, const char * enc2) {
     char * out = st;
 #ifdef HAVE_ICONV
     if (enc1 && enc2 && strcmp(enc1, enc2) != 0) {
+
 	size_t c1 = strlen(st) + 1;
 	size_t c2 = MAXLNLEN;
 	char * source = st;
 	char * dest = text_conv;
-	iconv_t conv = iconv_open(enc2, enc1);
+	iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
         if (conv == (iconv_t) -1) {
 	    fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), enc2, enc1);
 	} else {	
@@ -230,7 +240,7 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
 	    size_t c1 = wlen;
 	    size_t c2 = MAXLNLEN;
 	    char * dest = text_conv;
-	    iconv_t conv = iconv_open("UTF-8", denc);
+	    iconv_t conv = iconv_open("UTF-8", fix_encoding_name(denc));
 	    if (conv == (iconv_t) -1) {
 	        fprintf(stderr, gettext("error - iconv_open: UTF-8 -> %s\n"), denc);
 	        wordchars_utf16 = NULL;
@@ -253,7 +263,7 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
 	char ch[2];
 	char u8[10];
 	*pletters = '\0';
-	iconv_t conv = iconv_open("UTF-8", io_enc);
+	iconv_t conv = iconv_open("UTF-8", fix_encoding_name(io_enc));
         if (conv == (iconv_t) -1) {
 	    fprintf(stderr, gettext("error - iconv_open: UTF-8 -> %s\n"), io_enc);
 	} else {
@@ -295,7 +305,7 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
 	    char * dest = letters + strlen(letters); // append wordchars
 	    size_t c1 = len + 1;
 	    size_t c2 = len + 1;
-	    iconv_t conv = iconv_open(io_enc, denc);
+	    iconv_t conv = iconv_open(fix_encoding_name(io_enc), fix_encoding_name(denc));
 	    if (conv == (iconv_t) -1) {
 	        fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), io_enc, denc);
 	    } else {
