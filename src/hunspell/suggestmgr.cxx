@@ -1728,6 +1728,7 @@ int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
   if (utf8) {
     w_char su1[MAXSWL];
     w_char su2[MAXSWL];
+    su1[0].l = su2[0].l = su1[0].h = su2[0].h = 0;
     // decapitalize dictionary word
     if (complexprefixes) {
       int l1 = u8_u16(su1, MAXSWL, s1);
