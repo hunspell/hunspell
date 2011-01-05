@@ -1,3 +1,7 @@
+2011-01-05 Caolán McNamara <cmc at OOo>:
+	* moz#620626 NS_UNICHARUTIL_CID doesn't support
+	  case conversion
+
 2011-01-03 Németh László <nemeth at OOo>:
 	* NEWS and THANKS: update for release 1.2.13
 
