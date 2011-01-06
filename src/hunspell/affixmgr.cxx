@@ -1569,7 +1569,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
 
         if (!rv) {
             if (onlycpdrule) break;
-            if (compoundflag && 
+            if (compoundflag && !words && 
              !(rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundflag))) {
                 if ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
                         FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) && !hu_mov_rule &&
