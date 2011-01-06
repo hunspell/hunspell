@@ -63,11 +63,13 @@
 #define LIBDIR \
     "/usr/share/hunspell:" \
     "/usr/share/myspell:" \
-    "/usr/share/myspell/dicts"
+    "/usr/share/myspell/dicts:" \
+    "/Library/Spelling"
 #define USEROOODIR \
     ".openoffice.org/3/user/wordbook:" \
     ".openoffice.org2/user/wordbook:" \
-    ".openoffice.org2.0/user/wordbook"
+    ".openoffice.org2.0/user/wordbook:" \
+    "Library/Spelling"
 #define OOODIR \
     "/opt/openoffice.org/basis3.0/share/dict/ooo:" \
     "/usr/lib/openoffice.org/basis3.0/share/dict/ooo:" \

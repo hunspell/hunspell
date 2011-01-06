@@ -1,6 +1,9 @@
 2011-01-06 Németh László <nemeth at OOo>:
-        * fix freedesktop#32850 (program halt during Hungarian
+        * affixmgr.cxx: fix freedesktop#32850 (program halt during Hungarian
           spell checking of the word "6csillagocska6", reported by András Tímár)
+
+        * tools/hunspell.cxx: add Mac OS X Hunspell dictionary paths, asked by
+          Vidar Gundersen in hunfeat#3142010
 
 2011-01-05 Caolán McNamara <cmc at OOo>:
 	* moz#620626 NS_UNICHARUTIL_CID doesn't support
