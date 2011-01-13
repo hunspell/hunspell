@@ -2025,7 +2025,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             }
         }        
         if (!rv) {
-            if (compoundflag && 
+            if (compoundflag && !words && 
              !(rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundflag))) {
                 if ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
                         FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) && !hu_mov_rule &&
@@ -2448,15 +2448,14 @@ struct hentry * AffixMgr::suffix_check (const char * word, int len,
                (se->getCont() && (TESTAFF(se->getCont(),circumfix,se->getContLen())))))  &&
             // fogemorpheme
               (in_compound || 
-                 !((se->getCont() && (TESTAFF(se->getCont(), onlyincompound, se->getContLen()))))) &&
+                 !(se->getCont() && (TESTAFF(se->getCont(), onlyincompound, se->getContLen())))) &&
             // needaffix on prefix or first suffix
               (cclass || 
                    !(se->getCont() && TESTAFF(se->getCont(), needaffix, se->getContLen())) ||
                    (ppfx && !((ep->getCont()) &&
                      TESTAFF(ep->getCont(), needaffix,
                        ep->getContLen())))
-              )
-            ) {
+              )) {
                 rv = se->checkword(word,len, sfxopts, ppfx, wlst, maxSug, ns, (FLAG) cclass, 
                     needflag, (in_compound ? 0 : onlyincompound));
                 if (rv) {
@@ -2498,7 +2497,7 @@ struct hentry * AffixMgr::suffix_check (const char * word, int len,
                      TESTAFF(ep->getCont(), needaffix,
                        ep->getContLen())))
               )
-            ) {
+            ) if (in_compound != IN_CPD_END || ppfx || !(sptr->getCont() && TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
                 rv = sptr->checkword(word,len, sfxopts, ppfx, wlst,
                     maxSug, ns, cclass, needflag, (in_compound ? 0 : onlyincompound));
                 if (rv) {
@@ -2783,13 +2782,16 @@ struct hentry * AffixMgr::affix_check (const char * word, int len, const FLAG ne
     if (havecontclass) {
         sfx = NULL;
         pfx = NULL;
+
         if (rv) return rv;
         // if still not found check all two-level suffixes
         rv = suffix_check_twosfx(word, len, 0, NULL, needflag);
+
         if (rv) return rv;
         // if still not found check all two-level suffixes
         rv = prefix_check_twosfx(word, len, IN_CPD_NOT, needflag);
     }
+
     return rv;
 }
 

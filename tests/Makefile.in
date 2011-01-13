@@ -390,7 +390,8 @@ arabic.test \
 breakoff.test \
 opentaal_cpdpat.test \
 opentaal_cpdpat2.test \
-2999225.test
+2999225.test \
+onlyincompound2.test
 
 EXTRA_DIST = \
 test.sh \
@@ -939,7 +940,12 @@ korean.aff \
 korean.dic \
 korean.good \
 korean.wrong \
-korean.test
+korean.test \
+onlyincompound2.aff \
+onlyincompound2.dic \
+onlyincompound2.good \
+onlyincompound2.test \
+onlyincompound2.wrong
 
 all: all-recursive
 
@@ -1380,6 +1386,7 @@ uninstall-am:
 	installdirs-am maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
 	ps ps-am tags tags-recursive uninstall uninstall-am
+
 
 # infixes.test
 

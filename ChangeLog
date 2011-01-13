@@ -1,3 +1,13 @@
+2011-01-13 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: ONLYINCOMPOUND fix for hun#2999224 (fogemorphene
+          was allowed in end position of compoundings). Reported by Ruud Baars.
+        * tests/onlyincompound2.*: test files
+
+2011-01-10 Ingo H. de Boer <idb_winshell at SF.net>:
+	* win_api/{hunspell,libhunspell, testparser}.vcproj: updated project
+	  files for the library and the executables. Compiling problem
+	  also reported by Don Walker.
+
 2011-01-06 Németh László <nemeth at OOo>:
         * affixmgr.cxx: fix freedesktop#32850 (program halt during Hungarian
           spell checking of the word "6csillagocska6", reported by András Tímár)

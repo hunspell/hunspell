@@ -112,7 +112,9 @@ arabic.test \
 breakoff.test \
 opentaal_cpdpat.test \
 opentaal_cpdpat2.test \
-2999225.test
+2999225.test \
+onlyincompound2.test
+
 # infixes.test
 
 distclean-local:
@@ -665,7 +667,12 @@ korean.aff \
 korean.dic \
 korean.good \
 korean.wrong \
-korean.test
+korean.test \
+onlyincompound2.aff \
+onlyincompound2.dic \
+onlyincompound2.good \
+onlyincompound2.test \
+onlyincompound2.wrong
 
 # infixes.aff
 # infixes.dic
