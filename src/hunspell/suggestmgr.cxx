@@ -1043,8 +1043,15 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   char target[MAXSWUTF8L];
   char candidate[MAXSWUTF8L];
   if (ph) {
-    strcpy(candidate, word);
-    mkallcap(candidate, csconv);
+    if (utf8) {
+      w_char _w[MAXSWL];
+      int _wl = u8_u16(_w, MAXSWL, word);
+      mkallcap_utf(_w, _wl, langnum);
+      u16_u8(candidate, MAXSWUTF8L, _w, _wl);
+    } else {
+      strcpy(candidate, word);
+      mkallcap(candidate, csconv);
+    }
     phonet(candidate, target, n, *ph);
   }
 
@@ -1067,11 +1074,18 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
     }
     
     if (ph && (sc > 2) && (abs(n - (int) hp->clen) <= 3)) {
-	char target2[MAXSWUTF8L];
+      char target2[MAXSWUTF8L];
+      if (utf8) {
+        w_char _w[MAXSWL];
+        int _wl = u8_u16(_w, MAXSWL, HENTRY_WORD(hp));
+        mkallcap_utf(_w, _wl, langnum);
+        u16_u8(candidate, MAXSWUTF8L, _w, _wl);
+      } else {
         strcpy(candidate, HENTRY_WORD(hp));
         mkallcap(candidate, csconv);
-        phonet(candidate, target2, -1, *ph);
-        scphon = 2 * ngram(3, target, target2, NGRAM_LONGER_WORSE);
+      }
+      phonet(candidate, target2, -1, *ph);
+      scphon = 2 * ngram(3, target, target2, NGRAM_LONGER_WORSE);
     }
 
     if (sc > scores[lp]) {

@@ -1,3 +1,8 @@
+2011-01-17 Németh László <nemeth at OOo>:
+	* suggestmgr.cxx: fix hun#3158994 and hun#3159027 (missing csconv table
+	  using awkward 8bit capitalization of UTF-8 encoded dictionary words with PHONE
+	  suggestion, reported by benjarobin and dicollecte at SF.net).
+
 2011-01-13 Németh László <nemeth at OOo>:
         * affixmgr.cxx: ONLYINCOMPOUND fix for hun#2999224 (fogemorphene
           was allowed in end position of compoundings). Reported by Ruud Baars.
