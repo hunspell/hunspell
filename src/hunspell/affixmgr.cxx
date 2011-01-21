@@ -82,6 +82,8 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   circumfix = FLAG_NULL; 
   onlyincompound = FLAG_NULL; 
   maxngramsugs = -1; // undefined
+  maxdiff = -1; // undefined
+  maxcpdsugs = -1; // undefined
   nosplitsugs = 0;
   sugswithdots = 0;
   keepcase = 0;
@@ -599,6 +601,20 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
 
        if (strncmp(line,"MAXNGRAMSUGS",12) == 0) {
           if (parse_num(line, &maxngramsugs, afflst)) {
+             delete afflst;
+             return 1;
+          }
+       }
+
+       if (strncmp(line,"MAXDIFF",7) == 0) {
+          if (parse_num(line, &maxdiff, afflst)) {
+             delete afflst;
+             return 1;
+          }
+       }
+
+       if (strncmp(line,"MAXCPDSUGS",10) == 0) {
+          if (parse_num(line, &maxcpdsugs, afflst)) {
              delete afflst;
              return 1;
           }
@@ -3329,10 +3345,19 @@ int AffixMgr::get_utf8() const
   return utf8;
 }
 
-// return nosplitsugs
 int AffixMgr::get_maxngramsugs(void) const
 {
   return maxngramsugs;
+}
+
+int AffixMgr::get_maxcpdsugs(void) const
+{
+  return maxcpdsugs;
+}
+
+int AffixMgr::get_maxdiff(void) const
+{
+  return maxdiff;
 }
 
 // return nosplitsugs

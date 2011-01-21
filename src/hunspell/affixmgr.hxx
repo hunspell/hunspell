@@ -65,6 +65,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   flagentry *         defcpdtable;
   phonetable *        phone;
   int                 maxngramsugs;
+  int                 maxcpdsugs;
+  int                 maxdiff;
   int                 nosplitsugs;
   int                 sugswithdots;
   int                 cpdwordmax;
@@ -197,6 +199,8 @@ public:
   int                 get_complexprefixes() const;
   char *              get_suffixed(char ) const;
   int                 get_maxngramsugs() const;
+  int                 get_maxcpdsugs() const;
+  int                 get_maxdiff() const;
   int                 get_nosplitsugs() const;
   int                 get_sugswithdots(void) const;
   FLAG                get_keepcase(void) const;

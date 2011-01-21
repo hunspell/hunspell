@@ -47,6 +47,7 @@ class LIBHUNSPELL_DLL_EXPORTED SuggestMgr
   int             langnum;
   int             nosplitsugs;
   int             maxngramsugs;
+  int             maxcpdsugs;
   int             complexprefixes;
 
 

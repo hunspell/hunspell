@@ -1,8 +1,16 @@
 2011-01-21 Németh László <nemeth at OOo>:
-	* suggestmgr.*: limit wild suggestions (hun#2970237)
+	* suggestmgr.*: limit wild suggestions (hun#2970237 by Ruud Baars)
 	- limited compound word suggestions
 	- improved and limited ngram based suggestions
 	* tests/*.sug: modified test files
+	- feature MAXCPDSUGS:
+	  MAXCPDSUGS 0 : no compound suggestion, suggested by
+          Finn Gruwier Larsen in hunfeat#2836033
+	  MAXCPDSUGS n : max. ~n compound suggestions
+	- feature MAXDIFF: differency limit for ngram suggestions: 0-10 
+	  eg. MAXDIFF 5: normal (default) limit
+	  MAXDIFF 0: only one ngram suggestion
+	  MAXDIFF 10: ~maxngramsugs ngram suggestions 
 
 	* affixmgr.*, hunspell.*: add flag FORCEUCASE (hun#2999228), force
 	  capitalization of compound words, see Hunspell 4 manual),

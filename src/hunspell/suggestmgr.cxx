@@ -37,6 +37,7 @@ SuggestMgr::SuggestMgr(const char * tryme, int maxn,
   maxSug = maxn;
   nosplitsugs = 0;
   maxngramsugs = MAXNGRAMSUGS;
+  maxcpdsugs = MAXCOMPOUNDSUGS;
 
   if (pAMgr) {
         langnum = pAMgr->get_langnum();
@@ -45,6 +46,8 @@ SuggestMgr::SuggestMgr(const char * tryme, int maxn,
         if (pAMgr->get_maxngramsugs() >= 0)
             maxngramsugs = pAMgr->get_maxngramsugs();
         utf8 = pAMgr->get_utf8();
+	if (pAMgr->get_maxcpdsugs() >= 0)
+	    maxcpdsugs = pAMgr->get_maxcpdsugs();
         if (!utf8)
         {
             char * enc = pAMgr->get_encoding();
@@ -166,29 +169,29 @@ int SuggestMgr::suggest(char*** slst, const char * w, int nsug,
     }
 
     // perhaps we made a typical fault of spelling
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
       nsug = replchars(wlst, word, nsug, cpdsuggest);
     }
 
     // perhaps we made chose the wrong char from a related set
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
       nsug = mapchars(wlst, word, nsug, cpdsuggest);
     }
 
     // did we swap the order of chars by mistake
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? swapchar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     swapchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we swap the order of non adjacent chars by mistake
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? longswapchar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     longswapchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we just hit the wrong key in place of a good char (case and keyboard)
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? badcharkey_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     badcharkey(wlst, word, nsug, cpdsuggest);
     }
@@ -197,38 +200,38 @@ int SuggestMgr::suggest(char*** slst, const char * w, int nsug,
     if ((cpdsuggest == 0) && (nsug > nsugorig)) nocompoundtwowords=1;
 
     // did we add a char that should not be there
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? extrachar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     extrachar(wlst, word, nsug, cpdsuggest);
     }
 
 
     // did we forgot a char
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? forgotchar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     forgotchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we move a char
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? movechar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     movechar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we just hit the wrong key in place of a good char
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? badchar_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     badchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we double two characters
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = (utf8) ? doubletwochars_utf(wlst, word_utf, wl, nsug, cpdsuggest) :
                     doubletwochars(wlst, word, nsug, cpdsuggest);
     }
 
     // perhaps we forgot to hit space and two words ran together
-    if (!nosplitsugs && (nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug)) {
+    if (!nosplitsugs && (nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
         nsug = twowords(wlst, word, nsug, cpdsuggest);
     }
 
@@ -284,14 +287,14 @@ int SuggestMgr::suggest_auto(char*** slst, const char * w, int nsug)
     nsug = replchars(wlst, word, nsug, cpdsuggest);
 
     // perhaps we made chose the wrong char from a related set
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug))
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs)))
       nsug = mapchars(wlst, word, nsug, cpdsuggest);
 
     if ((cpdsuggest==0) && (nsug>0)) nocompoundtwowords=1;
 
     // perhaps we forgot to hit space and two words ran together
 
-    if ((nsug < maxSug) && (nsug > -1) && !(cpdsuggest && oldSug + MAXCOMPOUNDSUGS <= nsug) && check_forbidden(word, strlen(word))) {
+    if ((nsug < maxSug) && (nsug > -1) && (!cpdsuggest || (nsug < oldSug + maxcpdsugs)) && check_forbidden(word, strlen(word))) {
                 nsug = twowords(wlst, word, nsug, cpdsuggest);
         }
     
@@ -1215,6 +1218,12 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
 
   int is_swap;
   int re;
+  float fact = 1.0;
+  if (pAMgr) {
+	int maxd = pAMgr->get_maxdiff();
+	if (maxd >= 0) fact = (10.0 - maxd)/5.0;
+  }
+
   for (i=0; i < MAX_GUESS; i++) {
       if (guess[i]) {
         // lowering guess[i]
@@ -1254,7 +1263,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
           (re = ngram(2, word, gl, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED)) +
           (re += ngram(2, gl, word, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED)) +
 	  // different limit for dictionaries with PHONE rules
-	  (ph ? (re < len ? -1000 : 0) : (re < n + len ? - 1000 : 0));
+	  (ph ? (re < len * fact ? -1000 : 0) : (re < (n + len)*fact? -1000 : 0));
       }
   }
 
