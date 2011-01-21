@@ -1,3 +1,9 @@
+2011-01-21:
+  - new features: FORCEUCASE and WARN. see manual
+  - new options: -r to filter potential mistakes (rare words
+    signed by flag WARN in the dictionary)
+  - limited and optimized suggestions
+
 2011-01-06: Hunspell 1.2.14 release:
   - bug fix
 2011-01-03: Hunspell 1.2.13 release:

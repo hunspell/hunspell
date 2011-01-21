@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hunspell\n"
 "Report-Msgid-Bugs-To: nemeth@openoffice.org\n"
-"POT-Creation-Date: 2011-01-06 13:57+0100\n"
+"POT-Creation-Date: 2011-01-21 13:57+0100\n"
 "PO-Revision-Date: 2005-09-03 11:22+0200\n"
 "Last-Translator: László Németh <nemeth dot lacko at gmail>\n"
 "Language-Team: Hungarian <openscope.org>\n"
@@ -427,3 +427,9 @@ msgstr "Nem lehet megnyitni a ragozási vagy a szótárfájlt.\n"
 #, c-format
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
 msgstr "A Hunspell Ncurses felhasználói felület nélkül lett fordítva.\n"
+
+msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
+msgstr "  -r\t\tlehetséges hibák (ritka szavak) jelzése\n"
+
+msgid "Spelling mistake?"
+msgstr "Helyesírási hiba?"

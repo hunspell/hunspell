@@ -391,7 +391,9 @@ breakoff.test \
 opentaal_cpdpat.test \
 opentaal_cpdpat2.test \
 2999225.test \
-onlyincompound2.test
+onlyincompound2.test \
+forceucase.test \
+warn.test
 
 EXTRA_DIST = \
 test.sh \
@@ -945,7 +947,18 @@ onlyincompound2.aff \
 onlyincompound2.dic \
 onlyincompound2.good \
 onlyincompound2.test \
-onlyincompound2.wrong
+onlyincompound2.wrong \
+forceucase.aff \
+forceucase.dic \
+forceucase.good \
+forceucase.sug \
+forceucase.wrong \
+forceucase.test \
+warn.aff \
+warn.dic \
+warn.good \
+warn.wrong \
+warn.test
 
 all: all-recursive
 

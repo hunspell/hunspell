@@ -169,6 +169,7 @@ int filter_mode = NORMAL;
 int printgood = 0; // print only good words and lines
 int showpath = 0;  // show detected path of the dictionary
 int checkurl = 0;  // check URLs and mail addresses
+int warn = 0;      // warn potential mistakes (dictionary words with WARN flags)
 const char * ui_enc = NULL;  // locale character encoding (default for I/O)
 const char * io_enc = NULL;  // I/O character encoding
 
@@ -492,7 +493,9 @@ char * scanline(char * message) {
 // check words in the dictionaries (and set first checked dictionary)
 int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
   for (int i = 0; i < dmax; i++) {
-    if (pMS[*d]->spell(chenc(token, io_enc, dic_enc[*d]), info, root)) return 1;
+    if (pMS[*d]->spell(chenc(token, io_enc, dic_enc[*d]), info, root) && !(warn && (*info & SPELL_WARN))) {
+        return 1;
+    }
     if (++(*d) == dmax) *d = 0;
   }
   return 0;
@@ -788,10 +791,6 @@ if (pos >= 0) {
 
 if (parser) delete(parser);
 
-//			fprintf(stdout,gettext(HUNSPELL_PIPE_HEADING));
-//	fprintf(stdout, "szia vilag5.\n");
-//	exit(0);
-
 } // pipe_interface
 
 #ifdef HAVE_READLINE
@@ -888,7 +887,8 @@ void dialogscreen(TextParser * parser, char * token,
 	getmaxyx(stdscr,y,x);
 	clear();
 
-	if (forbidden) printw(gettext("FORBIDDEN!"));
+	if (forbidden & SPELL_FORBIDDEN) printw(gettext("FORBIDDEN!")); else
+	  if (forbidden & SPELL_WARN) printw(gettext("Spelling mistake?"));
 	printw(gettext("\t%s\t\tFile: %s\n\n"), chenc(token, io_enc, ui_enc), filename);
 
 	// handle long lines and tabulators
@@ -1272,12 +1272,12 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
         int d = 0;
 	while ((token=parser->next_token())) {
 		if (!check(pMS, &d, token, &info, NULL)) {
-			dialogscreen(parser, token, filename, (info & SPELL_FORBIDDEN), NULL, 0); // preview
+			dialogscreen(parser, token, filename, info, NULL, 0); // preview
 			refresh();
 			char ** wlst = NULL;
 			int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
 			if (ns==0) {
-				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, (info & SPELL_FORBIDDEN));
+				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
 			} else {	    
 				for (int j = 0; j < ns; j++) {
 					char d2io[MAXLNLEN];
@@ -1285,7 +1285,7 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 					wlst[j] = (char *) realloc(wlst[j], strlen(d2io) + 1);
 					strcpy(wlst[j], d2io);
 				}
-				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, (info & SPELL_FORBIDDEN));
+				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
 			}
 			for (int j = 0; j < ns; j++) {
 				free(wlst[j]);
@@ -1500,6 +1500,7 @@ int main(int argc, char** argv)
 			fprintf(stderr,gettext("  -m \t\tanalyze the words of the input text\n"));
 			fprintf(stderr,gettext("  -n\t\tnroff/troff input file format\n"));
 			fprintf(stderr,gettext("  -p dict\tset dict custom dictionary\n"));
+			fprintf(stderr,gettext("  -r\t\twarn of the potential mistakes (rare words)\n"));
 			fprintf(stderr,gettext("  -P password\tset password for encrypted dictionaries\n"));
 			fprintf(stderr,gettext("  -s \t\tstem the words of the input text\n"));
 			fprintf(stderr,gettext("  -t\t\tTeX/LaTeX input file format\n"));
@@ -1610,6 +1611,9 @@ int main(int argc, char** argv)
 			format = FMT_FIRST;
 		} else if ((strcmp(argv[i],"-D")==0)) {
 			showpath = 1;
+		} else if ((strcmp(argv[i],"-r")==0)) {
+			warn = 1;
+fprintf(stderr, "BEKAPCS");
 		} else if ((strcmp(argv[i],"--check-url")==0)) {
 			checkurl = 1;
 		} else if ((arg_files==-1) && ((argv[i][0] != '-') && (argv[i][0] != '\0'))) {

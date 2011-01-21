@@ -93,6 +93,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   FLAG                circumfix;
   FLAG                onlyincompound;
   FLAG                keepcase;
+  FLAG                forceucase;
+  FLAG                warn;
   FLAG                substandard;
   int                 checksharps;
   int                 fullstrip;
@@ -152,7 +154,7 @@ public:
   void        setcminmax(int * cmin, int * cmax, const char * word, int len);
   struct hentry * compound_check(const char * word, int len, short wordnum,
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
-            char hu_mov_rule, char is_sug);
+            char hu_mov_rule, char is_sug, int info);
 
   int compound_check_morph(const char * word, int len, short wordnum,
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
@@ -198,6 +200,8 @@ public:
   int                 get_nosplitsugs() const;
   int                 get_sugswithdots(void) const;
   FLAG                get_keepcase(void) const;
+  FLAG                get_forceucase(void) const;
+  FLAG                get_warn(void) const;
   int                 get_checksharps(void) const;
   char *              encode_flag(unsigned short aflag) const;
   int                 get_fullstrip() const;

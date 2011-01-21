@@ -1,8 +1,20 @@
 2011-01-21 Németh László <nemeth at OOo>:
-	* suggestmgr.*: fix hun#2970237 (limit wild suggestions):
+	* suggestmgr.*: limit wild suggestions (hun#2970237)
 	- limited compound word suggestions
 	- improved and limited ngram based suggestions
 	* tests/*.sug: modified test files
+
+	* affixmgr.*, hunspell.*: add flag FORCEUCASE (hun#2999228), force
+	  capitalization of compound words, see Hunspell 4 manual),
+	  suggested by Ruud Baars
+	  test/forceucase.*: test files
+
+	* affixmgr.*, hunspell.*: add flag WARN (hun#1808861), optional warning feature
+	  for rare words, suggested by Ruud Baars
+	  tests/warn: test files
+	* tools/hunspell.cxx: add option -r for optional filtering of rare words
+
+	* affixmgr.cxx: fix hun#3161359 (gcc warnings) reported by Ryan VanderMeulen.
 
 2011-01-17 Németh László <nemeth at OOo>:
 	* suggestmgr.cxx: fix hun#3158994 and hun#3159027 (missing csconv table

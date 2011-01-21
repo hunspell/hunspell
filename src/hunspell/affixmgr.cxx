@@ -85,6 +85,8 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   nosplitsugs = 0;
   sugswithdots = 0;
   keepcase = 0;
+  forceucase = 0;
+  warn = 0;
   checksharps = 0;
   substandard = FLAG_NULL;
   fullstrip = 0;
@@ -617,6 +619,22 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by forbidden words */
        if (strncmp(line,"KEEPCASE",8) == 0) {
           if (parse_flag(line, &keepcase, afflst)) {
+             delete afflst;
+             return 1;
+          }
+       }
+
+       /* parse in the flag used by `forceucase' */
+       if (strncmp(line,"FORCEUCASE",10) == 0) {
+          if (parse_flag(line, &forceucase, afflst)) {
+             delete afflst;
+             return 1;
+          }
+       }
+
+       /* parse in the flag used by `warn' */
+       if (strncmp(line,"WARN",4) == 0) {
+          if (parse_flag(line, &warn, afflst)) {
              delete afflst;
              return 1;
           }
@@ -1473,7 +1491,7 @@ void AffixMgr::setcminmax(int * cmin, int * cmax, const char * word, int len) {
 // hu_mov_rule = spec. Hungarian rule (XXX)
 struct hentry * AffixMgr::compound_check(const char * word, int len, 
     short wordnum, short numsyllable, short maxwordnum, short wnum, hentry ** words = NULL,
-    char hu_mov_rule = 0, char is_sug = 0)
+    char hu_mov_rule = 0, char is_sug = 0, int info = 0)
 {
     int i; 
     short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
@@ -1481,7 +1499,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
     struct hentry * rv_first;
     struct hentry * rwords[MAXWORDLEN]; // buffer for COMPOUND pattern checking
     char st [MAXWORDUTF8LEN + 4];
-    char ch;
+    char ch = '\0';
     int cmin;
     int cmax;
     int striple = 0;
@@ -1726,10 +1744,15 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             rv = rv->next_homonym;
         }
 
+            // check FORCEUCASE
+            if (rv && forceucase && (rv) &&
+                (TESTAFF(rv->astr, forceucase, rv->alen)) && !(info & SPELL_ORIGCAP)) rv = NULL;
+
             if (rv && words && words[wnum + 1]) return rv_first;
 
             oldnumsyllable2 = numsyllable;
             oldwordnum2 = wordnum;
+
 
 // LANG_hu section: spec. Hungarian rule, XXX hardwired dictionary code
             if ((rv) && (langnum == LANG_hu) && (TESTAFF(rv->astr, 'I', rv->alen)) && !(TESTAFF(rv->astr, 'J', rv->alen))) {
@@ -1816,6 +1839,10 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
                     rv = NULL;
             }
 
+            // check FORCEUCASE
+            if (rv && forceucase && (rv) &&
+                (TESTAFF(rv->astr, forceucase, rv->alen)) && !(info & SPELL_ORIGCAP)) rv = NULL;
+
             // check forbiddenwords
             if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
                 TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen) ||
@@ -1883,7 +1910,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             // perhaps second word is a compound word (recursive call)
             if (wordnum < maxwordnum) {
                 rv = compound_check((st+i),strlen(st+i), wordnum+1,
-                     numsyllable, maxwordnum, wnum + 1, words, 0, is_sug);
+                     numsyllable, maxwordnum, wnum + 1, words, 0, is_sug, info);
                 if (rv && numcheckcpd && ((scpd == 0 && cpdpat_check(word, i, rv_first, rv, affixed)) ||
                    (scpd != 0 && !cpdpat_check(word, i, rv_first, rv, affixed)))) rv = NULL;
             } else {
@@ -3137,6 +3164,16 @@ int AffixMgr::get_fullstrip() const
 FLAG AffixMgr::get_keepcase() const
 {
   return keepcase;
+}
+
+FLAG AffixMgr::get_forceucase() const
+{
+  return forceucase;
+}
+
+FLAG AffixMgr::get_warn() const
+{
+  return warn;
 }
 
 int AffixMgr::get_checksharps() const

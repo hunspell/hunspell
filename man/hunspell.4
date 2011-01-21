@@ -1,4 +1,4 @@
-.TH hunspell 4 "2010-12-16"
+.TH hunspell 4 "2011-01-21"
 .LO 1
 .SH NAME
 hunspell \- format of Hunspell dictionaries and affix files
@@ -307,6 +307,9 @@ http://aspell.net/man-html/Phonetic-Code.html.
 Note: Multibyte UTF-8 characters have not worked with
 bracket expression yet. Dash expression has signed bytes and not
 UTF-8 characters yet.
+.IP "WARN flag"
+This flag is for rare words, wich are also often spelling mistakes,
+see option -r of command line Hunspell.
 .SH "OPTIONS FOR COMPOUNDING"
 .IP "BREAK number_of_break_definitions"
 .IP "BREAK character_or_character_sequence"
@@ -450,6 +453,10 @@ CHECKCOMPOUNDPATTERN 0/x /y
 .PP
 Note: COMPOUNDMIN doesn't work correctly with the compound word alternation,
 so it may need to set COMPOUNDMIN to lower value.
+.IP "FORCEUCASE flag"
+Last word part of a compound with flag FORCEUCASE forces capitalization of the whole
+compound word. Eg. Dutch word "straat" (street) with FORCEUCASE flags will allowed only
+in capitalized compound forms, according to the Dutch spelling rules.
 .IP "COMPOUNDSYLLABLE max_syllable vowels"
 Need for special compounding rules in Hungarian.
 First parameter is the maximum syllable number, that may be in a
