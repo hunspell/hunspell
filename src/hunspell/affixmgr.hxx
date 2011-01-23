@@ -48,6 +48,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   int                 simplifiedtriple;
   FLAG                forbiddenword;
   FLAG                nosuggest;
+  FLAG                nongramsuggest;
   FLAG                needaffix;
   int                 cpdmin;
   int                 numrep;
@@ -67,6 +68,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   int                 maxngramsugs;
   int                 maxcpdsugs;
   int                 maxdiff;
+  int                 onlymaxdiff;
   int                 nosplitsugs;
   int                 sugswithdots;
   int                 cpdwordmax;
@@ -185,6 +187,7 @@ public:
   FLAG                get_compoundbegin() const;
   FLAG                get_forbiddenword() const;
   FLAG                get_nosuggest() const;
+  FLAG                get_nongramsuggest() const;
   FLAG                get_needaffix() const;
   FLAG                get_onlyincompound() const;
   FLAG                get_compoundroot() const;
@@ -201,6 +204,7 @@ public:
   int                 get_maxngramsugs() const;
   int                 get_maxcpdsugs() const;
   int                 get_maxdiff() const;
+  int                 get_onlymaxdiff() const;
   int                 get_nosplitsugs() const;
   int                 get_sugswithdots(void) const;
   FLAG                get_keepcase(void) const;

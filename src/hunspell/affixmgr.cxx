@@ -55,6 +55,7 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   simplifiedtriple = 0; // allow simplified triple letters in compounds (Schiff+fahrt -> Schiffahrt)
   forbiddenword = FORBIDDENWORD; // forbidden word signing flag
   nosuggest = FLAG_NULL; // don't suggest words signed with NOSUGGEST flag
+  nongramsuggest = FLAG_NULL;
   lang = NULL; // language
   langnum = 0; // language code (see http://l10n.openoffice.org/languages.html)
   needaffix = FLAG_NULL; // forbidden root, allowed only with suffixes
@@ -83,6 +84,7 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   onlyincompound = FLAG_NULL; 
   maxngramsugs = -1; // undefined
   maxdiff = -1; // undefined
+  onlymaxdiff = 0;
   maxcpdsugs = -1; // undefined
   nosplitsugs = 0;
   sugswithdots = 0;
@@ -224,6 +226,7 @@ AffixMgr::~AffixMgr()
   FREE_FLAG(compoundroot);
   FREE_FLAG(forbiddenword);
   FREE_FLAG(nosuggest);
+  FREE_FLAG(nongramsuggest);
   FREE_FLAG(needaffix);
   FREE_FLAG(lemma_present);
   FREE_FLAG(circumfix);
@@ -427,6 +430,13 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
           }
        }
 
+       if (strncmp(line,"NONGRAMSUGGEST",14) == 0) {
+          if (parse_flag(line, &nongramsuggest, afflst)) {
+             delete afflst;
+             return 1;
+          }
+       }
+
        /* parse in the flag used by forbidden words */
        if (strncmp(line,"FORBIDDENWORD",13) == 0) {
           if (parse_flag(line, &forbiddenword, afflst)) {
@@ -605,6 +615,9 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
              return 1;
           }
        }
+
+       if (strncmp(line,"ONLYMAXDIFF", 11) == 0)
+                   onlymaxdiff = 1;
 
        if (strncmp(line,"MAXDIFF",7) == 0) {
           if (parse_num(line, &maxdiff, afflst)) {
@@ -3267,6 +3280,12 @@ FLAG AffixMgr::get_nosuggest() const
   return nosuggest;
 }
 
+// return the forbidden words control flag
+FLAG AffixMgr::get_nongramsuggest() const
+{
+  return nongramsuggest;
+}
+
 // return the forbidden words flag modify flag
 FLAG AffixMgr::get_needaffix() const
 {
@@ -3358,6 +3377,11 @@ int AffixMgr::get_maxcpdsugs(void) const
 int AffixMgr::get_maxdiff(void) const
 {
   return maxdiff;
+}
+
+int AffixMgr::get_onlymaxdiff(void) const
+{
+  return onlymaxdiff;
 }
 
 // return nosplitsugs

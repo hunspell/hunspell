@@ -1067,13 +1067,19 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
     phonet(candidate, target, n, *ph);
   }
 
+  FLAG forbiddenword = pAMgr ? pAMgr->get_forbiddenword() : FLAG_NULL;
+  FLAG nosuggest = pAMgr ? pAMgr->get_nosuggest() : FLAG_NULL;
+  FLAG nongramsuggest = pAMgr ? pAMgr->get_nongramsuggest() : FLAG_NULL;
+  FLAG onlyincompound = pAMgr ? pAMgr->get_onlyincompound() : FLAG_NULL;
+
   for (i = 0; i < md; i++) {  
   while (0 != (hp = (pHMgr[i])->walk_hashtable(col, hp))) {
     if ((hp->astr) && (pAMgr) && 
-       (TESTAFF(hp->astr, pAMgr->get_forbiddenword(), hp->alen) ||
+       (TESTAFF(hp->astr, forbiddenword, hp->alen) ||
           TESTAFF(hp->astr, ONLYUPCASEFLAG, hp->alen) ||
-          TESTAFF(hp->astr, pAMgr->get_nosuggest(), hp->alen) ||
-          TESTAFF(hp->astr, pAMgr->get_onlyincompound(), hp->alen))) continue;
+          TESTAFF(hp->astr, nosuggest, hp->alen) ||
+          TESTAFF(hp->astr, nongramsuggest, hp->alen) ||
+          TESTAFF(hp->astr, onlyincompound, hp->alen))) continue;
 
     sc = ngram(3, word, HENTRY_WORD(hp), NGRAM_LONGER_WORSE + NGRAM_LOWERING) +
 	leftcommonsubstring(word, HENTRY_WORD(hp));
@@ -1290,12 +1296,6 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
         scoresphon[i] += 2 * lcslen(word, gl) - abs((int) (n - len)) +
           // weight length of the left common substring
           leftcommonsubstring(word, gl);
-    	  // ngram
-//          ngram(4, word, gl, NGRAM_ANY_MISMATCH + NGRAM_LOWERING) +
-          // weighted ngrams
-  //        (re = ngram(2, word, gl, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED)) +
-    //      (re += ngram(2, gl, word, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED));
-	
       }
   }
 
@@ -1312,7 +1312,8 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
         // leave only excellent suggestions, if exists
         if (gscore[i] > 1000) same = 1; else if (gscore[i] < -100) {
             same = 1;
-            if (ns > oldns) continue;
+	    // keep the best ngram suggestions, unless in ONLYMAXDIFF mode
+            if (ns > oldns || (pAMgr && pAMgr->get_onlymaxdiff())) continue;
         }
         for (j = 0; j < ns; j++) {
           // don't suggest previous suggestions or a previous suggestion with prefixes or affixes
