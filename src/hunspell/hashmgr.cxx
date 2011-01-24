@@ -364,7 +364,7 @@ int HashMgr::load_tables(const char * tpath, const char * key)
 
   // first read the first line of file to get hash table size */
   if (!(ts = dict->getline())) {
-    HUNSPELL_WARNING(stderr, "error: empty dic file\n");
+    HUNSPELL_WARNING(stderr, "error: empty dic file %s\n", tpath);
     delete dict;
     return 2;
   }
