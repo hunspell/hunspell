@@ -1373,6 +1373,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
 int SuggestMgr::checkword(const char * word, int len, int cpdsuggest, int * timer, clock_t * timelimit)
 {
   struct hentry * rv=NULL;
+  struct hentry * rv2=NULL;
   int nosuffix = 0;
 
   // check time limit
@@ -1388,7 +1389,9 @@ int SuggestMgr::checkword(const char * word, int len, int cpdsuggest, int * time
     if (cpdsuggest==1) {
       if (pAMgr->get_compound()) {
         rv = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, 0, 1, 0); //EXT
-        if (rv) return 3; // XXX obsolote categorisation
+        if (rv && (!(rv2 = pAMgr->lookup(word)) || !rv2->astr || 
+            !(TESTAFF(rv2->astr,pAMgr->get_forbiddenword(),rv2->alen) ||
+            TESTAFF(rv2->astr,pAMgr->get_nosuggest(),rv2->alen)))) return 3; // XXX obsolote categorisation + only ICONV needs affix flag check?
         }
         return 0;
     }

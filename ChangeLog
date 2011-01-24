@@ -1,8 +1,13 @@
+2011-01-24 Németh László <nemeth at OOo>:
+	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 
+	  "termijndoel" with the Dutch dictionary. Reported by Ruud Baars.
+
+
 2011-01-22 Németh László <nemeth at OOo>:
 	* affixmgr.*, suggestmgr.*: new features
 	  ONLYMAXDIFF: remove all bad ngram suggestions (default mode keeps one)
 	  NONGRAMSUGGEST: similar to NOSUGGEST, but it forbids to use the word
-          in ngram based (more, than 1-character distance) suggestions.
+	  in ngram based (more, than 1-character distance) suggestions.
 
 2011-01-21 Németh László <nemeth at OOo>:
 	* suggestmgr.*: limit wild suggestions (hun#2970237 by Ruud Baars)
@@ -11,7 +16,7 @@
 	* tests/*.sug: modified test files
 	- feature MAXCPDSUGS:
 	  MAXCPDSUGS 0 : no compound suggestion, suggested by
-          Finn Gruwier Larsen in hunfeat#2836033
+	  Finn Gruwier Larsen in hunfeat#2836033
 	  MAXCPDSUGS n : max. ~n compound suggestions
 	- feature MAXDIFF: differency limit for ngram suggestions: 0-10 
 	  eg. MAXDIFF 5: normal (default) limit
