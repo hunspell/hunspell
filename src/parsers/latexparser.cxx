@@ -83,7 +83,8 @@ static struct {
 	{ { "\\url", NULL } , 1 },
 	{ { "\\eqref", NULL } , 1 },
 	{ { "\\vskip", NULL } , 1 },
-	{ { "\\vglue", NULL } , 1 }
+	{ { "\\vglue", NULL } , 1 },
+	{ { "\'\'", NULL } , 1 }
 };
 
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
@@ -134,6 +135,7 @@ char * LaTeXParser::next_token()
 {
 	int i;
 	int slash = 0;
+	int apostrophe;
 	for (;;) {
 		// fprintf(stderr,"depth: %d, state: %d, , arg: %d, token: %s\n",depth,state,arg,line[actual]+head);
 		
@@ -168,9 +170,12 @@ char * LaTeXParser::next_token()
 			}
 			break;
 		case 1: // wordchar
-			if (! is_wordchar(line[actual] + head)) {
+			apostrophe = 0;
+			if (! is_wordchar(line[actual] + head) ||
+			  (line[actual][head] == '\'' && line[actual][head+1] == '\'' && ++apostrophe)) {
 				state = 0;
 				char * t = alloc_token(token, &head);
+				if (apostrophe) head += 2;
 				if (t) return t;
 			}
 			break;

@@ -2,6 +2,8 @@
 	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 
 	  "termijndoel" with the Dutch dictionary. Reported by Ruud Baars.
 
+	* latexparser.cxx: fix double apostrophe TeX quoation mark tokenization
+	  (hun#3119776), reported by Wybodekker at SF.net.
 
 2011-01-22 Németh László <nemeth at OOo>:
 	* affixmgr.*, suggestmgr.*: new features
