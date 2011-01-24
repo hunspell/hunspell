@@ -1,7 +1,11 @@
 all:
-	./prepare List*txt
-	./test List*txt
+	./prepare
+	./test
+
+single:
+	./prepare2
+	./test
 
 clean:
-	rm List*txt[1-6] result.*
+	rm *.[1-5] result.*
 

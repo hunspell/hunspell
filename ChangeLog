@@ -5,6 +5,9 @@
 	* latexparser.cxx: fix double apostrophe TeX quoation mark tokenization
 	  (hun#3119776), reported by Wybodekker at SF.net.
 
+	* tests/suggestiontest/*: multilanguage and single Hunspell version, see README
+	* tests/suggestiontest/prepare2: for make -f Makefile.orig single
+
 2011-01-22 Németh László <nemeth at OOo>:
 	* affixmgr.*, suggestmgr.*: new features
 	  ONLYMAXDIFF: remove all bad ngram suggestions (default mode keeps one)
