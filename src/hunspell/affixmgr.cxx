@@ -91,6 +91,7 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   keepcase = 0;
   forceucase = 0;
   warn = 0;
+  forbidwarn = 0;
   checksharps = 0;
   substandard = FLAG_NULL;
   fullstrip = 0;
@@ -667,6 +668,10 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
              delete afflst;
              return 1;
           }
+       }
+
+       if (strncmp(line,"FORBIDWARN",10) == 0) {
+                   forbidwarn=1;
        }
 
        /* parse in the flag used by the affix generator */
@@ -2522,9 +2527,10 @@ struct hentry * AffixMgr::suffix_check (const char * word, int len,
         }
        se = se->getNext();
     }
-  
+
     // now handle the general case
-    unsigned char sp = *((const unsigned char *)(word + len - 1));
+    if (len == 0) return NULL; // FULLSTRIP
+    unsigned char sp= *((const unsigned char *)(word + len - 1));
     SfxEntry * sptr = sStart[sp];
 
     while (sptr) {
@@ -2589,8 +2595,9 @@ struct hentry * AffixMgr::suffix_check_twosfx(const char * word, int len,
         }
         se = se->getNext();
     }
-  
+
     // now handle the general case
+    if (len == 0) return NULL; // FULLSTRIP
     unsigned char sp = *((const unsigned char *)(word + len - 1));
     SfxEntry * sptr = sStart[sp];
 
@@ -2651,8 +2658,9 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
         }
         se = se->getNext();
     }
-  
+
     // now handle the general case
+    if (len == 0) return NULL; // FULLSTRIP
     unsigned char sp = *((const unsigned char *)(word + len - 1));
     SfxEntry * sptr = sStart[sp];
 
@@ -2757,8 +2765,9 @@ char * AffixMgr::suffix_check_morph(const char * word, int len,
        }
        se = se->getNext();
     }
-  
+
     // now handle the general case
+    if (len == 0) return NULL; // FULLSTRIP
     unsigned char sp = *((const unsigned char *)(word + len - 1));
     SfxEntry * sptr = sStart[sp];
 
@@ -3203,6 +3212,11 @@ FLAG AffixMgr::get_forceucase() const
 FLAG AffixMgr::get_warn() const
 {
   return warn;
+}
+
+int AffixMgr::get_forbidwarn() const
+{
+  return forbidwarn;
 }
 
 int AffixMgr::get_checksharps() const

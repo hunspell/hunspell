@@ -99,6 +99,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   FLAG                keepcase;
   FLAG                forceucase;
   FLAG                warn;
+  int                 forbidwarn;
   FLAG                substandard;
   int                 checksharps;
   int                 fullstrip;
@@ -210,6 +211,7 @@ public:
   FLAG                get_keepcase(void) const;
   FLAG                get_forceucase(void) const;
   FLAG                get_warn(void) const;
+  int                 get_forbidwarn(void) const;
   int                 get_checksharps(void) const;
   char *              encode_flag(unsigned short aflag) const;
   int                 get_fullstrip() const;

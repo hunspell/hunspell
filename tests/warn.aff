@@ -1,6 +1,9 @@
 # WARN flag
 # The signed word, and its suffixed forms result warning message in command-line
 
+#Use to forbid the words with flag WARN 
+#FORBIDWARN
+
 WARN W
 
 SFX A Y 1

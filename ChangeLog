@@ -1,3 +1,8 @@
+2011-01-26 Németh László <nemeth at OOo>:
+	* fix for Bugzilla#626195
+
+	* FORBIDWARN parameter
+
 2011-01-24 Németh László <nemeth at OOo>:
 	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 
 	  "termijndoel" with the Dutch dictionary. Reported by Ruud Baars.

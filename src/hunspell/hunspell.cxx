@@ -491,6 +491,7 @@ int Hunspell::spell(const char * word, int * info, char ** root)
       if (pAMgr && pAMgr->get_warn() && rv->astr &&
           TESTAFF(rv->astr, pAMgr->get_warn(), rv->alen)) {
               *info += SPELL_WARN;
+	      if (pAMgr->get_forbidwarn()) return 0;
               return HUNSPELL_OK_WARN;
       }
       return HUNSPELL_OK;
