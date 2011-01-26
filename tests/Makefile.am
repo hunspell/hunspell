@@ -684,7 +684,6 @@ forceucase.test \
 warn.aff \
 warn.dic \
 warn.good \
-warn.wrong \
 warn.test
 
 # infixes.aff

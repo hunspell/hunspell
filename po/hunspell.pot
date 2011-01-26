@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: hunspell 1.2.14\n"
+"Project-Id-Version: hunspell 1.2.15\n"
 "Report-Msgid-Bugs-To: nemeth@openoffice.org\n"
-"POT-Creation-Date: 2011-01-06 13:57+0100\n"
+"POT-Creation-Date: 2011-01-26 14:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,29 +16,33 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/tools/hunspell.cxx:204 src/tools/hunspell.cxx:312
+#: src/tools/hunspell.cxx:205 src/tools/hunspell.cxx:313
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:247 src/tools/hunspell.cxx:270
+#: src/tools/hunspell.cxx:248 src/tools/hunspell.cxx:271
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:562 src/tools/hunspell.cxx:1084
+#: src/tools/hunspell.cxx:565 src/tools/hunspell.cxx:1084
 #: src/tools/hunspell.cxx:1214
 #, c-format
 msgid "error - missing HOME variable\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:645
+#: src/tools/hunspell.cxx:648
 #, c-format
 msgid "Line %d: %s -> "
 msgstr ""
 
-#: src/tools/hunspell.cxx:891
+#: src/tools/hunspell.cxx:890
 msgid "FORBIDDEN!"
+msgstr ""
+
+#: src/tools/hunspell.cxx:891
+msgid "Spelling mistake?"
 msgstr ""
 
 #: src/tools/hunspell.cxx:892
@@ -282,37 +286,42 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1503
 #, c-format
-msgid "  -P password\tset password for encrypted dictionaries\n"
+msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1504
 #, c-format
-msgid "  -s \t\tstem the words of the input text\n"
+msgid "  -P password\tset password for encrypted dictionaries\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1505
 #, c-format
-msgid "  -t\t\tTeX/LaTeX input file format\n"
+msgid "  -s \t\tstem the words of the input text\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1511
+#: src/tools/hunspell.cxx:1506
 #, c-format
-msgid "  -v, --version\tprint version number\n"
+msgid "  -t\t\tTeX/LaTeX input file format\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1512
 #, c-format
-msgid "  -vv\t\tprint Ispell compatible version number\n"
+msgid "  -v, --version\tprint version number\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1513
+#, c-format
+msgid "  -vv\t\tprint Ispell compatible version number\n"
+msgstr ""
+
+#: src/tools/hunspell.cxx:1514
 #, c-format
 msgid ""
 "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 "\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1514
+#: src/tools/hunspell.cxx:1515
 #, c-format
 msgid ""
 "Example: hunspell -d en_US file.txt    # interactive spelling\n"
@@ -321,12 +330,12 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1517
+#: src/tools/hunspell.cxx:1518
 #, c-format
 msgid "Bug reports: http://hunspell.sourceforge.net\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1523
+#: src/tools/hunspell.cxx:1524
 #, c-format
 msgid ""
 "\n"
@@ -337,7 +346,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1526
+#: src/tools/hunspell.cxx:1527
 #, c-format
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
@@ -345,25 +354,25 @@ msgid ""
 "to the extent permitted by law.\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1618 src/tools/hunspell.cxx:1738
-#: src/tools/hunspell.cxx:1755
+#: src/tools/hunspell.cxx:1622 src/tools/hunspell.cxx:1742
+#: src/tools/hunspell.cxx:1759
 #, c-format
 msgid "Can't open %s.\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1667
+#: src/tools/hunspell.cxx:1671
 #, c-format
 msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1668
+#: src/tools/hunspell.cxx:1672
 #, c-format
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1680
+#: src/tools/hunspell.cxx:1684
 #, c-format
 msgid ""
 "LOADED DICTIONARY:\n"
@@ -371,17 +380,17 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1698
+#: src/tools/hunspell.cxx:1702
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1702
+#: src/tools/hunspell.cxx:1706
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
 
-#: src/tools/hunspell.cxx:1765
+#: src/tools/hunspell.cxx:1769
 #, c-format
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
 msgstr ""

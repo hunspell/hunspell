@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hunspell\n"
 "Report-Msgid-Bugs-To: nemeth@openoffice.org\n"
-"POT-Creation-Date: 2011-01-21 13:57+0100\n"
+"POT-Creation-Date: 2011-01-26 14:27+0100\n"
 "PO-Revision-Date: 2005-09-03 11:22+0200\n"
 "Last-Translator: László Németh <nemeth dot lacko at gmail>\n"
 "Language-Team: Hungarian <openscope.org>\n"
@@ -17,30 +17,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
 
-#: src/tools/hunspell.cxx:204 src/tools/hunspell.cxx:312
+#: src/tools/hunspell.cxx:205 src/tools/hunspell.cxx:313
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
 msgstr "hiba - iconv_open: %s -> %s\n"
 
-#: src/tools/hunspell.cxx:247 src/tools/hunspell.cxx:270
+#: src/tools/hunspell.cxx:248 src/tools/hunspell.cxx:271
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
 msgstr "hiba - iconv_open: UTF-8 -> %s\n"
 
-#: src/tools/hunspell.cxx:562 src/tools/hunspell.cxx:1084
+#: src/tools/hunspell.cxx:565 src/tools/hunspell.cxx:1084
 #: src/tools/hunspell.cxx:1214
 #, c-format
 msgid "error - missing HOME variable\n"
 msgstr "hiba - nincs definiálva a HOME környezeti változó\n"
 
-#: src/tools/hunspell.cxx:645
+#: src/tools/hunspell.cxx:648
 #, c-format
 msgid "Line %d: %s -> "
 msgstr "%d. sor: %s -> "
 
-#: src/tools/hunspell.cxx:891
+#: src/tools/hunspell.cxx:890
 msgid "FORBIDDEN!"
 msgstr "TILTOTT!"
+
+#: src/tools/hunspell.cxx:891
+msgid "Spelling mistake?"
+msgstr "Helyesírási hiba?"
 
 #: src/tools/hunspell.cxx:892
 #, c-format
@@ -304,30 +308,35 @@ msgstr "  -p tár\ta tár nevű saját szótárat használja\n"
 
 #: src/tools/hunspell.cxx:1503
 #, c-format
+msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
+msgstr "  -r\t\tlehetséges hibák (ritka szavak) jelzése\n"
+
+#: src/tools/hunspell.cxx:1504
+#, c-format
 msgid "  -P password\tset password for encrypted dictionaries\n"
 msgstr "  -P jelszó\tjelszó megadása a titkosított szótárakhoz\n"
 
-#: src/tools/hunspell.cxx:1504
+#: src/tools/hunspell.cxx:1505
 #, c-format
 msgid "  -s \t\tstem the words of the input text\n"
 msgstr "  -s \t\tszövegszavak tövezése\n"
 
-#: src/tools/hunspell.cxx:1505
+#: src/tools/hunspell.cxx:1506
 #, c-format
 msgid "  -t\t\tTeX/LaTeX input file format\n"
 msgstr "  -t\t\tTeX/LaTeX bemeneti formátum\n"
 
-#: src/tools/hunspell.cxx:1511
+#: src/tools/hunspell.cxx:1512
 #, c-format
 msgid "  -v, --version\tprint version number\n"
 msgstr "  -v, --version\tkiírja a változat számát\n"
 
-#: src/tools/hunspell.cxx:1512
+#: src/tools/hunspell.cxx:1513
 #, c-format
 msgid "  -vv\t\tprint Ispell compatible version number\n"
 msgstr "  -vv\t\tkiírja a változat számát Ispell-szerűen\n"
 
-#: src/tools/hunspell.cxx:1513
+#: src/tools/hunspell.cxx:1514
 #, c-format
 msgid ""
 "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
@@ -336,7 +345,7 @@ msgstr ""
 "  -w\t\tkiírja a hibás szavakat a soronként egy szavas bemenetből.\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1514
+#: src/tools/hunspell.cxx:1515
 #, c-format
 msgid ""
 "Example: hunspell -d en_US file.txt    # interactive spelling\n"
@@ -349,12 +358,12 @@ msgstr ""
 "        hunspell -i utf-8 fájl.txt    # UTF-8-as fájl ellenőrzése\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1517
+#: src/tools/hunspell.cxx:1518
 #, c-format
 msgid "Bug reports: http://hunspell.sourceforge.net\n"
 msgstr "Hibajelzés: http://hunspell.sourceforge.net\n"
 
-#: src/tools/hunspell.cxx:1523
+#: src/tools/hunspell.cxx:1524
 #, c-format
 msgid ""
 "\n"
@@ -371,7 +380,7 @@ msgstr ""
 "MySpell copyright (C) Kevin Hendricks, 2001-2002, Licenc: BSD.\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1526
+#: src/tools/hunspell.cxx:1527
 #, c-format
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
@@ -382,13 +391,13 @@ msgstr ""
 "NINCS garancia, még az eladhatóságra vagy valamely célra való\n"
 "alkalmazhatóságra sem.\n"
 
-#: src/tools/hunspell.cxx:1618 src/tools/hunspell.cxx:1738
-#: src/tools/hunspell.cxx:1755
+#: src/tools/hunspell.cxx:1622 src/tools/hunspell.cxx:1742
+#: src/tools/hunspell.cxx:1759
 #, c-format
 msgid "Can't open %s.\n"
 msgstr "Nem lehet megnyitni a(z) %s-t.\n"
 
-#: src/tools/hunspell.cxx:1667
+#: src/tools/hunspell.cxx:1671
 #, c-format
 msgid ""
 "SEARCH PATH:\n"
@@ -397,12 +406,12 @@ msgstr ""
 "KERESÉSI ÚTVONAL:\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:1668
+#: src/tools/hunspell.cxx:1672
 #, c-format
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
 msgstr "ELÉRHETŐ SZÓTÁRAK (az útvonal nem kötelező a -d kapcsolónál):\n"
 
-#: src/tools/hunspell.cxx:1680
+#: src/tools/hunspell.cxx:1684
 #, c-format
 msgid ""
 "LOADED DICTIONARY:\n"
@@ -413,23 +422,17 @@ msgstr ""
 "%s\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:1698
+#: src/tools/hunspell.cxx:1702
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
 msgstr "hiba - %s meghaladja a szótárlimitet.\n"
 
-#: src/tools/hunspell.cxx:1702
+#: src/tools/hunspell.cxx:1706
 #, fuzzy, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr "Nem lehet megnyitni a ragozási vagy a szótárfájlt.\n"
 
-#: src/tools/hunspell.cxx:1765
+#: src/tools/hunspell.cxx:1769
 #, c-format
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
 msgstr "A Hunspell Ncurses felhasználói felület nélkül lett fordítva.\n"
-
-msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr "  -r\t\tlehetséges hibák (ritka szavak) jelzése\n"
-
-msgid "Spelling mistake?"
-msgstr "Helyesírási hiba?"
