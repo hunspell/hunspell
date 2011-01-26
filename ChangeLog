@@ -1,7 +1,7 @@
 2011-01-26 Németh László <nemeth at OOo>:
-	* fix for Bugzilla#626195
+	* affixmgr.cxx: fix for moz#626195 (memcheck problem with FULLSTRIP).
 
-	* FORBIDWARN parameter
+	* affixmgr.*, suggestmgr.cxx: FORBIDWARN parameter (see manual)
 
 2011-01-24 Németh László <nemeth at OOo>:
 	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 

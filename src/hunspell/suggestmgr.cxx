@@ -1181,7 +1181,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
            sc = ngram(n, word, glst[k].word, NGRAM_ANY_MISMATCH + NGRAM_LOWERING) +
                leftcommonsubstring(word, glst[k].word);
 
-           if ((sc > thresh)) {
+           if (sc > thresh) {
               if (sc > gscore[lp]) {
                  if (guess[lp]) {
                     free (guess[lp]);
@@ -1204,7 +1204,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
                 if (glst[k].orig) free(glst[k].orig);
               }
            } else {
-        	free(glst[k].word);
+                free(glst[k].word);
                 if (glst[k].orig) free(glst[k].orig);
            }
         }
@@ -1268,8 +1268,8 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
           // weighted ngrams
           (re = ngram(2, word, gl, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED)) +
           (re += ngram(2, gl, word, NGRAM_ANY_MISMATCH + NGRAM_LOWERING + NGRAM_WEIGHTED)) +
-	  // different limit for dictionaries with PHONE rules
-	  (ph ? (re < len * fact ? -1000 : 0) : (re < (n + len)*fact? -1000 : 0));
+          // different limit for dictionaries with PHONE rules
+          (ph ? (re < len * fact ? -1000 : 0) : (re < (n + len)*fact? -1000 : 0));
       }
   }
 
@@ -1313,7 +1313,11 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
         if (gscore[i] > 1000) same = 1; else if (gscore[i] < -100) {
             same = 1;
 	    // keep the best ngram suggestions, unless in ONLYMAXDIFF mode
-            if (ns > oldns || (pAMgr && pAMgr->get_onlymaxdiff())) continue;
+            if (ns > oldns || (pAMgr && pAMgr->get_onlymaxdiff())) {
+    	        free(guess[i]);
+    	        if (guessorig[i]) free(guessorig[i]);
+                continue;
+            }
         }
         for (j = 0; j < ns; j++) {
           // don't suggest previous suggestions or a previous suggestion with prefixes or affixes

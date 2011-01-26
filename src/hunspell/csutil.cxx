@@ -308,9 +308,7 @@ int line_tok(const char * text, char *** lines, char breakchar) {
         p = strchr(p, breakchar);
     }
     linenum++;
-//    fprintf(stderr, "LINEN:%d %p %p\n", linenum, lines, *lines);
     *lines = (char **) malloc(linenum * sizeof(char *));
-//    fprintf(stderr, "hello\n");
     if (!(*lines)) {
         free(dup);
         return 0;
