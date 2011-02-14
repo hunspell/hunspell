@@ -1,3 +1,29 @@
+2011-02-02 Németh László <nemeth at OOo>:
+	* suggestngr.cxx: fix ngram PHONE suggestion for input words with
+	  diacritics using UTF-8 encoded dictionaries (add byte length to the
+	  8-bit phonet() argument instead of character length)
+
+	* suggestmgr.cxx: fix missing csconv problem with UTF-8 encoding
+	  dictionares, when the input contains non-BMP characters
+	- tests/utf8_nonbmp.sug: test file
+
+	* suggestmgr.cxx: mixed and keyboard based character suggestions
+	  don't forbid ngram suggestion search (optimized tests/suggestiontest)
+
+	* affixmgr.cxx: fix hun#2999225: interfering compounding mechanisms,
+	  tested on Dutch word list and reported by Ruud Baars
+
+	* affixmgr.cxx: allomorph fix for hun#2970240 (Hungarian 
+	  compound "vadász+gép" was analyzed as vad+ász+gép, and rejected
+	  by the ss->s rep rule (verb "vadássz"), but the analysis
+	  didn't continue for the longer word parts (vadász+gép).
+
+	* csutil.cxx: add lang code "az_AZ", "hu_HU", "tr_TR" for back
+	  compatibility (fixing Azeri and Turkish casing conversion, also
+	  Hungarian compound handling)
+
+	* affixmgr.cxx: fix morphological analysis
+
 2011-01-26 Németh László <nemeth at OOo>:
 	* affixmgr.cxx: fix for moz#626195 (memcheck problem with FULLSTRIP).
 
@@ -86,7 +112,7 @@
         - switching off default BREAK parameters by BREAK 0,
           reported by Ruud Baars
 
-        - hun#2999225, reported by Ruud Baars
+        - hun#2999225: interfering compounding mechanisms, reported by Ruud Baars
 
 2010-12-11 Németh László <nemeth at OOo>:
         * affixmgr.cxx: fix hun#2970242 (CHECKCOMPOUNDPATTERN only with flags),

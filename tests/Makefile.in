@@ -584,6 +584,7 @@ utf8_bom2.test \
 utf8_nonbmp.aff \
 utf8_nonbmp.dic \
 utf8_nonbmp.good \
+utf8_nonbmp.sug \
 utf8_nonbmp.test \
 utf8_nonbmp.wrong \
 utfcompound.aff \

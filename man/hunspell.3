@@ -1,4 +1,4 @@
-.TH hunspell 3 "2008-06-17"
+.TH hunspell 3 "2011-02-01"
 .LO 1
 .hy 0
 .SH NAME
@@ -81,8 +81,10 @@ object. Maximal number of the extra dictionaries is limited in the source code (
 The spell() function returns non-zero, if the input word is recognised
 by the spell checker, and a zero value if not. Optional reference
 variables return a bit array (info) and the root word of the input word.
-Info bits checked with the SPELL_COMPOUND and SPELL_FORBIDDEN
-macros sign compound words and explicit forbidden words.
+Info bits checked with the SPELL_COMPOUND, SPELL_FORBIDDEN or SPELL_WARN
+macros sign compound words, explicit forbidden and probably bad words.
+From version 1.3, the non-zero return value is 2 for the dictionary
+words with the flag "WARN" (probably bad words).
 .PP
 The suggest() function has two input parameters, a reference variable
 of the output suggestion list, and an input word. The function returns

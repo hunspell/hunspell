@@ -19,8 +19,8 @@ grep '^[^-]*	' |
 sed 's/ *$//' >$input.1
 
 # remove bad words recognised by Aspell as good
-cut -f 1 -d '	' $input.1 | tee buc | aspell -l $alang --list | tee bux |
-awk 'FILENAME=="-"{a[$1]=1;next}a[$1]{print$0}' - $input.1 | tee bux2 |
+cut -f 1 -d '	' $input.1 | aspell -l $alang --list |
+awk 'FILENAME=="-"{a[$1]=1;next}a[$1]{print$0}' - $input.1 |
 
 # change commas with tabs
 sed 's/, */	/g' >$input.2

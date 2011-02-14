@@ -647,13 +647,13 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
         }
      // try check compound word
      } else if (pAMgr->get_compound()) {
-          he = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, 0, 0, *info);
+          he = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, 0, 0, info);
           // LANG_hu section: `moving rule' with last dash
           if ((!he) && (langnum == LANG_hu) && (word[len-1] == '-')) {
              char * dup = mystrdup(word);
              if (!dup) return NULL;
              dup[len-1] = '\0';
-             he = pAMgr->compound_check(dup, len-1, -5, 0, 100, 0, NULL, 1, 0, *info);
+             he = pAMgr->compound_check(dup, len-1, -5, 0, 100, 0, NULL, 1, 0, info);
              free(dup);
           }
           // end of LANG speficic region
@@ -857,8 +857,8 @@ int Hunspell::suggest(char*** slst, const char * word)
   }
   // END OF LANG_hu section
 
-  // try ngram approach since found nothing
-  if ((ns == 0 || onlycmpdsug) && pAMgr && (pAMgr->get_maxngramsugs() != 0) && (*slst)) {
+  // try ngram approach since found nothing or only compound words
+  if (pAMgr && (ns == 0 || onlycmpdsug) && (pAMgr->get_maxngramsugs() != 0) && (*slst)) {
       switch(captype) {
           case NOCAP: {
               ns = pSMgr->ngsuggest(*slst, cw, ns, pHMgr, maxdic);

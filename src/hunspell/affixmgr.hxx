@@ -159,7 +159,7 @@ public:
   void        setcminmax(int * cmin, int * cmax, const char * word, int len);
   struct hentry * compound_check(const char * word, int len, short wordnum,
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
-            char hu_mov_rule, char is_sug, int info);
+            char hu_mov_rule, char is_sug, int * info);
 
   int compound_check_morph(const char * word, int len, short wordnum,
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
