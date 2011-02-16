@@ -1,28 +1,26 @@
-.TH hunspell 4 "2011-01-21"
+.TH hunspell 4 "2011-02-16"
 .LO 1
 .SH NAME
 hunspell \- format of Hunspell dictionaries and affix files
 .SH DESCRIPTION
 .IR Hunspell (1)
-requires two files to define the language that it is spell checking. 
-The first file is a dictionary containing words for the language,
-and  the  second is an "affix" file that defines the meaning of
-special flags in the dictionary.
+Hunspell requires two files to define the way a language is being spell
+checked: a dictionary file containing words and applicable flags, and an
+affix file that specifies how these flags wil controll spell checking.
+An optional file is the personal dictionary file.
 
+.SH Dictionary file
 A dictionary file (*.dic) contains a list of words, one per line.
 The first line of the dictionaries (except personal dictionaries)
-contains the approximate word count (for optimal
-hash memory size). Each word may optionally be followed
-by a slash ("/") and one or more flags, which represents
-affixes or special attributes. Dictionary words can contain also
-slashes with the "\/" syntax. Default flag format is a
-single (usually alphabetic) character. After the dictionary words there
-are also optional fields separated by tabulators or spaces
-(spaces only work as morphological field separators, if they are
-followed by morphological field ids, see also Optional data fields).
+contains the approximate word count (for optimal hash memory size). Each word
+may optionally be followed by a slash ("/") and one or more flags, which
+represents the word attributes, for example affixes.
 
-Personal dictionaries are simple word lists. Asterisk
-at the first character position signs prohibition.
+Note: Dictionary words can contain also slashes when escaped like  "\/" syntax. 
+
+.SH Personal dictionary file
+Personal dictionaries are simple word lists. Asterisk at the first character
+position signs prohibition.
 A second word separated by a slash sets the affixation.
 
 .PP
@@ -39,25 +37,22 @@ In this example, "foo" and "Foo" are personal words, plus Foo
 will be recognized with affixes of Simpson (Foo's etc.) and
 bar is a forbidden word.
 
-An affix file (*.aff) may contain a lot of optional attributes.
-For example,
-.B SET
-is used for setting the character encodings of affixes and dictionary files.
-.B TRY
-sets the change characters for suggestions.
-.B REP
-sets a replacement table for multiple character corrections in
-suggestion mode.
-.B PFX
-and
-.B SFX
-defines prefix and suffix classes named with affix flags.
+.SH Short example
 
-The following affix file example defines UTF-8 character encoding.
-`TRY' suggestions differ from the bad word with an English letter or
-an apostrophe. With these REP definitions, Hunspell can suggest
-the right word form, when the misspelled
-word contains f instead of ph and vice versa.
+Dictionary file:
+.PP
+.RS
+.nf
+3
+hello
+try/B
+work/AB
+.fi
+.RE
+.PP
+The flags B and A specify attributes of these words.
+
+Affix file:
 
 .PP
 .RS
@@ -79,29 +74,18 @@ SFX B y ied y
 .RE
 .PP
 
-There are two affix classes in the dictionary. Class A
-defines a `re-' prefix. Class B defines two `-ed'
-suffixes. First suffix can be added to a word if
+In the affix file, prefix A and suffix B have been defined.
+Flag A defines a `re-' prefix. Class B defines two `-ed'
+suffixes. First B suffix can be added to a word if
 the last character of the word isn't `y'.
 Second suffix can be added to the words terminated with an `y'.
-(See later.) The following dictionary file
-uses these affix classes.
 
-.PP
-.RS
-.nf
-3
-hello
-try/B
-work/AB
-.fi
-.RE
-.PP
 
-All accepted words with this dictionary:
+All accepted words with this dictionary and affix combination are:
 "hello", "try", "tried", "work", "worked", "rework", "reworked".
 
-.SH "GENERAL OPTIONS"
+.SH "AFFIX FILE GENERAL OPTIONS"
+
 Hunspell source distribution contains more than 80 examples for
 option usage.
 
@@ -109,6 +93,14 @@ option usage.
 Set character encoding of words and morphemes in affix and dictionary files.
 Possible values: UTF-8, ISO8859\-1 \- ISO8859\-10, 
 ISO8859\-13 \- ISO8859\-15, KOI8-R, KOI8-U, microsoft-cp1251, ISCII-DEVANAGARI.
+.PP
+.RS
+.nf
+SET UTF-8
+.fi
+.RE
+.PP
+
 .IP "FLAG value"
 Set flag type. Default type is the extended ASCII (8-bit) character. 
 `UTF-8' parameter sets UTF-8 encoded Unicode character flags.
@@ -116,21 +108,32 @@ The `long' value sets the double extended ASCII character flag type,
 the `num' sets the decimal number flag type. Decimal flags numbered from 1 to
 65000, and in flag fields are separated by comma.
 BUG: UTF-8 flag type doesn't work on ARM platform.
+.PP
+.RS
+.nf
+FLAG long
+.fi
+.RE
+.PP
+
 .IP "COMPLEXPREFIXES"
-Set twofold prefix stripping (but single suffix stripping) for agglutinative
+Set twofold prefix stripping (but single suffix stripping) eg. for morphologically complex
 languages with right-to-left writing system.
+
 .IP "LANG langcode"
-Set language code. In Hunspell may be language specific codes enabled
-by LANG code. At present there are az_AZ, hu_HU, tr_TR specific
-codes in Hunspell (see the source code).
+Set language code for language specific functions of Hunspell. Use it to activate special casing
+of Azeri (LANG az) and Turkish (LANG tr).
 .IP "IGNORE characters"
-Ignore characters from dictionary words, affixes and input words.
-Useful for optional characters, as Arabic diacritical marks (Harakat).
+Sets characters to ignore dictionary words, affixes and
+input words.
+Useful for optional characters, as Arabic (harakat) or Hebrew (niqqud) diacritical marks (see
+tests/ignore.* test dictionary in Hunspell distribution).
+
 .IP "AF number_of_flag_vector_aliases"
 .IP "AF flag_vector"
 Hunspell can substitute affix flag sets with
-ordinal numbers in affix rules (alias compression, see makealias
-tool). First example with alias compression:
+ordinal numbers in affix rules (alias compression, see makealias tool). First
+example with alias compression:
 .PP
 .RS
 .nf
@@ -145,8 +148,6 @@ AF definitions in the affix file:
 .PP
 .RS
 .nf
-SET UTF-8
-TRY esianrtolcdugmphbyfvkwzESIANRTOLCDUGMPHBYFVKWZ'
 AF 2
 AF A
 AF AB
@@ -169,7 +170,7 @@ work/AB
 
 See also tests/alias* examples of the source distribution.
 
-Note: If affix file contains the FLAG parameter, define it before the AF
+Note I: If affix file contains the FLAG parameter, define it before the AF
 definitions.
 
 Note II: Use makealias utility in Hunspell distribution to compress 
@@ -179,11 +180,12 @@ aff and dic files.
 Hunspell can substitute also morphological data with
 ordinal numbers in affix rules (alias compression). 
 See tests/alias* examples.
-.SH "OPTIONS FOR SUGGESTION"
-Suggestion parameters can optimize the default n-gram, character swap
-and deletion suggestions of Hunspell. REP is suggested to fix
-the typical and especially bad language specific bugs, because
-the REP suggestions have the highest priority in the suggestion list.
+.SH "AFFIX FILE OPTIONS FOR SUGGESTION"
+Suggestion parameters can optimize the default n-gram (similarity search in
+the dictionary words based on the common 1, 2, 3, 4-character length common
+character-sequences), character swap and deletion suggestions of Hunspell. 
+REP is suggested to fix the typical and especially bad language specific bugs,
+because the REP suggestions have the highest priority in the suggestion list.
 PHONE is for languages with not pronunciation based orthography.
 .IP "KEY characters_separated_by_vertical_line_optionally"
 Hunspell searches and suggests words with one different
@@ -211,32 +213,34 @@ KEY qwertzuop|yxcvbnm|qaw|say|wse|dsx|sy|edr|fdc|dx|rft|gfv|fc|tgz|hgb|gv|zhu|jh
 Hunspell can suggest right word forms, when they differ from the
 bad input word by one TRY character. The parameter of TRY is case sensitive.
 .IP "NOSUGGEST flag"
-Words signed with NOSUGGEST flag are not suggested. Proposed flag
+Words signed with NOSUGGEST flag are not suggested (but still accepted when
+typed correctly). Proposed flag
 for vulgar and obscene words (see also SUBSTANDARD).
 .IP "MAXCPDSUGS num"
-Set max. number of suggested compound words (generated by compound rules). (The number of 
-the suggested compound words may be greater from the same 1-character distance type.)
+Set max. number of suggested compound words generated by compound rules. The
+number of the suggested compound words may be greater from the same 1-character
+distance type.
 .IP "MAXNGRAMSUGS num"
 Set max. number of n-gram suggestions. Value 0 switches off the n-gram suggestions
 (see also MAXDIFF).
 .IP "MAXDIFF [0-10]"
-Set the similarity factor for the n-gram suggestions (5 = default value, 0 = few, but min. 1,
+Set the similarity factor for the n-gram based suggestions (5 = default value; 0 = fewer n-gram suggestions, but min. 1;
 10 = MAXNGRAMSUGS n-gram suggestions).
 .IP "ONLYMAXDIFF"
-Removing all bad ngram suggestions is allowed (default mode keeps one, see MAXDIFF).
+Remove all bad n-gram suggestions (default mode keeps one, see MAXDIFF).
 .IP "NOSPLITSUGS"
-Disable split-word suggestions.
+Disable word suggestions with spaces.
 .IP "SUGSWITHDOTS"
 Add dot(s) to suggestions, if input word terminates in dot(s).
 (Not for OpenOffice.org dictionaries, because OpenOffice.org
 has an automatic dot expansion mechanism.)
 .IP "REP number_of_replacement_definitions"
 .IP "REP what replacement"
-We can define language-dependent phonetic information
-in the affix file (.aff)  by a replacement table. 
+This table specifies modifications to try first.
 First REP is the header of this table and one or more REP data
-line are following it. With this table, Hunspell can suggest the right forms for the typical 
-faults of spelling when the incorrect form differs by more, 
+line are following it. 
+With this table, Hunspell can suggest the right forms for the typical 
+spelling mistakes when the incorrect form differs by more 
 than 1 letter from the right form.
 The search string supports the regex boundary signs (^ and $).
 For example a possible English replacement table definition
@@ -269,9 +273,8 @@ REP onetwothree one_two_three
 .RE
 .PP
 
-Note III: Replacement table can be used for a stricter compound word checking (forbidding
-generated compound words, if they are also simple words with typical fault,
-see CHECKCOMPOUNDREP).
+Note III: Replacement table can be used for a stricter compound word checking
+with the option CHECKCOMPOUNDREP.
 
 .IP "MAP number_of_map_definitions"
 .IP "MAP string_of_related_chars_or_parenthesized_character_sequences"
@@ -372,7 +375,7 @@ BREAK 0
 .RE
 .PP
 
-Note II: COMPOUNDRULE is better (or will be better) for handling dashes and
+Note II: COMPOUNDRULE is better for handling dashes and
 other  compound joining characters or character strings. Use BREAK, if you
 want to check words with dashes or other joining characters and there is no time
 or possibility to describe precise compound rules with COMPOUNDRULE
@@ -398,12 +401,12 @@ Note: en_US dictionary of OpenOffice.org uses COMPOUNDRULE for ordinal number re
 Note II: In the case of long and numerical flag types use only parenthesized 
 flags: (1500)*(2000)?
 
-Note III: COMPOUNDRULE flags haven't been compatible with the COMPOUNDFLAG,
-COMPOUNDBEGIN, etc. compound flags yet (use these flags on different
-words).
+Note III: COMPOUNDRULE flags work completely separately from the
+compounding mechanisme using COMPOUNDFLAG, COMPOUNDBEGIN, etc. compound
+flags. (Use these flags on different enhtries for words).
 
 .IP "COMPOUNDMIN num"
-Minimum length of words in compound words.
+Minimum length of words used for compounding.
 Default value is 3 letters.
 .IP "COMPOUNDFLAG flag"
 Words signed with COMPOUNDFLAG may be in compound words (except when
@@ -420,6 +423,8 @@ Words signed with COMPOUNDMIDDLE (or with a signed affix) may be middle elements
 Suffixes signed with ONLYINCOMPOUND flag may be only inside of compounds
 (Fuge-elements in German, fogemorphemes in Swedish).
 ONLYINCOMPOUND flag works also with words (see tests/onlyincompound.*).
+Note: also valuable to flag compounding parts which are not correct as a word
+by itself.
 .IP "COMPOUNDPERMITFLAG flag"
 Prefixes are allowed at the beginning of compounds,
 suffixes are allowed at the end of compounds by default.
@@ -438,7 +443,7 @@ Forbid compounding, if the (usually bad) compound word may be
 a non compound word with a REP fault. Useful for languages with
 `compound friendly' orthography.
 .IP "CHECKCOMPOUNDCASE"
-Forbid upper case characters at word bound in compounds.
+Forbid upper case characters at word boundaries in compounds.
 .IP "CHECKCOMPOUNDTRIPLE"
 Forbid compounding, if compound word contains triple repeating letters
 (e.g. foo|ox or xo|oof). Bug: missing multi-byte character support
@@ -467,7 +472,8 @@ so it may need to set COMPOUNDMIN to lower value.
 .IP "FORCEUCASE flag"
 Last word part of a compound with flag FORCEUCASE forces capitalization of the whole
 compound word. Eg. Dutch word "straat" (street) with FORCEUCASE flags will allowed only
-in capitalized compound forms, according to the Dutch spelling rules.
+in capitalized compound forms, according to the Dutch spelling rules for proper
+names.
 .IP "COMPOUNDSYLLABLE max_syllable vowels"
 Need for special compounding rules in Hungarian.
 First parameter is the maximum syllable number, that may be in a
@@ -475,7 +481,7 @@ compound, if words in compounds are more than COMPOUNDWORDMAX.
 Second parameter is the list of vowels (for calculating syllables).
 .IP "SYLLABLENUM flags"
 Need for special compounding rules in Hungarian.
-.SH "OPTIONS FOR AFFIX CREATION"
+.SH "AFFIX FILE OPTIONS FOR AFFIX CREATION"
 .IP "PFX flag cross_product number"
 .IP "PFX flag stripping prefix [condition [morphological_fields...]]"
 .IP "SFX flag cross_product number"
@@ -515,42 +521,42 @@ meaning, but circumflex (^) next the first brace sets the complementer character
 
 (5) Optional morphological fields separated by spaces or tabulators.
 
-.SH "OTHER OPTIONS"
+.SH "AFFIX FILE OTHER OPTIONS"
 .IP "CIRCUMFIX flag"
 Affixes signed with CIRCUMFIX flag may be on a word when this word also has a
-prefix with CIRCUMFIX flag and vice versa.
+prefix with CIRCUMFIX flag and vice versa (see circumfix.* test files in the source distribution).
 .IP "FORBIDDENWORD flag"
 This flag signs forbidden word form. Because affixed forms
 are also forbidden, we can subtract a subset from set of
 the accepted affixed and compound words.
+Note: usefull to forbid erroneous words, generated by the compounding mechanism.
 .IP "FULLSTRIP"
-With FULLSTRIP, affix rules can strip full words, not only one less characters.
-
+With FULLSTRIP, affix rules can strip full words, not only one less characters, before
+adding the affixes, see fullstrip.* test files in the source distribution).
 Note: conditions may be word length without FULLSTRIP, too.
 .IP "KEEPCASE flag"
 Forbid uppercased and capitalized forms of words 
 signed with KEEPCASE flags. Useful for special orthographies 
 (measurements and currency often keep their case in uppercased
 texts) and writing systems (e.g. keeping lower case of IPA characters).
+Also valuable for words erroneously written in the wrong case.
 
 Note: With CHECKSHARPS declaration, words with sharp s and KEEPCASE
 flag may be capitalized and uppercased, but uppercased forms of these
 words may not contain sharp s, only SS. See germancompounding
 example in the tests directory of the Hunspell distribution.
 
-Note: Using lot of zero affixes may have a big cost, because every
-zero affix is checked under affix analysis before the other affixes.
 .IP "ICONV number_of_ICONV_definitions"
 .IP "ICONV pattern pattern2"
 Define input conversion table.
+Note: useful to convert one type of quote to another one, or change ligature.
 .IP "OCONV number_of_OCONV_definitions"
 .IP "OCONV pattern pattern2"
 Define output conversion table.
 .IP "LEMMA_PRESENT flag"
-Not used in Hunspell 1.2. Use "st:" field instead of LEMMA_PRESENT.
+Deprecated. Use "st:" field instead of LEMMA_PRESENT.
 .IP "NEEDAFFIX flag"
-This flag signs virtual stems in the dictionary.
-Only affixed forms of these words will be accepted by Hunspell.
+This flag signs virtual stems in the dictionary, words only valid when affixed.
 Except, if the dictionary word has a homonym or a zero affix.
 NEEDAFFIX works also with prefixes and prefix + suffix combinations
 (see tests/pseudoroot5.*).
