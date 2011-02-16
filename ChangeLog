@@ -1,3 +1,7 @@
+2011-02-16 Németh László <nemeth at numbertext dot org>:
+        * src/*/Makefile.am: fix library versioning, the probem reported by
+          Rene Engerhald and Simon Brouwer.
+
 2011-02-02 Németh László <nemeth at OOo>:
 	* suggestngr.cxx: fix ngram PHONE suggestion for input words with
 	  diacritics using UTF-8 encoded dictionaries (add byte length to the

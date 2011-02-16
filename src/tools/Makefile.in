@@ -71,21 +71,21 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_analyze_OBJECTS = analyze.$(OBJEXT)
 analyze_OBJECTS = $(am_analyze_OBJECTS)
-analyze_DEPENDENCIES = ../hunspell/libhunspell-1.2.la
+analyze_DEPENDENCIES = ../hunspell/libhunspell-1.3.la
 am_chmorph_OBJECTS = chmorph.$(OBJEXT)
 chmorph_OBJECTS = $(am_chmorph_OBJECTS)
 chmorph_DEPENDENCIES = ../parsers/libparsers.a \
-	../hunspell/libhunspell-1.2.la
+	../hunspell/libhunspell-1.3.la
 am_example_OBJECTS = example.$(OBJEXT)
 example_OBJECTS = $(am_example_OBJECTS)
-example_DEPENDENCIES = ../hunspell/libhunspell-1.2.la
+example_DEPENDENCIES = ../hunspell/libhunspell-1.3.la
 am_hunspell_OBJECTS = hunspell.$(OBJEXT)
 hunspell_OBJECTS = $(am_hunspell_OBJECTS)
 hunspell_DEPENDENCIES = ../parsers/libparsers.a \
-	../hunspell/libhunspell-1.2.la
+	../hunspell/libhunspell-1.3.la
 am_hunzip_OBJECTS = hunzip.$(OBJEXT)
 hunzip_OBJECTS = $(am_hunzip_OBJECTS)
-hunzip_DEPENDENCIES = ../hunspell/libhunspell-1.2.la
+hunzip_DEPENDENCIES = ../hunspell/libhunspell-1.3.la
 am_hzip_OBJECTS = hzip.$(OBJEXT)
 hzip_OBJECTS = $(am_hzip_OBJECTS)
 hzip_LDADD = $(LDADD)
@@ -325,19 +325,19 @@ top_srcdir = @top_srcdir@
 INCLUDES = -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 hzip_SOURCES = hzip.c
 hunzip_SOURCES = hunzip.cxx
-hunzip_LDADD = ../hunspell/libhunspell-1.2.la
+hunzip_LDADD = ../hunspell/libhunspell-1.3.la
 munch_SOURCES = munch.c munch.h
 unmunch_SOURCES = unmunch.c unmunch.h
 example_SOURCES = example.cxx
-example_LDADD = ../hunspell/libhunspell-1.2.la
+example_LDADD = ../hunspell/libhunspell-1.3.la
 hunspell_SOURCES = hunspell.cxx
 hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
-	../hunspell/libhunspell-1.2.la @CURSESLIB@ @READLINELIB@
+	../hunspell/libhunspell-1.3.la @CURSESLIB@ @READLINELIB@
 
 analyze_SOURCES = analyze.cxx
-analyze_LDADD = ../hunspell/libhunspell-1.2.la
+analyze_LDADD = ../hunspell/libhunspell-1.3.la
 chmorph_SOURCES = chmorph.cxx
-chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.2.la
+chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.3.la
 dist_bin_SCRIPTS = makealias affixcompress wordforms ispellaff2myspell wordlist2hunspell
 all: all-am
 

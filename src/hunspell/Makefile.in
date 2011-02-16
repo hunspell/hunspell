@@ -37,7 +37,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 subdir = src/hunspell
-DIST_COMMON = README $(libhunspell_1_2_include_HEADERS) \
+DIST_COMMON = README $(libhunspell_1_3_include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/hunvisapi.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -87,16 +87,16 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" \
-	"$(DESTDIR)$(libhunspell_1_2_includedir)"
+	"$(DESTDIR)$(libhunspell_1_3_includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libhunspell_1_2_la_LIBADD =
-am_libhunspell_1_2_la_OBJECTS = affentry.lo affixmgr.lo csutil.lo \
+libhunspell_1_3_la_LIBADD =
+am_libhunspell_1_3_la_OBJECTS = affentry.lo affixmgr.lo csutil.lo \
 	dictmgr.lo hashmgr.lo hunspell.lo suggestmgr.lo phonet.lo \
 	filemgr.lo hunzip.lo replist.lo
-libhunspell_1_2_la_OBJECTS = $(am_libhunspell_1_2_la_OBJECTS)
-libhunspell_1_2_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+libhunspell_1_3_la_OBJECTS = $(am_libhunspell_1_3_la_OBJECTS)
+libhunspell_1_3_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libhunspell_1_2_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(libhunspell_1_3_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -110,9 +110,9 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libhunspell_1_2_la_SOURCES)
-DIST_SOURCES = $(libhunspell_1_2_la_SOURCES)
-HEADERS = $(libhunspell_1_2_include_HEADERS)
+SOURCES = $(libhunspell_1_3_la_SOURCES)
+DIST_SOURCES = $(libhunspell_1_3_la_SOURCES)
+HEADERS = $(libhunspell_1_3_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -290,21 +290,21 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = libhunspell-1.2.la
-libhunspell_1_2_includedir = $(includedir)/hunspell
-libhunspell_1_2_la_SOURCES = affentry.cxx affixmgr.cxx csutil.cxx \
+lib_LTLIBRARIES = libhunspell-1.3.la
+libhunspell_1_3_includedir = $(includedir)/hunspell
+libhunspell_1_3_la_SOURCES = affentry.cxx affixmgr.cxx csutil.cxx \
 		     dictmgr.cxx hashmgr.cxx hunspell.cxx \
 	             suggestmgr.cxx license.myspell license.hunspell \
 	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx
 
-libhunspell_1_2_include_HEADERS = affentry.hxx htypes.hxx affixmgr.hxx \
+libhunspell_1_3_include_HEADERS = affentry.hxx htypes.hxx affixmgr.hxx \
 	        csutil.hxx hunspell.hxx atypes.hxx dictmgr.hxx hunspell.h \
 		suggestmgr.hxx baseaffix.hxx hashmgr.hxx langnum.hxx \
 		phonet.hxx filemgr.hxx hunzip.hxx w_char.hxx replist.hxx \
 		hunvisapi.h
 
-libhunspell_1_2_la_DEPENDENCIES = utf_info.cxx
-libhunspell_1_2_la_LDFLAGS = -no-undefined
+libhunspell_1_3_la_DEPENDENCIES = utf_info.cxx
+libhunspell_1_3_la_LDFLAGS = -no-undefined
 AM_CXXFLAGS = $(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL
 EXTRA_DIST = hunspell.dsp makefile.mk README utf_info.cxx
 all: all-am
@@ -374,8 +374,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libhunspell-1.2.la: $(libhunspell_1_2_la_OBJECTS) $(libhunspell_1_2_la_DEPENDENCIES) 
-	$(libhunspell_1_2_la_LINK) -rpath $(libdir) $(libhunspell_1_2_la_OBJECTS) $(libhunspell_1_2_la_LIBADD) $(LIBS)
+libhunspell-1.3.la: $(libhunspell_1_3_la_OBJECTS) $(libhunspell_1_3_la_DEPENDENCIES) 
+	$(libhunspell_1_3_la_LINK) -rpath $(libdir) $(libhunspell_1_3_la_OBJECTS) $(libhunspell_1_3_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -421,26 +421,26 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-libhunspell_1_2_includeHEADERS: $(libhunspell_1_2_include_HEADERS)
+install-libhunspell_1_3_includeHEADERS: $(libhunspell_1_3_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libhunspell_1_2_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libhunspell_1_2_includedir)"
-	@list='$(libhunspell_1_2_include_HEADERS)'; test -n "$(libhunspell_1_2_includedir)" || list=; \
+	test -z "$(libhunspell_1_3_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libhunspell_1_3_includedir)"
+	@list='$(libhunspell_1_3_include_HEADERS)'; test -n "$(libhunspell_1_3_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libhunspell_1_2_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libhunspell_1_2_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libhunspell_1_3_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libhunspell_1_3_includedir)" || exit $$?; \
 	done
 
-uninstall-libhunspell_1_2_includeHEADERS:
+uninstall-libhunspell_1_3_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libhunspell_1_2_include_HEADERS)'; test -n "$(libhunspell_1_2_includedir)" || list=; \
+	@list='$(libhunspell_1_3_include_HEADERS)'; test -n "$(libhunspell_1_3_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libhunspell_1_2_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libhunspell_1_2_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(libhunspell_1_3_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libhunspell_1_3_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -528,7 +528,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libhunspell_1_2_includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libhunspell_1_3_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -579,7 +579,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libhunspell_1_2_includeHEADERS
+install-data-am: install-libhunspell_1_3_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -626,7 +626,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-libLTLIBRARIES \
-	uninstall-libhunspell_1_2_includeHEADERS
+	uninstall-libhunspell_1_3_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -637,14 +637,14 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libhunspell_1_2_includeHEADERS \
+	install-libLTLIBRARIES install-libhunspell_1_3_includeHEADERS \
 	install-man install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-libhunspell_1_2_includeHEADERS
+	uninstall-libhunspell_1_3_includeHEADERS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
