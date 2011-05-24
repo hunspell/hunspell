@@ -48,6 +48,7 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   compoundroot = FLAG_NULL; // compound word signing flag
   compoundpermitflag = FLAG_NULL; // compound permitting flag for suffixed word
   compoundforbidflag = FLAG_NULL; // compound fordidden flag for suffixed word
+  compoundmoresuffixes = 0; // allow more suffixes within compound words
   checkcompounddup = 0; // forbid double words in compounds
   checkcompoundrep = 0; // forbid bad compounds (may be non compound word with a REP substitution)
   checkcompoundcase = 0; // forbid upper and lowercase combinations at word bounds
@@ -402,6 +403,10 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
              delete afflst;
              return 1;
           }
+       }
+
+       if (strncmp(line,"COMPOUNDMORESUFFIXES",20) == 0) {
+                   compoundmoresuffixes = 1;
        }
 
        if (strncmp(line,"CHECKCOMPOUNDDUP",16) == 0) {
@@ -1626,8 +1631,9 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             if (onlycpdrule) break;
             if (compoundflag && 
              !(rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundflag))) {
-                if ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
-                        FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) && !hu_mov_rule &&
+                if (((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
+                        FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) || 
+                        (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) && !hu_mov_rule &&
                     sfx->getCont() &&
                         ((compoundforbidflag && TESTAFF(sfx->getCont(), compoundforbidflag, 
                             sfx->getContLen())) || (compoundend &&
@@ -1640,9 +1646,11 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
             if (rv ||
               (((wordnum == 0) && compoundbegin &&
                 ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundbegin, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
+                (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundbegin))) || // twofold suffixes + compound
                 (rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundbegin)))) ||
               ((wordnum > 0) && compoundmiddle &&
                 ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundmiddle, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
+                (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundmiddle))) || // twofold suffixes + compound
                 (rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundmiddle)))))
               ) checked_prefix = 1;
         // else check forbiddenwords and needaffix
@@ -2118,8 +2126,9 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             if (onlycpdrule) break;
             if (compoundflag &&
              !(rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundflag))) {
-                if ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
-                        FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) && !hu_mov_rule &&
+                if (((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
+                        FLAG_NULL, compoundflag, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
+                        (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) && !hu_mov_rule &&
                     sfx->getCont() &&
                         ((compoundforbidflag && TESTAFF(sfx->getCont(), compoundforbidflag, 
                             sfx->getContLen())) || (compoundend &&
@@ -2132,9 +2141,11 @@ int AffixMgr::compound_check_morph(const char * word, int len,
             if (rv ||
               (((wordnum == 0) && compoundbegin &&
                 ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundbegin, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
+                (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundbegin))) ||  // twofold suffix+compound
                 (rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundbegin)))) ||
               ((wordnum > 0) && compoundmiddle &&
                 ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundmiddle, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
+                (compoundmoresuffixes && (rv = suffix_check_twosfx(st, i, 0, NULL, compoundmiddle))) ||  // twofold suffix+compound
                 (rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundmiddle)))))
               ) {
                 // char * p = prefix_check_morph(st, i, 0, compound);

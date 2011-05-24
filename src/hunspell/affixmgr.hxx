@@ -41,6 +41,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   FLAG                compoundroot;
   FLAG                compoundforbidflag;
   FLAG                compoundpermitflag;
+  int                 compoundmoresuffixes;
   int                 checkcompounddup;
   int                 checkcompoundrep;
   int                 checkcompoundcase;

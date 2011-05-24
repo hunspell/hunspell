@@ -1,3 +1,8 @@
+2011-05-24 Németh László <nemeth at numbertext dot org>:
+        * src/hunspell/affixmgr.*: allow twofold suffixes in compounds
+          by extended version of Arno Teigseth's patch, see hun#3288562.
+        - new option for this feature: COMPOUNDMORESUFFIXES
+
 2011-02-16 Németh László <nemeth at numbertext dot org>:
         * src/*/Makefile.am: fix library versioning, the probem reported by
           Rene Engerhald and Simon Brouwer.
