@@ -1694,11 +1694,11 @@ int Hunspell::get_xml_list(char ***slst, char * list, const char * tag) {
     int n = 0;
     char * p;
     if (!list) return 0;
-    for (p = list; (p = strstr(p, tag)); p++) n++;
+    for (p = list; ((p = strstr(p, tag)) != NULL); p++) n++;
     if (n == 0) return 0;
     *slst = (char **) malloc(sizeof(char *) * n);
     if (!*slst) return 0;
-    for (p = list, n = 0; (p = strstr(p, tag)); p++, n++) {
+    for (p = list, n = 0; ((p = strstr(p, tag)) != NULL); p++, n++) {
         int l = strlen(p);
         (*slst)[n] = (char *) malloc(l + 1);
         if (!(*slst)[n]) return n;
@@ -1753,9 +1753,9 @@ int Hunspell::spellml(char*** slst, const char * word)
             return generate(slst, cw, cw2);
         }
       } else {
-        if ((q2 = strstr(q2 + 1, "<code"))) {
+        if ((q2 = strstr(q2 + 1, "<code")) != NULL) {
           char ** slst2;
-          if ((n = get_xml_list(&slst2, strchr(q2, '>'), "<a>"))) {
+          if ((n = get_xml_list(&slst2, strchr(q2, '>'), "<a>")) != 0) {
             int n2 = generate(slst, cw, slst2, n);
             freelist(&slst2, n);
             return uniqlist(*slst, n2);

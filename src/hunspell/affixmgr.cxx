@@ -280,7 +280,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
 
     // read in each line ignoring any that do not
     // start with a known line type indicator
-    while ((line = afflst->getline())) {
+    while ((line = afflst->getline()) != NULL) {
        mychomp(line);
 
        /* remove byte order mark */
@@ -1324,7 +1324,7 @@ int AffixMgr::cpdrep_check(const char * word, int wl)
 }
 
 // forbid compoundings when there are special patterns at word bound
-int AffixMgr::cpdpat_check(const char * word, int pos, hentry * r1, hentry * r2, const char affixed)
+int AffixMgr::cpdpat_check(const char * word, int pos, hentry * r1, hentry * r2, const char /*affixed*/)
 {
   int len;
   for (int i = 0; i < numcheckcpd; i++) {
@@ -1337,7 +1337,7 @@ int AffixMgr::cpdpat_check(const char * word, int pos, hentry * r1, hentry * r2,
         // zero pattern (0/flag) => unmodified stem (zero affixes allowed)
         (!*(checkcpdtable[i].pattern) || (
             (*(checkcpdtable[i].pattern)=='0' && r1->blen <= pos && strncmp(word + pos - r1->blen, r1->word, r1->blen) == 0) ||
-            (*(checkcpdtable[i].pattern)!='0' && (len = strlen(checkcpdtable[i].pattern)) &&
+            (*(checkcpdtable[i].pattern)!='0' && ((len = strlen(checkcpdtable[i].pattern)) != 0) &&
                 strncmp(word + pos - len, checkcpdtable[i].pattern, len) == 0)))) {
             return 1;
         }
@@ -1549,7 +1549,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
     int oldlen = 0;
     int checkedstriple = 0;
     int onlycpdrule;
-    int affixed = 0;
+    char affixed = 0;
     hentry ** oldwords = words;
 
     int checked_prefix;
@@ -2053,7 +2053,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
     int cmax;
 
     int onlycpdrule;
-    int affixed = 0;
+    char affixed = 0;
     hentry ** oldwords = words;
 
     setcminmax(&cmin, &cmax, word, len);
@@ -3565,7 +3565,7 @@ int  AffixMgr::parse_reptable(char * line, FileMgr * af)
    /* now parse the numrep lines to read in the remainder of the table */
    char * nl;
    for (int j=0; j < numrep; j++) {
-        if (!(nl = af->getline())) return 1;
+        if ((nl = af->getline()) == NULL) return 1;
         mychomp(nl);
         tp = nl;
         i = 0;
@@ -4269,7 +4269,7 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
    std::vector<affentry>::iterator start = affentries.begin();
    std::vector<affentry>::iterator end = affentries.end();
    for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
-      if (!(nl = af->getline())) return 1;
+      if ((nl = af->getline()) == NULL) return 1;
       mychomp(nl);
       tp = nl;
       i = 0;

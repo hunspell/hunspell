@@ -39,7 +39,7 @@ char * FileMgr::getline() {
     const char * l;
     linenum++;
     if (fin) return fgets(in, BUFSIZE - 1, fin);
-    if (hin && (l = hin->getline())) return strcpy(in, l);
+    if (hin && ((l = hin->getline()) != NULL)) return strcpy(in, l);
     linenum--;
     return NULL;
 }

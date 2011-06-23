@@ -1,3 +1,6 @@
+2011-06-23 Caolán McNamara <caolanm at LibO>:
+	* fix some windows compiler warnings
+
 2011-05-24 Németh László <nemeth at numbertext dot org>:
         * src/hunspell/affixmgr.*: allow twofold suffixes in compounds
           by extended version of Arno Teigseth's patch, see hun#3288562.
