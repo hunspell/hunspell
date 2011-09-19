@@ -1,4 +1,4 @@
-lib_LIBRARIES=libparsers.a
+noinst_LIBRARIES=libparsers.a
 libparsers_a_SOURCES=firstparser.cxx htmlparser.cxx \
 		      latexparser.cxx  manparser.cxx \
 		      textparser.cxx 
