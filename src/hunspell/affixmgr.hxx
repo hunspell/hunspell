@@ -245,6 +245,7 @@ private:
   int process_sfx_tree_to_list();
   int redundant_condition(char, char * strip, int stripl,
       const char * cond, int);
+  void finishFileMgr(FileMgr *afflst);
 };
 
 #endif

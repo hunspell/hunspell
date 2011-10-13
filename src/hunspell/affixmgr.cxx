@@ -254,6 +254,14 @@ AffixMgr::~AffixMgr()
 #endif
 }
 
+void AffixMgr::finishFileMgr(FileMgr *afflst)
+{
+    delete afflst;
+
+    // convert affix trees to sorted list
+    process_pfx_tree_to_list();
+    process_sfx_tree_to_list();
+}
 
 // read in aff file and build up prefix and suffix entry objects 
 int  AffixMgr::parse_file(const char * affpath, const char * key)
@@ -295,7 +303,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the keyboard string */
        if (strncmp(line,"KEY",3) == 0) {
           if (parse_string(line, &keystring, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -303,7 +311,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the try string */
        if (strncmp(line,"TRY",3) == 0) {
           if (parse_string(line, &trystring, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -311,7 +319,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the name of the character set used by the .dict and .aff */
        if (strncmp(line,"SET",3) == 0) {
           if (parse_string(line, &encoding, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
           if (strcmp(encoding, "UTF-8") == 0) {
@@ -331,7 +339,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by the controlled compound words */
        if (strncmp(line,"COMPOUNDFLAG",12) == 0) {
           if (parse_flag(line, &compoundflag, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -340,12 +348,12 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        if (strncmp(line,"COMPOUNDBEGIN",13) == 0) {
           if (complexprefixes) {
             if (parse_flag(line, &compoundend, afflst)) {
-              delete afflst;
+              finishFileMgr(afflst);
               return 1;
             }
           } else {
             if (parse_flag(line, &compoundbegin, afflst)) {
-              delete afflst;
+              finishFileMgr(afflst);
               return 1;
             }
           }
@@ -354,7 +362,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by compound words */
        if (strncmp(line,"COMPOUNDMIDDLE",14) == 0) {
           if (parse_flag(line, &compoundmiddle, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -362,12 +370,12 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        if (strncmp(line,"COMPOUNDEND",11) == 0) {
           if (complexprefixes) {
             if (parse_flag(line, &compoundbegin, afflst)) {
-              delete afflst;
+              finishFileMgr(afflst);
               return 1;
             }
           } else {
             if (parse_flag(line, &compoundend, afflst)) {
-              delete afflst;
+              finishFileMgr(afflst);
               return 1;
             }
           }
@@ -376,7 +384,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the data used by compound_check() method */
        if (strncmp(line,"COMPOUNDWORDMAX",15) == 0) {
           if (parse_num(line, &cpdwordmax, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -384,7 +392,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag sign compounds in dictionary */
        if (strncmp(line,"COMPOUNDROOT",12) == 0) {
           if (parse_flag(line, &compoundroot, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -392,7 +400,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by compound_check() method */
        if (strncmp(line,"COMPOUNDPERMITFLAG",18) == 0) {
           if (parse_flag(line, &compoundpermitflag, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -400,7 +408,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by compound_check() method */
        if (strncmp(line,"COMPOUNDFORBIDFLAG",18) == 0) {
           if (parse_flag(line, &compoundforbidflag, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -431,14 +439,14 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
 
        if (strncmp(line,"NOSUGGEST",9) == 0) {
           if (parse_flag(line, &nosuggest, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
 
        if (strncmp(line,"NONGRAMSUGGEST",14) == 0) {
           if (parse_flag(line, &nongramsuggest, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -446,7 +454,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by forbidden words */
        if (strncmp(line,"FORBIDDENWORD",13) == 0) {
           if (parse_flag(line, &forbiddenword, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -454,7 +462,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by forbidden words */
        if (strncmp(line,"LEMMA_PRESENT",13) == 0) {
           if (parse_flag(line, &lemma_present, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -462,7 +470,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by circumfixes */
        if (strncmp(line,"CIRCUMFIX",9) == 0) {
           if (parse_flag(line, &circumfix, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -470,7 +478,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by fogemorphemes */
        if (strncmp(line,"ONLYINCOMPOUND",14) == 0) {
           if (parse_flag(line, &onlyincompound, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -478,7 +486,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by `needaffixs' */
        if (strncmp(line,"PSEUDOROOT",10) == 0) {
           if (parse_flag(line, &needaffix, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -486,7 +494,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by `needaffixs' */
        if (strncmp(line,"NEEDAFFIX",9) == 0) {
           if (parse_flag(line, &needaffix, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -494,7 +502,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the minimal length for words in compounds */
        if (strncmp(line,"COMPOUNDMIN",11) == 0) {
           if (parse_num(line, &cpdmin, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
           if (cpdmin < 1) cpdmin = 1;
@@ -503,7 +511,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the max. words and syllables in compounds */
        if (strncmp(line,"COMPOUNDSYLLABLE",16) == 0) {
           if (parse_cpdsyllable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -511,7 +519,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by compound_check() method */
        if (strncmp(line,"SYLLABLENUM",11) == 0) {
           if (parse_string(line, &cpdsyllablenum, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -524,7 +532,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the extra word characters */
        if (strncmp(line,"WORDCHARS",9) == 0) {
           if (parse_array(line, &wordchars, &wordchars_utf16, &wordchars_utf16_len, utf8, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -532,7 +540,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the ignored characters (for example, Arabic optional diacretics charachters */
        if (strncmp(line,"IGNORE",6) == 0) {
           if (parse_array(line, &ignorechars, &ignorechars_utf16, &ignorechars_utf16_len, utf8, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -540,7 +548,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the typical fault correcting table */
        if (strncmp(line,"REP",3) == 0) {
           if (parse_reptable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -548,7 +556,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the input conversion table */
        if (strncmp(line,"ICONV",5) == 0) {
           if (parse_convtable(line, afflst, &iconvtable, "ICONV")) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -556,7 +564,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the input conversion table */
        if (strncmp(line,"OCONV",5) == 0) {
           if (parse_convtable(line, afflst, &oconvtable, "OCONV")) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -564,7 +572,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the phonetic translation table */
        if (strncmp(line,"PHONE",5) == 0) {
           if (parse_phonetable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -572,7 +580,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the checkcompoundpattern table */
        if (strncmp(line,"CHECKCOMPOUNDPATTERN",20) == 0) {
           if (parse_checkcpdtable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -580,7 +588,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the defcompound table */
        if (strncmp(line,"COMPOUNDRULE",12) == 0) {
           if (parse_defcpdtable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -588,7 +596,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the related character map table */
        if (strncmp(line,"MAP",3) == 0) {
           if (parse_maptable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -596,7 +604,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the word breakpoints table */
        if (strncmp(line,"BREAK",5) == 0) {
           if (parse_breaktable(line, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -604,7 +612,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the language for language specific codes */
        if (strncmp(line,"LANG",4) == 0) {
           if (parse_string(line, &lang, afflst->getlinenum())) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
           langnum = get_lang_num(lang);
@@ -617,7 +625,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
 
        if (strncmp(line,"MAXNGRAMSUGS",12) == 0) {
           if (parse_num(line, &maxngramsugs, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -627,14 +635,14 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
 
        if (strncmp(line,"MAXDIFF",7) == 0) {
           if (parse_num(line, &maxdiff, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
 
        if (strncmp(line,"MAXCPDSUGS",10) == 0) {
           if (parse_num(line, &maxcpdsugs, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -654,7 +662,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by forbidden words */
        if (strncmp(line,"KEEPCASE",8) == 0) {
           if (parse_flag(line, &keepcase, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -662,7 +670,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by `forceucase' */
        if (strncmp(line,"FORCEUCASE",10) == 0) {
           if (parse_flag(line, &forceucase, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -670,7 +678,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by `warn' */
        if (strncmp(line,"WARN",4) == 0) {
           if (parse_flag(line, &warn, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -682,7 +690,7 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
        /* parse in the flag used by the affix generator */
        if (strncmp(line,"SUBSTANDARD",11) == 0) {
           if (parse_flag(line, &substandard, afflst)) {
-             delete afflst;
+             finishFileMgr(afflst);
              return 1;
           }
        }
@@ -701,19 +709,14 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
             dupflags_ini = 0;
           }
           if (parse_affix(line, ft, afflst, dupflags)) {
-             delete afflst;
-             process_pfx_tree_to_list();
-             process_sfx_tree_to_list();
+             finishFileMgr(afflst);
              return 1;
           }
        }
-
     }
-    delete afflst;
 
-    // convert affix trees to sorted list
-    process_pfx_tree_to_list();
-    process_sfx_tree_to_list();
+    finishFileMgr(afflst);
+    // affix trees are sorted now
 
     // now we can speed up performance greatly taking advantage of the 
     // relationship between the affixes and the idea of "subsets".

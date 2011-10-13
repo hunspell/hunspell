@@ -1,5 +1,6 @@
 2011-00-13 Caolán McNamara <caolanm at LibO>:
 	* moz#694002 crash in hunspell affixmgr on exit with bad .aff
+	* leak in hunspell affixmgr with bad .aff
 
 2011-09-19 Caolán McNamara <caolanm at LibO>:
 	* make libparsers.a not installed thanks to Tomáš Chvátal
