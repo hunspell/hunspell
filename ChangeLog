@@ -1,4 +1,8 @@
-2011-00-13 Caolán McNamara <caolanm at LibO>:
+2011-12-06 Caolán McNamara <caolanm at LibO>:
+	* rhbz#759647 fixed tempname of hunSPELL.bak collides with other users
+	when multiple edits in one dir
+
+2011-10-13 Caolán McNamara <caolanm at LibO>:
 	* moz#694002 crash in hunspell affixmgr on exit with bad .aff
 	* leak in hunspell affixmgr with bad .aff
 

@@ -128,8 +128,6 @@ char text_conv[MAXLNLEN];
 #define readline scanline
 #endif
 
-#define TEMPNAME "hunSPELL.bak"
-
 extern char * mystrdup(const char * s);
 
 // file formats:
@@ -1316,14 +1314,12 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     char * extension = basename(filename, '.');
     parser = get_parser(format, extension, pMS[0]);
 
-    char * tempname = (char *) malloc(strlen(filename) + strlen(TEMPNAME) + 1);
-    strcpy(tempname, filename);
-    strcpy(basename(tempname, DIRSEPCH), TEMPNAME);
-    
-    FILE *tempfile;
+   
+    FILE *tempfile = tmpfile();
 
-    if (!(tempfile = fopen(tempname, "w"))) {
-        fprintf(stderr, gettext("Can't create tempfile %s.\n"), tempname);
+    if (!tempfile)
+    {
+        perror(gettext("Can't create tempfile"));
         endwin();
         exit(1);
     }
@@ -1337,7 +1333,7 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 		    case -1: {
 			clear();
 			refresh();
-			unlink(tempname);
+			fclose(tempfile); //automatically deleted when closed
 			endwin();
 			exit(0);
 		    }
@@ -1350,15 +1346,22 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 	    }
 	}
 	fclose(text);
-	fclose(tempfile);
 	delete parser;
 
-	if (! modified) {
-	    unlink(tempname);
-	} else {
-            rename(tempname, filename);
+	if (modified) {
+		rewind(tempfile);
+		text = fopen(filename, "wb");
+
+		size_t n;
+		while ((n = fread(buf, 1, MAXLNLEN, tempfile)) > 0)
+		{
+			if (fwrite(buf, 1, n, text) != n)
+				perror("write failed");
+		}
+
+		fclose(text);
 	}
-        free(tempname);
+	fclose(tempfile); //automatically deleted when closed
 }
 
 #endif
