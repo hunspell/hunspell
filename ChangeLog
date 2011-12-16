@@ -1,3 +1,7 @@
+2011-12-16 Jared Wein <jwein at mozilla dot com>
+	* moz#710967 Incorrect argument passed to strncmp in
+	AffixMgr::parse_convtable
+
 2011-12-06 Caolán McNamara <caolanm at LibO>:
 	* rhbz#759647 fixed tempname of hunSPELL.bak collides with other users
 	when multiple edits in one dir
