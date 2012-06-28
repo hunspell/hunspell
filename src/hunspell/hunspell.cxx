@@ -750,19 +750,28 @@ int Hunspell::suggest(char*** slst, const char * word)
                         char * dot = strchr(cw, '.');
 		        if (dot && (dot > cw)) {
 		            int captype_;
-		            if (utf8) {
+		            if (utf8)
+                            {
 		               w_char w_[MAXWORDLEN];
 			       int wl_ = u8_u16(w_, MAXWORDLEN, dot + 1);
 		               captype_ = get_captype_utf8(w_, wl_, langnum);
 		            } else captype_ = get_captype(dot+1, strlen(dot+1), csconv);
-		    	    if (captype_ == INITCAP) {
+		    	    if (captype_ == INITCAP)
+                            {
                         	char * st = mystrdup(cw);
-                        	if (st) st = (char *) realloc(st, wl + 2);
-				if (st) {
-                        		st[(dot - cw) + 1] = ' ';
-                        		strcpy(st + (dot - cw) + 2, dot + 1);
-                    			ns = insert_sug(slst, st, ns);
-					free(st);
+                        	if (st)
+                        	{
+                                    char *newst = (char *) realloc(st, wl + 2);
+                                    if (newst == NULL)
+                                        free(st);
+                                    st = newst;
+                        	}
+				if (st)
+                                {
+                        	    st[(dot - cw) + 1] = ' ';
+                        	    strcpy(st + (dot - cw) + 2, dot + 1);
+                    		    ns = insert_sug(slst, st, ns);
+				    free(st);
 				}
 		    	    }
 		        }
