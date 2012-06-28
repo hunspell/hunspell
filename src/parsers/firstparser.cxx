@@ -22,12 +22,17 @@ FirstParser::~FirstParser()
 char * FirstParser::next_token()
 {
         char * tabpos = strchr(line[actual],'\t');
-        if ((tabpos) && (tabpos - line[actual]>token)) {
+        if ((tabpos) && (tabpos - line[actual]>token))
+        {
                 char * t = (char *) malloc(tabpos - line[actual] + 1);
+                if (!t)
+                {
+		    fprintf(stderr,"Error - Insufficient Memory\n");
+                    return NULL;
+                }
                 t[tabpos - line[actual]] = '\0';
                 token = tabpos - line[actual] +1;
-                if (t) return strncpy(t, line[actual], tabpos - line[actual]);
-                fprintf(stderr,"Error - Insufficient Memory\n");
+                return strncpy(t, line[actual], tabpos - line[actual]);
         }
  	return NULL;
 }
