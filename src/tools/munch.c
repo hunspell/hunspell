@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef __linux__
+#if defined(__linux__) && !defined(__ANDROID__)
 #include <error.h>
 #include <errno.h>
 #include <sys/mman.h>
