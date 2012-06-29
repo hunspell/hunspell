@@ -1,3 +1,6 @@
+2012-06-29 Caolán McNamara <caolanm at LibO>:
+	* fix various coverity warnings
+
 2012-01-10 Ehsan Akhgari <ehsan at mozilla dot com>
 	* moz#710940 Firefox Crash [@ AffixMgr::parse_file(char const*, char
 	const*) ]

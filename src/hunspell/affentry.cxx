@@ -10,12 +10,14 @@
 #include "csutil.hxx"
 
 PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
+    // register affix manager
+    : pmyMgr(pmgr)
+    , next(NULL)
+    , nexteq(NULL)
+    , nextne(NULL)
+    , flgnxt(NULL)
 {
-  // register affix manager
-  pmyMgr = pmgr;
-
   // set up its initial values
-
   aflag = dp->aflag;         // flag
   strip = dp->strip;         // string to strip
   appnd = dp->appnd;         // string to append
@@ -28,9 +30,6 @@ PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
     memcpy(c.conds, dp->c.l.conds1, MAXCONDLEN_1);
     c.l.conds2 = dp->c.l.conds2;
   } else memcpy(c.conds, dp->c.conds, MAXCONDLEN);
-  next = NULL;
-  nextne = NULL;
-  nexteq = NULL;
   morphcode = dp->morphcode;
   contclass = dp->contclass;
   contclasslen = dp->contclasslen;
@@ -483,23 +482,33 @@ inline int SfxEntry::test_condition(const char * st, const char * beg)
     int i = 1;
     while (1) {
       switch (*p) {
-        case '\0': return 1;
-        case '[': { p = nextchar(p); pos = st; break; }
-        case '^': { p = nextchar(p); neg = true; break; }
-        case ']': { if (!neg && !ingroup) return 0;
-                i++;
-                // skip the next character
-                if (!ingroup) {
-                    for (; (opts & aeUTF8) && (st >= beg) && (*st & 0xc0) == 0x80; st--);
-                    st--;
-                }                    
-                pos = NULL;
-                neg = false;
-                ingroup = false;
-                p = nextchar(p);
-                if (st < beg && p) return 0; // word <= condition
-                break;
-            }
+        case '\0':
+            return 1;
+        case '[':
+            p = nextchar(p);
+            pos = st;
+            break;
+        case '^':
+            p = nextchar(p);
+            neg = true;
+            break;
+        case ']':
+            if (!neg && !ingroup)
+              return 0;
+            i++;
+            // skip the next character
+            if (!ingroup)
+            {
+                for (; (opts & aeUTF8) && (st >= beg) && (*st & 0xc0) == 0x80; st--);
+                st--;
+            }                    
+            pos = NULL;
+            neg = false;
+            ingroup = false;
+            p = nextchar(p);
+            if (st < beg && p)
+                return 0; // word <= condition
+            break;
         case '.': if (!pos) { // dots are not metacharacters in groups: [.]
                 p = nextchar(p);
                 // skip the next character

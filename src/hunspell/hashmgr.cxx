@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h> 
 #include <ctype.h>
+#include <limits>
 
 #include "hashmgr.hxx"
 #include "csutil.hxx"
@@ -210,18 +211,21 @@ int HashMgr::add_word(const char * word, int wbl, int wcl, unsigned short * aff,
 }     
 
 int HashMgr::add_hidden_capitalized_word(char * word, int wbl, int wcl,
-    unsigned short * flags, int al, char * dp, int captype)
+    unsigned short * flags, int flagslen, char * dp, int captype)
 {
+    if (flags == NULL)
+        flagslen = 0;
+
     // add inner capitalized forms to handle the following allcap forms:
     // Mixed caps: OpenOffice.org -> OPENOFFICE.ORG
     // Allcaps with suffixes: CIA's -> CIA'S    
     if (((captype == HUHCAP) || (captype == HUHINITCAP) ||
-      ((captype == ALLCAP) && (flags != NULL))) &&
-      !((flags != NULL) && TESTAFF(flags, forbiddenword, al))) {
-          unsigned short * flags2 = (unsigned short *) malloc (sizeof(unsigned short) * (al+1));
+      ((captype == ALLCAP) && (flagslen != 0))) &&
+      !((flagslen != 0) && TESTAFF(flags, forbiddenword, flagslen))) {
+          unsigned short * flags2 = (unsigned short *) malloc (sizeof(unsigned short) * (flagslen+1));
 	  if (!flags2) return 1;
-          if (al) memcpy(flags2, flags, al * sizeof(unsigned short));
-          flags2[al] = ONLYUPCASEFLAG;
+          if (flagslen) memcpy(flags2, flags, flagslen * sizeof(unsigned short));
+          flags2[flagslen] = ONLYUPCASEFLAG;
           if (utf8) {
               char st[BUFSIZE];
               w_char w[BUFSIZE];
@@ -229,11 +233,11 @@ int HashMgr::add_hidden_capitalized_word(char * word, int wbl, int wcl,
               mkallsmall_utf(w, wlen, langnum);
               mkallcap_utf(w, 1, langnum);
               u16_u8(st, BUFSIZE, w, wlen);
-              return add_word(st,wbl,wcl,flags2,al+1,dp, true);
+              return add_word(st,wbl,wcl,flags2,flagslen+1,dp, true);
            } else {
                mkallsmall(word, csconv);
                mkinitcap(word, csconv);
-               return add_word(word,wbl,wcl,flags2,al+1,dp, true);
+               return add_word(word,wbl,wcl,flags2,flagslen+1,dp, true);
            }
     }
     return 0;
@@ -377,21 +381,23 @@ int HashMgr::load_tables(const char * tpath, const char * key)
   }
 
   tablesize = atoi(ts);
-  if (tablesize == 0) {
+
+  int nExtra = 5 + USERWORD;
+
+  if (tablesize <= 0 || (tablesize >= (std::numeric_limits<int>::max() - 1 - nExtra) / sizeof(struct hentry *))) {
     HUNSPELL_WARNING(stderr, "error: line 1: missing or bad word count in the dic file\n");
     delete dict;
     return 4;
   }
-  tablesize = tablesize + 5 + USERWORD;
-  if ((tablesize %2) == 0) tablesize++;
+  tablesize += nExtra;
+  if ((tablesize % 2) == 0) tablesize++;
 
   // allocate the hash table
-  tableptr = (struct hentry **) malloc(tablesize * sizeof(struct hentry *));
+  tableptr = (struct hentry **) calloc(tablesize, sizeof(struct hentry *));
   if (! tableptr) {
     delete dict;
     return 3;
   }
-  for (int i=0; i<tablesize; i++) tableptr[i] = NULL;
 
   // loop through all words on much list and add to hash
   // table and create word and affix strings

@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
 #if defined(__linux__) && !defined(__ANDROID__)
 #include <error.h>
 #include <errno.h>
@@ -578,12 +579,18 @@ int load_tables(FILE * wdlst)
 {
   char * ap;
   char ts[MAX_LN_LEN];
+  int nExtra = 5;
 
   /* first read the first line of file to get hash table size */
   if (! fgets(ts, MAX_LN_LEN-1,wdlst)) return 2;
   mychomp(ts);
   tablesize = atoi(ts);
-  tablesize = tablesize + 5;
+
+  if (tablesize <= 0 || (tablesize >= (INT_MAX - 1 - nExtra) / sizeof(struct hentry *))) {
+      return 3;
+  }
+
+  tablesize += nExtra;
   if ((tablesize %2) == 0) tablesize++;
 
   /* allocate the hash table */

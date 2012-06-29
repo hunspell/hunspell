@@ -12,9 +12,12 @@ int FileMgr::fail(const char * err, const char * par) {
     return -1;
 }
 
-FileMgr::FileMgr(const char * file, const char * key) {
-    linenum = 0;
-    hin = NULL;
+FileMgr::FileMgr(const char * file, const char * key)
+    : hin(NULL)
+    , linenum(0)
+{
+    in[0] = '\0';
+
     fin = fopen(file, "r");
     if (!fin) {
         // check hzipped file

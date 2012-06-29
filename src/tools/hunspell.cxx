@@ -1303,16 +1303,19 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 {
     char buf[MAXLNLEN];
 
-    FILE *text;
-    
-    text = fopen(filename, "r");
+    FILE *text = fopen(filename, "r");
+    if (!text)
+    {
+        perror(gettext("Can't open inputfile"));
+        endwin();
+        exit(1);
+    }
 
     int dialogexit;
     int check=1;
 
-    TextParser * parser;
     char * extension = basename(filename, '.');
-    parser = get_parser(format, extension, pMS[0]);
+    TextParser * parser = get_parser(format, extension, pMS[0]);
 
    
     FILE *tempfile = tmpfile();
@@ -1320,6 +1323,8 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     if (!tempfile)
     {
         perror(gettext("Can't create tempfile"));
+	delete parser;
+        fclose(text);
         endwin();
         exit(1);
     }
@@ -1402,7 +1407,7 @@ int listdicpath(char * dir, int len) {
 	if (!d) return 0;
 	struct dirent * de;
 	while ((de = readdir(d))) {
-		int len = strlen(de->d_name);
+		len = strlen(de->d_name);
 		if ((len > 4 && strcmp(de->d_name + len - 4, ".dic") == 0) ||
 		   (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
 		    char * s = mystrdup(de->d_name);

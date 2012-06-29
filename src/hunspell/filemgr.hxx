@@ -9,6 +9,9 @@
 
 class LIBHUNSPELL_DLL_EXPORTED FileMgr
 {
+private:
+    FileMgr(const FileMgr&);
+    FileMgr& operator = (const FileMgr&);
 protected:
     FILE * fin;
     Hunzip * hin;
