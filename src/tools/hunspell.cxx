@@ -1060,7 +1060,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(i, temp, MAXLNLEN);
+		strncpy(i, temp, MAXLNLEN-1);
+		i[MAXLNLEN-1] = '\0';
 		free(temp);
 
 		parser->change_token(i);
@@ -1114,7 +1115,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		char w[MAXLNLEN], w2[MAXLNLEN], w3[MAXLNLEN];
 		char *temp;
 
-		strncpy(w, token, MAXLNLEN);
+		strncpy(w, token, MAXLNLEN-1);
+		token[MAXLNLEN-1] = '\0';
 		temp = basename(w, '-');
 		if (w < temp) {
 			*(temp-1) = '\0';
@@ -1181,7 +1183,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(w2, temp, MAXLNLEN);
+		strncpy(w2, temp, MAXLNLEN-1);
+		temp[MAXLNLEN-1] = '\0';
 		free(temp);
 
 		if (strlen(w) + strlen(w2) + 2 < MAXLNLEN) {
@@ -1357,14 +1360,19 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 		rewind(tempfile);
 		text = fopen(filename, "wb");
 
-		size_t n;
-		while ((n = fread(buf, 1, MAXLNLEN, tempfile)) > 0)
-		{
-			if (fwrite(buf, 1, n, text) != n)
-				perror("write failed");
-		}
+		if (text == NULL)
+            perror(gettext("Can't open outputfile"));
+        else
+        {
+		    size_t n;
+		    while ((n = fread(buf, 1, MAXLNLEN, tempfile)) > 0)
+		    {
+		        if (fwrite(buf, 1, n, text) != n)
+				    perror("write failed");
+		    }
 
-		fclose(text);
+		    fclose(text);
+        }
 	}
 	fclose(tempfile); //automatically deleted when closed
 }

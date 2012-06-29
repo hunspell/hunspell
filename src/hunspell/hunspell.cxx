@@ -368,9 +368,11 @@ int Hunspell::spell(const char * word, int * info, char ** root)
 
   switch(captype) {
      case HUHCAP:
+            /* FALLTHROUGH */
      case HUHINITCAP:
             *info += SPELL_ORIGCAP;
-     case NOCAP: {
+            /* FALLTHROUGH */
+     case NOCAP:
             rv = checkword(cw, info, root);
             if ((abbv) && !(rv)) {
                 memcpy(wspace,cw,wl);
@@ -379,7 +381,6 @@ int Hunspell::spell(const char * word, int * info, char ** root)
                 rv = checkword(wspace, info, root);
             }
             break;
-         }
      case ALLCAP: {
             *info += SPELL_ORIGCAP;
             rv = checkword(cw, info, root);

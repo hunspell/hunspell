@@ -680,7 +680,8 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 	      /* we have a match so add prefix */
               tlen = 0;
               if (aent->appndl) {
-	          strcpy(tword,aent->appnd);
+	          strncpy(tword, aent->appnd, MAX_WD_LEN-1);
+	          tword[MAX_WD_LEN-1] = '\0';
                   tlen += aent->appndl;
                } 
                pp = tword + tlen;
@@ -722,7 +723,8 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 	}
 	if (cond < 0) {
 	  /* we have a matching condition */
-          strcpy(tword,word);
+          strncpy(tword, word, MAX_WD_LEN-1);
+          tword[MAX_WD_LEN-1] = '\0';
           tlen = len;
 	  if (aent->stripl) {
              tlen -= aent->stripl;

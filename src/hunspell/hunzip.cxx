@@ -3,6 +3,7 @@
 #include <stdio.h> 
 
 #include "hunzip.hxx"
+#include "csutil.hxx"
 
 #define CODELEN  65536
 #define BASEBITREC 5000
@@ -27,8 +28,7 @@ Hunzip::Hunzip(const char * file, const char * key)
     , dec(NULL)
 {
     in[0] = out[0] = line[0] = '\0';
-    filename = (char *) malloc(strlen(file) + 1);
-    if (filename) strcpy(filename, file);
+    filename = mystrdup(file);
     if (getcode(key) == -1) bufsiz = -1;
     else bufsiz = getbuf();
 }

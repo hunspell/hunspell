@@ -14,12 +14,19 @@
 // build a hash table from a munched word list
 
 HashMgr::HashMgr(const char * tpath, const char * apath, const char * key)
+  : tablesize(0)
+  , tableptr(NULL)
+  , userword(0)
+  , flag_mode(FLAG_CHAR)
+  , complexprefixes(0)
+  , utf8(0)
+  , forbiddenword(FORBIDDENWORD) // forbidden word signing flag
+  , numaliasf(0)
+  , aliasf(NULL)
+  , aliasflen(0)
+  , numaliasm(0)
+  , aliasm(NULL)
 {
-  tablesize = 0;
-  tableptr = NULL;
-  flag_mode = FLAG_CHAR;
-  complexprefixes = 0;
-  utf8 = 0;
   langnum = 0;
   lang = NULL;
   enc = NULL;
@@ -27,11 +34,6 @@ HashMgr::HashMgr(const char * tpath, const char * apath, const char * key)
   ignorechars = NULL;
   ignorechars_utf16 = NULL;
   ignorechars_utf16_len = 0;
-  numaliasf = 0;
-  aliasf = NULL;
-  numaliasm = 0;
-  aliasm = NULL;
-  forbiddenword = FORBIDDENWORD; // forbidden word signing flag
   load_config(apath, key);
   int ec = load_tables(tpath, key);
   if (ec) {

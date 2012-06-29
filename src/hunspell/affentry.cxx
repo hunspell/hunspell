@@ -9,6 +9,8 @@
 #include "affentry.hxx"
 #include "csutil.hxx"
 
+#define MAXTEMPWORDLEN (MAXWORDUTF8LEN + 4)
+
 PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
     // register affix manager
     : pmyMgr(pmgr)
@@ -52,16 +54,17 @@ PfxEntry::~PfxEntry()
 // add prefix to this word assuming conditions hold
 char * PfxEntry::add(const char * word, int len)
 {
-    char tword[MAXWORDUTF8LEN + 4];
+    char tword[MAXTEMPWORDLEN];
 
     if ((len > stripl || (len == 0 && pmyMgr->get_fullstrip())) && 
        (len >= numconds) && test_condition(word) &&
        (!stripl || (strncmp(word, strip, stripl) == 0)) &&
-       ((MAXWORDUTF8LEN + 4) > (len + appndl - stripl))) {
+       ((MAXTEMPWORDLEN) > (len + appndl - stripl))) {
     /* we have a match so add prefix */
               char * pp = tword;
               if (appndl) {
-                  strcpy(tword,appnd);
+                  strncpy(tword, appnd, MAXTEMPWORDLEN-1);
+                  tword[MAXTEMPWORDLEN-1] = '\0';
                   pp += appndl;
                }
                strcpy(pp, (word + stripl));
@@ -152,7 +155,7 @@ struct hentry * PfxEntry::checkword(const char * word, int len, char in_compound
 {
     int                 tmpl;   // length of tmpword
     struct hentry *     he;     // hash entry of root word or NULL
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
 
     // on entry prefix is 0 length or already matches the beginning of the word.
     // So if the remaining root word has positive length
@@ -166,7 +169,10 @@ struct hentry * PfxEntry::checkword(const char * word, int len, char in_compound
             // generate new root word by removing prefix and adding
             // back any characters that would have been stripped
 
-            if (stripl) strcpy (tmpword, strip);
+            if (stripl) {
+                strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
+                tmpword[MAXTEMPWORDLEN-1] = '\0';
+            }
             strcpy ((tmpword + stripl), (word + appndl));
 
             // now make sure all of the conditions on characters
@@ -213,7 +219,7 @@ struct hentry * PfxEntry::check_twosfx(const char * word, int len,
 {
     int                 tmpl;   // length of tmpword
     struct hentry *     he;     // hash entry of root word or NULL
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
 
     // on entry prefix is 0 length or already matches the beginning of the word.
     // So if the remaining root word has positive length
@@ -228,7 +234,10 @@ struct hentry * PfxEntry::check_twosfx(const char * word, int len,
             // generate new root word by removing prefix and adding
             // back any characters that would have been stripped
 
-            if (stripl) strcpy (tmpword, strip);
+            if (stripl) {
+                strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
+                tmpword[MAXTEMPWORDLEN-1] = '\0';
+            }
             strcpy ((tmpword + stripl), (word + appndl));
 
             // now make sure all of the conditions on characters
@@ -260,7 +269,7 @@ char * PfxEntry::check_twosfx_morph(const char * word, int len,
          char in_compound, const FLAG needflag)
 {
     int                 tmpl;   // length of tmpword
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
 
     // on entry prefix is 0 length or already matches the beginning of the word.
     // So if the remaining root word has positive length
@@ -275,7 +284,10 @@ char * PfxEntry::check_twosfx_morph(const char * word, int len,
             // generate new root word by removing prefix and adding
             // back any characters that would have been stripped
 
-            if (stripl) strcpy (tmpword, strip);
+            if (stripl) {
+                strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
+                tmpword[MAXTEMPWORDLEN-1] = '\0';
+            }
             strcpy ((tmpword + stripl), (word + appndl));
 
             // now make sure all of the conditions on characters
@@ -307,7 +319,7 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
 {
     int                 tmpl;   // length of tmpword
     struct hentry *     he;     // hash entry of root word or NULL
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
     char                result[MAXLNLEN];
     char * st;
 
@@ -326,7 +338,10 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
             // generate new root word by removing prefix and adding
             // back any characters that would have been stripped
 
-            if (stripl) strcpy (tmpword, strip);
+            if (stripl) {
+                strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
+                tmpword[MAXTEMPWORDLEN-1] = '\0';
+            }
             strcpy ((tmpword + stripl), (word + appndl));
 
             // now make sure all of the conditions on characters
@@ -394,10 +409,15 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
 }
 
 SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
+    : pmyMgr(pmgr) // register affix manager
+    , next(NULL)
+    , nextne(NULL)
+    , nexteq(NULL)
+    , flgnxt(NULL)
+    , l_morph(NULL)
+    , r_morph(NULL)
+    , eq_morph(NULL)
 {
-  // register affix manager
-  pmyMgr = pmgr;
-
   // set up its initial values
   aflag = dp->aflag;         // char flag
   strip = dp->strip;         // string to strip
@@ -412,9 +432,6 @@ SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
     memcpy(c.l.conds1, dp->c.l.conds1, MAXCONDLEN_1);
     c.l.conds2 = dp->c.l.conds2;
   } else memcpy(c.conds, dp->c.conds, MAXCONDLEN);
-  next = NULL;
-  nextne = NULL;
-  nexteq = NULL;
   rappnd = myrevstrdup(appnd);
   morphcode = dp->morphcode;
   contclass = dp->contclass;
@@ -439,15 +456,16 @@ SfxEntry::~SfxEntry()
 // add suffix to this word assuming conditions hold
 char * SfxEntry::add(const char * word, int len)
 {
-    char                tword[MAXWORDUTF8LEN + 4];
+    char tword[MAXTEMPWORDLEN];
 
      /* make sure all conditions match */
      if ((len > stripl || (len == 0 && pmyMgr->get_fullstrip())) &&
         (len >= numconds) && test_condition(word + len, word) &&
         (!stripl || (strcmp(word + len - stripl, strip) == 0)) &&
-        ((MAXWORDUTF8LEN + 4) > (len + appndl - stripl))) {
+        ((MAXTEMPWORDLEN) > (len + appndl - stripl))) {
               /* we have a match so add suffix */
-              strcpy(tword,word);
+              strncpy(tword, word, MAXTEMPWORDLEN-1);
+              tword[MAXTEMPWORDLEN-1] = '\0';
               if (appndl) {
                   strcpy(tword + len - stripl, appnd);
               } else {
@@ -578,7 +596,7 @@ struct hentry * SfxEntry::checkword(const char * word, int len, int optflags,
     int                 tmpl;            // length of tmpword
     struct hentry *     he;              // hash entry pointer
     unsigned char *     cp;
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
     PfxEntry* ep = ppfx;
 
     // if this suffix is being cross checked with a prefix
@@ -603,7 +621,8 @@ struct hentry * SfxEntry::checkword(const char * word, int len, int optflags,
             // back any characters that would have been stripped or
             // or null terminating the shorter string
 
-            strcpy (tmpword, word);
+            strncpy (tmpword, word, MAXTEMPWORDLEN-1);
+            tmpword[MAXTEMPWORDLEN-1] = '\0';
             cp = (unsigned char *)(tmpword + tmpl);
             if (stripl) {
                 strcpy ((char *)cp, strip);
@@ -679,7 +698,7 @@ struct hentry * SfxEntry::check_twosfx(const char * word, int len, int optflags,
     int                 tmpl;            // length of tmpword
     struct hentry *     he;              // hash entry pointer
     unsigned char *     cp;
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
     PfxEntry* ep = ppfx;
 
 
@@ -703,7 +722,8 @@ struct hentry * SfxEntry::check_twosfx(const char * word, int len, int optflags,
             // back any characters that would have been stripped or
             // or null terminating the shorter string
 
-            strcpy (tmpword, word);
+            strncpy(tmpword, word, MAXTEMPWORDLEN-1);
+            tmpword[MAXTEMPWORDLEN-1] = '\0';
             cp = (unsigned char *)(tmpword + tmpl);
             if (stripl) {
                 strcpy ((char *)cp, strip);
@@ -740,7 +760,7 @@ char * SfxEntry::check_twosfx_morph(const char * word, int len, int optflags,
 {
     int                 tmpl;            // length of tmpword
     unsigned char *     cp;
-    char                tmpword[MAXWORDUTF8LEN + 4];
+    char                tmpword[MAXTEMPWORDLEN];
     PfxEntry* ep = ppfx;
     char * st;
 
@@ -768,7 +788,8 @@ char * SfxEntry::check_twosfx_morph(const char * word, int len, int optflags,
             // back any characters that would have been stripped or
             // or null terminating the shorter string
 
-            strcpy (tmpword, word);
+            strncpy(tmpword, word, MAXTEMPWORDLEN-1);
+            tmpword[MAXTEMPWORDLEN-1] = '\0';
             cp = (unsigned char *)(tmpword + tmpl);
             if (stripl) {
                 strcpy ((char *)cp, strip);
