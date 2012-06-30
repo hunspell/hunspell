@@ -32,6 +32,8 @@ int main(int argc, char** argv)
   char * ap;
   char ts[MAX_LN_LEN];
 
+  (void)argc;
+
   /* first parse the command line options */
   /* arg1 - munched wordlist, arg2 - affix file */
 
@@ -110,7 +112,7 @@ int main(int argc, char** argv)
     numwords++;
     
     if (al)
-       expand_rootword(ts,wl,ap,al);
+       expand_rootword(ts,wl,ap);
   
     for (i=0; i < numwords; i++) {
       fprintf(stdout,"%s\n",wlist[i].word);
@@ -421,7 +423,7 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 
 
 
-int expand_rootword(const char * ts, int wl, const char * ap, int al)
+int expand_rootword(const char * ts, int wl, const char * ap)
 {
     int i;
     int j;

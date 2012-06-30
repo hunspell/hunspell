@@ -413,8 +413,8 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
 SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
     : pmyMgr(pmgr) // register affix manager
     , next(NULL)
-    , nextne(NULL)
     , nexteq(NULL)
+    , nextne(NULL)
     , flgnxt(NULL)
     , l_morph(NULL)
     , r_morph(NULL)

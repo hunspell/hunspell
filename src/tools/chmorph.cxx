@@ -10,7 +10,7 @@ using namespace std;
 #endif
 
 int 
-main(int argc, char** argv)
+main(int , char** argv)
 {
     FILE * f;
     

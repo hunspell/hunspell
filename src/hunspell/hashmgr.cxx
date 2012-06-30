@@ -386,7 +386,7 @@ int HashMgr::load_tables(const char * tpath, const char * key)
 
   int nExtra = 5 + USERWORD;
 
-  if (tablesize <= 0 || (tablesize >= (std::numeric_limits<int>::max() - 1 - nExtra) / sizeof(struct hentry *))) {
+  if (tablesize <= 0 || (tablesize >= (std::numeric_limits<int>::max() - 1 - nExtra) / int(sizeof(struct hentry *)))) {
     HUNSPELL_WARNING(stderr, "error: line 1: missing or bad word count in the dic file\n");
     delete dict;
     return 4;

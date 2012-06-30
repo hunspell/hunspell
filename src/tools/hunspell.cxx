@@ -1001,7 +1001,7 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    parser->change_token(wlst[c]);
 	    return 0;
 	case ' ':
-	    return ki;
+	    return 0;
 	case '?': {
 	    clear();
 printw(gettext("Whenever a word is found that is not in the dictionary\n"

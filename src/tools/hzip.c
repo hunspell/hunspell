@@ -159,7 +159,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
     fprintf(f2, "%c%c", ch, cl);   /* upper and lower byte of record count */
     for (i = 0; i < BUFSIZE; i++) bitbuf[i] = '\0';
     for (i = 0; i < CODELEN + 1; i++) if (table[i]) {
-        int nmemb;
+        size_t nmemb;
         u.word = (unsigned short) i;
         if (i == CODELEN) u.word = tw;
         if (key) {
@@ -199,7 +199,7 @@ int encode_file(char ** table, int n, FILE *f, FILE *f2, unsigned short tw, char
         return 1;
     if (bits > 0)
     {
-        int nmemb = bits/8 + 1;
+        size_t nmemb = bits/8 + 1;
         if (fwrite(bitbuf, 1, nmemb, f2) != nmemb)
             return 1;
     }

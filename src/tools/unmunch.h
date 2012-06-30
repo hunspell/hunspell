@@ -65,7 +65,7 @@ int parse_aff_file(FILE* afflst);
 
 void encodeit(struct affent * ptr, char * cs);
 
-int expand_rootword(const char *, int, const char*, int);
+int expand_rootword(const char *, int, const char*);
 
 void pfx_add (const char * word, int len, struct affent* ep, int num);
 

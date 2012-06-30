@@ -108,7 +108,7 @@ void suf_chk (const char * word, int len, struct affent * ep, int num,
 
 void add_affix_char(struct hentry * hent, char ac);
 
-int expand_rootword(const char *, int, const char*, int);
+int expand_rootword(const char *, int, const char*);
 
 void pfx_add (const char * word, int len, struct affent* ep, int num);
 

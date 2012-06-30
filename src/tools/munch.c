@@ -19,7 +19,6 @@
 
 int main(int argc, char** argv)
 {
-
   int i, j, k, n;
   int rl, p , nwl;
   int al;
@@ -35,6 +34,8 @@ int main(int argc, char** argv)
   struct hentry * ep1;
   struct affent * pfxp;
   struct affent * sfxp;
+
+  (void)argc;
 
   /* first parse the command line options */
   /* arg1 - wordlist, arg2 - affix file */
@@ -144,7 +145,7 @@ int main(int argc, char** argv)
                numwords++;
                n = 0;
                if (al)
-		 expand_rootword(nword,nwl,as,al);
+		 expand_rootword(nword,nwl,as);
                for (k=0; k<numwords; k++) {
 		 if (lookup(wlist[k].word)) n++;
                  free(wlist[k].word);
@@ -586,7 +587,7 @@ int load_tables(FILE * wdlst)
   mychomp(ts);
   tablesize = atoi(ts);
 
-  if (tablesize <= 0 || (tablesize >= (INT_MAX - 1 - nExtra) / sizeof(struct hentry *))) {
+  if (tablesize <= 0 || (tablesize >= (INT_MAX - 1 - nExtra) / (int)sizeof(struct hentry *))) {
       return 3;
   }
 
@@ -747,7 +748,7 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 
 
 
-int expand_rootword(const char * ts, int wl, const char * ap, int al)
+int expand_rootword(const char * ts, int wl, const char * ap)
 {
     int i;
     int j;
