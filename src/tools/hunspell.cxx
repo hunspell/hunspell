@@ -991,7 +991,7 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	case '6':
 	case '7':
 	case '8':
-	case '9': {
+	case '9':
 	    modified=1;
 	    if ((firstletter!='\0') && (firstletter=='1')) {
 		c += 10;
@@ -999,11 +999,9 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    c -= '0';
 	    if (c>=ns) break;
 	    parser->change_token(wlst[c]);
-	    goto ki;
-	}
-	case ' ': { 
-	    goto ki;
-	}
+	    return 0;
+	case ' ':
+	    return ki;
 	case '?': {
 	    clear();
 printw(gettext("Whenever a word is found that is not in the dictionary\n"
@@ -1105,7 +1103,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	    if ((c==(gettext("u"))[0]) || (c==(gettext("i"))[0]) || (c==(gettext("a"))[0])) {
 		modified=1;
 		putdic(token, pMS);
-		goto ki;
+		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "S)tem" before */
@@ -1155,7 +1153,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(w, temp, MAXLNLEN);
+		strncpy(w, temp, MAXLNLEN-1);
+		w[MAXLNLEN-1] = '\0';
 		free(temp);
 
 #ifdef HAVE_READLINE		
@@ -1239,7 +1238,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;
 		}
-		goto ki;
+		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "e(X)it" before */
@@ -1262,7 +1261,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	}
     }
     }
-    ki: return 0;
+    return 0;
 }
 
 int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE * tempfile)

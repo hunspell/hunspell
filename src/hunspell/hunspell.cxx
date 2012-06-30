@@ -328,6 +328,10 @@ int Hunspell::spell(const char * word, int * info, char ** root)
   char cw[MAXWORDUTF8LEN];
   char wspace[MAXWORDUTF8LEN];
   w_char unicw[MAXWORDLEN];
+
+  int info2 = 0;
+  if (!info) info = &info2; else *info = 0;
+
   // Hunspell supports XML input of the simplified API (see manual)
   if (strcmp(word, SPELL_XML) == 0) return 1;
   int nc = strlen(word);
@@ -346,7 +350,6 @@ int Hunspell::spell(const char * word, int * info, char ** root)
   if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
   else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
-  int info2 = 0;
   if (wl == 0 || maxdic == 0) return 1;
   if (root) *root = NULL;
 
@@ -364,7 +367,6 @@ int Hunspell::spell(const char * word, int * info, char ** root)
     } else break;
   }
   if ((i == wl) && (nstate == NNUM)) return 1;
-  if (!info) info = &info2; else *info = 0;
 
   switch(captype) {
      case HUHCAP:
@@ -404,7 +406,7 @@ int Hunspell::spell(const char * word, int * info, char ** root)
             	        *apostrophe = '\0';
             	        wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
             	        *apostrophe = '\'';
-		        if (wl2 < nc) {
+		        if (wl2 >= 0 && wl2 < nc) {
 		            mkinitcap2(apostrophe + 1, unicw + wl2 + 1, nc - wl2 - 1);
 			    rv = checkword(cw, info, root);
 			    if (rv) break;
@@ -858,7 +860,7 @@ int Hunspell::suggest(char*** slst, const char * word)
               *pos = '\0';
               strcpy(w, (*slst)[j]);
               strcat(w, pos + 1);
-              spell(w, &info, NULL);
+              (void)spell(w, &info, NULL);
               if ((info & SPELL_COMPOUND) && (info & SPELL_FORBIDDEN)) {
                   *pos = ' ';
               } else *pos = '-';

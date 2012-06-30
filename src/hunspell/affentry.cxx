@@ -112,13 +112,15 @@ inline int PfxEntry::test_condition(const char * st)
                 if (*st == '\0' && p) return 0; // word <= condition
                 break;
             }
-         case '.': if (!pos) { // dots are not metacharacters in groups: [.]
+         case '.':
+            if (!pos) { // dots are not metacharacters in groups: [.]
                 p = nextchar(p);
                 // skip the next character
                 for (st++; (opts & aeUTF8) && (*st & 0xc0) == 0x80; st++);
                 if (*st == '\0' && p) return 0; // word <= condition
                 break;
             }
+            /* FALLTHROUGH */
     default: {
                 if (*st == *p) {
                     st++;
@@ -527,7 +529,10 @@ inline int SfxEntry::test_condition(const char * st, const char * beg)
             if (st < beg && p)
                 return 0; // word <= condition
             break;
-        case '.': if (!pos) { // dots are not metacharacters in groups: [.]
+        case '.':
+            if (!pos)
+            {
+                // dots are not metacharacters in groups: [.]
                 p = nextchar(p);
                 // skip the next character
                 for (st--; (opts & aeUTF8) && (st >= beg) && (*st & 0xc0) == 0x80; st--);
@@ -542,6 +547,7 @@ inline int SfxEntry::test_condition(const char * st, const char * beg)
                 }
                 break;
             }
+            /* FALLTHROUGH */
     default: {
                 if (*st == *p) {
                     p = nextchar(p);
