@@ -1,3 +1,7 @@
+2012-09-18 Németh László <nemeth at numbertext dot org>:
+        * src/hunspell/affixmgr.*: - fix morphological analysis of
+        compound words (hun#3544994, reported by Dávid Nemeskey, fdo#55045)
+
 2012-06-29 Caolán McNamara <caolanm at LibO>:
 	* fix various coverity warnings
 

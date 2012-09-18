@@ -2126,7 +2126,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
         }        
 
         if (!rv) {
-            if (onlycpdrule) break;
+            if (onlycpdrule && strlen(*result) > MAXLNLEN/10) break;
             if (compoundflag &&
              !(rv = prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN, compoundflag))) {
                 if (((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL,
