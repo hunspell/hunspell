@@ -1760,8 +1760,8 @@ int Hunspell::spellml(char*** slst, const char * word)
         std::string entry((*slst)[i]);
         free((*slst)[i]);
         myrep(entry, "\t", " ");
-        myrep(entry, "<", "&lt;");
         myrep(entry, "&", "&amp;");
+        myrep(entry, "<", "&lt;");
         r.append(entry);
 
         r.append("</a>");
