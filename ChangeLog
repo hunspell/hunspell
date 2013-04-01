@@ -1,3 +1,6 @@
+2013-04-01 Caolán McNamara <caolanm at LibO>:
+	* hunspell: -Werror=undef
+
 2013-03-13 Caolán McNamara <caolanm at LibO>:
 	* rhbz#918938 crash in interaction with danish thesaurus
 
