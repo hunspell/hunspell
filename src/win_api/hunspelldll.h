@@ -60,6 +60,8 @@ LIBHUNSPELL_DLL_EXPORTED char * hunspell_get_dic_encoding(Hunspell *pMS);
 LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell *pMS, char *word);
 //add word to dict with affixes of the modelword (word is valid until spell object is not destroyed)
 LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell *pMS, char *word, char *modelword);
+// remove word from dict
+LIBHUNSPELL_DLL_EXPORTED int hunspell_remove(Hunspell *pMS, char *word);
 
 #ifdef __cplusplus
 }

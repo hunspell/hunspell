@@ -102,6 +102,11 @@ LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell *pMS, char *word, 
     return pMS->add_with_affix(word, modelword);
 }
 
+LIBHUNSPELL_DLL_EXPORTED int hunspell_remove(Hunspell *pMS, char *word)
+{
+    return pMS->remove(word);
+}
+
 BOOL APIENTRY DllMain (HINSTANCE hInst     /* Library instance handle. */ ,
                        DWORD reason        /* Reason this function is being called. */ ,
                        LPVOID reserved     /* Not used. */ )
