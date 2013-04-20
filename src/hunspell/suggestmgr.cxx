@@ -678,7 +678,7 @@ int SuggestMgr::extrachar(char** wlst, const char * word, int ns, int cpdsuggest
 // error is missing a letter it needs
 int SuggestMgr::forgotchar(char ** wlst, const char * word, int ns, int cpdsuggest)
 {
-   char candidate[MAXSWUTF8L];
+   char candidate[MAXSWUTF8L + 4];
    char * p;
    clock_t timelimit = clock();
    int timer = MINTIMER;
@@ -700,8 +700,8 @@ int SuggestMgr::forgotchar(char ** wlst, const char * word, int ns, int cpdsugge
 // error is missing a letter it needs
 int SuggestMgr::forgotchar_utf(char ** wlst, const w_char * word, int wl, int ns, int cpdsuggest)
 {
-   w_char  candidate_utf[MAXSWL];
-   char    candidate[MAXSWUTF8L];
+   w_char  candidate_utf[MAXSWL + 1];
+   char    candidate[MAXSWUTF8L + 4];
    w_char * p;
    clock_t timelimit = clock();
    int timer = MINTIMER;

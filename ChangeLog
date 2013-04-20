@@ -1,3 +1,8 @@
+2013-04-19 Rouslan Solomokhin <at sf.net>
+	* fix crash in suggestions for 99-character long words 
+	  (hun#3595024, also http://crbug.com/130128),
+          thanks to also Paweł Hajdan to report the patch
+
 2013-04-01 Caolán McNamara <caolanm at LibO>:
 	* hunspell: -Werror=undef
 
