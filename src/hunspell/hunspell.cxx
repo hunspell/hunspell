@@ -1684,6 +1684,13 @@ int Hunspell::get_langnum() const
    return langnum;
 }
 
+int Hunspell::input_conv(const char * word, char * dest)
+{
+  RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  return (rl && rl->conv(word, dest));
+}
+
+
 // return the beginning of the element (attr == NULL) or the attribute
 const char * Hunspell::get_xml_pos(const char * s, const char * attr)
 {

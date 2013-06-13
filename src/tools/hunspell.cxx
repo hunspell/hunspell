@@ -400,12 +400,17 @@ void log(char * message)
 int putdic(char * word, Hunspell * pMS)
 {
     char * w;
-
+    char buf[MAXLNLEN];
+    
     word = chenc(word, ui_enc, dic_enc[0]);
+
+    if(pMS->input_conv(word, buf)) word = buf;
+    
+    int ret;
     
     if (((w = strstr(word + 1, "/")) == NULL)) {
-        if (*word == '*') return pMS->remove(word + 1);
-	else return pMS->add(word);
+        if (*word == '*') ret =  pMS->remove(word + 1);
+	else ret = pMS->add(word);
     } else {
 	char c;
 	int ret;
@@ -417,8 +422,8 @@ int putdic(char * word, Hunspell * pMS)
 	    ret = pMS->add_with_affix(word, w + 1); // word/pattern
 	}
 	*w = c;
-	return ret;
     }
+    return ret;
 }
 
 void load_privdic(char * filename, Hunspell * pMS) 
