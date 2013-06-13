@@ -1,3 +1,6 @@
+2013-06-13 Konstantin Khlebniko
+	* #49 HashMgr::add_word computes wrong size for struct hentry
+
 2013-06-13 Ville Skyttä
 	* #53 Man page syntax fixes 
 

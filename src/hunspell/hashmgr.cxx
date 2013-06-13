@@ -119,7 +119,7 @@ int HashMgr::add_word(const char * word, int wbl, int wcl, unsigned short * aff,
     int al, const char * desc, bool onlyupcase)
 {
     bool upcasehomonym = false;
-    int descl = desc ? (aliasm ? sizeof(short) : strlen(desc) + 1) : 0;
+    int descl = desc ? (aliasm ? sizeof(char *) : strlen(desc) + 1) : 0;
     // variable-length hash record with word and optional fields
     struct hentry* hp = 
 	(struct hentry *) malloc (sizeof(struct hentry) + wbl + descl);
