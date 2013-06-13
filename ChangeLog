@@ -1,3 +1,6 @@
+2013-06-13 Ville Skyttä
+	* #53 Man page syntax fixes 
+
 2013-04-19 John Thomson <john thomson at SIL>
         * win_api: add remove() of Hunspell API (hun#3606435)
 
