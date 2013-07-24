@@ -681,7 +681,10 @@ struct hentry * SfxEntry::checkword(const char * word, int len, int optflags,
                 } else if (wlst && (*ns < maxSug)) {
                     int cwrd = 1;
                     for (int k=0; k < *ns; k++)
-                        if (strcmp(tmpword, wlst[k]) == 0) cwrd = 0;
+                        if (strcmp(tmpword, wlst[k]) == 0) {
+                           cwrd = 0;
+                           break;
+                        }
                     if (cwrd) {
                         wlst[*ns] = mystrdup(tmpword);
                         if (wlst[*ns] == NULL) {
