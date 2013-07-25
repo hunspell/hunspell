@@ -854,18 +854,19 @@ int expand_tab(char * dest, char * src, int limit) {
 // like mbstowcs which isn't quite correct, but close enough for western
 // text in UTF-8
 void strncpyu8(char * dest, const char * src, int begin, int n) {
-	int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
-	int i = 0;
-	while (i < begin + n) {
-		if (i >= begin)
-		{
-			if (!*src)
-				break;
-			*dest++ = *src;
+	if (n) {
+		int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
+		for (int i = 0; i < begin + n;) {
+			if (!*src) break; // source is at it's end
+			if (!u8 || (*src & 0xc0) != 0x80) i++; // new character
+			if(i > begin){ // copy char (w/ utf-8 bytes)
+				*dest++ = *src++;
+				while(u8 && (*src & 0xc0) == 0x80) *dest++ = *src++;
+			}else{ // skip char (w/ utf-8 bytes)
+				++src;
+				while(u8 && (*src & 0xc0) == 0x80) ++src;
+			}
 		}
-		if (!u8 || (*src & 0xc0) != 0x80)
-			i++;
-		++src;
 	}
 	*dest = '\0';
 }
@@ -902,8 +903,6 @@ void dialogscreen(TextParser * parser, char * token,
 		expand_tab(lines[i], chenc(parser->get_prevline(i), io_enc, ui_enc), MAXLNLEN);
 	}
 
-	int prevline = 0;
-
 	strncpy(line, parser->get_prevline(0), parser->get_tokenpos());
         line[parser->get_tokenpos()] = '\0';
 	int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
@@ -912,9 +911,12 @@ void dialogscreen(TextParser * parser, char * token,
         line[parser->get_tokenpos() + strlen(token)] = '\0';	
 	int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
-	int rowindex = tokenend / x;
+	int rowindex = (tokenend - 1) / x;
 	int beginrow = rowindex - tokenbeg / x;
 	if (beginrow >= MAXPREVLINE) beginrow = MAXPREVLINE - 1;
+
+	int ri = rowindex;
+	int prevline = 0;
 
 	for (int i = 0; i < MAXPREVLINE; i++) {
 	        strncpyu8(line, lines[prevline], x * rowindex, x);
@@ -927,7 +929,7 @@ void dialogscreen(TextParser * parser, char * token,
 	}
 
 	int linestartpos = tokenbeg - (tokenbeg % x);
-	strncpyu8(line, lines[0], x * rowindex + linestartpos, tokenbeg % x);
+	strncpyu8(line, lines[0], x * (ri - beginrow),  tokenbeg % x) ;
 	mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line);
 	attron(A_REVERSE);    
 	printw("%s", chenc(token, io_enc, ui_enc));

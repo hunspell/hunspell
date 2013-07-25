@@ -1,3 +1,8 @@
+2013-07-25 Caolán McNamara <caolanm at LibO>:
+	* hunspell#167 layout problems with long lines
+		- based on the original fix by xorho
+		  adapted to HEAD
+
 2013-07-24 pchang9@cs.wisc.edu
 	* moz#896301 Wasted work in SfxEntry::checkword
 	* moz#896844 Wasted work in AffixMgr::defcpd_check
