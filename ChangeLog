@@ -1,3 +1,6 @@
+2013-07-25 pchang9@cs.wisc.edu
+	* moz#897255 Wasted work in line_uniq
+
 2013-07-25 Caolán McNamara <caolanm at LibO>:
 	* hunspell#167 layout problems with long lines
 		- based on the original fix by xorho
