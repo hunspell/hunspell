@@ -68,13 +68,14 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libparsers_a_AR = $(AR) $(ARFLAGS)
 libparsers_a_LIBADD =
-am_libparsers_a_OBJECTS = firstparser.$(OBJEXT) htmlparser.$(OBJEXT) \
-	latexparser.$(OBJEXT) manparser.$(OBJEXT) textparser.$(OBJEXT)
+am_libparsers_a_OBJECTS = firstparser.$(OBJEXT) xmlparser.$(OBJEXT) \
+	latexparser.$(OBJEXT) manparser.$(OBJEXT) textparser.$(OBJEXT) \
+	htmlparser.$(OBJEXT) odfparser.$(OBJEXT)
 libparsers_a_OBJECTS = $(am_libparsers_a_OBJECTS)
 PROGRAMS = $(noinst_PROGRAMS)
-am_testparser_OBJECTS = firstparser.$(OBJEXT) htmlparser.$(OBJEXT) \
+am_testparser_OBJECTS = firstparser.$(OBJEXT) xmlparser.$(OBJEXT) \
 	latexparser.$(OBJEXT) manparser.$(OBJEXT) testparser.$(OBJEXT) \
-	textparser.$(OBJEXT)
+	textparser.$(OBJEXT) htmlparser.$(OBJEXT) odfparser.$(OBJEXT)
 testparser_OBJECTS = $(am_testparser_OBJECTS)
 testparser_LDADD = $(LDADD)
 testparser_DEPENDENCIES = ../hunspell/libhunspell-1.3.la
@@ -186,6 +187,7 @@ LTLIBOBJS = @LTLIBOBJS@
 LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -226,6 +228,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -259,7 +262,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -280,11 +282,17 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libparsers.a
-libparsers_a_SOURCES = firstparser.cxx htmlparser.cxx \
+libparsers_a_SOURCES = firstparser.cxx xmlparser.cxx \
 		      latexparser.cxx  manparser.cxx \
-		      textparser.cxx 
+		      textparser.cxx htmlparser.cxx \
+		      odfparser.cxx
 
-testparser_SOURCES = firstparser.cxx firstparser.hxx htmlparser.cxx htmlparser.hxx latexparser.cxx latexparser.hxx manparser.cxx manparser.hxx testparser.cxx textparser.cxx textparser.hxx
+testparser_SOURCES = firstparser.cxx firstparser.hxx xmlparser.cxx \
+		      xmlparser.hxx latexparser.cxx latexparser.hxx \
+		      manparser.cxx manparser.hxx testparser.cxx \
+		      textparser.cxx textparser.hxx htmlparser.cxx \
+		      htmlparser.hxx odfparser.hxx odfparser.cxx
+
 
 # need mystrdup()
 LDADD = ../hunspell/libhunspell-1.3.la
@@ -352,8 +360,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/htmlparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/latexparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manparser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/odfparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textparser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmlparser.Po@am__quote@
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

@@ -197,9 +197,11 @@ int TextParser::change_token(const char * word)
 {
 	if (word) {
 		char * r = mystrdup(line[actual] + head);
+		fprintf(stderr,"TOKENUTAN:%s\n", r);
 		strcpy(line[actual] + token, word);
 		strcat(line[actual], r);
 		head = token;
+		fprintf(stderr,"TOKENUTAN2:%s\n", line[actual] + head);
 		free(r);
 		return 1;
 	}
@@ -271,7 +273,10 @@ void TextParser::set_url_checking(int check)
 
 char * TextParser::alloc_token(int token, int * head)
 {
-    if (get_url(token, head)) return NULL;
+    int url_head = *head;
+////    fprintf(stderr, "TOKEN:%dHEAD: %d\n", token, *head);
+    if (get_url(token, &url_head)) return NULL;
+////    fprintf(stderr, "TOKEN2:%dHEAD: %d\n", token, *head);
     char * t = (char *) malloc(*head - token + 1);
     if (t) {
         t[*head - token] = '\0';
@@ -284,6 +289,7 @@ char * TextParser::alloc_token(int token, int * head)
     		return NULL;
     	    }
     	}
+/////    	fprintf(stderr, "ALOCATE: %s\n", t);
         return t;
     }
     fprintf(stderr,"Error - Insufficient Memory\n");

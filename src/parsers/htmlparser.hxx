@@ -10,32 +10,22 @@
 #ifndef _HTMLPARSER_HXX_
 #define _HTMLPARSER_HXX_
 
-
-#include "textparser.hxx"
+#include "xmlparser.hxx"
 
 /*
  * HTML Parser
  *
  */
 
-class HTMLParser : public TextParser
+class HTMLParser : public XMLParser
 {
+
 public:
- 
+
   HTMLParser(const char * wc);
   HTMLParser(unsigned short * wordchars, int len);
+  char *              next_token();
   virtual ~HTMLParser();
-
-  virtual char *              next_token();
-
-private:
-
-  int                 look_pattern(const char * p[][2], unsigned int len, int column);
-  int                 pattern_num;
-  int                 pattern2_num;
-  int		      prevstate;
-  int                 checkattr;
-  char		      quotmark;
 
 };
 

@@ -26,8 +26,6 @@ class TextParser
 {
 
 protected:
-  void                init(const char *);
-  void                init(unsigned short * wordchars, int len);
   int                 wordcharacters[256]; // for detection of the word boundaries
   char                line[MAXPREVLINE][MAXLNLEN]; // parsed and previous lines
   char                urlline[MAXLNLEN]; // mask for url detection
@@ -46,6 +44,8 @@ public:
   TextParser();
   TextParser(unsigned short * wordchars, int len);
   TextParser(const char * wc);
+  void                init(const char *);
+  void                init(unsigned short * wordchars, int len);
   virtual ~TextParser();
 
   void                put_line(char * line);

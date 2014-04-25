@@ -47,6 +47,8 @@
 #include "latexparser.hxx"
 #include "manparser.hxx"
 #include "firstparser.hxx"
+#include "xmlparser.hxx"
+#include "odfparser.hxx"
 
 #else
 
@@ -59,6 +61,8 @@
 #include "latexparser.hxx"
 #include "manparser.hxx"
 #include "firstparser.hxx"
+#include "xmlparser.hxx"
+#include "odfparser.hxx"
 
 #define LIBDIR \
     "/usr/share/hunspell:" \
@@ -132,7 +136,7 @@ extern char * mystrdup(const char * s);
 
 // file formats:
 
-enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST };
+enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
 
 struct wordlist {
     char * word;
@@ -338,6 +342,8 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
         case FMT_LATEX: p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_HTML: p = new HTMLParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_MAN: p = new ManParser(wordchars_utf16, wordchars_utf16_len); break;
+        case FMT_XML: p = new XMLParser(wordchars_utf16, wordchars_utf16_len); break;
+        case FMT_ODF: p = new ODFParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_FIRST: p = new FirstParser(wordchars);
         }
     } else {
@@ -345,6 +351,8 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
         case FMT_LATEX: p = new LaTeXParser(wordchars); break;
         case FMT_HTML: p = new HTMLParser(wordchars); break;
         case FMT_MAN: p = new ManParser(wordchars); break;
+        case FMT_XML: p = new XMLParser(wordchars); break;
+        case FMT_ODF: p = new ODFParser(wordchars); break;
         case FMT_FIRST: p = new FirstParser(wordchars);
         }
     }
@@ -352,11 +360,30 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
     if ((!p) && (extension)) {
 	if ((strcmp(extension, "html") == 0) ||
     	    (strcmp(extension, "htm") == 0) ||
-	    (strcmp(extension, "xml") == 0)) {
+	    (strcmp(extension, "xhtml") == 0)) {
                 if (io_utf8) {
                     p = new HTMLParser(wordchars_utf16, wordchars_utf16_len);
                 } else {
 		    p = new HTMLParser(wordchars);
+                }
+	} else if ((strcmp(extension, "xml") == 0)) {
+                if (io_utf8) {
+                    p = new XMLParser(wordchars_utf16, wordchars_utf16_len);
+                } else {
+		    p = new XMLParser(wordchars);
+                }
+	} else if ((strcmp(extension, "odt") == 0) ||
+                    (strcmp(extension, "ott") == 0) ||
+                    (strcmp(extension, "odp") == 0) ||
+                    (strcmp(extension, "otp") == 0) ||
+                    (strcmp(extension, "odg") == 0) ||
+                    (strcmp(extension, "otg") == 0) ||
+                    (strcmp(extension, "ods") == 0) ||
+                    (strcmp(extension, "ots") == 0)) {
+                if (io_utf8) {
+                    p = new ODFParser(wordchars_utf16, wordchars_utf16_len);
+                } else {
+		    p = new ODFParser(wordchars);
                 }
 	} else if (((extension[0] > '0') && (extension[0] <= '9'))) {
                 if (io_utf8) {
@@ -504,7 +531,7 @@ int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
   return 0;
 }
 
-void pipe_interface(Hunspell ** pMS, int format, FILE * fileid) {
+void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename) {
   char buf[MAXLNLEN];
   char * buf2;
   wordlist * dicwords = NULL;
@@ -515,8 +542,22 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid) {
   int terse_mode = 0;
   int verbose_mode = 0;
   int d = 0;
+  char * tmpcontent;
 
-  TextParser * parser = get_parser(format, NULL, pMS[0]);
+  char * extension = (filename) ? basename(filename, '.') : NULL;
+  TextParser * parser = get_parser(format, extension, pMS[0]);
+
+  // access content.xml of ODF
+  if (dynamic_cast<ODFParser*>(parser)) {
+        tmpcontent = tmpnam(NULL);
+        sprintf(buf, "unzip -p %s content.xml | sed 's/\\(<\\/text:p>\\)\\(.\\)/\\1\\\n\\2/g' >%s", filename, tmpcontent);
+        if (system(buf) != 0)
+        {
+            perror(gettext("Can't open inputfile"));
+            exit(1);
+        }
+        fileid = fopen(tmpcontent, "r");
+    }
 
   if ((filter_mode == NORMAL)) {
     fprintf(stdout,gettext(HUNSPELL_HEADING));
@@ -791,6 +832,12 @@ if (pos >= 0) {
 	}
 } // if
 } // while
+
+if (dynamic_cast<ODFParser*>(parser)) {
+    fclose(fileid);
+    sprintf(buf, "rm %s", tmpcontent);
+    system(buf);
+}
 
 if (parser) delete(parser);
 
@@ -1303,7 +1350,7 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 		if ((dialogexit==-1) || (dialogexit==1)) goto ki2;
 	}
 
-   ki2: fprintf(tempfile,"%s\n",token=parser->get_line());
+   ki2: fprintf(tempfile,"%s",token=parser->get_line());
 	free(token);
 	return dialogexit;
 }
@@ -1311,6 +1358,8 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 void interactive_interface(Hunspell ** pMS, char * filename, int format)
 {
     char buf[MAXLNLEN];
+    char *odffilename;
+    char *odftempdir; // external zip works only with temporary directories (option -j)
 
     FILE *text = fopen(filename, "r");
     if (!text)
@@ -1326,7 +1375,29 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     char * extension = basename(filename, '.');
     TextParser * parser = get_parser(format, extension, pMS[0]);
 
-   
+    // access content.xml of ODF
+    if (dynamic_cast<ODFParser*>(parser)) {
+        odftempdir = tmpnam(NULL);
+        fclose(text);
+        sprintf(buf, "mkdir %s; unzip -p %s content.xml | sed 's/\\(<\\/text:p>\\)\\(.\\)/\\1\\\n\\2/g' >%s/content.xml", odftempdir, filename, odftempdir);
+        if (system(buf) != 0)
+        {
+            perror(gettext("Can't open inputfile"));
+            endwin();
+            exit(1);
+        }
+        odffilename = filename;
+        sprintf(buf, "%s/content.xml", odftempdir);
+        filename = mystrdup(buf);
+        text = fopen(filename, "r");
+        if (!text)
+        {
+            perror(gettext("Can't open inputfile"));
+            endwin();
+            exit(1);
+        }
+    }
+
     FILE *tempfile = tmpfile();
 
     if (!tempfile)
@@ -1340,7 +1411,6 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 
 	while(fgets(buf,MAXLNLEN,text)) {
 	    if (check) {
-                if (*(buf + strlen(buf) - 1) == '\n') *(buf + strlen(buf) - 1) = '\0';
 		parser->put_line(buf);
 		dialogexit = interactive_line(parser,pMS,filename,tempfile);
 		switch (dialogexit) {
@@ -1348,6 +1418,11 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 			clear();
 			refresh();
 			fclose(tempfile); //automatically deleted when closed
+			if (dynamic_cast<ODFParser*>(parser)) {
+				sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
+				system(buf);
+				free(filename);
+			}
 			endwin();
 			exit(0);
 		    }
@@ -1360,12 +1435,10 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 	    }
 	}
 	fclose(text);
-	delete parser;
 
 	if (modified) {
 		rewind(tempfile);
 		text = fopen(filename, "wb");
-
 		if (text == NULL)
             perror(gettext("Can't open outputfile"));
         else
@@ -1376,10 +1449,22 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 		        if (fwrite(buf, 1, n, text) != n)
 				    perror("write failed");
 		    }
-
 		    fclose(text);
+		    if (dynamic_cast<ODFParser*>(parser)) {
+		        sprintf(buf, "zip -j %s %s", odffilename, filename);
+		        if (system(buf) != 0)
+		                perror("write failed");
+		    }
         }
 	}
+
+	if (dynamic_cast<ODFParser*>(parser)) {
+		sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
+		system(buf);
+		free(filename);
+	}
+
+	delete parser;
 	fclose(tempfile); //automatically deleted when closed
 }
 
@@ -1635,7 +1720,6 @@ int main(int argc, char** argv)
 			showpath = 1;
 		} else if ((strcmp(argv[i],"-r")==0)) {
 			warn = 1;
-fprintf(stderr, "BEKAPCS");
 		} else if ((strcmp(argv[i],"--check-url")==0)) {
 			checkurl = 1;
 		} else if ((arg_files==-1) && ((argv[i][0] != '-') && (argv[i][0] != '\0'))) {
@@ -1735,10 +1819,14 @@ fprintf(stderr, "BEKAPCS");
 #ifndef WIN32
             strcat(buf,"/");
 #endif
+	    strcat(buf,DICBASENAME);
+	    strcat(buf,basename(dicname,DIRSEPCH));
+	    load_privdic(buf, pMS[0]);
+	    strcpy(buf,HOME);
+#ifndef WIN32
+            strcat(buf,"/");
+#endif
 	    if (!privdicname) {
-		strcat(buf,DICBASENAME);
-		strcat(buf,basename(dicname,DIRSEPCH));
-		load_privdic(buf, pMS[0]);
 		strcpy(buf,DICBASENAME);
 		strcat(buf,basename(dicname,DIRSEPCH));
 		load_privdic(buf, pMS[0]);
@@ -1746,19 +1834,19 @@ fprintf(stderr, "BEKAPCS");
 		strcat(buf,privdicname);
 		load_privdic(buf, pMS[0]);
 		strcpy(buf,privdicname);
-		load_privdic(buf, pMS[0]);	
+		load_privdic(buf, pMS[0]);
 	    }
         }
 
 	if (arg_files==-1) {
-		pipe_interface(pMS, format, stdin);
+		pipe_interface(pMS, format, stdin, NULL);
 	} else if (filter_mode != NORMAL) {
 		for (int i = arg_files; i < argc; i++) {
 			if (exist(argv[i])) {
 				modified = 0;
 				currentfilename = argv[i];
 				FILE * f = fopen(argv[i], "r");
-				pipe_interface(pMS, format, f);
+				pipe_interface(pMS, format, f, argv[i]);
 				fclose(f);
 			} else {
 				fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);

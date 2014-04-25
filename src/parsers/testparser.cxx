@@ -5,6 +5,7 @@
 #include "textparser.hxx"
 #include "htmlparser.hxx"
 #include "latexparser.hxx"
+#include "xmlparser.hxx"
 
 #ifndef W32
 using namespace std;
@@ -30,7 +31,7 @@ main(int argc, char** argv)
     exit(1);
   }
 
-    TextParser * p = new LaTeXParser("qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
+    TextParser * p = new TextParser("qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
     
     char buf[MAXLNLEN];
     char * next;
