@@ -1,3 +1,45 @@
+2014-05-28 Németh László <nemeth at numbertext dot org>:
+	* flat ODF support, eg.:
+	  hunspell doc.fodt
+	  cat doc.fodt | hunspell -l -O
+	* new options:
+	- -X (XML) input format
+	- -O (ODF or flat ODF) input format
+	- --check-apostrophe: check and force Unicode apostrophe usage
+	  (ASCII or Unicode apostrophe has to be in the
+	  WORDCHARS section of the affix file)
+	* fix ODF support:
+	- break 1-line XML of ODT documents at </style:style>, too,
+	  not only at </text:p> (limiting tokenization problems, when
+	  fgets stops within an XML tag)
+	- show ODF file path on the UI instead of the temporary file
+	* fix XML support:
+	- ', ", &, < and > in replacements converted to XML entities
+	- recognize &apos at tokenization, depending from WORDCHARS
+	- &apos; in tokens converted to ' before spell checking and
+	  in the output of the pipe interface
+	* better apostrophe usage:
+	- WORDCHARS only with one of the Unicode or ASCII apostrophe
+	  results extended word tokenization: both of them will be part of
+	  the words (if they are inside: eg. word's, but not words').
+	- convert Unicode apostrophes to ASCII ones for 8-bit dictionaries
+	  (eg. English dictionaries), or for UTF-8 dictionaries only
+	  with ASCII apostrophe supports (eg. French dictionaries).
+	* updated manual:
+	- hunspell.4 renamed to hunspell.5, see
+	  hunspell#241 reported by Cristopher Yeleighton
+	- updated translations
+
+2014-04-25 Németh László <nemeth at numbertext dot org>:
+	* OpenDocument support, eg.
+	  hunspell *.odt
+	  hunspell -l *.odt
+	* always load default personal dictionary (fix
+	  filtering bad words - reduce this word list - using
+	  it as a personal dictionary workflow)
+	* fix parsing/URL recognition problem (bad tokens
+	  with aposthrophes)
+
 2013-07-25 pchang9@cs.wisc.edu
 	* moz#897255 Wasted work in line_uniq
 	* moz#897780 Wasted work in SuggestMgr::twowords

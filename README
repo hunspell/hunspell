@@ -47,7 +47,7 @@ glibc-devel
 
 optional developer packages:
 
-ncurses (need for --with-ui)
+ncurses (need for --with-ui), eg. libncursesw5 for UTF-8
 readline (for fancy input line editing,
   configure parameter: --with-readline)
 locale and gettext (but you can also use the
@@ -118,7 +118,7 @@ Documentation
 -------------
 
 features and dictionary format:
-man 4 hunspell
+man 5 hunspell
 
 man hunspell
 hunspell -h
@@ -169,6 +169,9 @@ Dictionaries
 ------------
 
 Myspell & Hunspell dictionaries:
+http://extensions.libreoffice.org
+http://cgit.freedesktop.org/libreoffice/dictionaries
+http://extensions.openoffice.org
 http://wiki.services.openoffice.org/wiki/Dictionaries
 
 Aspell dictionaries (need some conversion):
@@ -176,4 +179,4 @@ ftp://ftp.gnu.org/gnu/aspell/dict
 Conversion steps: see relevant feature request at http://hunspell.sf.net.
 
 László Németh
-nemeth at OOo
+nemeth at numbertext org

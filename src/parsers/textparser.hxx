@@ -52,11 +52,12 @@ public:
   char *              get_line();
   char *              get_prevline(int n);
   virtual char *      next_token();
-  int                 change_token(const char * word);
+  virtual int         change_token(const char * word);
   void                set_url_checking(int check);
 
   int                 get_tokenpos();
   int                 is_wordchar(char * w);
+  inline int          is_utf8() { return utf8; }
   const char *        get_latin1(char * s);
   char *              next_char();
   int                 tokenize_urls();

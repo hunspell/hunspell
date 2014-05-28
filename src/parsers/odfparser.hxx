@@ -21,6 +21,7 @@ public:
  
   ODFParser(const char * wc);
   ODFParser(unsigned short * wordchars, int len);
+  char *   next_token();
   virtual ~ODFParser();
 
 };

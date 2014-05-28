@@ -1,16 +1,16 @@
-.TH hunspell 1 "2011-01-21"
+.TH hunspell 1 "2014-05-27"
 .LO 1
 .SH NAME
 hunspell \- spell checker, stemmer and morphological analyzer
 .SH SYNOPSIS
-hunspell [\-1aDGHhLlmnrstvw] [\-\-check\-url] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-p dict] [\-vv] [\-\-version] [file(s)]
+hunspell [\-1aDGHhLlmnOrstvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-p dict] [\-vv] [\-\-version] [text/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff file(s)]
 .SH DESCRIPTION
 .I Hunspell
 is fashioned after the
 .I Ispell
 program.  The most common usage is "hunspell" or "hunspell filename". 
 Without filename parameter, hunspell checks the standard input.
-Typing "cat" and "exsample" in two input lines, we got an asterisk
+Typing "cat" and "exsample" in two input lines, results an asterisk
 (it means "cat" is a correct word) and a line with corrections:
 .PP
 .RS
@@ -252,6 +252,10 @@ includes the original word immediately after the indicator character
 in output lines beginning with '*', '+', and '\-', which simplifies
 interaction for some programs.
 
+.IP \fB\-\-check\-apostrophe\fR
+Check and force Unicode apostrophes (U+2019), if one of the ASCII or Unicode
+apostrophes is specified by the spelling dictionary, as a word character
+(see WORDCHARS, ICONV and OCONV in hunspell(5)).
 .IP \fB\-\-check\-url\fR
 Check URLs, e-mail addresses and directory paths.
 
@@ -296,13 +300,16 @@ The "list" option
 is used to produce a list of misspelled words from the standard input.
 
 .IP \fB\-m\fR
-Analyze the words of the input text (see also hunspell(4) about
+Analyze the words of the input text (see also hunspell(5) about
 morphological analysis). Without dictionary morphological data,
 signs the flags of the affixes of the word forms for dictionary
 developers.
 
 .IP \fB\-n\fR
 The input file is in nroff/troff format.
+
+.IP \fB\-O\fR
+The input file is in OpenDocument (ODF or Flat ODF) format.
 
 .IP \fB\-P\ password\fR
 Set password for encrypted dictionaries.
@@ -325,7 +332,7 @@ environmental variable, personal dictionary will be
 Warn of the rare words, wich are also potential spelling mistakes.
 
 .IP \fB\-s\fR
-Stem the words of the input text (see also hunspell(4) about
+Stem the words of the input text (see also hunspell(5) about
 stemming). It depends from the dictionary data.
 
 .IP \fB\-t\fR
@@ -340,17 +347,34 @@ Print ispell(1) compatible version number.
 .IP \fB\-w\fR
 Print misspelled words (= lines) from one word/line input.
 
+.IP \fB\-X\fR
+The input file is in XML format.
+
 .SH EXAMPLES
 .TP
-.B hunspell \-d en_US english.html
+.B hunspell example.html
+Interactive spell checking of an HTML file with the default dictionary.
+.TP
+.B hunspell \-d en_US example.html
+Interactive spell checking of an HTML file with the en_US dictionary.
 .TP
 .B hunspell \-d en_US,en_US_med medical.txt
+Interactive spell checking with multiple dictionaries.
 .TP
-.B hunspell \-d ~/openoffice.org2.4/share/dict/ooo/de_DE
+.B hunspell *.odt
+Interactive spell checking of ODF documents.
 .TP
-.B hunspell *.html
+.B hunspell \-l *.odt
+List bad words of ODF documents
 .TP
-.B hunspell \-l text.html
+.B hunspell \-l *.odt | sort | uniq >unrecognized
+Saving unrecognized words of ODF documents (filtering duplications).
+.TP
+.B hunspell -p unrecognized_but_good *.odt
+Interactive spell checking of ODF documents, using the previously
+saved and reduced word list, as a personal dictionary, to speed up
+spell checking.
+.TP
 .SH ENVIRONMENT
 .TP
 .B DICTIONARY
@@ -370,16 +394,16 @@ LC_MESSAGES, and LANG. If none are set then the following
 fallbacks are used:
 
 .BI /usr/share/myspell/default.aff
-Path of default affix file. See hunspell(4).
+Path of default affix file. See hunspell(5).
 .PP
 .BI /usr/share/myspell/default.dic
 Path of default dictionary file.
-See hunspell(4).
+See hunspell(5).
 .PP
 .BI $HOME/.hunspell_default.
 Default path to personal dictionary.
 .SH SEE ALSO
-.B hunspell (3), hunspell(4)
+.B hunspell (3), hunspell(5)
 .SH AUTHOR
 Author of Hunspell executable is László Németh. For Hunspell library,
 see hunspell(3).

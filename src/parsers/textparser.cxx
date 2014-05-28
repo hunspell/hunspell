@@ -46,6 +46,10 @@ static const char * LATIN1[] = {
 
 #define LATIN1_LEN (sizeof(LATIN1) / sizeof(char *))
 
+#define ENTITY_APOS "&apos;"
+#define UTF8_APOS "\xe2\x80\x99"
+#define APOSTROPHE "'"
+
 TextParser::TextParser() {
 	init((char *) NULL);
 }
@@ -177,6 +181,13 @@ char * TextParser::next_token()
 		case 1: // wordchar
 			if ((latin1 = get_latin1(line[actual] + head))) {
 				head += strlen(latin1);
+			} else if ((is_wordchar((char *) APOSTROPHE) || (is_utf8() && is_wordchar((char *) UTF8_APOS))) && line[actual][head] == '\'' &&
+					is_wordchar(line[actual] + head + 1)) {
+				head++;
+			} else if (is_utf8() && is_wordchar((char *) APOSTROPHE) && // add Unicode apostrophe to the WORDCHARS, if needed
+					strncmp(line[actual] + head, UTF8_APOS, strlen(UTF8_APOS)) == 0 &&
+					is_wordchar(line[actual] + head + strlen(UTF8_APOS))) {
+				head += strlen(UTF8_APOS) - 1;
 			} else if (! is_wordchar(line[actual] + head)) {
 				state = 0;
 				char * t = alloc_token(token, &head);
@@ -197,11 +208,9 @@ int TextParser::change_token(const char * word)
 {
 	if (word) {
 		char * r = mystrdup(line[actual] + head);
-		fprintf(stderr,"TOKENUTAN:%s\n", r);
 		strcpy(line[actual] + token, word);
 		strcat(line[actual], r);
 		head = token;
-		fprintf(stderr,"TOKENUTAN2:%s\n", line[actual] + head);
 		free(r);
 		return 1;
 	}
@@ -274,9 +283,7 @@ void TextParser::set_url_checking(int check)
 char * TextParser::alloc_token(int token, int * head)
 {
     int url_head = *head;
-////    fprintf(stderr, "TOKEN:%dHEAD: %d\n", token, *head);
     if (get_url(token, &url_head)) return NULL;
-////    fprintf(stderr, "TOKEN2:%dHEAD: %d\n", token, *head);
     char * t = (char *) malloc(*head - token + 1);
     if (t) {
         t[*head - token] = '\0';
@@ -289,7 +296,6 @@ char * TextParser::alloc_token(int token, int * head)
     		return NULL;
     	    }
     	}
-/////    	fprintf(stderr, "ALOCATE: %s\n", t);
         return t;
     }
     fprintf(stderr,"Error - Insufficient Memory\n");

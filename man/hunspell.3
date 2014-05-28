@@ -1,4 +1,4 @@
-.TH hunspell 3 "2011-02-01"
+.TH hunspell 3 "2014-05-26"
 .LO 1
 .hy 0
 .SH NAME
@@ -67,7 +67,8 @@ be used for stemming, morphological generation and analysis by
 XML input texts (see XML API).
 .
 .SS Constructor and destructor
-Hunspell's constructor needs paths of the affix and dictionary files. 
+Hunspell's constructor needs paths of the affix and dictionary files.
+(In WIN32 environment, use UTF-8 encoded paths started with the long path prefix \\\\?\\ to handle system-independent character encoding and very long path names, too.)
 See the \fBhunspell\fR(4) manual page for the dictionary format.
 Optional \fBkey\fR parameter is for dictionaries encrypted by
 the \fBhzip\fR tool of the Hunspell distribution.

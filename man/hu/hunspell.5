@@ -1,5 +1,5 @@
 .hla hu
-.TH hunspell 4 "2008. április 11."
+.TH hunspell 5 "2014. május 26."
 .LO 1
 .SH NÉV
 hunspell \- a Hunspell állományainak formátuma
@@ -10,7 +10,7 @@ két állományt igényel egy adott nyelven történő helyesírás\-ellenőrzé
 Az első állomány egy szótárállomány, ami az adott nyelv szavait, és
 ezek kapcsolóit (attribútumait) tartalmazza. A második állomány
 egy ragozási (affixum) állomány, ami meghatározza az említett
-kapcsolók jelentését. 
+kapcsolók jelentését.
 
 .SH SZÓTÁRÁLLOMÁNY
 Egy hunspell
@@ -253,7 +253,7 @@ Hiányzó összetettszó-kezelés esetén hasznos a hibás különírási
 javaslatok tiltására.
 .IP "SUGSWITHDOTS"
 Ha a hibás szó pont(ok)ra végződik, ezeket a javaslatok esetében is
-feltünteti. Az OpenOffice.org szótárak számára nem szükséges ez a
+feltünteti. A LibreOffice szótárak számára nem szükséges ez a
 beállítás.
 .IP "REP szám"
 .IP "REP mit mire"
@@ -503,7 +503,7 @@ akkor sem ismeri fel, ha az alapszótárban szerepelnek, pl. *kóricál.
 (4) Az állomány kézzel módosítható, és ezt időnként
 javasolt is megtenni, ha esetleg hibásan vettünk fel szavakat.
 .SH LÁSD MÉG
-.B angol nyelvű hunspell (4),
+.B angol nyelvű hunspell (5),
 .B hunspell (1),
 .B ispell (1),
 .B ispell (4),
@@ -513,38 +513,6 @@ A MySpell szótár\-, illetve ragozási állományának formátumát
 Kevin Hendricks készítette olyan céllal, hogy lehetővé
 tegye ezen állományok gyors, futás idejű feldolgozását.
 
-A COMPOUNDFLAG és a Hunspell formátumbővítést, valamint
-a REP többkarakteres cseretáblázatot Németh László
-készítette elsősorban a jobb magyar
-nyelvű helyesírás\-ellenőrzés céljából. A minimális
-összetettszó\-kezelést lehetővé tevő COMPOUNDMIN, COMPOUNDFLAG,
-és a REP többkarakteres cseretáblázat része a hivatalos
-MySpell függvénykönyvtárnak is.
-
-A Hunspell szótárállományának formátuma megegyezik
-a MySpell függvénykönyvtáréval, a ragozási táblázat pedig
-a fentiekben felsorolt bővítéseket tartalmazza.
-A bővített formátumú affixum állomány gond nélkül
-együttműködik az eredeti MySpell függvénykönyvtárral is,
-de a bővítések nem fognak működni. Sőt, mivel a
-hivatalos MySpell egy megengedőbb összetettszó\-kezelést
-valósít meg, mint a magyar változat, az
-összetett szavakon belüli toldalékolt alakok is elfogadásra
-kerülnek (ez különösen sok hibás összetétel
-elfogadását eredményezi a magyar nyelv esetében).
-
-Ebből fakad, hogy a hivatalos Magyar
-OpenOffice.org (http://office.fsf.hu) \- mivel a Magyar
-MySpell függvénykönyvtárat tartalmazza \- jobban támogatja
-a magyar nyelvet, mint más változatok. Egyszerűen
-meggyőződhetünk arról, hogy melyik változattal van dolgunk:
-írjuk be, hogy
-.I helyesírásellenőrző
-az OOo szövegszerkesztőjébe.
-Ha hibásnak jelzi, és
-.I helyesírás\-ellenőrzőt
-javasol helyette,
-a Hunspell\-lel van dolgunk. Ha helyesnek fogadja
-el, akkor pedig az eredeti MySpell\-lel.
-
-
+A COMPOUNDFLAG, REP és az egyéb Hunspell beállítási lehetőségeket
+Németh László készítette, elsősorban a jobb magyar
+nyelvű helyesírás\-ellenőrzés céljából.

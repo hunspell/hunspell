@@ -26,6 +26,10 @@ static const char * __PATTERN2__[][2] = {
 
 #define __PATTERN_LEN2__ (sizeof(__PATTERN2__) / (sizeof(char *) * 2))
 
+#define ENTITY_APOS "&apos;"
+#define UTF8_APOS "\xe2\x80\x99"
+#define APOSTROPHE "'"
+
 XMLParser::XMLParser()
 {
 }
@@ -92,6 +96,14 @@ char * XMLParser::next_token(const char * PATTERN[][2], unsigned int PATTERN_LEN
 		case ST_WORD: // wordchar
 			if ((latin1 = get_latin1(line[actual] + head))) {
 				head += strlen(latin1);
+			} else if ((is_wordchar((char *) APOSTROPHE) || (is_utf8() && is_wordchar((char *) UTF8_APOS))) &&
+					strncmp(line[actual] + head, ENTITY_APOS, strlen(ENTITY_APOS)) == 0 &&
+					is_wordchar(line[actual] + head + strlen(ENTITY_APOS))) {
+				head += strlen(ENTITY_APOS) - 1;
+			} else if (is_utf8() && is_wordchar((char *) APOSTROPHE) && // add Unicode apostrophe to the WORDCHARS, if needed
+					strncmp(line[actual] + head, UTF8_APOS, strlen(UTF8_APOS)) == 0 &&
+					is_wordchar(line[actual] + head + strlen(UTF8_APOS))) {
+				head += strlen(UTF8_APOS) - 1;
 			} else if (! is_wordchar(line[actual] + head)) {
 				state = prevstate;
 				char * t = alloc_token(token, &head);
@@ -141,4 +153,24 @@ char * XMLParser::next_token(const char * PATTERN[][2], unsigned int PATTERN_LEN
 char * XMLParser::next_token()
 {
 	return next_token(__PATTERN__, __PATTERN_LEN__, __PATTERN2__, __PATTERN_LEN2__);
+}
+
+int XMLParser::change_token(const char * word)
+{
+	if (strstr(word, APOSTROPHE) != NULL ||
+	    strchr(word, '"') != NULL ||
+	    strchr(word, '&') != NULL ||
+	    strchr(word, '<') != NULL ||
+	    strchr(word, '>') != NULL) {
+		char r[MAXLNLEN];
+		strcpy(r, word);
+		return TextParser::change_token(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(r,
+			"&", "__namp;__"),
+			"__namp;__", "&amp;"),
+			APOSTROPHE, ENTITY_APOS),
+			"\"", "&quot;"),
+			">", "&gt;"),
+			"<", "&lt;"));
+	}
+	return TextParser::change_token(word);
 }

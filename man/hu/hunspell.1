@@ -1,15 +1,15 @@
 .hla hu
-.TH hunspell 1 "2008. április 11."
+.TH hunspell 1 "2014. május 27."
 .LO 1
 .SH NÉV
 hunspell \- unicode-os helyesírás\-ellenőrző, szótövező és morfológiai elemző program
 .SH ÁTTEKINTÉS
-hunspell [\-1aDGHhLlmnstvw] [\-\-check\-url] [\-d szótár[,...]] [\-p sajátszótár] [állomány(ok)]
+hunspell [\-1aDGHhLlmnOstvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-\-help] [\-i karakterkódolás] [\-d szótár[,...]] [\-p sajátszótár] [szöveges/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff állomány(ok)]
 .SH LEÍRÁS
 A
 .B hunspell
 felismeri és javítja az elütéseket és típushibákat
-egyszerű szöveges, (La)TeX, HTML és groff (kézikönyv oldal) állományokban.
+egyszerű szöveges, OpenDocument, (La)TeX, XML, HTML és groff (kézikönyv oldal) állományokban.
 .PP
 Ha nem adunk meg állománynév-paramétert, a Hunspell az Ispell
 csőfelületéhez hasonlóan működik: a bemenet sorait szavakra bontja,
@@ -90,7 +90,7 @@ A beépített leírás megjelenítése.
 .TP
 .B \-H
 HTML bemeneti állományformátum beállítása. Ha az állomány
-nevének .html, .htm, vagy .xml a kiterjesztése, ez automatikusan bekövetkezik.
+nevének .html vagy .htm a kiterjesztése, ez automatikusan bekövetkezik.
 .TP
 .B \-l
 Kiírja a hibás szavakat a standard bemenetről érkező állományból.
@@ -111,6 +111,11 @@ kijelzése (szótárfejlesztőknek).
 .B \-n
 Nroff/troff bemeneti állományformátum beállítása, elsősorban a 
 kézikönyvlapok ellenőrzésére.
+.TP
+.B \-O
+OpenDocument (ODF vagy flat ODF) bemeneti állományformátum beállítása. Ha az állomány
+nevének .odt, .ods, .odp, .odg, illetve ezek sablon (.ott, ...) vagy flat (.fodt, ...)
+változatainak megfelelő a kiterjesztése, ez automatikusan bekövetkezik.
 .TP
 .B \-p " saját_szótár"
 A felhasználó saját szótárának beállítására szolgál.
@@ -184,6 +189,10 @@ egy szót tartalmazó állományból. A sorok nincsenek szavakra
 bontva. A sorok szavakra bontása, és csak a hibás szavak kiírása a \-w kapcsolóval
 érhető el. A \-G kapcsoló megfordítja a Hunspell működését: csak a jó szavak kerülnek
 kiírásra.
+.TP
+.B \-X
+XML bemeneti állományformátum beállítása. Ha az állomány
+nevének .xml a kiterjesztése, ez automatikusan bekövetkezik.
 .SH INTERAKTÍV FELÜLET
 A felület legfelső sorában a hibás szóalakot, és az éppen vizsgált
 állomány nevét látjuk. Amennyiben egy szóalak szótári tiltás
@@ -310,16 +319,18 @@ Az amerikai angol helyesírási szótár kiválasztása (aktuális, vagy a
 .BR /usr/share/hunspell
 könyvtárból.
 .TP
-.B hunspell \-d /opt/OpenOffice.org1.0.1/share/dict/ooo/de_DE
-A német helyesírási szótár kiválasztása a megadott abszolút
-útvonalról, a standard bemenet feldolgozásával.
-.TP
-.B hunspell *.html
-Az aktuális könyvtárban található összes HTML állomány
-interaktív ellenőrzése.
-.TP
 .B hunspell -l szöveg.html
 A megadott állomány hibás szavainak kiírása.
+.TP
+.B hunspell -l *.odt | sort | uniq >nem_ismert_szavak
+Az aktuális könyvtárban található összes OpenDocument szöveges állomány
+nem ismert szavainak állományba mentése (az ismétlődők kiszűrésével).
+.TP
+.B hunspell -p nem_ismert_szavak_de_jok *.odt
+Az aktuális könyvtárban található OpenDocument szöveges állományok
+interaktív ellenőrzése saját szótár megadásával. A példában szereplő
+saját szótár nem más, mint az előzőleg elmentett nem_ismert_szavak állománya,
+amelyekből kivettük azokat a szavakat, amelyeket most javítani szeretnénk.
 .SH KÖRNYEZET
 .TP
 .B DICTIONARY

@@ -27,6 +27,7 @@ public:
   XMLParser(unsigned short * wordchars, int len);
   char *              next_token(const char * p[][2], unsigned int len, const char * p2[][2], unsigned int len2);
   char *              next_token();
+  int                 change_token(const char * word);
   virtual ~XMLParser();
 
 private:

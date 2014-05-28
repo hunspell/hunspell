@@ -90,7 +90,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man4dir)"
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)"
+man5dir = $(mandir)/man5
 NROFF = nroff
 MANS = $(man_MANS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -272,7 +273,7 @@ top_srcdir = @top_srcdir@
 #mandir = $(DESTDIR)/share
 man1dir = $(mandir)/hu/man1
 man4dir = $(mandir)/hu/man4
-man_MANS = hunspell.1 hunspell.4
+man_MANS = hunspell.1 hunspell.5
 EXTRA_DIST = $(man_MANS)
 all: all-am
 
@@ -349,42 +350,42 @@ uninstall-man1:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
-install-man4: $(man_MANS)
+install-man5: $(man_MANS)
 	@$(NORMAL_INSTALL)
-	test -z "$(man4dir)" || $(MKDIR_P) "$(DESTDIR)$(man4dir)"
-	@list=''; test -n "$(man4dir)" || exit 0; \
+	test -z "$(man5dir)" || $(MKDIR_P) "$(DESTDIR)$(man5dir)"
+	@list=''; test -n "$(man5dir)" || exit 0; \
 	{ for i in $$list; do echo "$$i"; done; \
 	l2='$(man_MANS)'; for i in $$l2; do echo "$$i"; done | \
-	  sed -n '/\.4[a-z]*$$/p'; \
+	  sed -n '/\.5[a-z]*$$/p'; \
 	} | while read p; do \
 	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; echo "$$p"; \
 	done | \
-	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^4][0-9a-z]*$$,4,;x' \
+	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^5][0-9a-z]*$$,5,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,' | \
 	sed 'N;N;s,\n, ,g' | { \
 	list=; while read file base inst; do \
 	  if test "$$base" = "$$inst"; then list="$$list $$file"; else \
-	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man4dir)/$$inst'"; \
-	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man4dir)/$$inst" || exit $$?; \
+	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man5dir)/$$inst'"; \
+	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man5dir)/$$inst" || exit $$?; \
 	  fi; \
 	done; \
 	for i in $$list; do echo "$$i"; done | $(am__base_list) | \
 	while read files; do \
 	  test -z "$$files" || { \
-	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man4dir)'"; \
-	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man4dir)" || exit $$?; }; \
+	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man5dir)'"; \
+	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man5dir)" || exit $$?; }; \
 	done; }
 
-uninstall-man4:
+uninstall-man5:
 	@$(NORMAL_UNINSTALL)
-	@list=''; test -n "$(man4dir)" || exit 0; \
+	@list=''; test -n "$(man5dir)" || exit 0; \
 	files=`{ for i in $$list; do echo "$$i"; done; \
 	l2='$(man_MANS)'; for i in $$l2; do echo "$$i"; done | \
-	  sed -n '/\.4[a-z]*$$/p'; \
-	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^4][0-9a-z]*$$,4,;x' \
+	  sed -n '/\.5[a-z]*$$/p'; \
+	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^5][0-9a-z]*$$,5,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
-	dir='$(DESTDIR)$(man4dir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(man5dir)'; $(am__uninstall_files_from_dir)
 tags: TAGS
 TAGS:
 
@@ -439,7 +440,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(MANS)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man4dir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -508,7 +509,7 @@ install-info: install-info-am
 
 install-info-am:
 
-install-man: install-man1 install-man4
+install-man: install-man1 install-man5
 
 install-pdf: install-pdf-am
 
@@ -538,7 +539,7 @@ ps-am:
 
 uninstall-am: uninstall-man
 
-uninstall-man: uninstall-man1 uninstall-man4
+uninstall-man: uninstall-man1 uninstall-man5
 
 .MAKE: install-am install-strip
 
@@ -548,12 +549,12 @@ uninstall-man: uninstall-man1 uninstall-man4
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-man1 \
-	install-man4 install-pdf install-pdf-am install-ps \
+	install-man5 install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
 	ps ps-am uninstall uninstall-am uninstall-man uninstall-man1 \
-	uninstall-man4
+	uninstall-man5
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

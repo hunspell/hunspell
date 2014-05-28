@@ -37,9 +37,7 @@ main(int argc, char** argv)
     char * next;
 
     while(fgets(buf,MAXLNLEN,f)) {
-      fprintf(stdout,"---------------------------------------\n");
       p->put_line(buf);
-      fprintf(stderr, "x:%s\n", buf);
       p->set_url_checking(1);
       while ((next=p->next_token())) {
           fprintf(stdout,"token: %s\n",next);
