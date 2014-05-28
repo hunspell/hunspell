@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include "filemgr.hxx"
+#include "csutil.hxx"
 
 int FileMgr::fail(const char * err, const char * par) {
     fprintf(stderr, err, par);
@@ -18,7 +19,7 @@ FileMgr::FileMgr(const char * file, const char * key)
 {
     in[0] = '\0';
 
-    fin = fopen(file, "r");
+    fin = myfopen(file, "r");
     if (!fin) {
         // check hzipped file
         char * st = (char *) malloc(strlen(file) + strlen(HZIP_EXTENSION) + 1);

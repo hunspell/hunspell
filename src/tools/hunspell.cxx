@@ -852,7 +852,8 @@ if (pos >= 0) {
 if (is_zipped_odf(parser, extension)) {
     fclose(fileid);
     sprintf(buf, "rm %s", tmpcontent);
-    system(buf);
+    if (system(buf) != 0)
+        perror("write failed");
 }
 
 if (parser) delete(parser);
@@ -1444,7 +1445,8 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 			fclose(tempfile); //automatically deleted when closed
 			if (is_zipped_odf(parser, extension)) {
 				sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
-				system(buf);
+				if (system(buf) != 0)
+					perror("write failed");
 				free(filename);
 			}
 			endwin();
@@ -1484,7 +1486,8 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 
 	if (is_zipped_odf(parser, extension)) {
 		sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
-		system(buf);
+		if (system(buf) != 0)
+			perror("write failed");
 		free(filename);
 	}
 

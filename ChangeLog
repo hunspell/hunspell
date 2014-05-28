@@ -1,4 +1,6 @@
 2014-05-28 Németh László <nemeth at numbertext dot org>:
+	* add long path/Unicode path support in WIN32 environment:
+	- hunspell#233 (reported by mahak gark) and LibreOffice fdo#48017 
 	* flat ODF support, eg.:
 	  hunspell doc.fodt
 	  cat doc.fodt | hunspell -l -O
@@ -29,6 +31,7 @@
 	- hunspell.4 renamed to hunspell.5, see
 	  hunspell#241 reported by Cristopher Yeleighton
 	- updated translations
+	- note about long/Unicode paths in WIN32 (hunspell.3)
 
 2014-04-25 Németh László <nemeth at numbertext dot org>:
 	* OpenDocument support, eg.

@@ -41,7 +41,7 @@ int Hunzip::getcode(const char * key) {
 
     if (!filename) return -1;
 
-    fin = fopen(filename, "rb");
+    fin = myfopen(filename, "rb");
     if (!fin) return -1;
 
     // read magic number

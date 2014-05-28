@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "dictmgr.hxx"
+#include "csutil.hxx"
 
 DictMgr::DictMgr(const char * dictpath, const char * etype) : numdict(0)
 {
@@ -57,7 +58,7 @@ int  DictMgr::parse_file(const char * dictpath, const char * etype)
 
     // open the dictionary list file
     FILE * dictlst;
-    dictlst = fopen(dictpath,"r");
+    dictlst = myfopen(dictpath,"r");
     if (!dictlst) {
       return 1;
     }

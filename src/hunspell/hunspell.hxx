@@ -39,6 +39,11 @@ public:
 
   /* Hunspell(aff, dic) - constructor of Hunspell class
    * input: path of affix file and dictionary file
+   *
+   * In WIN32 environment, use UTF-8 encoded paths started with the long path
+   * prefix \\\\?\\ to handle system-independent character encoding and very
+   * long path names (without the long path prefix Hunspell will use fopen()
+   * with system-dependent character encoding instead of _wfopen()).
    */
 
   Hunspell(const char * affpath, const char * dpath, const char * key = NULL);
