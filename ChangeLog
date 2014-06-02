@@ -1,3 +1,6 @@
+2014-06-02 Németh László <nemeth at numbertext dot org>:
+	* escape spaces in paths of ODF files
+
 2014-05-28 Németh László <nemeth at numbertext dot org>:
 	* add long path/Unicode path support in WIN32 environment:
 	- hunspell#233 (reported by mahak gark) and LibreOffice fdo#48017 
