@@ -3924,6 +3924,7 @@ int  AffixMgr::parse_defcpdtable(char * line, FileMgr * af)
         tp = nl;
         i = 0;
         defcpdtable[j].def = NULL;
+        defcpdtable[j].len = 0;
         piece = mystrsep(&tp, 0);
         while (piece) {
            if (*piece != '\0') {
