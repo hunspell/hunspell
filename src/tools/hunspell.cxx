@@ -641,11 +641,13 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
 	break;
     }
     case '^': {
-		pos = 1;
+	pos = 1;
+	break;
     }
 
     default: {
 	pos = 0;
+	break;
     }
 
     } // end switch
