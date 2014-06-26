@@ -266,7 +266,7 @@ int HashMgr::remove(const char * word)
     while (dp) {
         if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
             unsigned short * flags =
-                (unsigned short *) malloc(sizeof(short) * (dp->alen + 1));
+                (unsigned short *) malloc(sizeof(unsigned short) * (dp->alen + 1));
             if (!flags) return 1;
             for (int i = 0; i < dp->alen; i++) flags[i] = dp->astr[i];
             flags[dp->alen] = forbiddenword;
@@ -288,7 +288,7 @@ int HashMgr::remove_forbidden_flag(const char * word) {
             if (dp->alen == 1) dp->alen = 0; // XXX forbidden words of personal dic.
             else {
                 unsigned short * flags2 =
-                    (unsigned short *) malloc(sizeof(short) * (dp->alen - 1));
+                    (unsigned short *) malloc(sizeof(unsigned short) * (dp->alen - 1));
                 if (!flags2) return 1;
                 int i, j = 0;
                 for (i = 0; i < dp->alen; i++) {
@@ -330,9 +330,9 @@ int HashMgr::add_with_affix(const char * word, const char * example)
 	if (aliasf) {
 	    add_word(word, wbl, wcl, dp->astr, dp->alen, NULL, false);	
 	} else {
-    	    unsigned short * flags = (unsigned short *) malloc (dp->alen * sizeof(short));
+    	    unsigned short * flags = (unsigned short *) malloc (dp->alen * sizeof(unsigned short));
 	    if (flags) {
-		memcpy((void *) flags, (void *) dp->astr, dp->alen * sizeof(short));
+		memcpy((void *) flags, (void *) dp->astr, dp->alen * sizeof(unsigned short));
 		add_word(word, wbl, wcl, flags, dp->alen, NULL, false);
 	    } else return 1;
 	}
@@ -508,7 +508,7 @@ int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) 
         len = strlen(flags);
         if (len%2 == 1) HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n", af->getlinenum());
         len /= 2;
-        *result = (unsigned short *) malloc(len * sizeof(short));
+        *result = (unsigned short *) malloc(len * sizeof(unsigned short));
         if (!*result) return -1;
         for (int i = 0; i < len; i++) {
             (*result)[i] = (((unsigned short) flags[i * 2]) << 8) + (unsigned short) flags[i * 2 + 1]; 
@@ -524,7 +524,7 @@ int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) 
         for (p = flags; *p; p++) {
           if (*p == ',') len++;
         }
-        *result = (unsigned short *) malloc(len * sizeof(short));
+        *result = (unsigned short *) malloc(len * sizeof(unsigned short));
         if (!*result) return -1;
         dest = *result;
         for (p = flags; *p; p++) {
@@ -548,7 +548,7 @@ int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) 
       case FLAG_UNI: { // UTF-8 characters
         w_char w[BUFSIZE/2];
         len = u8_u16(w, BUFSIZE/2, flags);
-        *result = (unsigned short *) malloc(len * sizeof(short));
+        *result = (unsigned short *) malloc(len * sizeof(unsigned short));
         if (!*result) return -1;
         memcpy(*result, w, len * sizeof(short));
         break;
@@ -556,7 +556,7 @@ int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) 
       default: { // Ispell's one-character flags (erfg -> e r f g)
         unsigned short * dest;
         len = strlen(flags);
-        *result = (unsigned short *) malloc(len * sizeof(short));
+        *result = (unsigned short *) malloc(len * sizeof(unsigned short));
         if (!*result) return -1;
         dest = *result;
         for (unsigned char * p = (unsigned char *) flags; *p; p++) {
@@ -733,7 +733,7 @@ int  HashMgr::parse_aliasf(char * line, FileMgr * af)
                           return 1;
                        }
                        aliasf = (unsigned short **) malloc(numaliasf * sizeof(unsigned short *));
-                       aliasflen = (unsigned short *) malloc(numaliasf * sizeof(short));
+                       aliasflen = (unsigned short *) malloc(numaliasf * sizeof(unsigned short));
                        if (!aliasf || !aliasflen) {
                           numaliasf = 0;
                           if (aliasf) free(aliasf);
