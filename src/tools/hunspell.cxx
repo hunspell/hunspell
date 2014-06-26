@@ -668,7 +668,6 @@ if (pos >= 0) {
 		
 		case WORDFILTER: {
 			if (!check(pMS, &d, token, NULL, NULL)) {
-				bad = 1;
 				if (! printgood) fprintf(stdout,"%s\n", buf);
 			} else {
 				if (printgood) fprintf(stdout,"%s\n", buf);
