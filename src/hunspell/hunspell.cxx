@@ -311,6 +311,7 @@ int Hunspell::is_keepcase(const hentry * rv) {
 
 /* insert a word to the beginning of the suggestion array and return ns */
 int Hunspell::insert_sug(char ***slst, char * word, int ns) {
+    if (!*slst) return ns;
     char * dup = mystrdup(word);
     if (!dup) return ns;
     if (ns == MAXSUGGESTION) {
