@@ -218,18 +218,20 @@ int parse_aff_file(FILE * afflst)
              }
              nptr++;
           }
-          if (ft == 'P') {
-             ptable[numpfx].aep = ptr;
-             ptable[numpfx].num = numents;
-             fprintf(stderr,"ptable %d num is %d flag %c\n",numpfx,ptable[numpfx].num,ptr->achar);
-             numpfx++;
-          } else {
-             stable[numsfx].aep = ptr;
-             stable[numsfx].num = numents;
-             fprintf(stderr,"stable %d num is %d flag %c\n",numsfx,stable[numsfx].num,ptr->achar);
-             numsfx++;
+          if (ptr) {
+             if (ft == 'P') {
+                ptable[numpfx].aep = ptr;
+                ptable[numpfx].num = numents;
+                fprintf(stderr,"ptable %d num is %d flag %c\n",numpfx,ptable[numpfx].num,ptr->achar);
+                numpfx++;
+             } else if (ft == 'S') {
+                stable[numsfx].aep = ptr;
+                stable[numsfx].num = numents;
+                fprintf(stderr,"stable %d num is %d flag %c\n",numsfx,stable[numsfx].num,ptr->achar);
+                numsfx++;
+             }
+             ptr = NULL;
           }
-          ptr = NULL;
           nptr = NULL;
           numents = 0;
           achar='\0';
