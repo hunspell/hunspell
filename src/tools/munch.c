@@ -125,7 +125,6 @@ int main(int argc, char** argv)
                nword = (roots[j].hashent)->word;
                nwl = strlen(nword);
                *as = '\0';
-               al = 0;
                ap = as;
                if (roots[j].prefix) *ap++ = (roots[j].prefix)->achar;
                if (roots[j].suffix) *ap++ = (roots[j].suffix)->achar;
@@ -407,7 +406,6 @@ void pfx_chk (const char * word, int len, struct affent* ep, int num)
 {
     struct affent *     aent;
     int			cond;
-    int	tlen;
     struct hentry *	hent;
     unsigned char *	cp;		
     int			i;
@@ -415,7 +413,7 @@ void pfx_chk (const char * word, int len, struct affent* ep, int num)
 
     for (aent = ep, i = num; i > 0; aent++, i--) {
 
-	tlen = len - aent->appndl;
+	int tlen = len - aent->appndl;
 
 	if (tlen > 0 &&  (aent->appndl == 0 ||  
             strncmp(aent->appnd, word, aent->appndl) == 0)
@@ -432,7 +430,6 @@ void pfx_chk (const char * word, int len, struct affent* ep, int num)
 	    }
 
 	    if (cond >= aent->numconds) {
-		tlen += aent->stripl;
 		if ((hent = lookup(tword)) != NULL) {
 		   if (numroots < MAX_ROOTS) {
 		       roots[numroots].hashent = hent;
@@ -659,7 +656,6 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 {
     struct affent *     aent;
     int			cond;
-    int	tlen;
     unsigned char *	cp;		
     int			i;
     char *              pp;
@@ -677,9 +673,8 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 	          break;
             }
             if (cond >= aent->numconds) {
-
 	      /* we have a match so add prefix */
-              tlen = 0;
+              int tlen = 0;
               if (aent->appndl) {
 	          strncpy(tword, aent->appnd, MAX_WD_LEN-1);
 	          tword[MAX_WD_LEN-1] = '\0';
@@ -687,7 +682,6 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
                } 
                pp = tword + tlen;
                strcpy(pp, (word + aent->stripl));
-               tlen = tlen + len - aent->stripl;
 
                if (numwords < MAX_WORDS) {
                   wlist[numwords].word = mystrdup(tword);
@@ -704,7 +698,6 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 void suf_add (const char * word, int len, struct affent * ep, int num)
 {
     struct affent *     aent;	
-    int	                tlen;	
     int			cond;	
     unsigned char *	cp;
     int			i;
@@ -724,16 +717,15 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 	}
 	if (cond < 0) {
 	  /* we have a matching condition */
+          int tlen = len;
           strncpy(tword, word, MAX_WD_LEN-1);
           tword[MAX_WD_LEN-1] = '\0';
-          tlen = len;
 	  if (aent->stripl) {
              tlen -= aent->stripl;
           }
           pp = (tword + tlen);
           if (aent->appndl) {
 	       strcpy (pp, aent->appnd);
-	       tlen += aent->stripl;
 	  } else *pp = '\0';
 
           if (numwords < MAX_WORDS) {

@@ -434,7 +434,7 @@ int putdic(char * word, Hunspell * pMS)
     
     int ret;
     
-    if (((w = strstr(word + 1, "/")) == NULL)) {
+    if ((w = strstr(word + 1, "/")) == NULL) {
         if (*word == '*') ret =  pMS->remove(word + 1);
 	else ret = pMS->add(word);
     } else {
@@ -574,7 +574,7 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
         fileid = fopen(tmpcontent, "r");
     }
 
-  if ((filter_mode == NORMAL)) {
+  if (filter_mode == NORMAL) {
     fprintf(stdout,gettext(HUNSPELL_HEADING));
     fprintf(stdout,HUNSPELL_VERSION);
     if (pMS[0]->get_version()) fprintf(stdout," - %s", pMS[0]->get_version());
@@ -993,7 +993,6 @@ void dialogscreen(TextParser * parser, char * token,
 		}
 	}
 
-	int linestartpos = tokenbeg - (tokenbeg % x);
 	strncpyu8(line, lines[0], x * (ri - beginrow),  tokenbeg % x) ;
 	mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line);
 	attron(A_REVERSE);    
@@ -1344,7 +1343,7 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 {
 	char * token;
 	int dialogexit = 0;
-        int info;
+        int info = 0;
         int d = 0;
         char buf[MAXLNLEN];
 	while ((token=parser->next_token())) {

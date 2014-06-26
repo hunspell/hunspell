@@ -1,5 +1,6 @@
 2014-06-26 Caolán McNamara <caolanm at LibO>:
-	* clang: Allocator sizeof operand mismatch
+	* clang scan-build: Allocator sizeof operand mismatch
+	* clang scan-build: other low hanging warnings
 
 2014-06-02 Németh László <nemeth at numbertext dot org>:
 	* escape spaces in paths of ODF files

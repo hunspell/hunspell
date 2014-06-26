@@ -2067,10 +2067,6 @@ int AffixMgr::compound_check_morph(const char * word, int len,
     strcpy(st, word);
 
     for (i = cmin; i < cmax; i++) {
-        oldnumsyllable = numsyllable;
-        oldwordnum = wordnum;
-        checked_prefix = 0;
-
         // go to end of the UTF-8 character
         if (utf8) {
             for (; (st[i] & 0xc0) == 0x80; i++);
@@ -2305,7 +2301,6 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                     mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
                   }
                   mystrcat(*result, "\n", MAXLNLEN);
-                  ok = 1;
                   return 0;
             }
 

@@ -1025,7 +1025,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
 
   int i, j;
   int lval;
-  int sc, scphon;
+  int sc;
   int lp, lpphon;
   int nonbmp = 0;
 
@@ -1043,7 +1043,6 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   }
   lp = MAX_ROOTS - 1;
   lpphon = MAX_ROOTS - 1;
-  scphon = -20000;
   int low = NGRAM_LOWERING;
   
   char w2[MAXWORDUTF8LEN];
@@ -1112,7 +1111,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
 	if (sc2 > sc) sc = sc2;
     }
     
-    scphon = -20000;
+    int scphon = -20000;
     if (ph && (sc > 2) && (abs(n - (int) hp->clen) <= 3)) {
       char target2[MAXSWUTF8L];
       if (utf8) {

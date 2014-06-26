@@ -152,7 +152,7 @@ char * LaTeXParser::next_token()
 					opt = 1;
 				}
 				head += strlen(PATTERN[pattern_num].pat[0]) - 1;
-			} else if ((line[actual][head] == '%')) {
+			} else if (line[actual][head] == '%') {
 					state = 5;
 			} else if (is_wordchar(line[actual] + head)) {
 				state = 1;
