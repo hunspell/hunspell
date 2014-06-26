@@ -227,8 +227,8 @@ int prefixcompress(FILE *f, FILE *tempfile) {
             c = j;
             if (c == '\t') c = 30;
             /* common suffix */
-            for (; buf[i - m - 2] == prev[prevlen - m - 2] && 
-                m < i - j - 1 && m < 15; m++);
+            for (; (m < i - j - 1) && (m < 15) && (prevlen - m - 2 >= 0) &&
+                buf[i - m - 2] == prev[prevlen - m - 2]; m++);
             if (m == 1) m = 0;
         } else {
             j = 0;

@@ -349,7 +349,10 @@ int line_tok(const char * text, char *** lines, char breakchar) {
         p += strlen(p) + 1;
     }
     free(dup);
-    if (!l) free(*lines);
+    if (!l) {
+        free(*lines);
+        *lines = NULL;
+    }
     return l;
 }
 
@@ -643,7 +646,7 @@ char * mystrrep(char * word, const char * pat, const char * rep) {
  }
  
  void freelist(char *** list, int n) {
-   if (list && *list && n > 0) {
+   if (list && *list) {
      for (int i = 0; i < n; i++) if ((*list)[i]) free((*list)[i]);
      free(*list);
      *list = NULL;

@@ -439,7 +439,6 @@ int putdic(char * word, Hunspell * pMS)
 	else ret = pMS->add(word);
     } else {
 	char c;
-	int ret;
 	c = *w;
 	*w = '\0';
 	if (*(w+1) == '/') {
