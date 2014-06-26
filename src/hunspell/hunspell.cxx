@@ -400,7 +400,7 @@ int Hunspell::spell(const char * word, int * info, char ** root)
             // Spec. prefix handling for Catalan, French, Italian:
 	    // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
             if (pAMgr && strchr(cw, '\'')) {
-                wl = mkallsmall2(cw, unicw, nc);
+                mkallsmall2(cw, unicw, nc);
         	//There are no really sane circumstances where this could fail,
         	//but anyway...
         	if (char * apostrophe = strchr(cw, '\'')) {
