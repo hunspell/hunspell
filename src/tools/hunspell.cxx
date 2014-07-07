@@ -1210,12 +1210,9 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		if (w < temp) {
 			*(temp-1) = '\0';
 		} else {
-			char ** poslst = NULL;
 #ifdef HUNSPELL_EXPERIMENTAL
+			char ** poslst = NULL;
 			int ps = pMS->suggest_pos_stems(&poslst, token);
-#else
-			int ps = 0;
-#endif
 			if (ps > 0) {
 			    strcpy(buf, poslst[0]);
 			    for (int i = 0; i < ps; i++) {
@@ -1225,6 +1222,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 			    strcpy(w, buf);
 			}
 			if (poslst) free(poslst);
+#endif
 		}
 
 #ifdef HAVE_READLINE		
