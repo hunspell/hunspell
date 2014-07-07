@@ -967,16 +967,22 @@ void dialogscreen(TextParser * parser, char * token,
 	// handle long lines and tabulators
 
 	char lines[MAXPREVLINE][MAXLNLEN];
-	
+	char *pPrevLine;	
 	for (int i = 0; i < MAXPREVLINE; i++) {
-		expand_tab(lines[i], chenc(parser->get_prevline(i), io_enc, ui_enc), MAXLNLEN);
+		pPrevLine = parser->get_prevline(i);
+		expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc), MAXLNLEN);
+		free(pPrevLine);
 	}
 
-	strncpy(line, parser->get_prevline(0), parser->get_tokenpos());
+	pPrevLine = parser->get_prevline(0);
+	strncpy(line, pPrevLine, parser->get_tokenpos());
+	free(pPrevLine);
         line[parser->get_tokenpos()] = '\0';
 	int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
-	strncpy(line, parser->get_prevline(0), parser->get_tokenpos() + strlen(token));
+	pPrevLine = parser->get_prevline(0);
+	strncpy(line, pPrevLine, parser->get_tokenpos() + strlen(token));
+	free(pPrevLine);
         line[parser->get_tokenpos() + strlen(token)] = '\0';	
 	int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
