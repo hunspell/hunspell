@@ -544,6 +544,16 @@ static int is_zipped_odf(TextParser * parser, const char * extension) {
   return dynamic_cast<ODFParser*>(parser) && (extension && extension[0] != 'f');
 }
 
+static void freewordlist(wordlist *w)
+{
+    while (w != NULL) {
+	wordlist * r = w;
+	free(w->word);
+	w = w->next;
+	free(r);
+    }
+}
+
 void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename) {
   char buf[MAXLNLEN];
   char * buf2;
@@ -863,7 +873,8 @@ if (bZippedOdf) {
         perror("write failed");
 }
 
-if (parser) delete(parser);
+delete(parser);
+freewordlist(dicwords);
 
 } // pipe_interface
 
@@ -1047,16 +1058,6 @@ char * lower_first_char(char *token, const char *io_enc, int langnum)
 		result = mystrdup(result);
 	}
 	return result;
-}
-
-static void freewordlist(wordlist *w)
-{
-    while (w != NULL) {
-	wordlist * r = w;
-	free(w->word);
-	w = w->next;
-	free(r);
-    }
 }
 
  // for terminal interface
