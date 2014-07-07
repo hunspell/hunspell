@@ -90,11 +90,19 @@ static struct {
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
 
 LaTeXParser::LaTeXParser(const char * wordchars)
+    : pattern_num(0)
+    , depth(0)
+    , arg(0)
+    , opt(0)
 {
 	init(wordchars);
 }
 
 LaTeXParser::LaTeXParser(unsigned short * wordchars, int len)
+    : pattern_num(0)
+    , depth(0)
+    , arg(0)
+    , opt(0)
 {
 	init(wordchars, len);
 }
