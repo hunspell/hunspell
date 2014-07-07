@@ -830,7 +830,9 @@ if (pos >= 0) {
 
 	switch (filter_mode) {
 	    case AUTO: {
-		fprintf(stdout,"%s\n", parser->get_line());
+		char *pLine = parser->get_line();
+		fprintf(stdout,"%s\n", pLine);
+		free(pLine);
 		break;
 	    }
 
