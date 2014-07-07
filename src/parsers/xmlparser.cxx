@@ -31,15 +31,30 @@ static const char * __PATTERN2__[][2] = {
 #define APOSTROPHE "'"
 
 XMLParser::XMLParser()
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 }
 
 XMLParser::XMLParser(const char * wordchars)
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 	init(wordchars);
 }
 
 XMLParser::XMLParser(unsigned short * wordchars, int len)
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 	init(wordchars, len);
 }
