@@ -295,6 +295,7 @@ int hzip(const char * filename, char * key) {
     get_codetable(list, n, table);
     rewind(tempfile);
     n = encode_file(table, n, tempfile, f2, termword, key);
+    free(list);
     fclose(f2);
     fclose(tempfile);
     fclose(f);
