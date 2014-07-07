@@ -574,7 +574,7 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
   char w2[MAXWORDUTF8LEN];
   const char * word;
 
-  char * ignoredchars = pAMgr->get_ignore();
+  char * ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
   if (ignoredchars != NULL) {
      strcpy(w2, w);
      if (utf8) {
