@@ -378,9 +378,9 @@ char * line_uniq(char * text, char breakchar) {
         }
     }
     for ( i = 0; i < linenum; i++ ) {
-        if (lines[i]) free(lines[i]);
+        free(lines[i]);
     }
-    if (lines) free(lines);
+    free(lines);
     return text;
 }
 
@@ -647,7 +647,7 @@ char * mystrrep(char * word, const char * pat, const char * rep) {
  
  void freelist(char *** list, int n) {
    if (list && *list) {
-     for (int i = 0; i < n; i++) if ((*list)[i]) free((*list)[i]);
+     for (int i = 0; i < n; i++) free((*list)[i]);
      free(*list);
      *list = NULL;
    }
