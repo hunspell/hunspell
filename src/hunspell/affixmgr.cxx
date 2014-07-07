@@ -326,7 +326,10 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
              utf8 = 1;
 #ifndef OPENOFFICEORG
 #ifndef MOZILLA_CLIENT
-             if (initialize_utf_tbl()) return 1;
+             if (initialize_utf_tbl()) {
+                 finishFileMgr(afflst);
+                 return 1;
+             }
 #endif
 #endif
           }
