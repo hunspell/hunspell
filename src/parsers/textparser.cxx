@@ -104,6 +104,8 @@ void TextParser::init(const char * wordchars)
 	state = 0;
         utf8 = 0;
         checkurl = 0;
+        wordchars_utf16 = NULL;
+        wclen = 0;
 	unsigned int j;
 	for (j = 0; j < 256; j++) {
 		wordcharacters[j] = 0;
