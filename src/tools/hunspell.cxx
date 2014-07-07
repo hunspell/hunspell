@@ -1049,6 +1049,16 @@ char * lower_first_char(char *token, const char *io_enc, int langnum)
 	return result;
 }
 
+static void freewordlist(wordlist *w)
+{
+    while (w != NULL) {
+	wordlist * r = w;
+	free(w->word);
+	w = w->next;
+	free(r);
+    }
+}
+
  // for terminal interface
 int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	char ** wlst, int ns, int forbidden) {
@@ -1088,8 +1098,10 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    } else {
 		parser->change_token(wlst[c]);
 	    }
+            freewordlist(dicwords);
 	    return 0;
 	case ' ':
+            freewordlist(dicwords);
 	    return 0;
 	case '?': {
 	    clear();
@@ -1152,6 +1164,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		free(temp);
 		parser->change_token(checkapos ? mystrrep(i, "'", UTF8_APOS) : i);
 		
+                freewordlist(dicwords);
 		return 2; // replace
 	    }
 /* TRANSLATORS: translate these letters according to the shortcut letter used
@@ -1194,6 +1207,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	    if ((c==(gettext("u"))[0]) || (c==(gettext("i"))[0]) || (c==(gettext("a"))[0])) {
 		modified=1;
 		putdic(token, pMS);
+                freewordlist(dicwords);
 		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
@@ -1330,11 +1344,13 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;
 		}
+                freewordlist(dicwords);
 		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "e(X)it" before */
 	    if (c==(gettext("x"))[0]) {
+                freewordlist(dicwords);
 		return 1;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
@@ -1343,16 +1359,21 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		if (modified) {
 		    printw(gettext("Are you sure you want to throw away your changes? "));
 /* TRANSLATORS: translate this letter according to the shortcut letter y)es */
-		    if (getch()==(gettext("y"))[0]) return -1;
+		    if (getch()==(gettext("y"))[0]) {
+                        freewordlist(dicwords);
+                        return -1;
+                    }
     		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;		    
 		} else {
+                    freewordlist(dicwords);
 		    return -1;
 		}
 	    }
 	}
     }
     }
+    freewordlist(dicwords);
     return 0;
 }
 
