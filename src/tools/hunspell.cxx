@@ -621,7 +621,10 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
         break;
     }
     case '#': {
-	if (HOME) strcpy(buf,HOME); else {
+	if (HOME) {
+	    strncpy(buf, HOME, MAXLNLEN-1);
+            buf[MAXLNLEN-1] = '\0';
+	} else {
 	    fprintf(stderr, gettext("error - missing HOME variable\n"));
 	    continue;
 	}
@@ -1162,7 +1165,10 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		i->next = dicwords;
 		dicwords = i;
 		// save
-		if (HOME) strcpy(buf,HOME); else {
+		if (HOME) {
+                    strncpy(buf, HOME, MAXLNLEN-1);
+                    buf[MAXLNLEN-1] = '\0';
+                } else {
 		    fprintf(stderr, gettext("error - missing HOME variable\n"));
 		    break;
 		}
@@ -1295,7 +1301,10 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    }
 		    // save
 		    		    
-		    if (HOME) strcpy(buf,HOME); else {
+		    if (HOME) {
+                        strncpy(buf, HOME, MAXLNLEN-1);
+                        buf[MAXLNLEN-1] = '\0';
+                    } else {
 			fprintf(stderr, gettext("error - missing HOME variable\n"));
 			continue;
 		    }
