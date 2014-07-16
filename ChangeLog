@@ -2,6 +2,7 @@
 	* moz#675553 Switch from PRBool to bool
 	* moz#690892 replace PR_TRUE/PR_FALSE with true/false
 	* Silence the warning about empty while body loop in clang
+	* moz#777292 Make nsresult an enum 
 
 2014-06-26 Caolán McNamara <caolanm at LibO>:
 	* clang scan-build: Allocator sizeof operand mismatch
