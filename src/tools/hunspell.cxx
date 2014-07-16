@@ -583,6 +583,11 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
             exit(1);
         }
         fileid = fopen(tmpcontent, "r");
+        if (fileid == NULL)
+        {
+            perror(gettext("Can't open inputfile"));
+            exit(1);
+        }
     }
 
   if (filter_mode == NORMAL) {
