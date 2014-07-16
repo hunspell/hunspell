@@ -6,6 +6,7 @@
 	* moz#579517 Use stdint types in gecko
 	* moz#784776 consistently use FLAG_NULL
 	* moz#927728 Convert PRUnichar to char16_t
+	* moz#943268 Remove nsCharsetAlias and nsCharsetConverterManager 
 
 2014-06-26 Caolán McNamara <caolanm at LibO>:
 	* clang scan-build: Allocator sizeof operand mismatch
