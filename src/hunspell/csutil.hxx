@@ -5,6 +5,7 @@
 
 // First some base level utility routines
 
+#include <string>
 #include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
@@ -86,6 +87,7 @@ LIBHUNSPELL_DLL_EXPORTED char * mystrsep2(char ** sptr, const char delim);
 
 // replace pat by rep in word and return word
 LIBHUNSPELL_DLL_EXPORTED char * mystrrep(char * word, const char *pat, const char *rep);
+LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str, const std::string& search, const std::string& replace);
 
 // append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED void strlinecat(char * lines, const char * s);

@@ -9,7 +9,6 @@
 #include "csutil.hxx"
 #include "atypes.hxx"
 #include "langnum.hxx"
-#include "util.hxx"
 
 // Unicode character encoding information
 struct unicode_info {
@@ -572,7 +571,7 @@ char * copy_field(char * dest, const char * morph, const char * var)
   return NULL;
 }
 
-void myrep(std::string& str, const std::string& search, const std::string& replace)
+std::string& mystrrep(std::string& str, const std::string& search, const std::string& replace)
 {
     size_t pos = 0;
     while ((pos = str.find(search, pos)) != std::string::npos)
@@ -580,6 +579,7 @@ void myrep(std::string& str, const std::string& search, const std::string& repla
        str.replace(pos, search.length(), replace);
        pos += replace.length();
     }
+    return str;
 }
 
 char * mystrrep(char * word, const char * pat, const char * rep) {

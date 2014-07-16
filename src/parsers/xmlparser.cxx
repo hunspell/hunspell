@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "../hunspell/csutil.hxx"
+#include "../hunspell/util.hxx"
 #include "xmlparser.hxx"
 
 
@@ -177,15 +178,14 @@ int XMLParser::change_token(const char * word)
 	    strchr(word, '&') != NULL ||
 	    strchr(word, '<') != NULL ||
 	    strchr(word, '>') != NULL) {
-		char r[MAXLNLEN];
-		strcpy(r, word);
-		return TextParser::change_token(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(r,
-			"&", "__namp;__"),
-			"__namp;__", "&amp;"),
-			APOSTROPHE, ENTITY_APOS),
-			"\"", "&quot;"),
-			">", "&gt;"),
-			"<", "&lt;"));
+		std::string r(word);
+		mystrrep(r, "&", "__namp;__");
+		mystrrep(r, "__namp;__", "&amp;");
+		mystrrep(r, APOSTROPHE, ENTITY_APOS);
+		mystrrep(r, "\"", "&quot;");
+		mystrrep(r, ">", "&gt;");
+		mystrrep(r, "<", "&lt;");
+		return TextParser::change_token(r.c_str());
 	}
 	return TextParser::change_token(word);
 }

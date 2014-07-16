@@ -11,7 +11,6 @@
 #    include "config.h"
 #endif
 #include "csutil.hxx"
-#include "util.hxx"
 
 #include <string>
 
@@ -1755,9 +1754,9 @@ int Hunspell::spellml(char*** slst, const char * word)
 
         std::string entry((*slst)[i]);
         free((*slst)[i]);
-        myrep(entry, "\t", " ");
-        myrep(entry, "&", "&amp;");
-        myrep(entry, "<", "&lt;");
+        mystrrep(entry, "\t", " ");
+        mystrrep(entry, "&", "&amp;");
+        mystrrep(entry, "<", "&lt;");
         r.append(entry);
 
         r.append("</a>");
