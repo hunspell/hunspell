@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 #include <string.h>
 #include "config.h"
 #include "hunspell.hxx"
@@ -464,7 +465,7 @@ void load_privdic(char * filename, Hunspell * pMS)
     }
 }
 
-int exist(char * filename)
+int exist(const char * filename)
 {
 	FILE *f = fopen(filename,"r");
 	if (f) {
@@ -1552,17 +1553,17 @@ char * add(char * dest, const char * st) {
 }
 
 char * exist2(char * dir, int len, const char * name, const char * ext) {
-	char buf[MAXLNLEN];
+	std::string buf;
 	const char * sep = (len == 0) ? "": DIRSEP;
-	strncpy(buf, dir, len);
-	strcpy(buf + len, sep);
-	strcat(buf, name);
-	strcat(buf, ext);
-	if (exist(buf)) return mystrdup(buf);
-	strcat(buf, HZIP_EXTENSION);
-	if (exist(buf)) {
-	    buf[strlen(buf) - strlen(HZIP_EXTENSION)] = '\0';
-	    return mystrdup(buf);
+	buf.assign(dir, len);
+	buf.append(sep);
+	buf.append(name);
+	buf.append(ext);
+	if (exist(buf.c_str())) return mystrdup(buf.c_str());
+	buf.append(HZIP_EXTENSION);
+	if (exist(buf.c_str())) {
+		buf.erase(buf.size() - strlen(HZIP_EXTENSION));
+	    return mystrdup(buf.c_str());
 	}
 	return NULL;
 }
