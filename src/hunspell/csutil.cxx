@@ -5535,7 +5535,7 @@ struct cs_info * get_current_cs(const char * es) {
       if (i == 0)
         break;
       const char source = char(i);
-      PRUnichar uni, uniCased;
+      char16_t uni, uniCased;
       int32_t charLength = 1, uniLength = 1;
 
       rv = decoder->Convert(&source, &charLength, &uni, &uniLength);
@@ -5688,7 +5688,7 @@ unsigned short unicodetoupper(unsigned short c, int langnum)
   return static_cast<unsigned short>(u_toupper(c));
 #else
 #ifdef MOZILLA_CLIENT
-  return ToUpperCase((PRUnichar) c);
+  return ToUpperCase((char16_t) c);
 #else
   return (utf_tbl) ? utf_tbl[c].cupper : c;
 #endif
@@ -5706,7 +5706,7 @@ unsigned short unicodetolower(unsigned short c, int langnum)
   return static_cast<unsigned short>(u_tolower(c));
 #else
 #ifdef MOZILLA_CLIENT
-  return ToLowerCase((PRUnichar) c);
+  return ToLowerCase((char16_t) c);
 #else
   return (utf_tbl) ? utf_tbl[c].clower : c;
 #endif

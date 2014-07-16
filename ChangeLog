@@ -5,6 +5,7 @@
 	* moz#777292 Make nsresult an enum 
 	* moz#579517 Use stdint types in gecko
 	* moz#784776 consistently use FLAG_NULL
+	* moz#927728 Convert PRUnichar to char16_t
 
 2014-06-26 Caolán McNamara <caolanm at LibO>:
 	* clang scan-build: Allocator sizeof operand mismatch
