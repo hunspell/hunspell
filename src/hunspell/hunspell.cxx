@@ -11,6 +11,7 @@
 #    include "config.h"
 #endif
 #include "csutil.hxx"
+#include "util.hxx"
 
 #include <string>
 
@@ -1730,19 +1731,6 @@ int Hunspell::get_xml_list(char ***slst, char * list, const char * tag) {
         }
     }
     return n;
-}
-
-namespace
-{
-    void myrep(std::string& str, const std::string& search, const std::string& replace)
-    {
-        size_t pos = 0;
-        while ((pos = str.find(search, pos)) != std::string::npos)
-        {
-           str.replace(pos, search.length(), replace);
-           pos += replace.length();
-        }
-    }
 }
 
 int Hunspell::spellml(char*** slst, const char * word)
