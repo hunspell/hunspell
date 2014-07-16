@@ -452,7 +452,7 @@ int putdic(char * word, Hunspell * pMS)
     return ret;
 }
 
-void load_privdic(char * filename, Hunspell * pMS) 
+void load_privdic(const char * filename, Hunspell * pMS) 
 {
     char buf[MAXLNLEN];
     FILE *dic = fopen(filename,"r");
@@ -1613,7 +1613,7 @@ char * search(char * begin, char * name, const char * ext) {
 
 int main(int argc, char** argv)
 {
-	char buf[MAXLNLEN];
+	std::string buf;
 	Hunspell * pMS[DMAX];
         char * key = NULL;
 	int arg_files = -1; // first filename argumentum position in argv
@@ -1902,26 +1902,26 @@ int main(int argc, char** argv)
 
 	/* open the private dictionaries */
 	if (HOME) {
-	    strcpy(buf,HOME);
+	    buf.assign(HOME);
 #ifndef WIN32
-            strcat(buf,"/");
+            buf.append("/");
 #endif
-	    strcat(buf,DICBASENAME);
-	    strcat(buf,basename(dicname,DIRSEPCH));
-	    load_privdic(buf, pMS[0]);
-	    strcpy(buf,HOME);
+	    buf.append(DICBASENAME);
+	    buf.append(basename(dicname,DIRSEPCH));
+	    load_privdic(buf.c_str(), pMS[0]);
+	    buf.assign(HOME);
 #ifndef WIN32
-            strcat(buf,"/");
+            buf.append("/");
 #endif
 	    if (!privdicname) {
-		strcpy(buf,DICBASENAME);
-		strcat(buf,basename(dicname,DIRSEPCH));
-		load_privdic(buf, pMS[0]);
+		buf.assign(DICBASENAME);
+		buf.append(basename(dicname,DIRSEPCH));
+		load_privdic(buf.c_str(), pMS[0]);
 	    } else {
-		strcat(buf,privdicname);
-		load_privdic(buf, pMS[0]);
-		strcpy(buf,privdicname);
-		load_privdic(buf, pMS[0]);
+		buf.append(privdicname);
+		load_privdic(buf.c_str(), pMS[0]);
+		buf.assign(privdicname);
+		load_privdic(buf.c_str(), pMS[0]);
 	    }
         }
 
