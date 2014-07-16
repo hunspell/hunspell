@@ -49,8 +49,8 @@ Hunspell::Hunspell(const char * affpath, const char * dpath, const char * key)
 
 Hunspell::~Hunspell()
 {
-    if (pSMgr) delete pSMgr;
-    if (pAMgr) delete pAMgr;
+    delete pSMgr;
+    delete pAMgr;
     for (int i = 0; i < maxdic; i++) delete pHMgr[i];
     maxdic = 0;
     pSMgr = NULL;
