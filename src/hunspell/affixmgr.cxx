@@ -2,6 +2,7 @@
 #include "license.myspell"
 
 #include <stdlib.h>
+#include <string>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -754,21 +755,20 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
     free(enc);
     enc = NULL;
 
-    char expw[MAXLNLEN];
+    std::string expw;
     if (wordchars) {
-        strcpy(expw, wordchars);
+        expw.assign(wordchars);
         free(wordchars);
-    } else *expw = '\0';
+    }
 
     for (int i = 0; i <= 255; i++) {
         if ( (csconv[i].cupper != csconv[i].clower) &&
-            (! strchr(expw, (char) i))) {
-                *(expw + strlen(expw) + 1) = '\0';
-                *(expw + strlen(expw)) = (char) i;
+            (expw.find((char)i) == std::string::npos)) {
+            	expw.push_back((char) i);
         }
     }
 
-    wordchars = mystrdup(expw);
+    wordchars = mystrdup(expw.c_str());
     }
 
     // default BREAK definition
