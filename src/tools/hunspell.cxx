@@ -1570,11 +1570,11 @@ char * exist2(char * dir, int len, const char * name, const char * ext) {
 
 #ifndef WIN32
 int listdicpath(char * dir, int len) {
-	char buf[MAXLNLEN];
+	std::string buf;
 	const char * sep = (len == 0) ? "": DIRSEP;
-	strncpy(buf, dir, len);
-	strcpy(buf + len, sep);
-	DIR *d = opendir(buf);
+	buf.assign(dir, len);
+	buf.append(sep);
+	DIR *d = opendir(buf.c_str());
 	if (!d) return 0;
 	struct dirent * de;
 	while ((de = readdir(d))) {
@@ -1583,7 +1583,7 @@ int listdicpath(char * dir, int len) {
 		   (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
 		    char * s = mystrdup(de->d_name);
 		    s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
-		    fprintf(stderr, "%s%s\n", buf, s);
+		    fprintf(stderr, "%s%s\n", buf.c_str(), s);
 		    free(s);
 		}
 	}
