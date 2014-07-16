@@ -7,6 +7,7 @@
 	* moz#784776 consistently use FLAG_NULL
 	* moz#927728 Convert PRUnichar to char16_t
 	* moz#943268 Remove nsCharsetAlias and nsCharsetConverterManager 
+	* Don't include config.h in license.hunspell if MOZILLA_CLIENT is set
 
 2014-06-26 Caolán McNamara <caolanm at LibO>:
 	* clang scan-build: Allocator sizeof operand mismatch
