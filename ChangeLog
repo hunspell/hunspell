@@ -1,6 +1,7 @@
 2014-07-16 Caolán McNamara <caolanm at LibO>:
 	* moz#675553 Switch from PRBool to bool
 	* moz#690892 replace PR_TRUE/PR_FALSE with true/false
+	* Silence the warning about empty while body loop in clang
 
 2014-06-26 Caolán McNamara <caolanm at LibO>:
 	* clang scan-build: Allocator sizeof operand mismatch
