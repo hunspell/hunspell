@@ -84,8 +84,8 @@ LIBHUNSPELL_DLL_EXPORTED char * mystrsep(char ** sptr, const char delim);
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED char * mystrsep2(char ** sptr, const char delim);
 
-// parse into tokens with char delimiter
-LIBHUNSPELL_DLL_EXPORTED char * mystrrep(char *, const char *, const char *);
+// replace pat by rep in word and return word
+LIBHUNSPELL_DLL_EXPORTED char * mystrrep(char * word, const char *pat, const char *rep);
 
 // append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED void strlinecat(char * lines, const char * s);
