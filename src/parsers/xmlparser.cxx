@@ -4,7 +4,6 @@
 #include <ctype.h>
 
 #include "../hunspell/csutil.hxx"
-#include "../hunspell/util.hxx"
 #include "xmlparser.hxx"
 
 
