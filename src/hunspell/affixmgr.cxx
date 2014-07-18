@@ -1306,7 +1306,6 @@ char * AffixMgr::prefix_check_twosfx_morph(const char * word, int len,
 // Is word a non compound with a REP substitution (see checkcompoundrep)?
 int AffixMgr::cpdrep_check(const char * word, int wl)
 {
-  char candidate[MAXLNLEN];
   const char * r;
   int lenr, lenp;
 
@@ -1318,11 +1317,9 @@ int AffixMgr::cpdrep_check(const char * word, int wl)
       lenp = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
       while ((r=strstr(r, reptable[i].pattern)) != NULL) {
-          strcpy(candidate, word);
-          if (r-word + lenr + strlen(r+lenp) >= MAXLNLEN) break;
-          strcpy(candidate+(r-word),reptable[i].pattern2);
-          strcpy(candidate+(r-word)+lenr, r+lenp);
-          if (candidate_check(candidate,strlen(candidate))) return 1;
+          std::string candidate(word);
+          candidate.replace(r-word, lenp, reptable[i].pattern2);
+          if (candidate_check(candidate.c_str(), candidate.size())) return 1;
           r++; // search for the next letter
       }
    }
