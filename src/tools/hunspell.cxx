@@ -1449,14 +1449,13 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 	int dialogexit = 0;
         int info = 0;
         int d = 0;
-        char buf[MAXLNLEN];
 	while ((token=parser->next_token())) {
 		if (!check(pMS, &d, token, &info, NULL)) {
 			dialogscreen(parser, token, filename, info, NULL, 0); // preview
 			refresh();
 			char ** wlst = NULL;
-			strcpy(buf, token);
-			int ns = pMS[d]->suggest(&wlst, mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'"));
+			std::string buf(token);
+			int ns = pMS[d]->suggest(&wlst, mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'").c_str());
 			if (ns==0) {
 				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
 			} else {
