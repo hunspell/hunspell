@@ -210,7 +210,7 @@ std::string& chenc(std::string& st, const char * enc1, const char * enc2)
     if (st.empty())
         return st;
 
-    if (enc1 && enc2 && strcmp(enc1, enc2) == 0)
+    if (!enc1 || !enc2 || strcmp(enc1, enc2) == 0)
         return st;
 
     std::string out(st.size(), std::string::value_type());
