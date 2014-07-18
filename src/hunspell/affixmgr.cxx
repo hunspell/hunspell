@@ -3078,11 +3078,11 @@ int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts
                     nh++;
                     // add special phonetic version
     		    if (phon && (nh < maxn)) {
-    			char st[MAXWORDUTF8LEN];
-    			strcpy(st, phon);
-    			strcat(st, sptr->getKey());
-    			reverseword(st + strlen(phon));
-    			wlst[nh].word = mystrdup(st);
+    			std::string prefix(phon);
+    			std::string key(sptr->getKey());
+    			reverseword(key);
+    			prefix.append(key);
+    			wlst[nh].word = mystrdup(prefix.c_str());
     			if (!wlst[nh].word) return nh - 1;
     			wlst[nh].allow = (1 == 0);
     			wlst[nh].orig = mystrdup(newword);

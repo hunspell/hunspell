@@ -104,6 +104,8 @@ LIBHUNSPELL_DLL_EXPORTED char * tr(char * text, char oldc, char newc);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword(char *);
+// reverse word
+LIBHUNSPELL_DLL_EXPORTED std::string& reverseword(std::string& word);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword_utf(char *);

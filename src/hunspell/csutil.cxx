@@ -1,6 +1,7 @@
 #include "license.hunspell"
 #include "license.myspell"
 
+#include <algorithm>
 #include <stdlib.h> 
 #include <string.h>
 #include <stdio.h> 
@@ -617,6 +618,13 @@ char * mystrrep(char * word, const char * pat, const char * rep) {
    }
    return 0;
  }
+
+// reverse word 
+std::string &reverseword(std::string& word)
+{
+    std::reverse(word.begin(), word.end());
+    return word;
+}
 
  // reverse word (error: 1)
  int reverseword_utf(char * word) {
