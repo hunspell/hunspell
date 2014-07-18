@@ -1167,14 +1167,12 @@ int Hunspell::stem(char*** slst, char ** desc, int n)
     }
 
     char **pl;
-    char tok[MAXLNLEN];
-    strcpy(tok, s);
-    char * alt = strstr(tok, " | ");
-    while (alt) {
-        alt[1] = MSEP_ALT;
-        alt = strstr(alt, " | ");
+    std::string tok(s);
+    size_t alt = 0;
+    while ((alt = tok.find(" | ", alt)) != std::string::npos) {
+        tok[alt + 1] = MSEP_ALT;
     }
-    int pln = line_tok(tok, &pl, MSEP_ALT);
+    int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
     for (int k = 0; k < pln; k++) {
         // add derivational suffixes
         if (strstr(pl[k], MORPH_DERI_SFX)) {
