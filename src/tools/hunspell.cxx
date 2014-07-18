@@ -1,3 +1,5 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 // glibc < 3.0 (for mkstemp)
 #ifndef __USE_MISC
 #define __USE_MISC
@@ -101,6 +103,7 @@
 
 #ifdef HAVE_ICONV
 #include <iconv.h>
+#include <errno.h>
 char text_conv[MAXLNLEN];
 #endif
 
@@ -197,6 +200,54 @@ static const char* fix_encoding_name(const char *enc)
     return enc;
 }
 #endif
+
+/* change character encoding */
+std::string& chenc(std::string& st, const char * enc1, const char * enc2)
+{
+#ifndef HAVE_ICONV
+    return st;
+#else
+    if (st.empty())
+        return st;
+
+    if (enc1 && enc2 && strcmp(enc1, enc2) == 0)
+        return st;
+
+    std::string out(st.size(), std::string::value_type());
+    size_t c1(st.size());
+    size_t c2(out.size());
+    char *source(const_cast<char *>(&st[0]));
+    char *dest(const_cast<char *>(&out[0]));
+    iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
+    if (conv == (iconv_t) -1)
+    {
+        fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), enc2, enc1);
+    }
+    else
+    {
+        size_t res;
+        while ((res = iconv(conv, &source, &c1, &dest, &c2)) == size_t(-1))
+        {
+            if (errno == E2BIG)
+            {
+                out.resize(out.size() + (c2 += c1));
+
+                dest = const_cast<char *>(&out[0]) + out.size() - c2;
+            }
+            else
+                break;
+        }
+        if (res == (size_t) -1)
+        {
+            fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc2, enc1);
+        }
+        out.resize(dest - &out[0]);
+        st = out;
+    }
+
+    return st;
+#endif
+}
 
 /* change character encoding */
 char * chenc(char * st, const char * enc1, const char * enc2) {
@@ -520,24 +571,31 @@ char * scanline(char * message) {
 #endif
 
 // check words in the dictionaries (and set first checked dictionary)
-int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
-  char buf[MAXLNLEN];
-  for (int i = 0; i < dmax; i++) {
-    strcpy(buf, token);
-    char * enc = mystrrep(chenc(buf, io_enc, dic_enc[*d]), ENTITY_APOS, "'");
-    if (checkapos && strchr(enc, '\'')) return 0;
-    // 8-bit encoded dictionaries need ASCII apostrophes (eg. English dictionaries)
-    if (strcmp(dic_enc[*d], "UTF-8") != 0) enc = mystrrep(enc, UTF8_APOS, "'");
-    if ((pMS[*d]->spell(enc, info, root) && !(warn && (*info & SPELL_WARN))) ||
-        // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV support,
-        // need also ASCII apostrophes (eg. French dictionaries)
-        ((strcmp(dic_enc[*d], "UTF-8") == 0) && strstr(enc, UTF8_APOS) &&
-            pMS[*d]->spell(mystrrep(enc, UTF8_APOS, "'"), info, root) && !(warn && (*info & SPELL_WARN)))) {
-        return 1;
+int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root)
+{
+    for (int i = 0; i < dmax; ++i)
+    {
+        std::string buf(token);
+        chenc(buf, io_enc, dic_enc[*d]);
+        mystrrep(buf, ENTITY_APOS, "'");
+        if (checkapos && buf.find('\'') != std::string::npos)
+            return 0;
+        // 8-bit encoded dictionaries need ASCII apostrophes (eg. English dictionaries)
+        if (strcmp(dic_enc[*d], "UTF-8") != 0)
+            mystrrep(buf, UTF8_APOS, "'");
+        if ((pMS[*d]->spell(buf.c_str(), info, root) && !(warn && (*info & SPELL_WARN))) ||
+            // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV support,
+            // need also ASCII apostrophes (eg. French dictionaries)
+            ((strcmp(dic_enc[*d], "UTF-8") == 0) && buf.find(UTF8_APOS) != std::string::npos &&
+                pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'").c_str(), info, root) &&
+                !(warn && (*info & SPELL_WARN))))
+        {
+            return 1;
+        }
+        if (++(*d) == dmax)
+            *d = 0;
     }
-    if (++(*d) == dmax) *d = 0;
-  }
-  return 0;
+    return 0;
 }
 
 static int is_zipped_odf(TextParser * parser, const char * extension) {
@@ -1980,3 +2038,5 @@ int main(int argc, char** argv)
 	for (int i = 0; i < dmax; i++) delete pMS[i];
 	return 0;
 }
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */
