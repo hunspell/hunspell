@@ -241,6 +241,7 @@ std::string& chenc(std::string& st, const char * enc1, const char * enc2)
         {
             fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc2, enc1);
         }
+        iconv_close(conv);
         out.resize(dest - &out[0]);
         st = out;
     }
