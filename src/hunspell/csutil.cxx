@@ -671,6 +671,16 @@ char * mystrrep(char * word, const char * pat, const char * rep) {
      p++;
    }
  }
+
+// convert std::string to all caps
+std::string& mkallcap(std::string &s, const struct cs_info * csconv)
+{
+    for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI)
+    {
+        *aI = csconv[((unsigned char)*aI)].cupper;
+    }
+    return s;
+}
   
  // convert null terminated string to all little
  void mkallsmall(char * p, const struct cs_info * csconv)

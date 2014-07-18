@@ -333,10 +333,9 @@ int SuggestMgr::capchars_utf(char ** wlst, const w_char * word, int wl, int ns, 
 // suggestions for an uppercase word (html -> HTML)
 int SuggestMgr::capchars(char** wlst, const char * word, int ns, int cpdsuggest)
 {
-  char candidate[MAXSWUTF8L];
-  strcpy(candidate, word);
-  mkallcap(candidate, csconv);
-  return testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL, NULL);
+    std::string candidate(word);
+    mkallcap(candidate, csconv);
+    return testsug(wlst, candidate.data(), candidate.size(), ns, cpdsuggest, NULL, NULL);
 }
 
 // suggestions for when chose the wrong char out of a related set
