@@ -57,9 +57,16 @@ FILE * myfopen(const char * path, const char * mode) {
     if (strncmp(path, WIN32_LONG_PATH_PREFIX, 4) == 0) {
         int len = MultiByteToWideChar(CP_UTF8, 0, path, -1, NULL, 0);
         wchar_t *buff = (wchar_t *) malloc(len * sizeof(wchar_t));
-        MultiByteToWideChar(CP_UTF8, 0, path, -1, buff, len);
-        FILE * f = _wfopen(buff, (strcmp(mode, "r") == 0) ? L"r" : L"rb");
-        free(buff);
+        wchar_t *buff2 = (wchar_t *) malloc(len * sizeof(wchar_t));
+        FILE * f = NULL;
+        if (buff && buff2) {
+            MultiByteToWideChar(CP_UTF8, 0, path, -1, buff, len);
+            if (_wfullpath( buff2, buff, len ) != NULL) {
+                f = _wfopen(buff2, (strcmp(mode, "r") == 0) ? L"r" : L"rb");
+            }
+            free(buff);
+            free(buff2);
+        }
         return f;
     }
 #endif
