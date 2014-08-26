@@ -18,7 +18,6 @@
 
 #include "unmunch.h"
 
-
 int main(int argc, char** argv)
 {
 
@@ -195,7 +194,7 @@ int parse_aff_file(FILE * afflst)
                                    free(nptr->strip);
                                    nptr->strip=mystrdup("");
 				   nptr->stripl = 0;
-                                 }   
+                                 }
                                  break; 
                                }
                        case 3: { nptr->appnd = mystrdup(piece);
@@ -205,6 +204,15 @@ int parse_aff_file(FILE * afflst)
                                    nptr->appnd=mystrdup("");
 				   nptr->appndl = 0;
                                  }   
+                                 if (strchr(nptr->appnd, '/')) {
+                                    char * addseparator = (char *) realloc(nptr->appnd, nptr->appndl + 2);
+                                    if (addseparator) {
+                                      nptr->appndl++;
+                                      addseparator[nptr->appndl-1] = '|';
+                                      addseparator[nptr->appndl] = '\0';
+                                      nptr->appnd = addseparator;
+                                    }
+                                 }
                                  break; 
                                }
                        case 4: { encodeit(nptr,piece);}

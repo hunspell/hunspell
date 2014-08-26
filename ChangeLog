@@ -1,3 +1,11 @@
+2014-08-26 Németh László <nemeth at numbertext dot org>:
+	* unmunch separates flags of prefixes from the word,
+	  bug reported by Daniel Naber
+
+2014-08-05 Németh László <nemeth at numbertext dot org>:
+	* moz#318040 Mozzilla accepts abbreviations without dots
+	* myfopen(): add _wfullpath to expand relative parts of absolute paths
+
 2014-07-16 Caolán McNamara <caolanm at LibO>:
 	* moz#675553 Switch from PRBool to bool
 	* moz#690892 replace PR_TRUE/PR_FALSE with true/false
