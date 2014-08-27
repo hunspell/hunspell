@@ -20,7 +20,7 @@
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
 
-#define HUNSPELL_PIPE_HEADING "@(#) International Ispell Version 3.2.06 (but really Hunspell "VERSION")\n"
+#define HUNSPELL_PIPE_HEADING "@(#) International Ispell Version 3.2.06 (but really Hunspell " VERSION ")\n"
 #define HUNSPELL_HEADING "Hunspell "
 #define ODF_EXT "odt|ott|odp|otp|odg|otg|ods|ots"
 #define ENTITY_APOS "&apos;"
