@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -159,10 +160,19 @@ int parse_aff_file(FILE * afflst)
                     case 1: { achar = *piece; break; }
                     case 2: { if (*piece == 'Y') ff = XPRODUCT; break; }
                     case 3: { numents = atoi(piece); 
-                              ptr = malloc(numents * sizeof(struct affent));
-                              ptr->achar = achar;
-                              ptr->xpflg = ff;
-	                      fprintf(stderr,"parsing %c entries %d\n",achar,numents);
+                              if ((numents < 0) ||
+                                  ((SIZE_MAX/sizeof(struct affent)) < numents))
+                              {
+                                 fprintf(stderr,
+                                     "Error: too many entries: %d\n", numents);
+                                 numents = 0;
+                              } else {
+                                 ptr = malloc(numents * sizeof(struct affent));
+                                 ptr->achar = achar;
+                                 ptr->xpflg = ff;
+                                 fprintf(stderr,"parsing %c entries %d\n",
+                                         achar,numents);
+                              }
                               break;
                             }
 		    default: break;

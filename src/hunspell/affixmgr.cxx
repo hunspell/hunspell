@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <limits>
+
 #include <vector>
 
 #include "affixmgr.hxx"
@@ -4234,7 +4236,10 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
              case 3: { 
                        np++;
                        numents = atoi(piece); 
-                       if (numents == 0) {
+                       if ((numents <= 0) ||
+                           ((::std::numeric_limits<size_t>::max()
+                                / sizeof(struct affentry)) < numents))
+                       {
                            char * err = pHMgr->encode_flag(aflag);
                            if (err) {
                                 HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
