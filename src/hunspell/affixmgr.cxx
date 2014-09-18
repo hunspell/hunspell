@@ -1065,6 +1065,18 @@ void AffixMgr::debugflag(char * result, unsigned short flag) {
     }
 }
 
+// add flags to the result for dictionary debugging
+std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
+    char * st = encode_flag(flag);
+    result.append(" ");
+    result.append(MORPH_FLAG);
+    if (st) {
+        result.append(st);
+        free(st);
+    }
+    return result;
+}
+
 // calculate the character length of the condition
 int AffixMgr::condlen(char * st)
 {
@@ -2671,13 +2683,12 @@ struct hentry * AffixMgr::suffix_check_twosfx(const char * word, int len,
 char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len, 
        int sfxopts, PfxEntry * ppfx, const FLAG needflag)
 {
-    char result[MAXLNLEN];
+    std::string result;
     std::string result2;
     char result3[MAXLNLEN];
     
     char * st;
 
-    result[0] = '\0';
     result3[0] = '\0';
 
     // first handle the special case of 0 length suffixes
@@ -2689,17 +2700,17 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
             if (st) {
                 if (ppfx) {
                     if (ppfx->getMorph()) {
-                        mystrcat(result, ppfx->getMorph(), MAXLNLEN);
-                        mystrcat(result, " ", MAXLNLEN);
+                        result.append(ppfx->getMorph());
+                        result.append(" ");
                     } else debugflag(result, ppfx->getFlag());
                 }
-                mystrcat(result, st, MAXLNLEN);
+                result.append(st);
                 free(st);
                 if (se->getMorph()) {
-                    mystrcat(result, " ", MAXLNLEN);
-                    mystrcat(result, se->getMorph(), MAXLNLEN);
+                    result.append(" ");
+                    result.append(se->getMorph());
                 } else debugflag(result, se->getFlag());
-                mystrcat(result, "\n", MAXLNLEN);
+                result.append("\n");
             }
         }
         se = se->getNext();
@@ -2729,7 +2740,7 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
                 } else debugflag(result3, sptr->getFlag());
                 strlinecat(result2, result3);
                 result2.append("\n");
-                mystrcat(result,  result2.c_str(), MAXLNLEN);
+                result.append(result2);
                 }
             }
             sptr = sptr->getNextEQ();
@@ -2737,7 +2748,10 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
             sptr = sptr->getNextNE();
         }
     }
-    if (*result) return mystrdup(result);
+
+    if (!result.empty())
+        return mystrdup(result.c_str());
+
     return NULL;
 }
 
