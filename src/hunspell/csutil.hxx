@@ -92,6 +92,9 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str, const std::stri
 // append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED void strlinecat(char * lines, const char * s);
 
+// append s to ends of every lines in text
+LIBHUNSPELL_DLL_EXPORTED std::string& strlinecat(std::string& str, const std::string& apd);
+
 // tokenize into lines with new line
 LIBHUNSPELL_DLL_EXPORTED int line_tok(const char * text, char *** lines, char breakchar);
 

@@ -2672,13 +2672,12 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
        int sfxopts, PfxEntry * ppfx, const FLAG needflag)
 {
     char result[MAXLNLEN];
-    char result2[MAXLNLEN];
+    std::string result2;
     char result3[MAXLNLEN];
     
     char * st;
 
     result[0] = '\0';
-    result2[0] = '\0';
     result3[0] = '\0';
 
     // first handle the special case of 0 length suffixes
@@ -2719,7 +2718,7 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
                 if (st) {
                     sfxflag = sptr->getFlag(); // BUG: sfxflag not stateless
                     if (!sptr->getCont()) sfxappnd=sptr->getKey(); // BUG: sfxappnd not stateless
-                    strcpy(result2, st);
+                    result2.assign(st);
                     free(st);
 
                 result3[0] = '\0';
@@ -2729,13 +2728,13 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
                     mystrcat(result3, sptr->getMorph(), MAXLNLEN);
                 } else debugflag(result3, sptr->getFlag());
                 strlinecat(result2, result3);
-                mystrcat(result2, "\n", MAXLNLEN);
-                mystrcat(result,  result2, MAXLNLEN);
+                result2.append("\n");
+                mystrcat(result,  result2.c_str(), MAXLNLEN);
                 }
             }
             sptr = sptr->getNextEQ();
         } else {
-             sptr = sptr->getNextNE();
+            sptr = sptr->getNextNE();
         }
     }
     if (*result) return mystrdup(result);

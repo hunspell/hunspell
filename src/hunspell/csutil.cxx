@@ -452,6 +452,19 @@ char * line_uniq_app(char ** text, char breakchar) {
     }
  }
 
+// append s to ends of every lines in text
+std::string& strlinecat(std::string& str, const std::string& apd)
+{
+    size_t pos = 0;
+    while ((pos = str.find('\n', pos)) != std::string::npos)
+    {
+       str.insert(pos, apd);
+       pos += apd.length()+1;
+    }
+    str.append(apd);
+    return str;
+}
+
 // change \n to char c
 char * tr(char * text, char oldc, char newc) {
     char * p;
