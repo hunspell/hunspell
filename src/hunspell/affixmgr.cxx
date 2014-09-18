@@ -2685,11 +2685,9 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
 {
     std::string result;
     std::string result2;
-    char result3[MAXLNLEN];
+    std::string result3;
     
     char * st;
-
-    result3[0] = '\0';
 
     // first handle the special case of 0 length suffixes
     SfxEntry * se = sStart[0];
@@ -2732,11 +2730,11 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
                     result2.assign(st);
                     free(st);
 
-                result3[0] = '\0';
+                result3.clear();
 
                 if (sptr->getMorph()) {
-                    mystrcat(result3, " ", MAXLNLEN);
-                    mystrcat(result3, sptr->getMorph(), MAXLNLEN);
+                    result3.append(" ");
+                    result3.append(sptr->getMorph());
                 } else debugflag(result3, sptr->getFlag());
                 strlinecat(result2, result3);
                 result2.append("\n");
