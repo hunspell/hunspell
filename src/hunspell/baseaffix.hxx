@@ -9,7 +9,19 @@ private:
     AffEntry(const AffEntry&);
     AffEntry& operator = (const AffEntry&);
 protected:
-    AffEntry() {}
+    AffEntry()
+      : appnd(NULL)
+      , strip(NULL)
+      , appndl(0)
+      , stripl(0)
+      , numconds(0)
+      , opts(0)
+      , aflag(0)
+      , morphcode(0)
+      , contclass(NULL)
+      , contclasslen(0)
+    {
+    }
     char *         appnd;
     char *         strip;
     unsigned char  appndl;
