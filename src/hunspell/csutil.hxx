@@ -156,6 +156,8 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string &s, const struct cs_i
 
 // convert null terminated string to all little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall(char * p, const struct cs_info * csconv);
+// convert null terminated string to all little
+LIBHUNSPELL_DLL_EXPORTED std::string& mkallsmall(std::string &s, const struct cs_info * csconv);
 
 // convert null terminated string to have initial capital
 LIBHUNSPELL_DLL_EXPORTED void mkinitcap(char * p, const struct cs_info * csconv);

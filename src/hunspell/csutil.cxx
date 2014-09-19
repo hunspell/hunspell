@@ -719,6 +719,16 @@ std::string& mkallcap(std::string &s, const struct cs_info * csconv)
    }
  }
 
+// convert std::string to all little
+std::string& mkallsmall(std::string &s, const struct cs_info * csconv)
+{
+    for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI)
+    {
+        *aI = csconv[((unsigned char)*aI)].clower;
+    }
+    return s;
+}
+
 void mkallsmall_utf(w_char * u, int nc, int langnum) {
     for (int i = 0; i < nc; i++) {
         unsigned short idx = (u[i].h << 8) + u[i].l;

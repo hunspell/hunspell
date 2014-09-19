@@ -1896,27 +1896,26 @@ int SuggestMgr::commoncharacterpositions(char * s1, const char * s2, int * is_sw
         (((short *) su1)[diffpos[0]] == ((short *) su2)[diffpos[1]]) &&
         (((short *) su1)[diffpos[1]] == ((short *) su2)[diffpos[0]])) *is_swap = 1;
   } else {
-    int i;
-    char t[MAXSWUTF8L];
-    strcpy(t, s2);
+    size_t i;
+    std::string t(s2);
     // decapitalize dictionary word
     if (complexprefixes) {
-      int l2 = strlen(t);
-      *(t+l2-1) = csconv[((unsigned char)*(t+l2-1))].clower;
+      size_t l2 = t.size();
+      t[l2-1] = csconv[(unsigned char)t[l2-1]].clower;
     } else {
       mkallsmall(t, csconv);
     }
-    for (i = 0; (*(s1+i) != 0) && (*(t+i) != 0); i++) {
-      if (*(s1+i) == *(t+i)) {
+    for (i = 0; (*(s1+i) != 0) && i < t.size(); i++) {
+      if (*(s1+i) == t[i]) {
         num++;
       } else {
         if (diff < 2) diffpos[diff] = i;
         diff++;
       }
     }
-    if ((diff == 2) && (*(s1+i) == 0) && (*(t+i) == 0) &&
-      (*(s1+diffpos[0]) == *(t+diffpos[1])) &&
-      (*(s1+diffpos[1]) == *(t+diffpos[0]))) *is_swap = 1;
+    if ((diff == 2) && (*(s1+i) == 0) && i == t.size() &&
+      (*(s1+diffpos[0]) == t[diffpos[1]]) &&
+      (*(s1+diffpos[1]) == t[diffpos[0]])) *is_swap = 1;
   }
   return num;
 }
