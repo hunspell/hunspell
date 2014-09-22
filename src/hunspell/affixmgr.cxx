@@ -2407,8 +2407,10 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                       }
                       mystrcat(*result, presult, MAXLNLEN);
                       if (m || (*m != '\0')) {
-                        sprintf(*result + strlen(*result), "%c%s%s%s", MSEP_FLD,
+                        char m2[MAXLNLEN];
+                        sprintf(m2, "%c%s%s%s", MSEP_FLD,
                             MORPH_PART, word + i, line_uniq_app(&m, MSEP_REC));
+                        mystrcat(*result, m2, MAXLNLEN);
                       }
                       if (m) free(m);
                       mystrcat(*result, "\n", MAXLNLEN);
@@ -2488,11 +2490,13 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                       }
                       mystrcat(*result, presult, MAXLNLEN);
                       if (m && (*m != '\0')) {
-                        sprintf(*result + strlen(*result), "%c%s%s%s", MSEP_FLD,
+                        char m2[MAXLNLEN];
+                        sprintf(m2, "%c%s%s%s", MSEP_FLD,
                             MORPH_PART, word + i, line_uniq_app(&m, MSEP_REC));
+                        mystrcat(*result, m2, MAXLNLEN);
                       }
                       if (m) free(m);
-                      sprintf(*result + strlen(*result), "%c", MSEP_REC);
+                      if (strlen(*result) + 1 < MAXLNLEN) sprintf(*result + strlen(*result), "%c", MSEP_REC);
                       ok = 1;
             }
 
