@@ -120,6 +120,44 @@ char * u16_u8(char * dest, int size, const w_char * src, int srclen) {
     return dest;
 }
 
+std::string& u16_u8(std::string& dest, const std::vector<w_char>& src)
+{
+    dest.clear();
+    std::vector<w_char>::const_iterator u2 = src.begin();
+    std::vector<w_char>::const_iterator u2_max = src.end();
+    while (u2 < u2_max)
+    {
+    	signed char u8;
+        if (u2->h) { // > 0xFF
+            // XXX 4-byte haven't implemented yet.
+            if (u2->h >= 0x08) {   // >= 0x800 (3-byte UTF-8 character)
+                u8 = 0xe0 + (u2->h >> 4);
+                dest.push_back(u8);
+                u8 = 0x80 + ((u2->h & 0xf) << 2) + (u2->l >> 6);
+                dest.push_back(u8);
+                u8 = 0x80 + (u2->l & 0x3f);
+                dest.push_back(u8);
+            } else { // < 0x800 (2-byte UTF-8 character)
+                u8 = 0xc0 + (u2->h << 2) + (u2->l >> 6);
+                dest.push_back(u8);
+                u8 = 0x80 + (u2->l & 0x3f);
+                dest.push_back(u8);
+            }
+        } else { // <= 0xFF
+            if (u2->l & 0x80) { // >0x80 (2-byte UTF-8 character)
+                u8 = 0xc0 + (u2->l >> 6);
+                dest.push_back(u8);
+                u8 = 0x80 + (u2->l & 0x3f);
+                dest.push_back(u8);
+            } else { // < 0x80 (1-byte UTF-8 character)
+                u8 = u2->l;
+                dest.push_back(u8);
+            }
+        }
+        ++u2;
+    }
+    return dest;
+}
 
 /* only UTF-16 (BMP) implementation */
 int u8_u16(w_char * dest, int size, const char * src) {
@@ -193,6 +231,83 @@ int u8_u16(w_char * dest, int size, const char * src) {
     u2++;
     }
     return (int)(u2 - dest);
+}
+
+int u8_u16(std::vector<w_char>& dest, const std::string& src)
+{
+    dest.clear();
+    std::string::const_iterator u8 = src.begin();
+    std::string::const_iterator u8_max = src.end();
+
+    while (u8 < u8_max) {
+    w_char u2;
+    switch ((*u8) & 0xf0) {
+        case 0x00:
+        case 0x10:
+        case 0x20:
+        case 0x30:
+        case 0x40:
+        case 0x50:
+        case 0x60:
+        case 0x70: {
+            u2.h = 0;
+            u2.l = *u8;
+            break;
+        }
+        case 0x80:
+        case 0x90:
+        case 0xa0:
+        case 0xb0: {
+            HUNSPELL_WARNING(stderr, "UTF-8 encoding error. Unexpected continuation bytes in %ld. character position\n%s\n", static_cast<long>(std::distance(src.begin(), u8)), src.c_str());
+            u2.h = 0xff;
+            u2.l = 0xfd;
+            break;
+        }
+        case 0xc0:
+        case 0xd0: {    // 2-byte UTF-8 codes
+            if ((*(u8+1) & 0xc0) == 0x80) {
+                u2.h = (*u8 & 0x1f) >> 2;
+                u2.l = (*u8 << 6) + (*(u8+1) & 0x3f);
+                ++u8;
+            } else {
+                HUNSPELL_WARNING(stderr, "UTF-8 encoding error. Missing continuation byte in %ld. character position:\n%s\n", static_cast<long>(std::distance(src.begin(), u8)), src.c_str());
+                u2.h = 0xff;
+                u2.l = 0xfd;
+            }
+            break;
+        }
+        case 0xe0: {    // 3-byte UTF-8 codes
+            if ((*(u8+1) & 0xc0) == 0x80) {
+                u2.h = ((*u8 & 0x0f) << 4) + ((*(u8+1) & 0x3f) >> 2);
+                ++u8;
+                if ((*(u8+1) & 0xc0) == 0x80) {
+                    u2.l = (*u8 << 6) + (*(u8+1) & 0x3f);
+                    ++u8;
+                } else {
+                    HUNSPELL_WARNING(stderr, "UTF-8 encoding error. Missing continuation byte in %ld. character position:\n%s\n", static_cast<long>(std::distance(src.begin(), u8)), src.c_str());
+                    u2.h = 0xff;
+                    u2.l = 0xfd;
+                }
+            } else {
+                HUNSPELL_WARNING(stderr, "UTF-8 encoding error. Missing continuation byte in %ld. character position:\n%s\n", static_cast<long>(std::distance(src.begin(), u8)), src.c_str());
+                u2.h = 0xff;
+                u2.l = 0xfd;
+            }
+            break;
+        }
+        case 0xf0: {    // 4 or more byte UTF-8 codes
+            HUNSPELL_WARNING(stderr, "This UTF-8 encoding can't convert to UTF-16:\n%s\n", src.c_str());
+            u2.h = 0xff;
+            u2.l = 0xfd;
+            dest.push_back(u2);
+            return -1;
+        }
+    }
+    dest.push_back(u2);
+    ++u8;
+    }
+
+    return dest.size();
 }
 
 void flag_qsort(unsigned short flags[], int begin, int end) {
@@ -737,6 +852,17 @@ void mkallsmall_utf(w_char * u, int nc, int langnum) {
             u[i].l = (unsigned char) (unicodetolower(idx, langnum) & 0x00FF);
         }
     }
+}
+
+std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int nc, int langnum) {
+    for (int i = 0; i < nc; i++) {
+        unsigned short idx = (u[i].h << 8) + u[i].l;
+        if (idx != unicodetolower(idx, langnum)) {
+            u[i].h = (unsigned char) (unicodetolower(idx, langnum) >> 8);
+            u[i].l = (unsigned char) (unicodetolower(idx, langnum) & 0x00FF);
+        }
+    }
+    return u;
 }
 
 void mkallcap_utf(w_char * u, int nc, int langnum) {

@@ -107,6 +107,7 @@ private:
    void bubblesort( char ** rwd, char ** rwd2, int * rsc, int n);
    void lcs(const char * s, const char * s2, int * l1, int * l2, char ** result);
    int lcslen(const char * s, const char* s2);
+   int lcslen(const std::string& s, const std::string& s2);
    char * suggest_hentry_gen(hentry * rv, char * pattern);
 
 };

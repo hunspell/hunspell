@@ -1301,23 +1301,23 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   if (ph) for (i=0; i < MAX_ROOTS; i++) {
       if (rootsphon[i]) {
         // lowering rootphon[i]
-        char gl[MAXSWUTF8L];
+        std::string gl;
         int len;
         if (utf8) {
-          w_char _w[MAXSWL];
-          len = u8_u16(_w, MAXSWL, rootsphon[i]);
+          std::vector<w_char> _w;
+          len = u8_u16(_w, rootsphon[i]);
           mkallsmall_utf(_w, len, langnum);
-          u16_u8(gl, MAXSWUTF8L, _w, len);
+          u16_u8(gl, _w);
         } else {
-          strcpy(gl, rootsphon[i]);
+          gl.assign(rootsphon[i]);
           if (!nonbmp) mkallsmall(gl, csconv);
           len = strlen(rootsphon[i]);
         }
 
         // heuristic weigthing of ngram scores
         scoresphon[i] += 2 * lcslen(word, gl) - abs((int) (n - len)) +
-          // weight length of the left common substring
-          leftcommonsubstring(word, gl);
+        // weight length of the left common substring
+        leftcommonsubstring(word, gl.c_str());
       }
   }
 
@@ -2023,4 +2023,8 @@ int SuggestMgr::lcslen(const char * s, const char* s2) {
   }
   free(result);
   return len;
+}
+
+int SuggestMgr::lcslen(const std::string& s, const std::string& s2) {
+  return lcslen(s.c_str(), s2.c_str());
 }

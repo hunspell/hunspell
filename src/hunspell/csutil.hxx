@@ -6,6 +6,7 @@
 // First some base level utility routines
 
 #include <string>
+#include <vector>
 #include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
@@ -58,9 +59,13 @@ LIBHUNSPELL_DLL_EXPORTED FILE * myfopen(const char * path, const char * mode);
 
 // convert UTF-16 characters to UTF-8
 LIBHUNSPELL_DLL_EXPORTED char * u16_u8(char * dest, int size, const w_char * src, int srclen);
+// convert UTF-16 characters to UTF-8
+LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest, const std::vector<w_char>& src);
 
 // convert UTF-8 characters to UTF-16
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(w_char * dest, int size, const char * src);
+// convert UTF-8 characters to UTF-16
+LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest, const std::string& src);
 
 // sort 2-byte vector
 LIBHUNSPELL_DLL_EXPORTED void flag_qsort(unsigned short flags[], int begin, int end);
@@ -164,6 +169,8 @@ LIBHUNSPELL_DLL_EXPORTED void mkinitcap(char * p, const struct cs_info * csconv)
 
 // convert first nc characters of UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall_utf(w_char * u, int nc, int langnum);
+// convert first nc characters of UTF-8 string to little
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int nc, int langnum);
 
 // convert first nc characters of UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED void mkallcap_utf(w_char * u, int nc, int langnum);
