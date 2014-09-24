@@ -174,6 +174,8 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>& mkallsmall_utf(std::vector<w_char>
 
 // convert first nc characters of UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED void mkallcap_utf(w_char * u, int nc, int langnum);
+// convert first nc characters of UTF-8 string to capital
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum);
 
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(char * q, int nl, cs_info *);
