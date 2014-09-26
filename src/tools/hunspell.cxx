@@ -1169,7 +1169,7 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	case ' ':
             freewordlist(dicwords);
 	    return 0;
-	case '?': {
+	case '?':
 	    clear();
 printw(gettext("Whenever a word is found that is not in the dictionary\n"
     "it is printed on the first line of the screen.  If the dictionary\n"
@@ -1193,7 +1193,7 @@ printw(gettext("^Z	Suspend program. Restart with fg command.\n"));
 printw(gettext("?	Show this help screen.\n"));
 printw(gettext("\n-- Type space to continue -- \n"));
 	    while (getch()!=' ');
-	}
+        // fall-through
 	case 12: {
     	    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 	    break;
