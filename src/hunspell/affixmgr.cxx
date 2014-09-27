@@ -2043,8 +2043,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
           soldi = 0;
         } else st[i] = ch;
 
-        } while (numdefcpd && oldwordnum == 0 && !onlycpdrule && (onlycpdrule = 1)); // end of onlycpd loop
-
+        } while (numdefcpd && oldwordnum == 0 && onlycpdrule++ < 1); // end of onlycpd loop
     }
 
     return NULL;
@@ -2515,7 +2514,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
         wordnum = oldwordnum;
         numsyllable = oldnumsyllable;
 
-        } while (numdefcpd && oldwordnum == 0 && !onlycpdrule && (onlycpdrule = 1)); // end of onlycpd loop
+        } while (numdefcpd && oldwordnum == 0 && onlycpdrule++ < 1); // end of onlycpd loop
 
     }
     return 0;
