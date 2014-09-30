@@ -2964,11 +2964,11 @@ char * AffixMgr::affix_check_morph(const char * word, int len, const FLAG needfl
     return mystrdup(result);
 }
 
-char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
-    unsigned short al, char * morph, char * targetmorph, int level)
+char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
+    unsigned short al, const char * morph, const char * targetmorph, int level)
 {
     // handle suffixes
-    char * stemmorph;
+    const char * stemmorph;
     char * stemmorphcatpos;
     char mymorph[MAXLNLEN];
 
@@ -2983,10 +2983,10 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
 
     // use input suffix fields, if exist
     if (strstr(morph, MORPH_INFL_SFX) || strstr(morph, MORPH_DERI_SFX)) {
+        strcpy(mymorph, morph);
+        mystrcat(mymorph, " ", MAXLNLEN);
         stemmorph = mymorph;
-        strcpy(stemmorph, morph);
-        mystrcat(stemmorph, " ", MAXLNLEN);
-        stemmorphcatpos = stemmorph + strlen(stemmorph);
+        stemmorphcatpos = mymorph + strlen(mymorph);
     } else {
         stemmorph = morph;
         stemmorphcatpos = NULL;
@@ -3001,7 +3001,7 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
                 !TESTAFF(sptr->getCont(), substandard, sptr->getContLen()))) {
 
                 if (stemmorphcatpos) strcpy(stemmorphcatpos, sptr->getMorph());
-                else stemmorph = (char *) sptr->getMorph();
+                else stemmorph = sptr->getMorph();
 
                 int cmp = morphcmp(stemmorph, targetmorph);
 

@@ -144,8 +144,8 @@ public:
   char * suffix_check_twosfx_morph(const char * word, int len,
             int sfxopts, PfxEntry * ppfx, const FLAG needflag = FLAG_NULL);
 
-  char * morphgen(char * ts, int wl, const unsigned short * ap,
-            unsigned short al, char * morph, char * targetmorph, int level);
+  char * morphgen(const char * ts, int wl, const unsigned short * ap,
+            unsigned short al, const char * morph, const char * targetmorph, int level);
 
   int    expand_rootword(struct guessword * wlst, int maxn, const char * ts,
             int wl, const unsigned short * ap, unsigned short al, char * bad,

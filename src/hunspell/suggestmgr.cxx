@@ -1600,7 +1600,7 @@ char * SuggestMgr::suggest_morph_for_spelling_error(const char * word)
 #endif // END OF HUNSPELL_EXPERIMENTAL CODE
 
 /* affixation */
-char * SuggestMgr::suggest_hentry_gen(hentry * rv, char * pattern)
+char * SuggestMgr::suggest_hentry_gen(hentry * rv, const char * pattern)
 {
     char result[MAXLNLEN];
     *result = '\0';

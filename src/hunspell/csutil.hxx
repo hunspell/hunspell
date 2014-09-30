@@ -226,6 +226,18 @@ LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry *h)
     return ret;
 }
 
+LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA(const struct hentry *h)
+{
+    const char *ret;
+    if (!h->var)
+        ret = NULL;
+    else if (h->var & H_OPT_ALIASM)
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
+    else 
+        ret = HENTRY_WORD(h) + h->blen + 1;
+    return ret;
+}
+
 // NULL-free version for warning-free OOo build
 LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA2(const struct hentry *h)
 {
