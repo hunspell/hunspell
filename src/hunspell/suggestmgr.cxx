@@ -1703,10 +1703,9 @@ char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
                 copy_field(tok, st, MORPH_STEM);
                 rv = pAMgr->lookup(tok);
                 while (rv) {
-                    char newpat[MAXLNLEN];
-                    strcpy(newpat, pl[i]);
-                    strcat(newpat, pattern);
-                    char * sg = suggest_hentry_gen(rv, newpat);
+                    std::string newpat(pl[i]);
+                    newpat.append(pattern);
+                    char * sg = suggest_hentry_gen(rv, newpat.c_str());
                     if (!sg) sg = suggest_hentry_gen(rv, pattern);
                     if (sg) {
                         char ** gen;
