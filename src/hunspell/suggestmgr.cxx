@@ -1538,15 +1538,15 @@ char * SuggestMgr::suggest_morph(const char * w)
 
     if (! pAMgr) return NULL;
 
-  char w2[MAXSWUTF8L];
-  const char * word = w;
+    std::string w2;
+    const char * word = w;
 
-  // word reversing wrapper for complex prefixes
-  if (complexprefixes) {
-    strcpy(w2, w);
-    if (utf8) reverseword_utf(w2); else reverseword(w2);
-    word = w2;
-  }
+    // word reversing wrapper for complex prefixes
+    if (complexprefixes) {
+        w2.assign(w);
+        if (utf8) reverseword_utf(w2); else reverseword(w2);
+        word = w2.c_str();
+    }
 
     rv = pAMgr->lookup(word);
     
