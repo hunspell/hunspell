@@ -576,13 +576,14 @@ int Hunspell::spell(const char * word, int * info, char ** root)
 struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
 {
   struct hentry * he = NULL;
+  bool usebuffer = false;
   int len, i;
-  char w2[MAXWORDUTF8LEN];
+  std::string w2;
   const char * word;
 
   char * ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
   if (ignoredchars != NULL) {
-     strcpy(w2, w);
+     w2.assign(w);
      if (utf8) {
         int ignoredchars_utf16_len;
         unsigned short * ignoredchars_utf16 = pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
@@ -590,7 +591,8 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
      } else {
         remove_ignored_chars(w2,ignoredchars);
      }
-     word = w2;
+     word = w2.c_str();
+     usebuffer = true;
   } else word = w;
 
   len = strlen(word);
@@ -600,11 +602,15 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
-    if (word != w2) {
-      strcpy(w2, word);
-      word = w2;
+    if (!usebuffer) {
+      w2.assign(word);
+      usebuffer = true;
     }
     if (utf8) reverseword_utf(w2); else reverseword(w2);
+  }
+
+  if (usebuffer) {
+      word = w2.c_str();
   }
 
   // look word in hash table

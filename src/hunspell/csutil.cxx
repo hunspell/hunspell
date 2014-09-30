@@ -778,6 +778,16 @@ std::string &reverseword(std::string& word)
    return 0;
  }
 
+// reverse word
+std::string& reverseword_utf(std::string& word)
+{
+    std::vector<w_char> w;
+    u8_u16(w, word);
+    std::reverse(w.begin(), w.end());
+    u16_u8(word, w);
+    return word;
+}
+
  int uniqlist(char ** list, int n) {
    int i;
    if (n < 2) return n;
@@ -5973,7 +5983,6 @@ int get_captype_utf8(w_char * word, int nl, int langnum) {
    return HUHCAP;
 }
 
-
 // strip all ignored characters in the string
 void remove_ignored_chars_utf(char * word, unsigned short ignored_chars[], int ignored_len)
 {
@@ -5991,6 +6000,39 @@ void remove_ignored_chars_utf(char * word, unsigned short ignored_chars[], int i
    if (j < i) u16_u8(word, MAXWORDUTF8LEN, w2, j);
 }
 
+namespace
+{
+    union w_s
+    {
+        w_char w;
+        unsigned short s;
+    };
+
+    unsigned short asushort(w_char in)
+    {
+        w_s c;
+        c.w = in;
+        return c.s;
+    }
+}
+
+// strip all ignored characters in the string
+std::string& remove_ignored_chars_utf(std::string& word, unsigned short ignored_chars[], int ignored_len)
+{
+    std::vector<w_char> w;
+    std::vector<w_char> w2;
+    u8_u16(w, word);
+
+    for (size_t i = 0; i < w.size(); ++i)
+    {
+        if (!flag_bsearch(ignored_chars, asushort(w[i]), ignored_len))
+            w2.push_back(w[i]);
+    }
+
+    u16_u8(word, w2);
+    return word;
+}
+
 // strip all ignored characters in the string
 void remove_ignored_chars(char * word, char * ignored_chars)
 {
@@ -6001,6 +6043,32 @@ void remove_ignored_chars(char * word, char * ignored_chars)
       }
    }
    *word = '\0';
+}
+
+namespace
+{
+    class is_any_of
+    {
+    public:
+        is_any_of(const std::string& in)
+            : chars(in)
+        {
+        }
+
+        bool operator()(char c)
+        {
+            return chars.find(c) != std::string::npos;
+        }
+    private:
+        const std::string& chars;
+    };
+}
+
+// strip all ignored characters in the string
+std::string& remove_ignored_chars(std::string& word, const std::string& ignored_chars)
+{
+   word.erase(std::remove_if(word.begin(), word.end(), is_any_of(ignored_chars)));
+   return word;
 }
 
 int parse_string(char * line, char ** out, int ln)

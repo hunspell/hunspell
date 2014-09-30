@@ -117,6 +117,8 @@ LIBHUNSPELL_DLL_EXPORTED std::string& reverseword(std::string& word);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword_utf(char *);
+// reverse word
+LIBHUNSPELL_DLL_EXPORTED std::string& reverseword_utf(std::string&);
 
 // remove duplicates
 LIBHUNSPELL_DLL_EXPORTED int uniqlist(char ** list, int n);
@@ -185,9 +187,13 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(w_char * q, int nl, int langnum);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars_utf(char * word, unsigned short ignored_chars[], int ignored_len);
+// strip all ignored characters in the string
+LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars_utf(std::string& word, unsigned short ignored_chars[], int ignored_len);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars(char * word, char * ignored_chars);
+// strip all ignored characters in the string
+LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars(std::string& word, const std::string& ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED int parse_string(char * line, char ** out, int ln);
 
