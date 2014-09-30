@@ -135,15 +135,15 @@ int SuggestMgr::suggest(char*** slst, const char * w, int nsug,
   w_char word_utf[MAXSWL];
   int wl = 0;
   int nsugorig = nsug;
-  char w2[MAXWORDUTF8LEN];
+  std::string w2;
   const char * word = w;
   int oldSug = 0;
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
-    strcpy(w2, w);
+    w2.assign(w);
     if (utf8) reverseword_utf(w2); else reverseword(w2);
-    word = w2;
+    word = w2.c_str();
   }
     
     if (*slst) {
