@@ -1057,21 +1057,28 @@ char * Hunspell::get_dic_encoding()
 }
 
 #ifdef HUNSPELL_EXPERIMENTAL
-// XXX need UTF-8 support
+// XXX UTF-8 support is OK?
 int Hunspell::suggest_auto(char*** slst, const char * word)
 {
   char cw[MAXWORDUTF8LEN];
   char wspace[MAXWORDUTF8LEN];
   if (!pSMgr || maxdic == 0) return 0;
-  int wl = strlen(word);
+  w_char unicw[MAXWORDLEN];
+  int nc = strlen(word);
   if (utf8) {
-    if (wl >= MAXWORDUTF8LEN) return 0;
+    if (nc >= MAXWORDUTF8LEN) return 0;
   } else {
-    if (wl >= MAXWORDLEN) return 0;
+    if (nc >= MAXWORDLEN) return 0;
   }
   int captype = 0;
   int abbv = 0;
-  wl = cleanword(cw, word, &captype, &abbv);
+  int wl = 0;
+
+  // input conversion
+  RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
   if (wl == 0) return 0;
   int ns = 0;
   *slst = NULL; // HU, nsug in pSMgr->suggest
@@ -1085,7 +1092,7 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
 
      case INITCAP: {
                      memcpy(wspace,cw,(wl+1));
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      ns = pSMgr->suggest_auto(slst, wspace, ns);
                      for (int j=0; j < ns; j++)
                        mkinitcap((*slst)[j]);
@@ -1099,7 +1106,7 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
                      ns = pSMgr->suggest_auto(slst, cw, ns);
                      if (ns == 0) {
                         memcpy(wspace,cw,(wl+1));
-                        mkallsmall(wspace);
+                        mkallsmall2(wspace, unicw, nc);
                         ns = pSMgr->suggest_auto(slst, wspace, ns);
                      }
                      break;
@@ -1107,7 +1114,7 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
 
      case ALLCAP: {
                      memcpy(wspace,cw,(wl+1));
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      ns = pSMgr->suggest_auto(slst, wspace, ns);
 
                      mkinitcap(wspace);
@@ -1151,6 +1158,16 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
           }
       }
   }
+
+  // output conversion
+  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  for (int j = 0; rl && j < ns; j++) {
+    if (rl->conv((*slst)[j], wspace)) {
+      free((*slst)[j]);
+      (*slst)[j] = mystrdup(wspace);
+    }
+  }
+
   // END OF LANG_hu section
   return ns;
 }
@@ -1232,15 +1249,22 @@ int Hunspell::suggest_pos_stems(char*** slst, const char * word)
   char cw[MAXWORDUTF8LEN];
   char wspace[MAXWORDUTF8LEN];
   if (! pSMgr || maxdic == 0) return 0;
-  int wl = strlen(word);
+  w_char unicw[MAXWORDLEN];
+  int nc = strlen(word);
   if (utf8) {
-    if (wl >= MAXWORDUTF8LEN) return 0;
+    if (nc >= MAXWORDUTF8LEN) return 0;
   } else {
-    if (wl >= MAXWORDLEN) return 0;
+    if (nc >= MAXWORDLEN) return 0;
   }
   int captype = 0;
   int abbv = 0;
-  wl = cleanword(cw, word, &captype, &abbv);
+  int wl = 0;
+
+  // input conversion
+  RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
   if (wl == 0) return 0;
 
   int ns = 0; // ns=0 = normalized input
@@ -1268,7 +1292,7 @@ int Hunspell::suggest_pos_stems(char*** slst, const char * word)
 
                      if (ns == 0 || ((*slst)[0][0] == '#')) {
                         memcpy(wspace,cw,(wl+1));
-                        mkallsmall(wspace);
+                        mkallsmall2(wspace, unicw, nc);
                         ns = pSMgr->suggest_pos_stems(slst, wspace, ns);
                      }
 
@@ -1281,15 +1305,24 @@ int Hunspell::suggest_pos_stems(char*** slst, const char * word)
                      if (ns != 0) break;
 
                      memcpy(wspace,cw,(wl+1));
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      ns = pSMgr->suggest_pos_stems(slst, wspace, ns);
 
                      if (ns == 0) {
-                         mkinitcap(wspace);
-                         ns = pSMgr->suggest_pos_stems(slst, wspace, ns);
+                       mkinitcap(wspace);
+                       ns = pSMgr->suggest_pos_stems(slst, wspace, ns);
                      }
                      break;
                    }
+  }
+
+  // output conversion
+  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  for (int j = 0; rl && j < ns; j++) {
+    if (rl->conv((*slst)[j], wspace)) {
+      free((*slst)[j]);
+      (*slst)[j] = mystrdup(wspace);
+    }
   }
 
   return ns;
@@ -1801,21 +1834,28 @@ int Hunspell::spellml(char*** slst, const char * word)
 
 
 #ifdef HUNSPELL_EXPERIMENTAL
-// XXX need UTF-8 support
+// XXX is UTF-8 support OK?
 char * Hunspell::morph_with_correction(const char * word)
 {
   char cw[MAXWORDUTF8LEN];
   char wspace[MAXWORDUTF8LEN];
   if (! pSMgr || maxdic == 0) return NULL;
-  int wl = strlen(word);
+  w_char unicw[MAXWORDLEN];
+  int nc = strlen(word);
   if (utf8) {
-    if (wl >= MAXWORDUTF8LEN) return NULL;
+    if (nc >= MAXWORDUTF8LEN) return NULL;
   } else {
-    if (wl >= MAXWORDLEN) return NULL;
+    if (nc >= MAXWORDLEN) return NULL;
   }
   int captype = 0;
   int abbv = 0;
-  wl = cleanword(cw, word, &captype, &abbv);
+  int wl = 0;
+
+  // input conversion
+  RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
   if (wl == 0) return NULL;
 
   char result[MAXLNLEN];
@@ -1846,7 +1886,7 @@ char * Hunspell::morph_with_correction(const char * word)
                    }
      case INITCAP: {
                      memcpy(wspace,cw,(wl+1));
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      st = pSMgr->suggest_morph_for_spelling_error(wspace);
                      if (st) {
                         mystrcat(result, st, MAXLNLEN);
@@ -1862,7 +1902,7 @@ char * Hunspell::morph_with_correction(const char * word)
                          memcpy(wspace,cw,wl);
                          *(wspace+wl) = '.';
                          *(wspace+wl+1) = '\0';
-                         mkallsmall(wspace);
+                         mkallsmall2(wspace, unicw, nc);
                          st = pSMgr->suggest_morph_for_spelling_error(wspace);
                          if (st) {
                             if (*result) mystrcat(result, "\n", MAXLNLEN);
@@ -1886,7 +1926,7 @@ char * Hunspell::morph_with_correction(const char * word)
                         free(st);
                      }
                      memcpy(wspace,cw,(wl+1));
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      st = pSMgr->suggest_morph_for_spelling_error(wspace);
                      if (st) {
                         if (*result) mystrcat(result, "\n", MAXLNLEN);
@@ -1902,7 +1942,7 @@ char * Hunspell::morph_with_correction(const char * word)
                         mystrcat(result, st, MAXLNLEN);
                         free(st);
                      }
-                     mkallsmall(wspace);
+                     mkallsmall2(wspace, unicw, nc);
                      st = pSMgr->suggest_morph_for_spelling_error(wspace);
                      if (st) {
                         if (*result) mystrcat(result, "\n", MAXLNLEN);
@@ -1926,7 +1966,7 @@ char * Hunspell::morph_with_correction(const char * word)
                             mystrcat(result, st, MAXLNLEN);
                             free(st);
                         }
-                        mkallsmall(wspace);
+                        mkallsmall2(wspace, unicw, nc);
                         st = pSMgr->suggest_morph_for_spelling_error(wspace);
                         if (st) {
                           if (*result) mystrcat(result, "\n", MAXLNLEN);
