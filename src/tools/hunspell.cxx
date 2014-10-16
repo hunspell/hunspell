@@ -850,13 +850,22 @@ if (pos >= 0) {
 			fflush(stdout);
 		} else {
 			char ** wlst = NULL;
-			int ns = pMS[d]->suggest(&wlst, token);
+			int byte_offset = parser->get_tokenpos() + pos;
+			int char_offset = 0;
+			if (strcmp(io_enc, "UTF-8") == 0) {
+				for (int i = 0; i < byte_offset; i++) {
+					if ((buf[i] & 0xc0) != 0x80)
+						char_offset++;
+				}
+			} else {
+				char_offset = byte_offset;
+			}
+			int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
 			if (ns == 0) {
-		    		fprintf(stdout,"# %s %d", token,
-		    		    parser->get_tokenpos() + pos);
+				fprintf(stdout,"# %s %d", token, char_offset);
 			} else {
 				fprintf(stdout,"& %s %d %d: ", token, ns,
-				    parser->get_tokenpos() + pos);
+					char_offset);
 				fprintf(stdout,"%s", chenc(wlst[0], dic_enc[d], io_enc));
 			}
 			for (int j = 1; j < ns; j++) {
@@ -885,13 +894,23 @@ if (pos >= 0) {
 			if (root) free(root);
 		} else {
 			char ** wlst = NULL;
+			int byte_offset = parser->get_tokenpos() + pos;
+			int char_offset = 0;
+			if (strcmp(io_enc, "UTF-8") == 0) {
+				for (int i = 0; i < byte_offset; i++) {
+					if ((buf[i] & 0xc0) != 0x80)
+						char_offset++;
+				}
+			} else {
+				char_offset = byte_offset;
+			}
 			int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
 			if (ns == 0) {
 		    		fprintf(stdout,"# %s %d", chenc(token, io_enc, ui_enc),
-		    		    parser->get_tokenpos() + pos);
+				    char_offset);
 			} else {
 				fprintf(stdout,"& %s %d %d: ", chenc(token, io_enc, ui_enc), ns,
-				    parser->get_tokenpos() + pos);
+				    char_offset);
 				fprintf(stdout,"%s", chenc(wlst[0], dic_enc[d], ui_enc));
 			}
 			for (int j = 1; j < ns; j++) {
