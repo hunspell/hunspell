@@ -2,6 +2,7 @@
 	* rhbz#915448, sf#57, sf#185 report character offset
 	  and not byte offset in ispell mode
 	* sf#56 segv in experimental mode
+	* sf#228 don't translate init string
 
 2014-09-22 Németh László <nemeth at numbertext dot org>:
 	* fix crash in morphological analysis of the Hungarian

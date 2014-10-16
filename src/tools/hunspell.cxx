@@ -1796,8 +1796,6 @@ int main(int argc, char** argv)
 			exit(0);
 		} else if ((strcmp(argv[i],"-a")==0)) {
 			filter_mode = PIPE;
-			fprintf(stdout,gettext(HUNSPELL_PIPE_HEADING));
-			fflush(stdout);
 		} else if ((strcmp(argv[i],"-m")==0)) {
             /*
              if -a was used, don't override, i.e. keep ispell compatability
@@ -2001,6 +1999,17 @@ int main(int argc, char** argv)
 		load_privdic(buf.c_str(), pMS[0]);
 	    }
         }
+
+	/* 
+	   If in pipe mode, output pipe mode version string only when
+	   hunspell has properly been started. 
+	   Emacs and may be others relies in the English version format. 
+	   Do not gettextize. 
+	*/
+	if (filter_mode == PIPE) {
+	  fprintf(stdout,HUNSPELL_PIPE_HEADING);
+	  fflush(stdout);
+	}
 
 	if (arg_files==-1) {
 		pipe_interface(pMS, format, stdin, NULL);
