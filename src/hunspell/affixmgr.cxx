@@ -1321,14 +1321,12 @@ char * AffixMgr::prefix_check_twosfx_morph(const char * word, int len,
 int AffixMgr::cpdrep_check(const char * word, int wl)
 {
   const char * r;
-  int lenr, lenp;
 
   if ((wl < 2) || !numrep) return 0;
 
   for (int i=0; i < numrep; i++ ) {
       r = word;
-      lenr = strlen(reptable[i].pattern2);
-      lenp = strlen(reptable[i].pattern);
+      int lenr = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
       while ((r=strstr(r, reptable[i].pattern)) != NULL) {
           std::string candidate(word);
