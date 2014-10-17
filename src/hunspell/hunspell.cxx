@@ -631,7 +631,7 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
   }
 
   // he = next not needaffix, onlyincompound homonym or onlyupcase word
-  while (he && (he->astr) &&
+  while (he && (he->astr) && pAMgr &&
     ((pAMgr->get_needaffix() && TESTAFF(he->astr, pAMgr->get_needaffix(), he->alen)) ||
        (pAMgr->get_onlyincompound() && TESTAFF(he->astr, pAMgr->get_onlyincompound(), he->alen)) ||
        (info && (*info & SPELL_INITCAP) && TESTAFF(he->astr, ONLYUPCASEFLAG, he->alen))

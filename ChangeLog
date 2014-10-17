@@ -2,6 +2,7 @@
 	* sf#245 Feature from Anish Patil -S mode
 	  to show suggestions for completion of
 	  correctly spelled words
+	* sf#248 Fix manpage about how to include
 
 2014-10-16 Caolán McNamara <caolanm at LibO>:
 	* rhbz#915448, sf#57, sf#185 report character offset
