@@ -168,6 +168,9 @@ public:
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
             char hu_mov_rule, char ** result, char * partresult);
 
+  int get_suffix_words(short unsigned *suff, int len,const char * root_word,
+		       char **slst);
+
   struct hentry * lookup(const char * word);
   int                 get_numrep() const;
   struct replentry *  get_reptable() const;

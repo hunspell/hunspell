@@ -4551,3 +4551,34 @@ int AffixMgr::redundant_condition(char ft, char * strip, int stripl, const char 
   }
   return 0;
 }
+
+
+int AffixMgr::get_suffix_words(short unsigned  *suff, int len,const char * root_word,char **slst){
+  int suff_words_cnt = 0;
+  short unsigned  * start_ptr = suff;
+  for (int j=0; j < SETSIZE ; j++) {
+    SfxEntry * ptr = sStart[j];
+    while (ptr) {
+      suff = start_ptr;
+      for (int i=0;i<len;i++){
+        if ( (*suff) == ptr->getFlag() ){
+          char nw[MAXWORDUTF8LEN];
+          strcpy(nw,root_word);
+          strcat(nw,ptr->getAffix());
+          hentry * ht = ptr->checkword(nw,strlen(nw),0,NULL,NULL,0,NULL,0,0,0);
+          if (ht){
+	    slst[suff_words_cnt] = (char *) malloc(MAXWORDUTF8LEN * sizeof(char));
+	    if(slst[suff_words_cnt]){
+	      strcpy(slst[suff_words_cnt],nw);
+	      suff_words_cnt++;
+	    }
+          }
+        }
+        suff++;
+      }
+      ptr = ptr->getNext();
+    }
+  }
+  return suff_words_cnt;
+}
+

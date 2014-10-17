@@ -174,7 +174,9 @@ enum { NORMAL,
        AUTO0,      // search typical error (based on SuggestMgr::suggest_auto())
        AUTO,       // automatic spelling to standard output
        AUTO2,      // automatic spelling to standard output with sed log
-       AUTO3   };  // automatic spelling to standard output with gcc error format
+       AUTO3,
+       SUFFIX      // print suffixes that can be attached to a given word
+          };  // automatic spelling to standard output with gcc error format
 int filter_mode = NORMAL;
 int printgood = 0; // print only good words and lines
 int showpath = 0;  // show detected path of the dictionary
@@ -817,7 +819,18 @@ if (pos >= 0) {
 		free(token);
 		continue;
 		}
-
+		  
+	       case SUFFIX:{
+	          char **wlst = NULL;
+	          int ns = pMS[d]->suffix_suggest(&wlst, token);
+	          for (int j = 0; j < ns; j++) {
+		      fprintf(stdout,"Suffix Suggestions are %s \n", chenc(wlst[j], dic_enc[d], io_enc));
+	          }
+	          fflush(stdout);
+	          pMS[d]->free_list(&wlst, ns);
+	          free(token);
+	          continue;
+	       }
 		case ANALYZE: {
                 char ** result;
                 int n = pMS[d]->analyze(&result, chenc(token, io_enc, dic_enc[d]));
@@ -1761,6 +1774,7 @@ int main(int argc, char** argv)
 			fprintf(stderr,gettext("  -r\t\twarn of the potential mistakes (rare words)\n"));
 			fprintf(stderr,gettext("  -P password\tset password for encrypted dictionaries\n"));
 			fprintf(stderr,gettext("  -s \t\tstem the words of the input text\n"));
+			fprintf(stderr,gettext("  -S \t\tsuffix words of the input text\n"));
 			fprintf(stderr,gettext("  -t\t\tTeX/LaTeX input file format\n"));
 // experimental functions: missing Unicode support
 //			fprintf(stderr,gettext("  -u\t\tshow typical misspellings\n"));
@@ -1812,7 +1826,10 @@ int main(int argc, char** argv)
             */
 			if (filter_mode != PIPE)
 			    filter_mode = STEM;
-		} else if ((strcmp(argv[i],"-t")==0)) {
+		} else if ((strcmp(argv[i],"-S")==0)) {
+			if (filter_mode != PIPE)
+			    filter_mode = SUFFIX;
+		}else if ((strcmp(argv[i],"-t")==0)) {
 			format = FMT_LATEX;
 		} else if ((strcmp(argv[i],"-n")==0)) {
 			format = FMT_MAN;
