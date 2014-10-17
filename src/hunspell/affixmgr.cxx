@@ -1326,7 +1326,7 @@ int AffixMgr::cpdrep_check(const char * word, int wl)
 
   for (int i=0; i < numrep; i++ ) {
       r = word;
-      int lenr = strlen(reptable[i].pattern);
+      int lenp = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
       while ((r=strstr(r, reptable[i].pattern)) != NULL) {
           std::string candidate(word);
