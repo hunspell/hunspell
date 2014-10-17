@@ -16,7 +16,6 @@
 HashMgr::HashMgr(const char * tpath, const char * apath, const char * key)
   : tablesize(0)
   , tableptr(NULL)
-  , userword(0)
   , flag_mode(FLAG_CHAR)
   , complexprefixes(0)
   , utf8(0)
