@@ -1097,8 +1097,8 @@ int AffixMgr::encodeit(affentry &entry, char * cs)
 {
   if (strcmp(cs,".") != 0) {
     entry.numconds = (char) condlen(cs);
+    // coverity[buffer_size_warning] - deliberate use of lack of end of conds padded by strncpy as long condition flag
     strncpy(entry.c.conds, cs, MAXCONDLEN);
-    // long condition (end of conds padded by strncpy)
     if (entry.c.conds[MAXCONDLEN - 1] && cs[MAXCONDLEN]) {
       entry.opts += aeLONGCOND;
       entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
