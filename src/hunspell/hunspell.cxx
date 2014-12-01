@@ -2080,11 +2080,11 @@ void Hunspell_free_list(Hunhandle *, char *** slst, int n) {
 int Hunspell::suffix_suggest(char*** slst, const char * root_word){
   struct hentry * he = NULL;
   int len;
-  char w2[MAXWORDUTF8LEN];
+  std::string w2;
   const char * word;
   char * ignoredchars = pAMgr->get_ignore();
   if (ignoredchars != NULL) {
-    strcpy(w2, root_word);
+    w2.assign(root_word);
     if (utf8) {
       int ignoredchars_utf16_len;
       unsigned short * ignoredchars_utf16 = pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
@@ -2092,7 +2092,7 @@ int Hunspell::suffix_suggest(char*** slst, const char * root_word){
     } else {
       remove_ignored_chars(w2,ignoredchars);
     }
-    word = w2;
+    word = w2.c_str();
   } else word = root_word;
   
   len = strlen(word);
@@ -2100,8 +2100,7 @@ int Hunspell::suffix_suggest(char*** slst, const char * root_word){
   if (!len)
     return 0;
   
-  char ** wlst;
-  wlst = (char **) malloc(MAXSUGGESTION * sizeof(char *));
+  char ** wlst = (char **) malloc(MAXSUGGESTION * sizeof(char *));
   if (wlst == NULL) return -1;
   *slst = wlst;
   for (int i = 0; i < MAXSUGGESTION; i++) {
