@@ -835,21 +835,24 @@ std::string& mkallcap(std::string &s, const struct cs_info * csconv)
     return s;
 }
   
- // convert null terminated string to all little
- void mkallsmall(char * p, const struct cs_info * csconv)
- {
-   while (*p != '\0') {
-     *p = csconv[((unsigned char) *p)].clower;
-     p++;
-   }
- }
+// convert null terminated string to all little
+void mkallsmall(char * p, const struct cs_info * csconv)
+{
+    while (*p != '\0')
+    {
+        unsigned char nIndex = static_cast<unsigned char>(*p);
+        *p = csconv[nIndex].clower;
+        p++;
+    }
+}
 
 // convert std::string to all little
 std::string& mkallsmall(std::string &s, const struct cs_info * csconv)
 {
     for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI)
     {
-        *aI = csconv[((unsigned char)*aI)].clower;
+        unsigned char nIndex = static_cast<unsigned char>(*aI);
+        *aI = csconv[nIndex].clower;
     }
     return s;
 }
@@ -5930,11 +5933,13 @@ int get_captype(char * word, int nl, cs_info * csconv) {
    int firstcap = 0;
    if (csconv == NULL) return NOCAP;
    for (char * q = word; *q != '\0'; q++) {
-      if (csconv[*((unsigned char *)q)].ccase) ncap++;
-      if (csconv[*((unsigned char *)q)].cupper == csconv[*((unsigned char *)q)].clower) nneutral++;
+      unsigned char nIndex = static_cast<unsigned char>(*q);
+      if (csconv[nIndex].ccase) ncap++;
+      if (csconv[nIndex].cupper == csconv[nIndex].clower) nneutral++;
    }
    if (ncap) {
-     firstcap = csconv[*((unsigned char *) word)].ccase;
+     unsigned char nIndex = static_cast<unsigned char>(word[0]);
+     firstcap = csconv[nIndex].ccase;
    }
 
    // now finally set the captype
