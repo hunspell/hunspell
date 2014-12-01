@@ -4550,7 +4550,6 @@ int AffixMgr::redundant_condition(char ft, char * strip, int stripl, const char 
   return 0;
 }
 
-
 int AffixMgr::get_suffix_words(short unsigned  *suff, int len,const char * root_word,char **slst){
   int suff_words_cnt = 0;
   short unsigned  * start_ptr = suff;
@@ -4560,14 +4559,13 @@ int AffixMgr::get_suffix_words(short unsigned  *suff, int len,const char * root_
       suff = start_ptr;
       for (int i=0;i<len;i++){
         if ( (*suff) == ptr->getFlag() ){
-          char nw[MAXWORDUTF8LEN];
-          strcpy(nw,root_word);
-          strcat(nw,ptr->getAffix());
-          hentry * ht = ptr->checkword(nw,strlen(nw),0,NULL,NULL,0,NULL,0,0,0);
+          std::string nw(root_word);
+          nw.append(ptr->getAffix());
+          hentry * ht = ptr->checkword(nw.c_str(),nw.size(),0,NULL,NULL,0,NULL,0,0,0);
           if (ht){
 	    slst[suff_words_cnt] = (char *) malloc(MAXWORDUTF8LEN * sizeof(char));
 	    if(slst[suff_words_cnt]){
-	      strcpy(slst[suff_words_cnt],nw);
+	      strcpy(slst[suff_words_cnt],nw.c_str());
 	      suff_words_cnt++;
 	    }
           }
@@ -4579,4 +4577,3 @@ int AffixMgr::get_suffix_words(short unsigned  *suff, int len,const char * root_
   }
   return suff_words_cnt;
 }
-
