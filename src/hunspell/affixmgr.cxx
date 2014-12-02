@@ -2966,10 +2966,6 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
     unsigned short al, const char * morph, const char * targetmorph, int level)
 {
     // handle suffixes
-    const char * stemmorph;
-    char * stemmorphcatpos;
-    char mymorph[MAXLNLEN];
-
     if (!morph) return NULL;
 
     // check substandard flag
@@ -2977,17 +2973,19 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
 
     if (morphcmp(morph, targetmorph) == 0) return mystrdup(ts);
 
-//    int targetcount = get_sfxcount(targetmorph);
+    const char * stemmorph;
+    size_t stemmorphcatpos;
+    std::string mymorph;
 
     // use input suffix fields, if exist
     if (strstr(morph, MORPH_INFL_SFX) || strstr(morph, MORPH_DERI_SFX)) {
-        strcpy(mymorph, morph);
-        mystrcat(mymorph, " ", MAXLNLEN);
-        stemmorph = mymorph;
-        stemmorphcatpos = mymorph + strlen(mymorph);
+        mymorph.assign(morph);
+        mymorph.append(" ");
+        stemmorph = mymorph.c_str();
+        stemmorphcatpos = mymorph.size();
     } else {
         stemmorph = morph;
-        stemmorphcatpos = NULL;
+        stemmorphcatpos = std::string::npos;
     }
 
     for (int i = 0; i < al; i++) {
@@ -2998,8 +2996,13 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
                 // don't generate forms with substandard affixes
                 !TESTAFF(sptr->getCont(), substandard, sptr->getContLen()))) {
 
-                if (stemmorphcatpos) strcpy(stemmorphcatpos, sptr->getMorph());
-                else stemmorph = sptr->getMorph();
+                if (stemmorphcatpos != std::string::npos) {
+                    mymorph.replace(stemmorphcatpos, mymorph.size() - stemmorphcatpos, sptr->getMorph());
+                    stemmorph = mymorph.c_str();
+                }
+                else {
+                    stemmorph = sptr->getMorph();
+                }
 
                 int cmp = morphcmp(stemmorph, targetmorph);
 
@@ -3039,7 +3042,6 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
     }
    return NULL;
 }
-
 
 int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts,
     int wl, const unsigned short * ap, unsigned short al, char * bad, int badl,
