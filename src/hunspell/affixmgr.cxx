@@ -2973,7 +2973,6 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
 
     if (morphcmp(morph, targetmorph) == 0) return mystrdup(ts);
 
-    const char * stemmorph;
     size_t stemmorphcatpos;
     std::string mymorph;
 
@@ -2981,10 +2980,8 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
     if (strstr(morph, MORPH_INFL_SFX) || strstr(morph, MORPH_DERI_SFX)) {
         mymorph.assign(morph);
         mymorph.append(" ");
-        stemmorph = mymorph.c_str();
         stemmorphcatpos = mymorph.size();
     } else {
-        stemmorph = morph;
         stemmorphcatpos = std::string::npos;
     }
 
@@ -2996,6 +2993,7 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
                 // don't generate forms with substandard affixes
                 !TESTAFF(sptr->getCont(), substandard, sptr->getContLen()))) {
 
+                const char * stemmorph;
                 if (stemmorphcatpos != std::string::npos) {
                     mymorph.replace(stemmorphcatpos, mymorph.size() - stemmorphcatpos, sptr->getMorph());
                     stemmorph = mymorph.c_str();
