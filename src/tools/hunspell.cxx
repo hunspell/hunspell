@@ -606,6 +606,12 @@ static int is_zipped_odf(TextParser * parser, const char * extension) {
   return dynamic_cast<ODFParser*>(parser) && (extension && extension[0] != 'f');
 }
 
+static bool secure_filename(const char * filename) {
+  const char * hasapostrophe = strchr(filename, '\'');
+  if (hasapostrophe) return false;
+  return true;
+}
+
 static void freewordlist(wordlist *w)
 {
     while (w != NULL) {
@@ -627,7 +633,7 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
   int terse_mode = 0;
   int verbose_mode = 0;
   int d = 0;
-  char * tmpcontent;
+  char * odftmpdir;
 
   char * extension = (filename) ? basename(filename, '.') : NULL;
   TextParser * parser = get_parser(format, extension, pMS[0]);
@@ -636,15 +642,19 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
 
   // access content.xml of ODF
   if (bZippedOdf) {
-        tmpcontent = tmpnam(NULL);
+        odftmpdir = tmpnam(NULL);
         // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
-        sprintf(buf, "unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s", filename, tmpcontent);
-        if (system(buf) != 0)
+        sprintf(buf, "mkdir %s && unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s/content.xml", odftmpdir, filename, odftmpdir);
+        if (!secure_filename(filename) || system(buf) != 0)
         {
-            perror(gettext("Can't open inputfile"));
+            if (secure_filename(filename))
+                perror(gettext("Can't open inputfile"));
+            else
+                fprintf(stderr, gettext("Can't open %s.\n"), filename);
             exit(1);
         }
-        fileid = fopen(tmpcontent, "r");
+        sprintf(buf, "%s/content.xml", odftmpdir);
+        fileid = fopen(buf, "r");
         if (fileid == NULL)
         {
             perror(gettext("Can't open inputfile"));
@@ -965,7 +975,7 @@ if (pos >= 0) {
 
 if (bZippedOdf) {
     fclose(fileid);
-    sprintf(buf, "rm %s", tmpcontent);
+    sprintf(buf, "rm %s/content.xml; rmdir %s", odftmpdir, odftmpdir);
     if (system(buf) != 0)
         perror("write failed");
 }
@@ -1539,10 +1549,13 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
         odftempdir = tmpnam(NULL);
         fclose(text);
         // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
-        sprintf(buf, "mkdir %s; unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s/content.xml", odftempdir, filename, odftempdir);
-        if (system(buf) != 0)
+        sprintf(buf, "mkdir %s && unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s/content.xml", odftempdir, filename, odftempdir);
+        if (!secure_filename(filename) || system(buf) != 0)
         {
-            perror(gettext("Can't open inputfile"));
+            if (secure_filename(filename))
+                perror(gettext("Can't open inputfile"));
+            else
+                fprintf(stderr, gettext("Can't open %s.\n"), filename);
             endwin();
             exit(1);
         }
