@@ -11,9 +11,7 @@ private:
     AffEntry& operator = (const AffEntry&);
 protected:
     AffEntry()
-      : strip(NULL)
-      , stripl(0)
-      , numconds(0)
+      : numconds(0)
       , opts(0)
       , aflag(0)
       , morphcode(0)
@@ -22,8 +20,7 @@ protected:
     {
     }
     std::string    appnd;
-    char *         strip;
-    unsigned char  stripl;
+    std::string    strip;
     char           numconds;
     char           opts;
     unsigned short aflag;
