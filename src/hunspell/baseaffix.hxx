@@ -2,6 +2,7 @@
 #define _BASEAFF_HXX_
 
 #include "hunvisapi.h"
+#include <string>
 
 class LIBHUNSPELL_DLL_EXPORTED AffEntry
 {
@@ -10,9 +11,7 @@ private:
     AffEntry& operator = (const AffEntry&);
 protected:
     AffEntry()
-      : appnd(NULL)
-      , strip(NULL)
-      , appndl(0)
+      : strip(NULL)
       , stripl(0)
       , numconds(0)
       , opts(0)
@@ -22,9 +21,8 @@ protected:
       , contclasslen(0)
     {
     }
-    char *         appnd;
+    std::string    appnd;
     char *         strip;
-    unsigned char  appndl;
     unsigned char  stripl;
     char           numconds;
     char           opts;

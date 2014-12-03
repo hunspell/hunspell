@@ -24,7 +24,6 @@ PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
   strip = dp->strip;         // string to strip
   appnd = dp->appnd;         // string to append
   stripl = dp->stripl;       // length of strip string
-  appndl = dp->appndl;       // length of append string
   numconds = dp->numconds;   // length of the condition
   opts = dp->opts;           // cross product flag
   // then copy over all of the conditions
@@ -41,10 +40,8 @@ PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
 PfxEntry::~PfxEntry()
 {
     aflag = 0;
-    if (appnd) free(appnd);
     if (strip) free(strip);
     pmyMgr = NULL;
-    appnd = NULL;
     strip = NULL;
     if (opts & aeLONGCOND) free(c.l.conds2);
     if (morphcode && !(opts & aeALIASM)) free(morphcode);
@@ -57,12 +54,9 @@ char * PfxEntry::add(const char * word, int len)
     if ((len > stripl || (len == 0 && pmyMgr->get_fullstrip())) && 
        (len >= numconds) && test_condition(word) &&
        (!stripl || (strncmp(word, strip, stripl) == 0)) &&
-       ((MAXTEMPWORDLEN) > (len + appndl - stripl))) {
+       ((MAXTEMPWORDLEN) > (len + appnd.size() - stripl))) {
            /* we have a match so add prefix */
-           std::string tword;
-           if (appndl) {
-               tword.assign(appnd);
-           }
+           std::string tword(appnd);
            tword.append(word + stripl);
            return mystrdup(tword.c_str());
      }
@@ -160,7 +154,7 @@ struct hentry * PfxEntry::checkword(const char * word, int len, char in_compound
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-     tmpl = len - appndl;
+     tmpl = len - appnd.size();
 
      if (tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) {
 
@@ -171,7 +165,7 @@ struct hentry * PfxEntry::checkword(const char * word, int len, char in_compound
                 strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
                 tmpword[MAXTEMPWORDLEN-1] = '\0';
             }
-            strcpy ((tmpword + stripl), (word + appndl));
+            strcpy ((tmpword + stripl), (word + appnd.size()));
 
             // now make sure all of the conditions on characters
             // are met.  Please see the appendix at the end of
@@ -224,7 +218,7 @@ struct hentry * PfxEntry::check_twosfx(const char * word, int len,
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-     tmpl = len - appndl;
+     tmpl = len - appnd.size();
 
      if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
         (tmpl + stripl >= numconds)) {
@@ -236,7 +230,7 @@ struct hentry * PfxEntry::check_twosfx(const char * word, int len,
                 strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
                 tmpword[MAXTEMPWORDLEN-1] = '\0';
             }
-            strcpy ((tmpword + stripl), (word + appndl));
+            strcpy ((tmpword + stripl), (word + appnd.size()));
 
             // now make sure all of the conditions on characters
             // are met.  Please see the appendix at the end of
@@ -274,7 +268,7 @@ char * PfxEntry::check_twosfx_morph(const char * word, int len,
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-     tmpl = len - appndl;
+     tmpl = len - appnd.size();
 
      if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
         (tmpl + stripl >= numconds)) {
@@ -286,7 +280,7 @@ char * PfxEntry::check_twosfx_morph(const char * word, int len,
                 strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
                 tmpword[MAXTEMPWORDLEN-1] = '\0';
             }
-            strcpy ((tmpword + stripl), (word + appndl));
+            strcpy ((tmpword + stripl), (word + appnd.size()));
 
             // now make sure all of the conditions on characters
             // are met.  Please see the appendix at the end of
@@ -328,7 +322,7 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-     tmpl = len - appndl;
+     tmpl = len - appnd.size();
 
      if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
         (tmpl + stripl >= numconds)) {
@@ -340,7 +334,7 @@ char * PfxEntry::check_morph(const char * word, int len, char in_compound, const
                 strncpy(tmpword, strip, MAXTEMPWORDLEN-1);
                 tmpword[MAXTEMPWORDLEN-1] = '\0';
             }
-            strcpy ((tmpword + stripl), (word + appndl));
+            strcpy ((tmpword + stripl), (word + appnd.size()));
 
             // now make sure all of the conditions on characters
             // are met.  Please see the appendix at the end of
@@ -421,7 +415,6 @@ SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
   strip = dp->strip;         // string to strip
   appnd = dp->appnd;         // string to append
   stripl = dp->stripl;       // length of strip string
-  appndl = dp->appndl;       // length of append string
   numconds = dp->numconds;   // length of the condition
   opts = dp->opts;           // cross product flag
 
@@ -430,7 +423,7 @@ SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
     memcpy(c.l.conds1, dp->c.l.conds1, MAXCONDLEN_1);
     c.l.conds2 = dp->c.l.conds2;
   } else memcpy(c.conds, dp->c.conds, MAXCONDLEN);
-  rappnd = myrevstrdup(appnd);
+  rappnd = myrevstrdup(appnd.c_str());
   morphcode = dp->morphcode;
   contclass = dp->contclass;
   contclasslen = dp->contclasslen;
@@ -440,11 +433,9 @@ SfxEntry::SfxEntry(AffixMgr * pmgr, affentry* dp)
 SfxEntry::~SfxEntry()
 {
     aflag = 0;
-    if (appnd) free(appnd);
     if (rappnd) free(rappnd);
     if (strip) free(strip);
     pmyMgr = NULL;
-    appnd = NULL;
     strip = NULL;
     if (opts & aeLONGCOND) free(c.l.conds2);
     if (morphcode && !(opts & aeALIASM)) free(morphcode);
@@ -454,22 +445,15 @@ SfxEntry::~SfxEntry()
 // add suffix to this word assuming conditions hold
 char * SfxEntry::add(const char * word, int len)
 {
-    char tword[MAXTEMPWORDLEN];
-
      /* make sure all conditions match */
      if ((len > stripl || (len == 0 && pmyMgr->get_fullstrip())) &&
         (len >= numconds) && test_condition(word + len, word) &&
         (!stripl || (strcmp(word + len - stripl, strip) == 0)) &&
-        ((MAXTEMPWORDLEN) > (len + appndl - stripl))) {
-              /* we have a match so add suffix */
-              strncpy(tword, word, MAXTEMPWORDLEN-1);
-              tword[MAXTEMPWORDLEN-1] = '\0';
-              if (appndl) {
-                  strcpy(tword + len - stripl, appnd);
-              } else {
-                  *(tword + len - stripl) = '\0';
-              }
-              return mystrdup(tword);
+        ((MAXTEMPWORDLEN) > (len + appnd.size() - stripl))) {
+            std::string tword(word);
+            /* we have a match so add suffix */
+            tword.replace(len - stripl, std::string::npos, appnd);
+            return mystrdup(tword.c_str());
      }
      return NULL;
 }
@@ -612,7 +596,7 @@ struct hentry * SfxEntry::checkword(const char * word, int len, int optflags,
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-    tmpl = len - appndl;
+    tmpl = len - appnd.size();
     // the second condition is not enough for UTF-8 strings
     // it checked in test_condition()
 
@@ -718,7 +702,7 @@ struct hentry * SfxEntry::check_twosfx(const char * word, int len, int optflags,
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-    tmpl = len - appndl;
+    tmpl = len - appnd.size();
 
     if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
        (tmpl + stripl >= numconds)) {
@@ -784,7 +768,7 @@ char * SfxEntry::check_twosfx_morph(const char * word, int len, int optflags,
     // and if there are enough chars in root word and added back strip chars
     // to meet the number of characters conditions, then test it
 
-    tmpl = len - appndl;
+    tmpl = len - appnd.size();
 
     if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
        (tmpl + stripl >= numconds)) {
@@ -894,9 +878,8 @@ struct affentry
 {
    unsigned short aflag;    // ID used to represent the affix
    char * strip;            // string to strip before adding affix
-   char * appnd;            // the affix string to add
+   std::string appnd;       // the affix string to add
    unsigned char stripl;    // length of the strip string
-   unsigned char appndl;    // length of the affix string
    char numconds;           // the number of conditions that must be met
    char opts;               // flag: aeXPRODUCT- combine both prefix and suffix 
    char   conds[SETSIZE];   // array which encodes the conditions to be met

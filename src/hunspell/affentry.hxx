@@ -40,10 +40,10 @@ public:
                   char in_compound, const FLAG needflag = FLAG_NULL);
 
   inline FLAG getFlag()   { return aflag;   }
-  inline const char *  getKey()    { return appnd;  } 
+  inline const char *  getKey()    { return appnd.c_str();  } 
   char *               add(const char * word, int len);
 
-  inline short getKeyLen() { return appndl; } 
+  inline short getKeyLen() { return appnd.size(); } 
 
   inline const char *  getMorph()    { return morphcode;  } 
 
@@ -115,9 +115,9 @@ public:
 
   inline const unsigned short * getCont()    { return contclass;  } 
   inline short           getContLen()    { return contclasslen;  } 
-  inline const char *  getAffix()    { return appnd; } 
+  inline const char *  getAffix()    { return appnd.c_str(); } 
 
-  inline short getKeyLen() { return appndl; } 
+  inline short getKeyLen() { return appnd.size(); } 
 
   inline SfxEntry *    getNext()   { return next;   }
   inline SfxEntry *    getNextNE() { return nextne; }
