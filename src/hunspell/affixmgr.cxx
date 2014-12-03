@@ -2995,7 +2995,7 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
 
                 const char * stemmorph;
                 if (stemmorphcatpos != std::string::npos) {
-                    mymorph.replace(stemmorphcatpos, mymorph.size() - stemmorphcatpos, sptr->getMorph());
+                    mymorph.replace(stemmorphcatpos, std::string::npos, sptr->getMorph());
                     stemmorph = mymorph.c_str();
                 }
                 else {
