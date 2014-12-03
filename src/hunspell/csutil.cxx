@@ -815,12 +815,36 @@ std::string& reverseword_utf(std::string& word)
      *list = NULL;
    }
  }
- 
+
+namespace
+{ 
+    unsigned char cupper(const struct cs_info * csconv, int nIndex)
+    {
+	if (nIndex < 0 || nIndex > 255)
+            return nIndex;
+        return csconv[nIndex].cupper;
+    }
+
+    unsigned char clower(const struct cs_info * csconv, int nIndex)
+    {
+	if (nIndex < 0 || nIndex > 255)
+            return nIndex;
+        return csconv[nIndex].clower;
+    }
+
+    unsigned char ccase(const struct cs_info * csconv, int nIndex)
+    {
+	if (nIndex < 0 || nIndex > 255)
+            return nIndex;
+        return csconv[nIndex].ccase;
+    }
+}
+
  // convert null terminated string to all caps
  void mkallcap(char * p, const struct cs_info * csconv)
  {
    while (*p != '\0') {
-     *p = csconv[((unsigned char) *p)].cupper;
+     *p = cupper(csconv, static_cast<unsigned char>(*p));
      p++;
    }
  }
@@ -830,7 +854,7 @@ std::string& mkallcap(std::string &s, const struct cs_info * csconv)
 {
     for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI)
     {
-        *aI = csconv[((unsigned char)*aI)].cupper;
+        *aI = cupper(csconv, static_cast<unsigned char>(*aI));
     }
     return s;
 }
@@ -840,8 +864,7 @@ void mkallsmall(char * p, const struct cs_info * csconv)
 {
     while (*p != '\0')
     {
-        unsigned char nIndex = static_cast<unsigned char>(*p);
-        *p = csconv[nIndex].clower;
+        *p = clower(csconv, static_cast<unsigned char>(*p));
         p++;
     }
 }
@@ -851,8 +874,7 @@ std::string& mkallsmall(std::string &s, const struct cs_info * csconv)
 {
     for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI)
     {
-        unsigned char nIndex = static_cast<unsigned char>(*aI);
-        *aI = csconv[nIndex].clower;
+        *aI = clower(csconv, static_cast<unsigned char>(*aI));
     }
     return s;
 }
@@ -902,7 +924,7 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum) {
  // convert null terminated string to have initial capital
  void mkinitcap(char * p, const struct cs_info * csconv)
  {
-   if (*p != '\0') *p = csconv[((unsigned char)*p)].cupper;
+   if (*p != '\0')*p = cupper(csconv, static_cast<unsigned char>(*p));
  }
 
  // conversion function for protected memory
@@ -926,7 +948,7 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum) {
  {
    struct cs_info * csconv = get_current_cs(encoding);
    while (*p != '\0') {
-     *d++ = csconv[((unsigned char) *p)].cupper;
+     *d++ = cupper(csconv, static_cast<unsigned char>(*p));
      p++;
    }
    *d = '\0';
@@ -937,7 +959,7 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum) {
  {
    struct cs_info * csconv = get_current_cs(encoding);
    while (*p != '\0') {
-     *d++ = csconv[((unsigned char) *p)].clower;
+     *d++ = clower(csconv, static_cast<unsigned char>(*p));
      p++;
    }
    *d = '\0';
@@ -948,7 +970,7 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum) {
  {
    struct cs_info * csconv = get_current_cs(encoding);
    memcpy(d,p,(strlen(p)+1));
-   if (*p != '\0') *d= csconv[((unsigned char)*p)].cupper;
+   if (*p != '\0') *d = cupper(csconv, static_cast<unsigned char>(*p));
  }
 
 // these are simple character mappings for the 
@@ -5787,8 +5809,8 @@ char * get_casechars(const char * enc) {
     char expw[MAXLNLEN];
     char * p =  expw;
     for (int i = 0; i <= 255; i++) {
-        if ((csconv[i].cupper != csconv[i].clower)) {
-    	    *p = (char) i;
+        if (cupper(csconv, i) != clower(csconv, i)) {
+    	    *p = static_cast<char>(i);
     	    p++;
         }
     }
@@ -5934,8 +5956,8 @@ int get_captype(char * word, int nl, cs_info * csconv) {
    if (csconv == NULL) return NOCAP;
    for (char * q = word; *q != '\0'; q++) {
       unsigned char nIndex = static_cast<unsigned char>(*q);
-      if (csconv[nIndex].ccase) ncap++;
-      if (csconv[nIndex].cupper == csconv[nIndex].clower) nneutral++;
+      if (ccase(csconv, nIndex)) ncap++;
+      if (cupper(csconv, nIndex) == clower(csconv, nIndex)) nneutral++;
    }
    if (ncap) {
      unsigned char nIndex = static_cast<unsigned char>(word[0]);
