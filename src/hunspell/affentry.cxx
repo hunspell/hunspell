@@ -54,21 +54,17 @@ PfxEntry::~PfxEntry()
 // add prefix to this word assuming conditions hold
 char * PfxEntry::add(const char * word, int len)
 {
-    char tword[MAXTEMPWORDLEN];
-
     if ((len > stripl || (len == 0 && pmyMgr->get_fullstrip())) && 
        (len >= numconds) && test_condition(word) &&
        (!stripl || (strncmp(word, strip, stripl) == 0)) &&
        ((MAXTEMPWORDLEN) > (len + appndl - stripl))) {
-    /* we have a match so add prefix */
-              char * pp = tword;
-              if (appndl) {
-                  strncpy(tword, appnd, MAXTEMPWORDLEN-1);
-                  tword[MAXTEMPWORDLEN-1] = '\0';
-                  pp += appndl;
-               }
-               strcpy(pp, (word + stripl));
-               return mystrdup(tword);
+           /* we have a match so add prefix */
+           std::string tword;
+           if (appndl) {
+               tword.assign(appnd);
+           }
+           tword.append(word + stripl);
+           return mystrdup(tword.c_str());
      }
      return NULL;
 }
