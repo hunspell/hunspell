@@ -201,7 +201,9 @@ LIBHUNSPELL_DLL_EXPORTED int parse_array(char * line, char ** out, unsigned shor
     int * out_utf16_len, int utf8, int ln);
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char * r);
+
 LIBHUNSPELL_DLL_EXPORTED char * copy_field(char * dest, const char * morph, const char * var);
+LIBHUNSPELL_DLL_EXPORTED bool copy_field(std::string& dest, const std::string& morph, const std::string& var);
 
 LIBHUNSPELL_DLL_EXPORTED int morphcmp(const char * s, const char * t);
 

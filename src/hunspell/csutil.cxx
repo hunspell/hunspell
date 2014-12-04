@@ -707,6 +707,27 @@ char * copy_field(char * dest, const char * morph, const char * var)
   return NULL;
 }
 
+bool copy_field(std::string& dest, const std::string& morph, const std::string& var)
+{
+    if (morph.empty())
+        return false;
+    size_t pos = morph.find(var);
+    if (pos == std::string::npos)
+        return false;
+    dest.clear();
+    std::string beg(morph.substr(pos+MORPH_TAG_LEN, std::string::npos));
+
+    for (size_t i = 0; i < beg.size(); ++i)
+    {
+        const char c(beg[i]);
+        if (c == ' ' || c == '\t' || c == '\n')
+            break;
+        dest.push_back(c);
+    }
+
+    return true;
+}
+
 std::string& mystrrep(std::string& str, const std::string& search, const std::string& replace)
 {
     size_t pos = 0;
