@@ -1044,15 +1044,15 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   lpphon = MAX_ROOTS - 1;
   int low = NGRAM_LOWERING;
   
-  char w2[MAXWORDUTF8LEN];
+  std::string w2;
   char f[MAXSWUTF8L];
   const char * word = w;
 
   // word reversing wrapper for complex prefixes
-  if (complexprefixes) {
-    strcpy(w2, w);
+  if (complexprefixes){
+    w2.assign(w);
     if (utf8) reverseword_utf(w2); else reverseword(w2);
-    word = w2;
+    word = w2.c_str();
   }
 
   char mw[MAXSWUTF8L];
