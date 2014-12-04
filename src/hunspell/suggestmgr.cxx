@@ -1817,7 +1817,7 @@ test++;
 }
 
 // length of the left common substring of s1 and (decapitalised) s2
-int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
+int SuggestMgr::leftcommonsubstring(const char * s1, const char * s2) {
   if (utf8) {
     w_char su1[MAXSWL];
     w_char su2[MAXSWL];
@@ -1847,7 +1847,7 @@ int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
       int l2 = strlen(s2);
       if (*(s2+l1-1) == *(s2+l2-1)) return 1;
     } else {
-      char * olds = s1;
+      const char * olds = s1;
       // decapitalise dictionary word
       if ((*s1 != *s2) && (*s1 != csconv[((unsigned char)*s2)].clower)) return 0;
       do {
@@ -1859,7 +1859,7 @@ int SuggestMgr::leftcommonsubstring(char * s1, const char * s2) {
   return 0;
 }
 
-int SuggestMgr::commoncharacterpositions(char * s1, const char * s2, int * is_swap) {
+int SuggestMgr::commoncharacterpositions(const char * s1, const char * s2, int * is_swap) {
   int num = 0;
   int diff = 0;
   int diffpos[2];

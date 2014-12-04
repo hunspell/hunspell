@@ -3042,7 +3042,7 @@ char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
 }
 
 int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts,
-    int wl, const unsigned short * ap, unsigned short al, char * bad, int badl,
+    int wl, const unsigned short * ap, unsigned short al, const char * bad, int badl,
     char * phon)
 {
     int nh=0;

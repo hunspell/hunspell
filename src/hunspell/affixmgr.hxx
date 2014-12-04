@@ -148,7 +148,7 @@ public:
             unsigned short al, const char * morph, const char * targetmorph, int level);
 
   int    expand_rootword(struct guessword * wlst, int maxn, const char * ts,
-            int wl, const unsigned short * ap, unsigned short al, char * bad,
+            int wl, const unsigned short * ap, unsigned short al, const char * bad,
             int, char *);
 
   short       get_syllable (const char * word, int wlen);
