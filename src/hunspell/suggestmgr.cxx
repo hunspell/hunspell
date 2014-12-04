@@ -1046,7 +1046,7 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   
   char w2[MAXWORDUTF8LEN];
   char f[MAXSWUTF8L];
-  char * word = w;
+  const char * word = w;
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
