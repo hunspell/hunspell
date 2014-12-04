@@ -1681,14 +1681,14 @@ char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
     }
 
     char **pl;
-    char tok[MAXLNLEN];
-    strcpy(tok, s);
-    char * alt = strstr(tok, " | ");
-    while (alt) {
-        alt[1] = MSEP_ALT;
-        alt = strstr(alt, " | ");
+    std::string tok(s);
+    size_t pos = tok.find(" | ");
+    while (pos != std::string::npos)
+    {
+        tok[pos+1] = MSEP_ALT;
+        pos = tok.find(" | ", pos);
     }
-    int pln = line_tok(tok, &pl, MSEP_ALT);
+    int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
     for (int i = 0; i < pln; i++) {
             // remove inflectional and terminal suffixes
             char * is = strstr(pl[i], MORPH_INFL_SFX);
@@ -1701,7 +1701,7 @@ char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
             char * st = strstr(s, MORPH_STEM);
             if (st) {
                 copy_field(tok, st, MORPH_STEM);
-                rv = pAMgr->lookup(tok);
+                rv = pAMgr->lookup(tok.c_str());
                 while (rv) {
                     std::string newpat(pl[i]);
                     newpat.append(pattern);
