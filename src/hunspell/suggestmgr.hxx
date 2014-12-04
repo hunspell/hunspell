@@ -100,7 +100,7 @@ private:
 
    int mapchars(char**, const char *, int, int);
    int map_related(const char *, char *, int, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
-   int ngram(int n, char * s1, const char * s2, int opt);
+   int ngram(int n, const std::string& s1, const std::string& s2, int opt);
    int mystrlen(const char * word);
    int leftcommonsubstring(char * s1, const char * s2);
    int commoncharacterpositions(char * s1, const char * s2, int * is_swap);

@@ -1252,20 +1252,20 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
   for (i=0; i < MAX_GUESS; i++) {
       if (guess[i]) {
         // lowering guess[i]
-        char gl[MAXSWUTF8L];
+        std::string gl;
         int len;
         if (utf8) {
-          w_char _w[MAXSWL];
-          len = u8_u16(_w, MAXSWL, guess[i]);
+          std::vector<w_char> _w;
+          len = u8_u16(_w, guess[i]);
           mkallsmall_utf(_w, len, langnum);
-          u16_u8(gl, MAXSWUTF8L, _w, len);
+          u16_u8(gl, _w);
         } else {
-          strcpy(gl, guess[i]);
+          gl.assign(guess[i]);
           if (!nonbmp) mkallsmall(gl, csconv);
           len = strlen(guess[i]);
         }
 
-        int _lcs = lcslen(word, gl);
+        int _lcs = lcslen(word, gl.c_str());
 
         // same characters with different casing
         if ((n == len) && (n == _lcs)) {
@@ -1281,9 +1281,9 @@ int SuggestMgr::ngsuggest(char** wlst, char * w, int ns, HashMgr** pHMgr, int md
           // length of longest common subsequent minus length difference
           2 * _lcs - abs((int) (n - len)) +
           // weight length of the left common substring
-          leftcommonsubstring(word, gl) +
+          leftcommonsubstring(word, gl.c_str()) +
           // weight equal character positions
-          (!nonbmp && commoncharacterpositions(word, gl, &is_swap) ? 1: 0) +
+          (!nonbmp && commoncharacterpositions(word, gl.c_str(), &is_swap) ? 1: 0) +
           // swap character (not neighboring)
           ((is_swap) ? 10 : 0) +
           // ngram
@@ -1745,9 +1745,8 @@ char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
   return (*result2 ? mystrdup(result2) : NULL);
 }
 
-
 // generate an n-gram score comparing s1 and s2
-int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
+int SuggestMgr::ngram(int n, const std::string& s1, const std::string& s2, int opt)
 {
   int nscore = 0;
   int ns;
@@ -1756,10 +1755,10 @@ int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
   int test = 0;
 
   if (utf8) {
-    w_char su1[MAXSWL];
-    w_char su2[MAXSWL];
-    l1 = u8_u16(su1, MAXSWL, s1);
-    l2 = u8_u16(su2, MAXSWL, s2);
+    std::vector<w_char> su1;
+    std::vector<w_char> su2;
+    l1 = u8_u16(su1, s1);
+    l2 = u8_u16(su2, s2);
     if ((l2 <= 0) || (l1 == -1)) return 0;
     // lowering dictionary word
     if (opt & NGRAM_LOWERING) mkallsmall_utf(su2, l2, langnum);
@@ -1769,9 +1768,9 @@ int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
 	int k = 0;
         for (int l = 0; l <= (l2-j); l++) {
             for (k = 0; k < j; k++) {
-              w_char * c1 = su1 + i + k;
-              w_char * c2 = su2 + l + k;
-              if ((c1->l != c2->l) || (c1->h != c2->h)) break;
+              w_char& c1 = su1[i + k];
+              w_char& c2 = su2[l + k];
+              if ((c1.l != c2.l) || (c1.h != c2.h)) break;
             }
             if (k == j) {
 		ns++;
@@ -1788,24 +1787,22 @@ int SuggestMgr::ngram(int n, char * s1, const char * s2, int opt)
       if (ns < 2 && !(opt & NGRAM_WEIGHTED)) break;
     }
   } else {  
-    l2 = strlen(s2);
+    l2 = s2.size();
     if (l2 == 0) return 0;
-    l1 = strlen(s1);
-    char *t = mystrdup(s2);
+    l1 = s1.size();
+    char *t = mystrdup(s2.c_str());
     if (opt & NGRAM_LOWERING) mkallsmall(t, csconv);
     for (int j = 1; j <= n; j++) {
       ns = 0;
       for (int i = 0; i <= (l1-j); i++) {
-        char c = *(s1 + i + j);
-        *(s1 + i + j) = '\0';
-        if (strstr(t,(s1+i))) {
+        std::string temp(s1.substr(i, j));
+        if (strstr(t, temp.c_str())) {
 	  ns++;
 	} else if (opt & NGRAM_WEIGHTED) {
 	  ns--;
 test++;
 	  if (i == 0 || i == l1-j) ns--; // side weight
 	}
-        *(s1 + i + j ) = c;
       }
       nscore = nscore + ns;
       if (ns < 2 && !(opt & NGRAM_WEIGHTED)) break;
