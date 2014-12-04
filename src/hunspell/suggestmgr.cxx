@@ -1790,13 +1790,13 @@ int SuggestMgr::ngram(int n, const std::string& s1, const std::string& s2, int o
     l2 = s2.size();
     if (l2 == 0) return 0;
     l1 = s1.size();
-    char *t = mystrdup(s2.c_str());
+    std::string t(s2);
     if (opt & NGRAM_LOWERING) mkallsmall(t, csconv);
     for (int j = 1; j <= n; j++) {
       ns = 0;
       for (int i = 0; i <= (l1-j); i++) {
         std::string temp(s1.substr(i, j));
-        if (strstr(t, temp.c_str())) {
+        if (t.find(temp) != std::string::npos) {
 	  ns++;
 	} else if (opt & NGRAM_WEIGHTED) {
 	  ns--;
@@ -1807,7 +1807,6 @@ test++;
       nscore = nscore + ns;
       if (ns < 2 && !(opt & NGRAM_WEIGHTED)) break;
     }
-    free(t);
   }
   
   ns = 0;
