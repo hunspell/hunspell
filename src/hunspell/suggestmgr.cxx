@@ -1652,15 +1652,14 @@ char * SuggestMgr::suggest_hentry_gen(hentry * rv, const char * pattern)
     return (*result) ? mystrdup(result) : NULL;
 }
 
-char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
+char * SuggestMgr::suggest_gen(char ** desc, int n, const char * pattern) {
+  if (n == 0 || !pAMgr) return NULL;
+
   char result[MAXLNLEN];
   char result2[MAXLNLEN];
-  char newpattern[MAXLNLEN];
-  *newpattern = '\0';
-  if (n == 0) return 0;
+  std::string newpattern;
   *result2 = '\0';
   struct hentry * rv = NULL;
-  if (!pAMgr) return NULL;
 
 // search affixed forms with and without derivational suffixes
   while(1) {
@@ -1734,13 +1733,10 @@ char * SuggestMgr::suggest_gen(char ** desc, int n, char * pattern) {
   }
 
   if (*result2 || !strstr(pattern, MORPH_DERI_SFX)) break;
-  strcpy(newpattern, pattern);
-  pattern = newpattern;
-  char * ds = strstr(pattern, MORPH_DERI_SFX);
-  while (ds) {
-    strncpy(ds, MORPH_TERM_SFX, MORPH_TAG_LEN);
-    ds = strstr(pattern, MORPH_DERI_SFX);
-  }
+
+  newpattern.assign(pattern);
+  mystrrep(newpattern, MORPH_DERI_SFX, MORPH_TERM_SFX);
+  pattern = newpattern.c_str();
  }
   return (*result2 ? mystrdup(result2) : NULL);
 }

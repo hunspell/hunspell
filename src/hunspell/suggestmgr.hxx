@@ -66,7 +66,7 @@ public:
   int suggest_pos_stems(char*** slst, const char * word, int nsug);
 
   char * suggest_morph(const char * word);
-  char * suggest_gen(char ** pl, int pln, char * pattern);
+  char * suggest_gen(char ** pl, int pln, const char * pattern);
   char * suggest_morph_for_spelling_error(const char * word);
 
 private:
