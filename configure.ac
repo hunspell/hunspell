@@ -28,7 +28,7 @@ AC_LIBTOOL_WIN32_DLL
 
 # Checks for header files.
 
-AC_CHECK_HEADERS([fcntl.h libintl.h locale.h unistd.h error.h])
+AC_CHECK_HEADERS([fcntl.h libintl.h locale.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

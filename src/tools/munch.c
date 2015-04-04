@@ -10,11 +10,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <limits.h>
-#if defined(__linux__) && !defined(__ANDROID__)
-#include <error.h>
-#include <errno.h>
-#include <sys/mman.h>
-#endif
 
 #include "munch.h"
 
