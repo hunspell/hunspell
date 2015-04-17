@@ -33,6 +33,7 @@ Main features of Hunspell spell checker and morphological analyzer:
 Compiling on Unix/Linux
 -----------------------
 
+autoreconf; automake --add-missing # if needed
 ./configure
 make
 make install
