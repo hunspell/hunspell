@@ -524,7 +524,7 @@ int putdic(char * word, Hunspell * pMS)
     
     word = chenc(word, ui_enc, dic_enc[0]);
 
-    if(pMS->input_conv(word, buf)) word = buf;
+    if(pMS->input_conv(word, buf, MAXLNLEN)) word = buf;
     
     int ret;
     

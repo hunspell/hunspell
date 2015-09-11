@@ -1,9 +1,12 @@
+2015-09-11 Caolán McNamara <caolanm at LibO>:
+	* rhbz#1261421 crash on mashing hangul korean keyboard
+
 2014-12-03 Németh László <nemeth at numbertext dot org>:
-    * tools/hunspell.cxx: security fixes of the Hunspell executable
+	* tools/hunspell.cxx: security fixes of the Hunspell executable
 	  - secure file name handling, the problem (checking
 	    OpenDocument files with malicious file names)
 	    reported by Eric Sesterhenn
-      - using tmpnam() only with system("mkdir tempname && ...")
+	  - using tmpnam() only with system("mkdir tempname && ...")
 
 2014-10-17 Caolán McNamara <caolanm at LibO>:
 	* sf#245 Feature from Anish Patil -S mode

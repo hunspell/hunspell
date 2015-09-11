@@ -82,6 +82,7 @@
 #endif
 #include "csutil.hxx"
 
+#include <limits>
 #include <string>
 
 Hunspell::Hunspell(const char * affpath, const char * dpath, const char * key)
@@ -420,8 +421,13 @@ int Hunspell::spell(const char * word, int * info, char ** root)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
 #ifdef MOZILLA_CLIENT
   // accept the abbreviated words without dots
@@ -785,8 +791,13 @@ int Hunspell::suggest(char*** slst, const char * word)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
   if (wl == 0) return 0;
   int ns = 0;
@@ -1103,7 +1114,7 @@ int Hunspell::suggest(char*** slst, const char * word)
   // output conversion
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
-    if (rl->conv((*slst)[j], wspace)) {
+    if (rl->conv((*slst)[j], wspace, MAXWORDUTF8LEN) > 0) {
       free((*slst)[j]);
       (*slst)[j] = mystrdup(wspace);
     }
@@ -1146,8 +1157,13 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
   if (wl == 0) return 0;
   int ns = 0;
@@ -1232,7 +1248,7 @@ int Hunspell::suggest_auto(char*** slst, const char * word)
   // output conversion
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
-    if (rl->conv((*slst)[j], wspace)) {
+    if (rl->conv((*slst)[j], wspace) > 0) {
       free((*slst)[j]);
       (*slst)[j] = mystrdup(wspace);
     }
@@ -1332,8 +1348,13 @@ int Hunspell::suggest_pos_stems(char*** slst, const char * word)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
   if (wl == 0) return 0;
 
@@ -1389,7 +1410,7 @@ int Hunspell::suggest_pos_stems(char*** slst, const char * word)
   // output conversion
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
-    if (rl->conv((*slst)[j], wspace)) {
+    if (rl->conv((*slst)[j], wspace) > 0) {
       free((*slst)[j]);
       (*slst)[j] = mystrdup(wspace);
     }
@@ -1509,8 +1530,13 @@ int Hunspell::analyze(char*** slst, const char * word)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
   if (wl == 0) {
       if (abbv) {
@@ -1798,12 +1824,16 @@ int Hunspell::get_langnum() const
    return langnum;
 }
 
-int Hunspell::input_conv(const char * word, char * dest)
+int Hunspell::input_conv(const char * word, char * dest, size_t destsize)
 {
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  return (rl && rl->conv(word, dest));
+  return (rl && rl->conv(word, dest, destsize) > 0);
 }
 
+int Hunspell::input_conv(const char * word, char * dest)
+{
+  return input_conv(word, dest, std::numeric_limits<std::size_t>::max());
+}
 
 // return the beginning of the element (attr == NULL) or the attribute
 const char * Hunspell::get_xml_pos(const char * s, const char * attr)
@@ -1923,8 +1953,13 @@ char * Hunspell::morph_with_correction(const char * word)
 
   // input conversion
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  int convstatus = rl ? rl->conv(word, wspace) : 0;
+  if (convstatus < 0)
+    return 0;
+  else if (convstatus > 0)
+    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+  else
+    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
   if (wl == 0) return NULL;
 

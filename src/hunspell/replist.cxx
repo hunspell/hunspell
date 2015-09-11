@@ -74,6 +74,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <limits>
 
 #include "replist.hxx"
 #include "csutil.hxx"
@@ -139,19 +140,30 @@ int RepList::add(char * pat1, char * pat2) {
     return 0;
 }
 
-int RepList::conv(const char * word, char * dest) {
+int RepList::conv(const char * word, char * dest, size_t destsize) {
     int stl = 0;
     int change = 0;
     for (size_t i = 0; i < strlen(word); i++) {
         int n = near(word + i);
         int l = match(word + i, n);
         if (l) {
+          size_t replen = strlen(dat[n]->pattern2);
+          if (stl+replen >= destsize)
+            return -1;
           strcpy(dest + stl, dat[n]->pattern2);
-          stl += strlen(dat[n]->pattern2);
+          stl += replen;
           i += l - 1;
           change = 1;
-        } else dest[stl++] = word[i];
+        } else {
+          if (stl+1 >= destsize)
+            return -1;
+          dest[stl++] = word[i];
+        }
     }
     dest[stl] = '\0';
     return change;
+}
+
+int RepList::conv(const char * word, char * dest) {
+    return conv(word, dest, std::numeric_limits<std::size_t>::max());
 }
