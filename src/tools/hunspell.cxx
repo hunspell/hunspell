@@ -526,7 +526,7 @@ int putdic(char * word, Hunspell * pMS)
 
     if(pMS->input_conv(word, buf, MAXLNLEN)) word = buf;
     
-    int ret;
+    int ret(0);
     
     if ((w = strstr(word + 1, "/")) == NULL) {
         if (*word == '*') ret =  pMS->remove(word + 1);
