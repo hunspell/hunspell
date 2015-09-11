@@ -163,7 +163,3 @@ int RepList::conv(const char * word, char * dest, size_t destsize) {
     dest[stl] = '\0';
     return change;
 }
-
-int RepList::conv(const char * word, char * dest) {
-    return conv(word, dest, std::numeric_limits<std::size_t>::max());
-}
