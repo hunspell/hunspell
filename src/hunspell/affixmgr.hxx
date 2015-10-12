@@ -155,6 +155,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr
   char *              cpdsyllablenum;
   const char *        pfxappnd; // BUG: not stateless
   const char *        sfxappnd; // BUG: not stateless
+  int                 sfxextra; // BUG: not stateless
   FLAG                sfxflag;  // BUG: not stateless
   char *              derived;  // BUG: not stateless
   SfxEntry *          sfx;      // BUG: not stateless

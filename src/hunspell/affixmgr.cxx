@@ -139,8 +139,9 @@ AffixMgr::AffixMgr(const char * affpath, HashMgr** ptr, int * md, const char * k
   cpdvowels=NULL; // vowels (for calculating of Hungarian compounding limit, O(n) search! XXX)
   cpdvowels_utf16=NULL; // vowels for UTF-8 encoding (bsearch instead of O(n) search)
   cpdvowels_utf16_len=0; // vowels
-  pfxappnd=NULL; // previous prefix for counting the syllables of prefix BUG
-  sfxappnd=NULL; // previous suffix for counting a special syllables BUG
+  pfxappnd=NULL; // previous prefix for counting syllables of the prefix BUG
+  sfxappnd=NULL; // previous suffix for counting syllables of the suffix BUG
+  sfxextra=0; // modifier for syllable count of sfxappnd BUG
   cpdsyllablenum=NULL; // syllable count incrementing flag
   checknum=0; // checking numbers, and word with numbers
   wordchars=NULL; // letters + spec. word characters
@@ -1201,6 +1202,7 @@ struct hentry * AffixMgr::prefix_check(const char * word, int len, char in_compo
     pfx = NULL;
     pfxappnd = NULL;
     sfxappnd = NULL;
+    sfxextra = 0;
     
     // first handle the special case of 0 length prefixes
     PfxEntry * pe = pStart[0];
@@ -1261,6 +1263,7 @@ struct hentry * AffixMgr::prefix_check_twosfx(const char * word, int len,
 
     pfx = NULL;
     sfxappnd = NULL;
+    sfxextra = 0;
     
     // first handle the special case of 0 length prefixes
     PfxEntry * pe = pStart[0];
@@ -1302,6 +1305,7 @@ char * AffixMgr::prefix_check_morph(const char * word, int len, char in_compound
 
     pfx = NULL;
     sfxappnd = NULL;
+    sfxextra = 0;
     
     // first handle the special case of 0 length prefixes
     PfxEntry * pe = pStart[0];
@@ -1353,6 +1357,7 @@ char * AffixMgr::prefix_check_twosfx_morph(const char * word, int len,
 
     pfx = NULL;
     sfxappnd = NULL;
+    sfxextra = 0;
     
     // first handle the special case of 0 length prefixes
     PfxEntry * pe = pStart[0];
@@ -1993,7 +1998,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
                 // XXX only second suffix (inflections, not derivations)
                 if (sfxappnd) {
                     char * tmp = myrevstrdup(sfxappnd);
-                    numsyllable -= get_syllable(tmp, strlen(tmp));
+                    numsyllable -= get_syllable(tmp, strlen(tmp)) + sfxextra;
                     free(tmp);
                 }
 
@@ -2512,7 +2517,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                 // XXX only second suffix (inflections, not derivations)
                 if (sfxappnd) {
                     char * tmp = myrevstrdup(sfxappnd);
-                    numsyllable -= get_syllable(tmp, strlen(tmp));
+                    numsyllable -= get_syllable(tmp, strlen(tmp)) + sfxextra;
                     free(tmp);
                 }
 
@@ -2696,6 +2701,12 @@ struct hentry * AffixMgr::suffix_check (const char * word, int len,
                     sfx=sptr; // BUG: sfx not stateless
                     sfxflag = sptr->getFlag(); // BUG: sfxflag not stateless
                     if (!sptr->getCont()) sfxappnd=sptr->getKey(); // BUG: sfxappnd not stateless
+// LANG_hu section: spec. Hungarian rule
+                    else if (langnum == LANG_hu && sptr->getKeyLen() && sptr->getKey()[0] == 'i' &&
+                        sptr->getKey()[1] != 'y' && sptr->getKey()[1] != 't') {
+                            sfxextra = 1;
+                    }
+// END of LANG_hu section
                     return rv;
                 }
              }
