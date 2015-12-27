@@ -2107,6 +2107,11 @@ void Hunspell_destroy(Hunhandle *pHunspell)
         delete (Hunspell*)(pHunspell);
 }
 
+int Hunspell_add_dic(Hunhandle *pHunspell, const char *dpath)
+{
+        return ((Hunspell*)pHunspell)->add_dic(dpath);
+}
+
 int Hunspell_spell(Hunhandle *pHunspell, const char *word)
 {
         return ((Hunspell*)pHunspell)->spell(word);
