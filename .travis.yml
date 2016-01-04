@@ -1,0 +1,11 @@
+language: cpp
+
+sudo: false
+
+script: autoreconf && ./configure && make
+
+addons:
+  apt:
+    packages:
+    - autoconf
+    - automake
