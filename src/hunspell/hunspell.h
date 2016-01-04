@@ -56,6 +56,10 @@ LIBHUNSPELL_DLL_EXPORTED Hunhandle *Hunspell_create_key(const char * affpath, co
 
 LIBHUNSPELL_DLL_EXPORTED void Hunspell_destroy(Hunhandle *pHunspell);
 
+/* load extra dictionaries (only dic files) 
+ * output: 0 = additional dictionary slots available, 1 = slots are now full*/
+LIBHUNSPELL_DLL_EXPORTED int Hunspell_add_dic(Hunhandle *pHunspell, const char *dpath);
+
 /* spell(word) - spellcheck word
  * output: 0 = bad word, not 0 = good word
  */
