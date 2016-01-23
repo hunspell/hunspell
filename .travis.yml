@@ -2,7 +2,7 @@ language: cpp
 
 sudo: false
 
-script: autoreconf && ./configure && make
+script: autoreconf && ./configure && make && make check
 
 addons:
   apt:
