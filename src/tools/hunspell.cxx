@@ -1846,7 +1846,7 @@ int main(int argc, char** argv)
                                                "         # 2 Delete misspelled words of the file by a text editor.\n"
                                                "         # 3 Use this personal dictionary to fix the deleted words:\n\n"
                                                "         hunspell -p words *.odt\n\n"));
-			fprintf(stderr,gettext("Bug reports: http://hunspell.sourceforge.net\n"));
+			fprintf(stderr,gettext("Bug reports: http://hunspell.github.io/\n"));
 			exit(0);
 	        } else if ((strcmp(argv[i],"-vv")==0) || (strcmp(argv[i],"-v")==0) || (strcmp(argv[i],"--version")==0)) {
 			fprintf(stdout,gettext(HUNSPELL_PIPE_HEADING));

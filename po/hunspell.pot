@@ -368,7 +368,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1658
 #, c-format
-msgid "Bug reports: http://hunspell.sourceforge.net\n"
+msgid "Bug reports: http://hunspell.github.io/\n"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1664

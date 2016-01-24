@@ -123,7 +123,7 @@ man 5 hunspell
 
 man hunspell
 hunspell -h
-http://hunspell.sourceforge.net
+http://hunspell.github.io/
 
 Usage
 -----
@@ -177,7 +177,7 @@ http://wiki.services.openoffice.org/wiki/Dictionaries
 
 Aspell dictionaries (need some conversion):
 ftp://ftp.gnu.org/gnu/aspell/dict
-Conversion steps: see relevant feature request at http://hunspell.sf.net.
+Conversion steps: see relevant feature request at http://hunspell.github.io/ .
 
 László Németh
 nemeth at numbertext org

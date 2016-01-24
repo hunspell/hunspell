@@ -8,13 +8,3 @@ and convert release string X.Y.Z/X,Y,Z to the next version
 
 2. autoconf && ./configure && make
 and the various strings will get updated by the build tooling
-
-3. cvs commit
-
-To tag a release
-
-4. cvs tag release-X-Y-Z, e.g.  cvs tag release-1-2-10
-
-To upload a release
-
-1. see https://sourceforge.net/apps/trac/sourceforge/wiki/Shell%20service
