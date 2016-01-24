@@ -49,7 +49,6 @@
 #ifndef _LATEXPARSER_HXX_
 #define _LATEXPARSER_HXX_
 
-
 #include "textparser.hxx"
 
 /*
@@ -57,27 +56,21 @@
  *
  */
 
-class LaTeXParser : public TextParser
-{
-  int                 pattern_num; // number of comment  
-  int                 depth; // depth of blocks
-  int                 arg; // arguments's number
-  int                 opt; // optional argument attrib.
+class LaTeXParser : public TextParser {
+  int pattern_num;  // number of comment
+  int depth;        // depth of blocks
+  int arg;          // arguments's number
+  int opt;          // optional argument attrib.
 
-public:
- 
-  LaTeXParser(const char * wc);
-  LaTeXParser(unsigned short * wordchars, int len);
+ public:
+  LaTeXParser(const char* wc);
+  LaTeXParser(unsigned short* wordchars, int len);
   virtual ~LaTeXParser();
 
-  virtual char *      next_token();
+  virtual char* next_token();
 
-private:
-
-  int                 look_pattern(int col);
-
+ private:
+  int look_pattern(int col);
 };
 
-
 #endif
-

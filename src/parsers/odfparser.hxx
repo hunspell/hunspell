@@ -54,17 +54,12 @@
  *
  */
 
-class ODFParser : public XMLParser
-{
-public:
- 
-  ODFParser(const char * wc);
-  ODFParser(unsigned short * wordchars, int len);
-  char *   next_token();
+class ODFParser : public XMLParser {
+ public:
+  ODFParser(const char* wc);
+  ODFParser(unsigned short* wordchars, int len);
+  char* next_token();
   virtual ~ODFParser();
-
 };
 
-
 #endif
-

@@ -56,18 +56,12 @@
  *
  */
 
-class FirstParser : public TextParser
-{
-
-public:
- 
-  
-  FirstParser(const char * wc);
+class FirstParser : public TextParser {
+ public:
+  FirstParser(const char* wc);
   virtual ~FirstParser();
 
-  virtual char *      next_token();
-  
+  virtual char* next_token();
 };
 
 #endif
-

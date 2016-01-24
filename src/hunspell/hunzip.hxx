@@ -48,40 +48,40 @@
 
 #include <stdio.h>
 
-#define BUFSIZE  65536
+#define BUFSIZE 65536
 #define HZIP_EXTENSION ".hz"
 
-#define MSG_OPEN   "error: %s: cannot open\n"
+#define MSG_OPEN "error: %s: cannot open\n"
 #define MSG_FORMAT "error: %s: not in hzip format\n"
 #define MSG_MEMORY "error: %s: missing memory\n"
-#define MSG_KEY    "error: %s: missing or bad password\n"
+#define MSG_KEY "error: %s: missing or bad password\n"
 
 struct bit {
-    unsigned char c[2];
-    int v[2];
+  unsigned char c[2];
+  int v[2];
 };
 
-class LIBHUNSPELL_DLL_EXPORTED Hunzip
-{
-private:
-    Hunzip(const Hunzip&);
-    Hunzip& operator = (const Hunzip&);
-protected:
-    char * filename;
-    FILE * fin;
-    int bufsiz, lastbit, inc, inbits, outc;
-    struct bit * dec;        // code table
-    char in[BUFSIZE];        // input buffer
-    char out[BUFSIZE + 1];   // Huffman-decoded buffer
-    char line[BUFSIZE + 50]; // decoded line
-    int getcode(const char * key);
-    int getbuf();
-    int fail(const char * err, const char * par);
-    
-public:   
-    Hunzip(const char * filename, const char * key = NULL);
-    ~Hunzip();
-    const char * getline();
+class LIBHUNSPELL_DLL_EXPORTED Hunzip {
+ private:
+  Hunzip(const Hunzip&);
+  Hunzip& operator=(const Hunzip&);
+
+ protected:
+  char* filename;
+  FILE* fin;
+  int bufsiz, lastbit, inc, inbits, outc;
+  struct bit* dec;          // code table
+  char in[BUFSIZE];         // input buffer
+  char out[BUFSIZE + 1];    // Huffman-decoded buffer
+  char line[BUFSIZE + 50];  // decoded line
+  int getcode(const char* key);
+  int getbuf();
+  int fail(const char* err, const char* par);
+
+ public:
+  Hunzip(const char* filename, const char* key = NULL);
+  ~Hunzip();
+  const char* getline();
 };
 
 #endif

@@ -56,18 +56,12 @@
  *
  */
 
-class HTMLParser : public XMLParser
-{
-
-public:
-
-  HTMLParser(const char * wc);
-  HTMLParser(unsigned short * wordchars, int len);
-  char *              next_token();
+class HTMLParser : public XMLParser {
+ public:
+  HTMLParser(const char* wc);
+  HTMLParser(unsigned short* wordchars, int len);
+  char* next_token();
   virtual ~HTMLParser();
-
 };
 
-
 #endif
-

@@ -16,8 +16,8 @@
  * All Rights Reserved.
  *
  * Contributor(s):
- * 
- *  
+ *
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -40,28 +40,40 @@
 extern "C" {
 #endif
 
-//returns pointer to spell object, params are aff file name and dict file name
-LIBHUNSPELL_DLL_EXPORTED void *hunspell_initialize(char *aff_file, char *dict_file);
-//frees spell object
-LIBHUNSPELL_DLL_EXPORTED void hunspell_uninitialize(Hunspell *pMS);
-//spellcheck word, returns 1 if word ok otherwise 0
-LIBHUNSPELL_DLL_EXPORTED int hunspell_spell(Hunspell *pMS, char *word);
-//suggest words for word, returns number of words in slst
+// returns pointer to spell object, params are aff file name and dict file name
+LIBHUNSPELL_DLL_EXPORTED void* hunspell_initialize(char* aff_file,
+                                                   char* dict_file);
+// frees spell object
+LIBHUNSPELL_DLL_EXPORTED void hunspell_uninitialize(Hunspell* pMS);
+// spellcheck word, returns 1 if word ok otherwise 0
+LIBHUNSPELL_DLL_EXPORTED int hunspell_spell(Hunspell* pMS, char* word);
+// suggest words for word, returns number of words in slst
 // YOU NEED TO CALL hunspell_suggest_free after you've done with words
-LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest(Hunspell *pMS, char *word, char ***slst);
-LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest_auto(Hunspell *pMS, char *word, char ***slst);
-//free slst array
-LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell *pMS, char ***slst, int len);
+LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest(Hunspell* pMS,
+                                              char* word,
+                                              char*** slst);
+LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest_auto(Hunspell* pMS,
+                                                   char* word,
+                                                   char*** slst);
+// free slst array
+LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell* pMS,
+                                                 char*** slst,
+                                                 int len);
 // deprecated (use hunspell_free_list)
-LIBHUNSPELL_DLL_EXPORTED void hunspell_suggest_free(Hunspell *pMS, char **slst, int len);
-//make local copy of returned string!!
-LIBHUNSPELL_DLL_EXPORTED char * hunspell_get_dic_encoding(Hunspell *pMS);
-//add word to dict (word is valid until spell object is not destroyed)
-LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell *pMS, char *word);
-//add word to dict with affixes of the modelword (word is valid until spell object is not destroyed)
-LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell *pMS, char *word, char *modelword);
+LIBHUNSPELL_DLL_EXPORTED void hunspell_suggest_free(Hunspell* pMS,
+                                                    char** slst,
+                                                    int len);
+// make local copy of returned string!!
+LIBHUNSPELL_DLL_EXPORTED char* hunspell_get_dic_encoding(Hunspell* pMS);
+// add word to dict (word is valid until spell object is not destroyed)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell* pMS, char* word);
+// add word to dict with affixes of the modelword (word is valid until spell
+// object is not destroyed)
+LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell* pMS,
+                                                     char* word,
+                                                     char* modelword);
 // remove word from dict
-LIBHUNSPELL_DLL_EXPORTED int hunspell_remove(Hunspell *pMS, char *word);
+LIBHUNSPELL_DLL_EXPORTED int hunspell_remove(Hunspell* pMS, char* word);
 
 #ifdef __cplusplus
 }

@@ -47,33 +47,30 @@
 #define MAXDICTENTRYLEN 1024
 
 struct dictentry {
-  char * filename;
-  char * lang;
-  char * region;
+  char* filename;
+  char* lang;
+  char* region;
 };
 
-
-class LIBHUNSPELL_DLL_EXPORTED DictMgr
-{
-private:
+class LIBHUNSPELL_DLL_EXPORTED DictMgr {
+ private:
   DictMgr(const DictMgr&);
-  DictMgr& operator = (const DictMgr&);
-private:
-  int                 numdict;
-  dictentry *         pdentry;
+  DictMgr& operator=(const DictMgr&);
 
-public:
- 
-  DictMgr(const char * dictpath, const char * etype);
+ private:
+  int numdict;
+  dictentry* pdentry;
+
+ public:
+  DictMgr(const char* dictpath, const char* etype);
   ~DictMgr();
   int get_list(dictentry** ppentry);
-            
-private:
-  int  parse_file(const char * dictpath, const char * etype);
-  char * mystrsep(char ** stringp, const char delim);
-  char * mystrdup(const char * s);
-  void mychomp(char * s);
 
+ private:
+  int parse_file(const char* dictpath, const char* etype);
+  char* mystrsep(char** stringp, const char delim);
+  char* mystrdup(const char* s);
+  void mychomp(char* s);
 };
 
 #endif

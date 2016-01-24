@@ -56,22 +56,15 @@
  *
  */
 
-class ManParser : public TextParser
-{
-
-protected:
-
-
-public:
- 
+class ManParser : public TextParser {
+ protected:
+ public:
   ManParser();
-  ManParser(const char * wc);
-  ManParser(unsigned short * wordchars, int len);
+  ManParser(const char* wc);
+  ManParser(unsigned short* wordchars, int len);
   virtual ~ManParser();
 
-  virtual char *      next_token();
-  
+  virtual char* next_token();
 };
 
 #endif
-
