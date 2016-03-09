@@ -136,7 +136,7 @@ check_valgrind_log "morphological analysis"
 
 # Tests suggestions
 if test -f $TESTDIR/$NAME.sug; then
-    hunspell $* -a -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong | grep '^&' | \
+    hunspell $* -a -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong | grep -a '^&' | \
         sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug 
     if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
         echo "============================================="
