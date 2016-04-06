@@ -645,25 +645,24 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 
   // recursive breaking at break points
   if (wordbreak) {
+
+    std::string scw(cw);
+
     int nbr = 0;
-    wl = strlen(cw);
+    wl = scw.size();
     int numbreak = pAMgr ? pAMgr->get_numbreak() : 0;
 
     // calculate break points for recursion limit
     for (int j = 0; j < numbreak; j++) {
-      char* s = cw;
-      do {
-        s = (char*)strstr(s, wordbreak[j]);
-        if (s) {
-          nbr++;
-          s++;
-        }
-      } while (s);
+      size_t len = strlen(wordbreak[j]);
+      size_t pos = 0;
+      while ((pos = scw.find(wordbreak[j], pos, len)) != std::string::npos) {
+        ++nbr;
+        pos += len;
+      }
     }
     if (nbr >= 10)
       return 0;
-
-    std::string scw(cw);
 
     // check boundary patterns (^begin and end$)
     for (int j = 0; j < numbreak; j++) {
