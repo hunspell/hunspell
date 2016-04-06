@@ -584,7 +584,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     case INITCAP: {
       *info += SPELL_ORIGCAP;
       wl = mkallsmall2(cw, unicw, nc);
-      memcpy(wspace, cw, (wl + 1));
+      std::string u8buffer(cw, wl);
       wl2 = mkinitcap2(cw, unicw, nc);
       if (captype == INITCAP)
         *info += SPELL_INITCAP;
@@ -603,18 +603,16 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       if (rv)
         break;
 
-      rv = checkword(wspace, info, root);
+      rv = checkword(u8buffer.c_str(), info, root);
       if (abbv && !rv) {
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        rv = checkword(wspace, info, root);
+        u8buffer.push_back('.');
+        rv = checkword(u8buffer.c_str(), info, root);
         if (!rv) {
-          memcpy(wspace, cw, wl2);
-          *(wspace + wl2) = '.';
-          *(wspace + wl2 + 1) = '\0';
+          u8buffer.assign(cw, wl2);
+          u8buffer.push_back('.');
           if (captype == INITCAP)
             *info += SPELL_INITCAP;
-          rv = checkword(wspace, info, root);
+          rv = checkword(u8buffer.c_str(), info, root);
           if (captype == INITCAP)
             *info -= SPELL_INITCAP;
           if (rv && is_keepcase(rv) && (captype == ALLCAP))
@@ -627,8 +625,8 @@ int Hunspell::spell(const char* word, int* info, char** root) {
            // if CHECKSHARPS: KEEPCASE words with \xDF  are allowed
            // in INITCAP form, too.
            !(pAMgr->get_checksharps() &&
-             ((utf8 && strstr(wspace, "\xC3\x9F")) ||
-              (!utf8 && strchr(wspace, '\xDF'))))))
+             ((utf8 && u8buffer.find("\xC3\x9F") != std::string::npos) ||
+              (!utf8 && u8buffer.find('\xDF') != std::string::npos)))))
         rv = NULL;
       break;
     }
