@@ -4823,12 +4823,9 @@ int AffixMgr::parse_affix(char* line,
               else
                 reverseword(piece);
             }
-            entry->strip = mystrdup(piece);
-            entry->stripl = (unsigned char)strlen(entry->strip);
-            if (strcmp(entry->strip, "0") == 0) {
-              free(entry->strip);
-              entry->strip = mystrdup("");
-              entry->stripl = 0;
+            entry->strip = piece;
+            if (entry->strip.compare("0") == 0) {
+              entry->strip.clear();
             }
             break;
           }
@@ -4896,14 +4893,11 @@ int AffixMgr::parse_affix(char* line,
                 else
                   reverseword(piece);
               }
-              entry->appnd = mystrdup(piece);
+              entry->appnd = piece;
             }
 
-            entry->appndl = (unsigned char)strlen(entry->appnd);
-            if (strcmp(entry->appnd, "0") == 0) {
-              free(entry->appnd);
-              entry->appnd = mystrdup("");
-              entry->appndl = 0;
+            if (entry->appnd.compare("0") == 0) {
+              entry->appnd.clear();
             }
             break;
           }
@@ -4918,8 +4912,8 @@ int AffixMgr::parse_affix(char* line,
                 reverseword(piece);
               reverse_condition(piece);
             }
-            if (entry->stripl && (strcmp(piece, ".") != 0) &&
-                redundant_condition(at, entry->strip, entry->stripl, piece,
+            if (!entry->strip.empty() && (strcmp(piece, ".") != 0) &&
+                redundant_condition(at, entry->strip.c_str(), entry->strip.size(), piece,
                                     af->getlinenum()))
               strcpy(piece, ".");
             if (at == 'S') {
@@ -5002,7 +4996,7 @@ int AffixMgr::parse_affix(char* line,
 }
 
 int AffixMgr::redundant_condition(char ft,
-                                  char* strip,
+                                  const char* strip,
                                   int stripl,
                                   const char* cond,
                                   int linenum) {

@@ -57,6 +57,7 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 
 #include "hashmgr.hxx"
 #include "w_char.hxx"
+#include <string>
 
 #define SETSIZE 256
 #define CONTSIZE 65536
@@ -102,10 +103,8 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
   (flag_bsearch((unsigned short*)a, (unsigned short)b, c))
 
 struct affentry {
-  char* strip;
-  char* appnd;
-  unsigned char stripl;
-  unsigned char appndl;
+  std::string strip;
+  std::string appnd;
   char numconds;
   char opts;
   unsigned short aflag;

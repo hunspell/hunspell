@@ -383,7 +383,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   SfxEntry* process_sfx_in_order(SfxEntry* ptr, SfxEntry* nptr);
   int process_pfx_tree_to_list();
   int process_sfx_tree_to_list();
-  int redundant_condition(char, char* strip, int stripl, const char* cond, int);
+  int redundant_condition(char, const char* strip, int stripl, const char* cond, int);
   void finishFileMgr(FileMgr* afflst);
 };
 
