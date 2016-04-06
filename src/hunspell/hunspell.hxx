@@ -259,7 +259,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   struct hentry* checkword(const char*, int* info, char** root);
   char* sharps_u8_l1(char* dest, char* source);
   hentry*
-  spellsharps(char* base, char*, int, int, char* tmp, int* info, char** root);
+  spellsharps(char* base, size_t start_pos, int, int, char* tmp, int* info, char** root);
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(char* result, char* st);

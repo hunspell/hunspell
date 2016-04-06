@@ -381,22 +381,23 @@ char* Hunspell::sharps_u8_l1(char* dest, char* source) {
 
 // recursive search for right ss - sharp s permutations
 hentry* Hunspell::spellsharps(char* base,
-                              char* pos,
+                              size_t n_pos,
                               int n,
                               int repnum,
                               char* tmp,
                               int* info,
                               char** root) {
-  pos = strstr(pos, "ss");
+  char* pos = strstr(base + n_pos, "ss");
   if (pos && (n < MAXSHARPS)) {
     *pos = '\xC3';
     *(pos + 1) = '\x9F';
-    hentry* h = spellsharps(base, pos + 2, n + 1, repnum + 1, tmp, info, root);
+    n_pos = (pos - base);
+    hentry* h = spellsharps(base, n_pos + 2, n + 1, repnum + 1, tmp, info, root);
     if (h)
       return h;
     *pos = 's';
     *(pos + 1) = 's';
-    h = spellsharps(base, pos + 2, n + 1, repnum, tmp, info, root);
+    h = spellsharps(base, n_pos + 2, n + 1, repnum, tmp, info, root);
     if (h)
       return h;
   } else if (repnum > 0) {
@@ -567,20 +568,20 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         char tmpword[MAXWORDUTF8LEN];
         wl = mkallsmall2(cw, unicw, nc);
         memcpy(wspace, cw, (wl + 1));
-        rv = spellsharps(wspace, wspace, 0, 0, tmpword, info, root);
+        rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
         if (!rv) {
           wl2 = mkinitcap2(cw, unicw, nc);
-          rv = spellsharps(cw, cw, 0, 0, tmpword, info, root);
+          rv = spellsharps(cw, 0, 0, 0, tmpword, info, root);
         }
         if ((abbv) && !(rv)) {
           *(wspace + wl) = '.';
           *(wspace + wl + 1) = '\0';
-          rv = spellsharps(wspace, wspace, 0, 0, tmpword, info, root);
+          rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
           if (!rv) {
             memcpy(wspace, cw, wl2);
             *(wspace + wl2) = '.';
             *(wspace + wl2 + 1) = '\0';
-            rv = spellsharps(wspace, wspace, 0, 0, tmpword, info, root);
+            rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
           }
         }
         if (rv)
