@@ -663,25 +663,27 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     if (nbr >= 10)
       return 0;
 
+    std::string scw(cw);
+
     // check boundary patterns (^begin and end$)
     for (int j = 0; j < numbreak; j++) {
       int plen = strlen(wordbreak[j]);
       if (plen == 1 || plen > wl)
         continue;
+
       if (wordbreak[j][0] == '^' &&
-          strncmp(cw, wordbreak[j] + 1, plen - 1) == 0 && spell(cw + plen - 1))
+          scw.compare(0, plen - 1, wordbreak[j] + 1, plen -1) == 0 && spell(scw.c_str() + plen - 1))
         return 1;
+
       if (wordbreak[j][plen - 1] == '$' &&
-          strncmp(cw + wl - plen + 1, wordbreak[j], plen - 1) == 0) {
-        char r = cw[wl - plen + 1];
-        cw[wl - plen + 1] = '\0';
-        if (spell(cw))
+          scw.compare(wl - plen + 1, plen - 1, wordbreak[j], plen - 1) == 0) {
+        char r = scw[wl - plen + 1];
+        scw[wl - plen + 1] = '\0';
+        if (spell(scw.c_str()))
           return 1;
-        cw[wl - plen + 1] = r;
+        scw[wl - plen + 1] = r;
       }
     }
-
-    std::string scw(cw);
 
     // other patterns
     for (int j = 0; j < numbreak; j++) {
