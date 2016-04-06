@@ -2186,27 +2186,26 @@ int main(int argc, char** argv) {
     pMS[0] = new Hunspell(aff, dic, key);
     dic_enc[0] = pMS[0]->get_dic_encoding();
     dmax = 1;
-    if (pMS[0] && dicplus)
-      while (dicplus) {
-        char* dicname2 = dicplus + 1;
-        dicplus = strchr(dicname2, ',');
-        if (dicplus)
-          *dicplus = '\0';
-        free(aff);
-        free(dic);
-        aff = search(path, dicname2, ".aff");
-        dic = search(path, dicname2, ".dic");
-        if (aff && dic) {
-          if (dmax < DMAX) {
-            pMS[dmax] = new Hunspell(aff, dic, key);
-            dic_enc[dmax] = pMS[dmax]->get_dic_encoding();
-            dmax++;
-          } else
-            fprintf(stderr, gettext("error - %s exceeds dictionary limit.\n"),
-                    dicname2);
-        } else if (dic)
-          pMS[dmax - 1]->add_dic(dic);
-      }
+    while (dicplus) {
+      char* dicname2 = dicplus + 1;
+      dicplus = strchr(dicname2, ',');
+      if (dicplus)
+        *dicplus = '\0';
+      free(aff);
+      free(dic);
+      aff = search(path, dicname2, ".aff");
+      dic = search(path, dicname2, ".dic");
+      if (aff && dic) {
+        if (dmax < DMAX) {
+          pMS[dmax] = new Hunspell(aff, dic, key);
+          dic_enc[dmax] = pMS[dmax]->get_dic_encoding();
+          dmax++;
+        } else
+          fprintf(stderr, gettext("error - %s exceeds dictionary limit.\n"),
+                  dicname2);
+      } else if (dic)
+        pMS[dmax - 1]->add_dic(dic);
+    }
   } else {
     fprintf(stderr, gettext("Can't open affix or dictionary files for "
                             "dictionary named \"%s\".\n"),
