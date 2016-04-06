@@ -1268,7 +1268,7 @@ int SuggestMgr::movechar_utf(char** wlst,
 
 // generate a set of suggestions for very poorly spelled words
 int SuggestMgr::ngsuggest(char** wlst,
-                          char* w,
+                          const char* w,
                           int ns,
                           HashMgr** pHMgr,
                           int md) {

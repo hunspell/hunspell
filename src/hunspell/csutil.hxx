@@ -267,6 +267,13 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkallsmall(std::string& s,
 
 // convert null terminated string to have initial capital
 LIBHUNSPELL_DLL_EXPORTED void mkinitcap(char* p, const struct cs_info* csconv);
+// convert first letter of string to capital
+LIBHUNSPELL_DLL_EXPORTED std::string& mkinitcap(std::string& s,
+                                                const struct cs_info* csconv);
+
+// convert first letter of UTF-8 string to capital
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
+mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
 // convert first nc characters of UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall_utf(w_char* u, int nc, int langnum);

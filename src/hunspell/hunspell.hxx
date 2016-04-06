@@ -77,6 +77,7 @@
 #include "affixmgr.hxx"
 #include "suggestmgr.hxx"
 #include "langnum.hxx"
+#include <vector>
 
 #define SPELL_XML "<?xml?>"
 
@@ -248,17 +249,19 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
                  int* pabbrev);
   void mkinitcap(char*);
   int mkinitcap2(char* p, w_char* u, int nc);
+  int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
   int mkinitsmall2(char* p, w_char* u, int nc);
   void mkallcap(char*);
   int mkallcap2(char* p, w_char* u, int nc);
   void mkallsmall(char*);
   int mkallsmall2(char* p, w_char* u, int nc);
+  int mkallsmall2(std::string& u8, std::vector<w_char>& u16);
   struct hentry* checkword(const char*, int* info, char** root);
   char* sharps_u8_l1(char* dest, char* source);
   hentry*
   spellsharps(char* base, char*, int, int, char* tmp, int* info, char** root);
   int is_keepcase(const hentry* rv);
-  int insert_sug(char*** slst, char* word, int ns);
+  int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(char* result, char* st);
   char* stem_description(const char* desc);
   int spellml(char*** slst, const char* word);
