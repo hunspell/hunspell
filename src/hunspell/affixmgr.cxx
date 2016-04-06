@@ -4856,7 +4856,7 @@ int AffixMgr::parse_affix(char* line,
                 else
                   reverseword(piece);
               }
-              entry->appnd = mystrdup(piece);
+              entry->appnd = piece;
 
               if (pHMgr->is_aliasf()) {
                 int index = atoi(dash + 1);
