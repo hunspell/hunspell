@@ -510,12 +510,15 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       *info += SPELL_ORIGCAP;
     /* FALLTHROUGH */
     case NOCAP:
+
+      scw = std::string(cw);
+      new_string_in_sync = true;
+
       rv = checkword(cw, info, root);
       if ((abbv) && !(rv)) {
-        memcpy(wspace, cw, wl);
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        rv = checkword(wspace, info, root);
+        std::string u8buffer(scw);
+        u8buffer.push_back('.');
+        rv = checkword(u8buffer.c_str(), info, root);
       }
       break;
     case ALLCAP: {
@@ -524,10 +527,9 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       if (rv)
         break;
       if (abbv) {
-        memcpy(wspace, cw, wl);
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        rv = checkword(wspace, info, root);
+        std::string u8buffer(cw);
+        u8buffer.push_back('.');
+        rv = checkword(u8buffer.c_str(), info, root);
         if (rv)
           break;
       }
