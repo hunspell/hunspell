@@ -2176,7 +2176,7 @@ int SuggestMgr::leftcommonsubstring(const char* s1, const char* s2) {
     if (complexprefixes) {
       int l1 = strlen(s1);
       int l2 = strlen(s2);
-      if (*(s2 + l1 - 1) == *(s2 + l2 - 1))
+      if (l1 <= l2 && *(s2 + l1 - 1) == *(s2 + l2 - 1))
         return 1;
     } else {
       const char* olds = s1;
