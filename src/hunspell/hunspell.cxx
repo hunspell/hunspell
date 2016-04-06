@@ -645,15 +645,13 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 
   // recursive breaking at break points
   if (wordbreak) {
-    char* s;
-    char r;
     int nbr = 0;
     wl = strlen(cw);
     int numbreak = pAMgr ? pAMgr->get_numbreak() : 0;
 
     // calculate break points for recursion limit
     for (int j = 0; j < numbreak; j++) {
-      s = cw;
+      char* s = cw;
       do {
         s = (char*)strstr(s, wordbreak[j]);
         if (s) {
@@ -675,7 +673,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         return 1;
       if (wordbreak[j][plen - 1] == '$' &&
           strncmp(cw + wl - plen + 1, wordbreak[j], plen - 1) == 0) {
-        r = cw[wl - plen + 1];
+        char r = cw[wl - plen + 1];
         cw[wl - plen + 1] = '\0';
         if (spell(cw))
           return 1;
@@ -683,29 +681,31 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
     }
 
+    std::string scw(cw);
+
     // other patterns
     for (int j = 0; j < numbreak; j++) {
       int plen = strlen(wordbreak[j]);
-      s = (char*)strstr(cw, wordbreak[j]);
-      if (s && (s > cw) && (s < cw + wl - plen)) {
-        if (!spell(s + plen))
+      size_t found = scw.find(wordbreak[j]);
+      if ((found > 0) && (found < wl - plen)) {
+        if (!spell(scw.c_str() + found + plen))
           continue;
-        r = *s;
-        *s = '\0';
+        char r = scw[found];
+        scw[found] = '\0';
         // examine 2 sides of the break point
-        if (spell(cw))
+        if (spell(scw.c_str()))
           return 1;
-        *s = r;
+        scw[found] = r;
 
         // LANG_hu: spec. dash rule
         if (langnum == LANG_hu && strcmp(wordbreak[j], "-") == 0) {
-          r = s[1];
-          s[1] = '\0';
-          if (spell(cw))
+          r = scw[found + 1];
+          scw[found + 1] = '\0';
+          if (spell(scw.c_str()))
             return 1;  // check the first part with dash
-          s[1] = r;
+          scw[found + 1] = r;
         }
-        // end of LANG speficic region
+        // end of LANG specific region
       }
     }
   }
