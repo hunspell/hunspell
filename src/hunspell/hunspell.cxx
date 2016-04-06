@@ -447,7 +447,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   if (strcmp(word, SPELL_XML) == 0)
     return 1;
   int nc = strlen(word);
-  int wl2 = 0;
   if (utf8) {
     if (nc >= MAXWORDUTF8LEN)
       return 0;
@@ -535,6 +534,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
       // Spec. prefix handling for Catalan, French, Italian:
       // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
+      int wl2 = 0;
       if (pAMgr && strchr(cw, '\'')) {
         mkallsmall2(cw, unicw, nc);
         // There are no really sane circumstances where this could fail,
@@ -594,9 +594,9 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       new_string_in_sync = true;
 
       *info += SPELL_ORIGCAP;
-      wl = mkallsmall2(scw, sunicw);
+      mkallsmall2(scw, sunicw);
       std::string u8buffer(scw);
-      wl2 = mkinitcap2(scw, sunicw);
+      mkinitcap2(scw, sunicw);
       if (captype == INITCAP)
         *info += SPELL_INITCAP;
       rv = checkword(scw.c_str(), info, root);
