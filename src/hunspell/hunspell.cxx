@@ -1138,14 +1138,13 @@ int Hunspell::suggest(char*** slst, const char* word) {
       if (!spell(ppos)) {
         nn = suggest(&nlst, ppos);
         for (int j = nn - 1; j >= 0; j--) {
-          char wspace[MAXWORDUTF8LEN];
-          strncpy(wspace, cw, ppos - cw);
-          strcpy(wspace + (ppos - cw), nlst[j]);
+          std::string wspace(cw, ppos - cw);
+          wspace.append(nlst[j]);
           if (!last) {
-            strcat(wspace, "-");
-            strcat(wspace, pos + 1);
+            wspace.append("-");
+            wspace.append(pos + 1);
           }
-          ns = insert_sug(slst, wspace, ns);
+          ns = insert_sug(slst, wspace.c_str(), ns);
           free(nlst[j]);
         }
         if (nlst != NULL)
