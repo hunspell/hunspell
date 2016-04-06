@@ -846,7 +846,6 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
 int Hunspell::suggest(char*** slst, const char* word) {
   int onlycmpdsug = 0;
   char cw[MAXWORDUTF8LEN];
-  char wspace[MAXWORDUTF8LEN];
   if (!pSMgr || maxdic == 0)
     return 0;
   w_char unicw[MAXWORDLEN];
@@ -869,16 +868,20 @@ int Hunspell::suggest(char*** slst, const char* word) {
 
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
-  if (convstatus < 0)
-    return 0;
-  else if (convstatus > 0)
-    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else
-    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  {
+    char wspace[MAXWORDUTF8LEN];
+    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    if (convstatus < 0)
+      return 0;
+    else if (convstatus > 0)
+      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+    else
+      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
 
-  if (wl == 0)
-    return 0;
+    if (wl == 0)
+      return 0;
+  }
+
   int ns = 0;
   int capwords = 0;
 
@@ -915,6 +918,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
       ns = pSMgr->suggest(slst, cw, ns, &onlycmpdsug);
       if (ns == -1)
         break;
+      char wspace[MAXWORDUTF8LEN];
       memcpy(wspace, cw, (wl + 1));
       mkallsmall2(wspace, unicw, nc);
       ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
@@ -954,10 +958,12 @@ int Hunspell::suggest(char*** slst, const char* word) {
         }
         if (captype == HUHINITCAP) {
           // TheOpenOffice.org -> The OpenOffice.org
+          char wspace[MAXWORDUTF8LEN];
           memcpy(wspace, cw, (wl + 1));
           mkinitsmall2(wspace, unicw, nc);
           ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
         }
+        char wspace[MAXWORDUTF8LEN];
         memcpy(wspace, cw, (wl + 1));
         mkallsmall2(wspace, unicw, nc);
         if (spell(wspace))
@@ -995,6 +1001,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
 
     case ALLCAP: {
+      char wspace[MAXWORDUTF8LEN];
       memcpy(wspace, cw, (wl + 1));
       mkallsmall2(wspace, unicw, nc);
       ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
@@ -1060,6 +1067,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
       case HUHINITCAP:
         capwords = 1;
       case HUHCAP: {
+        char wspace[MAXWORDUTF8LEN];
         memcpy(wspace, cw, (wl + 1));
         mkallsmall2(wspace, unicw, nc);
         ns = pSMgr->ngsuggest(*slst, wspace, ns, pHMgr, maxdic);
@@ -1067,12 +1075,14 @@ int Hunspell::suggest(char*** slst, const char* word) {
       }
       case INITCAP: {
         capwords = 1;
+        char wspace[MAXWORDUTF8LEN];
         memcpy(wspace, cw, (wl + 1));
         mkallsmall2(wspace, unicw, nc);
         ns = pSMgr->ngsuggest(*slst, wspace, ns, pHMgr, maxdic);
         break;
       }
       case ALLCAP: {
+        char wspace[MAXWORDUTF8LEN];
         memcpy(wspace, cw, (wl + 1));
         mkallsmall2(wspace, unicw, nc);
         int oldns = ns;
@@ -1105,6 +1115,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
       if (!spell(ppos)) {
         nn = suggest(&nlst, ppos);
         for (int j = nn - 1; j >= 0; j--) {
+          char wspace[MAXWORDUTF8LEN];
           strncpy(wspace, cw, ppos - cw);
           strcpy(wspace + (ppos - cw), nlst[j]);
           if (!last) {
@@ -1211,6 +1222,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // output conversion
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
+    char wspace[MAXWORDUTF8LEN];
     if (rl->conv((*slst)[j], wspace, MAXWORDUTF8LEN) > 0) {
       free((*slst)[j]);
       (*slst)[j] = mystrdup(wspace);
