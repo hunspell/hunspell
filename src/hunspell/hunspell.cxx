@@ -368,7 +368,7 @@ int Hunspell::mkallsmall2(std::string& u8, std::vector<w_char>& u16) {
 }
 
 // convert UTF-8 sharp S codes to latin 1
-char* Hunspell::sharps_u8_l1(char* dest, char* source) {
+char* Hunspell::sharps_u8_l1(char* dest, const char* source) {
   char* p = dest;
   *p = *source;
   for (p++, source++; *(source - 1); p++, source++) {
@@ -380,30 +380,29 @@ char* Hunspell::sharps_u8_l1(char* dest, char* source) {
 }
 
 // recursive search for right ss - sharp s permutations
-hentry* Hunspell::spellsharps(char* base,
+hentry* Hunspell::spellsharps(std::string& base,
                               size_t n_pos,
                               int n,
                               int repnum,
                               char* tmp,
                               int* info,
                               char** root) {
-  char* pos = strstr(base + n_pos, "ss");
-  if (pos && (n < MAXSHARPS)) {
-    *pos = '\xC3';
-    *(pos + 1) = '\x9F';
-    n_pos = (pos - base);
-    hentry* h = spellsharps(base, n_pos + 2, n + 1, repnum + 1, tmp, info, root);
+  size_t pos = base.find("ss", n_pos);
+  if (pos != std::string::npos && (n < MAXSHARPS)) {
+    base[pos] = '\xC3';
+    base[pos + 1] = '\x9F';
+    hentry* h = spellsharps(base, pos + 2, n + 1, repnum + 1, tmp, info, root);
     if (h)
       return h;
-    *pos = 's';
-    *(pos + 1) = 's';
-    h = spellsharps(base, n_pos + 2, n + 1, repnum, tmp, info, root);
+    base[pos] = 's';
+    base[pos + 1] = 's';
+    h = spellsharps(base, pos + 2, n + 1, repnum, tmp, info, root);
     if (h)
       return h;
   } else if (repnum > 0) {
     if (utf8)
-      return checkword(base, info, root);
-    return checkword(sharps_u8_l1(tmp, base), info, root);
+      return checkword(base.c_str(), info, root);
+    return checkword(sharps_u8_l1(tmp, base.c_str()), info, root);
   }
   return NULL;
 }
@@ -535,7 +534,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
       // Spec. prefix handling for Catalan, French, Italian:
       // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
-      int wl2 = 0;
       if (pAMgr && strchr(cw, '\'')) {
         mkallsmall2(cw, unicw, nc);
         // There are no really sane circumstances where this could fail,
@@ -544,7 +542,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
           if (utf8) {
             w_char tmpword[MAXWORDLEN];
             *apostrophe = '\0';
-            wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
+            int wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
             *apostrophe = '\'';
             if (wl2 >= 0 && wl2 < nc) {
               mkinitcap2(apostrophe + 1, unicw + wl2 + 1, nc - wl2 - 1);
@@ -565,23 +563,26 @@ int Hunspell::spell(const char* word, int* info, char** root) {
           break;
       }
       if (pAMgr && pAMgr->get_checksharps() && strstr(cw, "SS")) {
+
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_in_sync = true;
+
         char tmpword[MAXWORDUTF8LEN];
-        wl = mkallsmall2(cw, unicw, nc);
-        memcpy(wspace, cw, (wl + 1));
-        rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
+        wl = mkallsmall2(scw, sunicw);
+        std::string u8buffer(scw);
+        rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
         if (!rv) {
-          wl2 = mkinitcap2(cw, unicw, nc);
-          rv = spellsharps(cw, 0, 0, 0, tmpword, info, root);
+          mkinitcap2(scw, sunicw);
+          rv = spellsharps(scw, 0, 0, 0, tmpword, info, root);
         }
         if ((abbv) && !(rv)) {
-          *(wspace + wl) = '.';
-          *(wspace + wl + 1) = '\0';
-          rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
+          u8buffer.push_back('.');
+          rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
           if (!rv) {
-            memcpy(wspace, cw, wl2);
-            *(wspace + wl2) = '.';
-            *(wspace + wl2 + 1) = '\0';
-            rv = spellsharps(wspace, 0, 0, 0, tmpword, info, root);
+            u8buffer = std::string(scw);
+            u8buffer.push_back('.');
+            rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
           }
         }
         if (rv)
@@ -590,9 +591,11 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     }
     case INITCAP: {
 
-      scw = std::string(cw);
-      sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-      new_string_in_sync = true;
+      if (!new_string_in_sync) {
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_in_sync = true;
+      }
 
       *info += SPELL_ORIGCAP;
       mkallsmall2(scw, sunicw);
