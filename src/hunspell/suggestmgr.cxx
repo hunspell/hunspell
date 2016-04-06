@@ -1331,7 +1331,7 @@ int SuggestMgr::ngsuggest(char** wlst,
     if (utf8) {
       std::vector<w_char> _w;
       int _wl = u8_u16(_w, word);
-      mkallcap_utf(_w, _wl, langnum);
+      mkallcap_utf(_w, langnum);
       u16_u8(candidate, _w);
     } else {
       candidate.assign(word);
@@ -1375,7 +1375,7 @@ int SuggestMgr::ngsuggest(char** wlst,
         if (utf8) {
           std::vector<w_char> _w;
           int _wl = u8_u16(_w, HENTRY_WORD(hp));
-          mkallcap_utf(_w, _wl, langnum);
+          mkallcap_utf(_w, langnum);
           u16_u8(candidate, _w);
         } else {
           candidate.assign(HENTRY_WORD(hp));
@@ -1524,7 +1524,7 @@ int SuggestMgr::ngsuggest(char** wlst,
       if (utf8) {
         std::vector<w_char> _w;
         len = u8_u16(_w, guess[i]);
-        mkallsmall_utf(_w, len, langnum);
+        mkallsmall_utf(_w, langnum);
         u16_u8(gl, _w);
       } else {
         gl.assign(guess[i]);
@@ -1578,7 +1578,7 @@ int SuggestMgr::ngsuggest(char** wlst,
         if (utf8) {
           std::vector<w_char> _w;
           len = u8_u16(_w, rootsphon[i]);
-          mkallsmall_utf(_w, len, langnum);
+          mkallsmall_utf(_w, langnum);
           u16_u8(gl, _w);
         } else {
           gl.assign(rootsphon[i]);
@@ -2080,7 +2080,7 @@ int SuggestMgr::ngram(int n,
       return 0;
     // lowering dictionary word
     if (opt & NGRAM_LOWERING)
-      mkallsmall_utf(su2, l2, langnum);
+      mkallsmall_utf(su2, langnum);
     for (int j = 1; j <= n; j++) {
       ns = 0;
       for (int i = 0; i <= (l1 - j); i++) {

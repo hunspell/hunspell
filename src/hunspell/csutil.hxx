@@ -270,15 +270,15 @@ LIBHUNSPELL_DLL_EXPORTED void mkinitcap(char* p, const struct cs_info* csconv);
 
 // convert first nc characters of UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall_utf(w_char* u, int nc, int langnum);
-// convert first nc characters of UTF-8 string to little
+// convert UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
-mkallsmall_utf(std::vector<w_char>& u, int nc, int langnum);
+mkallsmall_utf(std::vector<w_char>& u, int langnum);
 
 // convert first nc characters of UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED void mkallcap_utf(w_char* u, int nc, int langnum);
-// convert first nc characters of UTF-8 string to capital
+// convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
-mkallcap_utf(std::vector<w_char>& u, int nc, int langnum);
+mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(char* q, int nl, cs_info*);

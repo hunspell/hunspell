@@ -1021,9 +1021,8 @@ void mkallsmall_utf(w_char* u, int nc, int langnum) {
 }
 
 std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u,
-                                    int nc,
                                     int langnum) {
-  for (int i = 0; i < nc; i++) {
+  for (size_t i = 0; i < u.size(); ++i) {
     unsigned short idx = (u[i].h << 8) + u[i].l;
     if (idx != unicodetolower(idx, langnum)) {
       u[i].h = (unsigned char)(unicodetolower(idx, langnum) >> 8);
@@ -1043,8 +1042,8 @@ void mkallcap_utf(w_char* u, int nc, int langnum) {
   }
 }
 
-std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum) {
-  for (int i = 0; i < nc; i++) {
+std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
+  for (size_t i = 0; i < u.size(); i++) {
     unsigned short idx = (u[i].h << 8) + u[i].l;
     if (idx != unicodetoupper(idx, langnum)) {
       u[i].h = (unsigned char)(unicodetoupper(idx, langnum) >> 8);
