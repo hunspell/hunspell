@@ -455,7 +455,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     if (nc >= MAXWORDLEN)
       return 0;
   }
-  int captype = 0;
+  int captype = NOCAP;
   int abbv = 0;
   int wl = 0;
 
@@ -498,6 +498,10 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   }
   if ((i == wl) && (nstate == NNUM))
     return 1;
+
+  bool new_string_in_sync = false;
+  std::string scw;
+  std::vector<w_char> sunicw;
 
   switch (captype) {
     case HUHCAP:
@@ -582,13 +586,18 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
     }
     case INITCAP: {
+
+      scw = std::string(cw);
+      sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+      new_string_in_sync = true;
+
       *info += SPELL_ORIGCAP;
-      wl = mkallsmall2(cw, unicw, nc);
-      std::string u8buffer(cw, wl);
-      wl2 = mkinitcap2(cw, unicw, nc);
+      wl = mkallsmall2(scw, sunicw);
+      std::string u8buffer(scw);
+      wl2 = mkinitcap2(scw, sunicw);
       if (captype == INITCAP)
         *info += SPELL_INITCAP;
-      rv = checkword(cw, info, root);
+      rv = checkword(scw.c_str(), info, root);
       if (captype == INITCAP)
         *info -= SPELL_INITCAP;
       // forbid bad capitalization
@@ -608,7 +617,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         u8buffer.push_back('.');
         rv = checkword(u8buffer.c_str(), info, root);
         if (!rv) {
-          u8buffer.assign(cw, wl2);
+          u8buffer = scw;
           u8buffer.push_back('.');
           if (captype == INITCAP)
             *info += SPELL_INITCAP;
@@ -632,6 +641,10 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     }
   }
 
+  if (!new_string_in_sync) {
+    scw = std::string(cw);
+  }
+
   if (rv) {
     if (pAMgr && pAMgr->get_warn() && rv->astr &&
         TESTAFF(rv->astr, pAMgr->get_warn(), rv->alen)) {
@@ -645,8 +658,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 
   // recursive breaking at break points
   if (wordbreak) {
-
-    std::string scw(cw);
 
     int nbr = 0;
     wl = scw.size();
@@ -974,7 +985,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
           ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
         }
         std::string u8buffer(cw, wl);
-        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? nc : 0));
+        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
         mkallsmall2(u8buffer, u16buffer);
         if (spell(u8buffer.c_str()))
           ns = insert_sug(slst, u8buffer.c_str(), ns);
@@ -1078,7 +1089,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
         capwords = 1;
       case HUHCAP: {
         std::string u8buffer(cw, wl);
-        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? nc : 0));
+        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
         mkallsmall2(u8buffer, u16buffer);
         ns = pSMgr->ngsuggest(*slst, u8buffer.c_str(), ns, pHMgr, maxdic);
         break;
