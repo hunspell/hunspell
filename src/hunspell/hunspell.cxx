@@ -368,14 +368,9 @@ int Hunspell::mkallsmall2(std::string& u8, std::vector<w_char>& u16) {
 }
 
 // convert UTF-8 sharp S codes to latin 1
-char* Hunspell::sharps_u8_l1(char* dest, const char* source) {
-  char* p = dest;
-  *p = *source;
-  for (p++, source++; *(source - 1); p++, source++) {
-    *p = *source;
-    if (*source == '\x9F')
-      *--p = '\xDF';
-  }
+std::string Hunspell::sharps_u8_l1(const std::string& source) {
+  std::string dest(source);
+  mystrrep(dest, "\xC3\x9F", "\xDF");
   return dest;
 }
 
@@ -384,25 +379,25 @@ hentry* Hunspell::spellsharps(std::string& base,
                               size_t n_pos,
                               int n,
                               int repnum,
-                              char* tmp,
                               int* info,
                               char** root) {
   size_t pos = base.find("ss", n_pos);
   if (pos != std::string::npos && (n < MAXSHARPS)) {
     base[pos] = '\xC3';
     base[pos + 1] = '\x9F';
-    hentry* h = spellsharps(base, pos + 2, n + 1, repnum + 1, tmp, info, root);
+    hentry* h = spellsharps(base, pos + 2, n + 1, repnum + 1, info, root);
     if (h)
       return h;
     base[pos] = 's';
     base[pos + 1] = 's';
-    h = spellsharps(base, pos + 2, n + 1, repnum, tmp, info, root);
+    h = spellsharps(base, pos + 2, n + 1, repnum, info, root);
     if (h)
       return h;
   } else if (repnum > 0) {
     if (utf8)
       return checkword(base.c_str(), info, root);
-    return checkword(sharps_u8_l1(tmp, base.c_str()), info, root);
+    std::string tmp(sharps_u8_l1(base));
+    return checkword(tmp.c_str(), info, root);
   }
   return NULL;
 }
@@ -568,21 +563,20 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
         new_string_in_sync = true;
 
-        char tmpword[MAXWORDUTF8LEN];
         wl = mkallsmall2(scw, sunicw);
         std::string u8buffer(scw);
-        rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
+        rv = spellsharps(u8buffer, 0, 0, 0, info, root);
         if (!rv) {
           mkinitcap2(scw, sunicw);
-          rv = spellsharps(scw, 0, 0, 0, tmpword, info, root);
+          rv = spellsharps(scw, 0, 0, 0, info, root);
         }
         if ((abbv) && !(rv)) {
           u8buffer.push_back('.');
-          rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
+          rv = spellsharps(u8buffer, 0, 0, 0, info, root);
           if (!rv) {
             u8buffer = std::string(scw);
             u8buffer.push_back('.');
-            rv = spellsharps(u8buffer, 0, 0, 0, tmpword, info, root);
+            rv = spellsharps(u8buffer, 0, 0, 0, info, root);
           }
         }
         if (rv)

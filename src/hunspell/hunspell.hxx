@@ -257,9 +257,9 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int mkallsmall2(char* p, w_char* u, int nc);
   int mkallsmall2(std::string& u8, std::vector<w_char>& u16);
   struct hentry* checkword(const char*, int* info, char** root);
-  char* sharps_u8_l1(char* dest, const char* source);
+  std::string sharps_u8_l1(const std::string& source);
   hentry*
-  spellsharps(std::string& base, size_t start_pos, int, int, char* tmp, int* info, char** root);
+  spellsharps(std::string& base, size_t start_pos, int, int, int* info, char** root);
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(char* result, char* st);
