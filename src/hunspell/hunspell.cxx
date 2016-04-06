@@ -911,8 +911,9 @@ int Hunspell::suggest(char*** slst, const char* word) {
           wlst[i] = NULL;
         }
       }
-      wlst[0] = mystrdup(cw);
-      mkinitcap(wlst[0]);
+      std::string form(cw);
+      mkinitcap(form);
+      wlst[0] = mystrdup(form.c_str());
       return 1;
     }
   }
@@ -1162,7 +1163,10 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // capitalize
   if (capwords)
     for (int j = 0; j < ns; j++) {
-      mkinitcap((*slst)[j]);
+      std::string form((*slst)[j]);
+      free((*slst)[j]);
+      mkinitcap(form);
+      (*slst)[j] = mystrdup(form.c_str());
     }
 
   // expand suggestions with dot(s)
@@ -1554,18 +1558,14 @@ unsigned short* Hunspell::get_wordchars_utf16(int* len) {
   return pAMgr->get_wordchars_utf16(len);
 }
 
-void Hunspell::mkinitcap(char* p) {
-  if (!utf8) {
-    if (*p != '\0')
-      *p = csconv[((unsigned char)*p)].cupper;
+void Hunspell::mkinitcap(std::string& u8) {
+  if (utf8) {
+    std::vector<w_char> u16;
+    u8_u16(u16, u8);
+    ::mkinitcap_utf(u16, langnum);
+    u16_u8(u8, u16);
   } else {
-    int len;
-    w_char u[MAXWORDLEN];
-    len = u8_u16(u, MAXWORDLEN, p);
-    unsigned short i = unicodetoupper((u[0].h << 8) + u[0].l, langnum);
-    u[0].h = (unsigned char)(i >> 8);
-    u[0].l = (unsigned char)(i & 0x00FF);
-    u16_u8(p, MAXWORDUTF8LEN, u, len);
+    ::mkinitcap(u8, csconv);
   }
 }
 
@@ -1920,8 +1920,12 @@ int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
 
     // capitalize
     if (captype == INITCAP || captype == HUHINITCAP) {
-      for (int j = 0; j < linenum; j++)
-        mkinitcap((*slst)[j]);
+      for (int j = 0; j < linenum; j++) {
+        std::string form((*slst)[j]);
+        free((*slst)[j]);
+        mkinitcap(form);
+        (*slst)[j] = mystrdup(form.c_str());
+      }
     }
 
     // temporary filtering of prefix related errors (eg.
