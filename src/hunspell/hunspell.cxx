@@ -828,7 +828,7 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
                                    info);
         free(dup);
       }
-      // end of LANG speficic region
+      // end of LANG specific region
       if (he) {
         if (root) {
           *root = mystrdup(he->word);
@@ -850,10 +850,8 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
 
 int Hunspell::suggest(char*** slst, const char* word) {
   int onlycmpdsug = 0;
-  char cw[MAXWORDUTF8LEN];
   if (!pSMgr || maxdic == 0)
     return 0;
-  w_char unicw[MAXWORDLEN];
   *slst = NULL;
   // process XML input of the simplified API (see manual)
   if (strncmp(word, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
@@ -871,10 +869,16 @@ int Hunspell::suggest(char*** slst, const char* word) {
   int abbv = 0;
   int wl = 0;
 
+  std::string scw;
+  std::vector<w_char> sunicw;
+
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
+    w_char unicw[MAXWORDLEN];
+    char cw[MAXWORDUTF8LEN];
     char wspace[MAXWORDUTF8LEN];
+
     int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
     if (convstatus < 0)
       return 0;
@@ -885,6 +889,9 @@ int Hunspell::suggest(char*** slst, const char* word) {
 
     if (wl == 0)
       return 0;
+
+    scw = std::string(cw);
+    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
   }
 
   int ns = 0;
@@ -894,7 +901,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
   if (pAMgr && captype == NOCAP && pAMgr->get_forceucase()) {
     int info = SPELL_ORIGCAP;
     char** wlst;
-    if (checkword(cw, &info, NULL)) {
+    if (checkword(scw.c_str(), &info, NULL)) {
       if (*slst) {
         wlst = *slst;
       } else {
@@ -906,38 +913,20 @@ int Hunspell::suggest(char*** slst, const char* word) {
           wlst[i] = NULL;
         }
       }
-      std::string form(cw);
+      std::string form(scw);
       mkinitcap(form);
       wlst[0] = mystrdup(form.c_str());
       return 1;
     }
   }
 
-  bool new_string_synced = false;
-  std::string scw;
-  std::vector<w_char> sunicw;
-
   switch (captype) {
     case NOCAP: {
-
-      if (!new_string_synced) {
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_synced = true;
-      }
-
       ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       break;
     }
 
     case INITCAP: {
-
-      if (!new_string_synced) {
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_synced = true;
-      }
-
       capwords = 1;
       ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       if (ns == -1)
@@ -950,13 +939,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
     case HUHINITCAP:
       capwords = 1;
     case HUHCAP: {
-
-      if (!new_string_synced) {
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_synced = true;
-      }
-
       ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       if (ns != -1) {
         // something.The -> something. The
@@ -972,7 +954,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
             captype_ = get_captype(postdot.c_str(), postdot.size(), csconv);
           }
           if (captype_ == INITCAP) {
-            std::string str(cw);
+            std::string str(scw);
             str.insert(dot_pos + 1, 1, ' ');
             ns = insert_sug(slst, str.c_str(), ns);
           }
@@ -1004,7 +986,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
           if (space) {
             int slen = strlen(space + 1);
             // different case after space (need capitalisation)
-            if ((slen < wl) && strcmp(cw + wl - slen, space + 1)) {
+            if ((slen < wl) && strcmp(scw.c_str() + wl - slen, space + 1)) {
               w_char w[MAXWORDLEN];
               int wc = 0;
               char* r = (*slst)[j];
@@ -1023,13 +1005,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
 
     case ALLCAP: {
-
-      if (!new_string_synced) {
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_synced = true;
-      }
-
       std::string wspace(scw);
       mkallsmall2(wspace, sunicw);
       ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
@@ -1062,11 +1037,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
       }
       break;
     }
-  }
-
-  if (!new_string_synced) {
-    scw = std::string(cw);
-    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
   }
 
   // LANG_hu section: replace '-' with ' ' in Hungarian
