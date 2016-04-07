@@ -493,9 +493,8 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   if ((i == wl) && (nstate == NNUM))
     return 1;
 
-  bool new_string_in_sync = false;
-  std::string scw;
-  std::vector<w_char> sunicw;
+  std::string scw(cw);
+  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
 
   switch (captype) {
     case HUHCAP:
@@ -504,11 +503,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       *info += SPELL_ORIGCAP;
     /* FALLTHROUGH */
     case NOCAP:
-
-      scw = std::string(cw);
-      new_string_in_sync = true;
-
-      rv = checkword(cw, info, root);
+      rv = checkword(scw.c_str(), info, root);
       if ((abbv) && !(rv)) {
         std::string u8buffer(scw);
         u8buffer.push_back('.');
@@ -517,11 +512,11 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       break;
     case ALLCAP: {
       *info += SPELL_ORIGCAP;
-      rv = checkword(cw, info, root);
+      rv = checkword(scw.c_str(), info, root);
       if (rv)
         break;
       if (abbv) {
-        std::string u8buffer(cw);
+        std::string u8buffer(scw);
         u8buffer.push_back('.');
         rv = checkword(u8buffer.c_str(), info, root);
         if (rv)
@@ -529,39 +524,35 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
       // Spec. prefix handling for Catalan, French, Italian:
       // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
-      if (pAMgr && strchr(cw, '\'')) {
-        mkallsmall2(cw, unicw, nc);
-        // There are no really sane circumstances where this could fail,
-        // but anyway...
-        if (char* apostrophe = strchr(cw, '\'')) {
-          if (utf8) {
-            w_char tmpword[MAXWORDLEN];
-            *apostrophe = '\0';
-            int wl2 = u8_u16(tmpword, MAXWORDLEN, cw);
-            *apostrophe = '\'';
-            if (wl2 >= 0 && wl2 < nc) {
-              mkinitcap2(apostrophe + 1, unicw + wl2 + 1, nc - wl2 - 1);
-              rv = checkword(cw, info, root);
-              if (rv)
-                break;
-            }
-          } else {
-            mkinitcap2(apostrophe + 1, unicw, nc);
-            rv = checkword(cw, info, root);
-            if (rv)
-              break;
-          }
+      size_t apos = pAMgr ? scw.find('\'') : std::string::npos;
+      if (apos != std::string::npos) {
+        mkallsmall2(scw, sunicw);
+        std::string part1 = scw.substr(0, apos+1);
+        std::string part2 = scw.substr(apos+1);
+        if (utf8) {
+          std::vector<w_char> part1u, part2u;
+          u8_u16(part1u, part1);
+          u8_u16(part2u, part2);
+          mkinitcap2(part2, part2u);
+          scw = part1 + part2;
+          sunicw = part1u;
+          sunicw.insert(sunicw.end(), part2u.begin(), part2u.end());
+          rv = checkword(scw.c_str(), info, root);
+          if (rv)
+            break;
+        } else {
+          mkinitcap2(part2, sunicw);
+          scw = part1 + part2;
+          rv = checkword(scw.c_str(), info, root);
+          if (rv)
+            break;
         }
-        mkinitcap2(cw, unicw, nc);
-        rv = checkword(cw, info, root);
+        mkinitcap2(scw, sunicw);
+        rv = checkword(scw.c_str(), info, root);
         if (rv)
           break;
       }
-      if (pAMgr && pAMgr->get_checksharps() && strstr(cw, "SS")) {
-
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_in_sync = true;
+      if (pAMgr && pAMgr->get_checksharps() && scw.find("SS") != std::string::npos) {
 
         mkallsmall2(scw, sunicw);
         std::string u8buffer(scw);
@@ -584,12 +575,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       }
     }
     case INITCAP: {
-
-      if (!new_string_in_sync) {
-        scw = std::string(cw);
-        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        new_string_in_sync = true;
-      }
 
       *info += SPELL_ORIGCAP;
       mkallsmall2(scw, sunicw);
@@ -639,10 +624,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         rv = NULL;
       break;
     }
-  }
-
-  if (!new_string_in_sync) {
-    scw = std::string(cw);
   }
 
   if (rv) {
