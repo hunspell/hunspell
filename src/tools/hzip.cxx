@@ -44,6 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 #define CODELEN 65536
 #define BUFSIZE 65536
@@ -337,24 +338,25 @@ int hzip(const char* filename, char* key) {
   struct item** list;
   char* table[CODELEN + 1];
   int n;
-  char out[BUFSIZE];
-  FILE *f, *f2, *tempfile;
   unsigned short termword;
-  strcpy(out, filename);
-  strcat(out, EXTENSION);
-  f = fopen(filename, "r");
+
+  FILE* f = fopen(filename, "r");
   if (!f)
     return fail("hzip: %s: Permission denied\n", filename);
-  tempfile = tmpfile();
+
+  FILE *tempfile = tmpfile();
   if (!tempfile) {
     fclose(f);
     return fail("hzip: cannot create temporary file\n", NULL);
   }
-  f2 = fopen(out, "wb");
+
+  std::string out(filename);
+  out.append(EXTENSION);
+  FILE* f2 = fopen(out.c_str(), "wb");
   if (!f2) {
     fclose(tempfile);
     fclose(f);
-    return fail("hzip: %s: Permission denied\n", out);
+    return fail("hzip: %s: Permission denied\n", out.c_str());
   }
   for (n = 0; n < CODELEN; n++)
     table[n] = NULL;
