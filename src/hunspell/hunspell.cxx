@@ -919,19 +919,32 @@ int Hunspell::suggest(char*** slst, const char* word) {
 
   switch (captype) {
     case NOCAP: {
-      ns = pSMgr->suggest(slst, cw, ns, &onlycmpdsug);
+
+      if (!new_string_synced) {
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_synced = true;
+      }
+
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       break;
     }
 
     case INITCAP: {
+
+      if (!new_string_synced) {
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_synced = true;
+      }
+
       capwords = 1;
-      ns = pSMgr->suggest(slst, cw, ns, &onlycmpdsug);
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       if (ns == -1)
         break;
-      char wspace[MAXWORDUTF8LEN];
-      memcpy(wspace, cw, (wl + 1));
-      mkallsmall2(wspace, unicw, nc);
-      ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
+      std::string wspace(scw);
+      mkallsmall2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
       break;
     }
     case HUHINITCAP:
@@ -966,25 +979,32 @@ int Hunspell::suggest(char*** slst, const char* word) {
             }
           }
         }
+
+        if (!new_string_synced) {
+          scw = std::string(cw);
+          sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+          new_string_synced = true;
+        }
+
+        std::string wspace;
+
         if (captype == HUHINITCAP) {
           // TheOpenOffice.org -> The OpenOffice.org
-          char wspace[MAXWORDUTF8LEN];
-          memcpy(wspace, cw, (wl + 1));
-          mkinitsmall2(wspace, unicw, nc);
-          ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
+          wspace = scw;
+          mkinitsmall2(wspace, sunicw);
+          ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
         }
-        std::string u8buffer(cw, wl);
-        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        mkallsmall2(u8buffer, u16buffer);
-        if (spell(u8buffer.c_str()))
-          ns = insert_sug(slst, u8buffer.c_str(), ns);
+        wspace = scw;
+        mkallsmall2(wspace, sunicw);
+        if (spell(wspace.c_str()))
+          ns = insert_sug(slst, wspace.c_str(), ns);
         prevns = ns;
-        ns = pSMgr->suggest(slst, u8buffer.c_str(), ns, &onlycmpdsug);
+        ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
         if (captype == HUHINITCAP) {
-          mkinitcap2(u8buffer, u16buffer);
-          if (spell(u8buffer.c_str()))
-            ns = insert_sug(slst, u8buffer.c_str(), ns);
-          ns = pSMgr->suggest(slst, u8buffer.c_str(), ns, &onlycmpdsug);
+          mkinitcap2(wspace, sunicw);
+          if (spell(wspace.c_str()))
+            ns = insert_sug(slst, wspace.c_str(), ns);
+          ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
         }
         // aNew -> "a New" (instead of "a new")
         for (int j = prevns; j < ns; j++) {
@@ -1599,18 +1619,14 @@ int Hunspell::mkinitcap2(std::string& u8, std::vector<w_char>& u16) {
   return u8.size();
 }
 
-int Hunspell::mkinitsmall2(char* p, w_char* u, int nc) {
-  if (!utf8) {
-    if (*p != '\0')
-      *p = csconv[((unsigned char)*p)].clower;
-  } else if (nc > 0) {
-    unsigned short i = unicodetolower((u[0].h << 8) + u[0].l, langnum);
-    u[0].h = (unsigned char)(i >> 8);
-    u[0].l = (unsigned char)(i & 0x00FF);
-    u16_u8(p, MAXWORDUTF8LEN, u, nc);
-    return strlen(p);
+int Hunspell::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
+  if (utf8) {
+    ::mkinitsmall_utf(u16, langnum);
+    u16_u8(u8, u16);
+  } else {
+    ::mkinitsmall(u8, csconv);
   }
-  return nc;
+  return u8.size();
 }
 
 int Hunspell::add(const char* word) {

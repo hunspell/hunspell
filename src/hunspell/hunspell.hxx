@@ -250,7 +250,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   void mkinitcap(std::string& u8);
   int mkinitcap2(char* p, w_char* u, int nc);
   int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
-  int mkinitsmall2(char* p, w_char* u, int nc);
+  int mkinitsmall2(std::string& u8, std::vector<w_char>& u16);
   void mkallcap(char*);
   int mkallcap2(char* p, w_char* u, int nc);
   void mkallsmall(char*);

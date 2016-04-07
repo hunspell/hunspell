@@ -1077,6 +1077,24 @@ std::vector<w_char>& mkinitcap_utf(std::vector<w_char>& u, int langnum) {
   return u;
 }
 
+std::string& mkinitsmall(std::string& s, const struct cs_info* csconv) {
+  if (!s.empty()) {
+    s[0] = clower(csconv, static_cast<unsigned char>(s[0]));
+  }
+  return s;
+}
+
+std::vector<w_char>& mkinitsmall_utf(std::vector<w_char>& u, int langnum) {
+  if (!u.empty()) {
+    unsigned short idx = (u[0].h << 8) + u[0].l;
+    if (idx != unicodetolower(idx, langnum)) {
+      u[0].h = (unsigned char)(unicodetolower(idx, langnum) >> 8);
+      u[0].l = (unsigned char)(unicodetolower(idx, langnum) & 0x00FF);
+    }
+  }
+  return u;
+}
+
 // conversion function for protected memory
 void store_pointer(char* dest, char* source) {
   memcpy(dest, &source, sizeof(char*));
