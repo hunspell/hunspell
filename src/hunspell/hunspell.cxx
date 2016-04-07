@@ -950,40 +950,32 @@ int Hunspell::suggest(char*** slst, const char* word) {
     case HUHINITCAP:
       capwords = 1;
     case HUHCAP: {
-      ns = pSMgr->suggest(slst, cw, ns, &onlycmpdsug);
+
+      if (!new_string_synced) {
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_synced = true;
+      }
+
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
       if (ns != -1) {
-        int prevns;
         // something.The -> something. The
-        char* dot = strchr(cw, '.');
-        if (dot && (dot > cw)) {
+        size_t dot_pos = scw.find('.');
+        if (dot_pos != std::string::npos) {
+          std::string postdot = scw.substr(dot_pos + 1);
           int captype_;
           if (utf8) {
-            w_char w_[MAXWORDLEN];
-            int wl_ = u8_u16(w_, MAXWORDLEN, dot + 1);
-            captype_ = get_captype_utf8(w_, wl_, langnum);
-          } else
-            captype_ = get_captype(dot + 1, strlen(dot + 1), csconv);
-          if (captype_ == INITCAP) {
-            char* st = mystrdup(cw);
-            if (st) {
-              char* newst = (char*)realloc(st, wl + 2);
-              if (newst == NULL)
-                free(st);
-              st = newst;
-            }
-            if (st) {
-              st[(dot - cw) + 1] = ' ';
-              strcpy(st + (dot - cw) + 2, dot + 1);
-              ns = insert_sug(slst, st, ns);
-              free(st);
-            }
+            std::vector<w_char> postdotu;
+            u8_u16(postdotu, postdot);
+            captype_ = get_captype_utf8(postdotu.data(), postdotu.size(), langnum);
+          } else {
+            captype_ = get_captype(postdot.c_str(), postdot.size(), csconv);
           }
-        }
-
-        if (!new_string_synced) {
-          scw = std::string(cw);
-          sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-          new_string_synced = true;
+          if (captype_ == INITCAP) {
+            std::string str(cw);
+            str.insert(dot_pos + 1, 1, ' ');
+            ns = insert_sug(slst, str.c_str(), ns);
+          }
         }
 
         std::string wspace;
@@ -998,7 +990,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
         mkallsmall2(wspace, sunicw);
         if (spell(wspace.c_str()))
           ns = insert_sug(slst, wspace.c_str(), ns);
-        prevns = ns;
+        int prevns = ns;
         ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
         if (captype == HUHINITCAP) {
           mkinitcap2(wspace, sunicw);

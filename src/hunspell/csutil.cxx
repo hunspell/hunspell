@@ -3017,14 +3017,14 @@ int unicodeisalpha(unsigned short c) {
 }
 
 /* get type of capitalization */
-int get_captype(char* word, int nl, cs_info* csconv) {
+int get_captype(const char* word, int nl, cs_info* csconv) {
   // now determine the capitalization type of the first nl letters
   int ncap = 0;
   int nneutral = 0;
   int firstcap = 0;
   if (csconv == NULL)
     return NOCAP;
-  for (char* q = word; *q != '\0'; q++) {
+  for (const char* q = word; *q != '\0'; q++) {
     unsigned char nIndex = static_cast<unsigned char>(*q);
     if (ccase(csconv, nIndex))
       ncap++;
@@ -3049,7 +3049,7 @@ int get_captype(char* word, int nl, cs_info* csconv) {
   return HUHCAP;
 }
 
-int get_captype_utf8(w_char* word, int nl, int langnum) {
+int get_captype_utf8(const w_char* word, int nl, int langnum) {
   // now determine the capitalization type of the first nl letters
   int ncap = 0;
   int nneutral = 0;

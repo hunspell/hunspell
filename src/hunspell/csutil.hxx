@@ -296,10 +296,10 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 // get type of capitalization
-LIBHUNSPELL_DLL_EXPORTED int get_captype(char* q, int nl, cs_info*);
+LIBHUNSPELL_DLL_EXPORTED int get_captype(const char* q, int nl, cs_info*);
 
 // get type of capitalization (UTF-8)
-LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(w_char* q, int nl, int langnum);
+LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const w_char* q, int nl, int langnum);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars_utf(
