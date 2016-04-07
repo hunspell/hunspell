@@ -426,11 +426,6 @@ int Hunspell::insert_sug(char*** slst, const char* word, int ns) {
 
 int Hunspell::spell(const char* word, int* info, char** root) {
   struct hentry* rv = NULL;
-  // need larger vector. For example, Turkish capital letter I converted a
-  // 2-byte UTF-8 character (dotless i) by mkallsmall.
-  char cw[MAXWORDUTF8LEN];
-  char wspace[MAXWORDUTF8LEN];
-  w_char unicw[MAXWORDLEN];
 
   int info2 = 0;
   if (!info)
@@ -453,15 +448,27 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   int abbv = 0;
   int wl = 0;
 
+  std::string scw;
+  std::vector<w_char> sunicw;
+
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
-  if (convstatus < 0)
-    return 0;
-  else if (convstatus > 0)
-    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else
-    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  {
+    char cw[MAXWORDUTF8LEN];
+    w_char unicw[MAXWORDLEN];
+    char wspace[MAXWORDUTF8LEN];
+
+    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    if (convstatus < 0)
+      return 0;
+    else if (convstatus > 0)
+      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+    else
+      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
+    scw = std::string(cw);
+    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+  }
 
 #ifdef MOZILLA_CLIENT
   // accept the abbreviated words without dots
@@ -479,9 +486,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   enum { NBEGIN, NNUM, NSEP };
   int nstate = NBEGIN;
   int i;
-
-  std::string scw(cw);
-  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
 
   for (i = 0; (i < wl); i++) {
     if ((scw[i] <= '9') && (scw[i] >= '0')) {
