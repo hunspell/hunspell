@@ -42,6 +42,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <string>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -472,9 +473,7 @@ void pfx_chk(const char* word, int len, struct affent* ep, int num) {
   struct affent* aent;
   int cond;
   struct hentry* hent;
-  unsigned char* cp;
   int i;
-  char tword[MAX_WD_LEN];
 
   for (aent = ep, i = num; i > 0; aent++, i--) {
     int tlen = len - aent->appndl;
@@ -482,19 +481,18 @@ void pfx_chk(const char* word, int len, struct affent* ep, int num) {
     if (tlen > 0 &&
         (aent->appndl == 0 || strncmp(aent->appnd, word, aent->appndl) == 0) &&
         tlen + aent->stripl >= aent->numconds) {
-      if (aent->stripl)
-        strcpy(tword, aent->strip);
-      strcpy((tword + aent->stripl), (word + aent->appndl));
+      std::string tword(aent->strip);
+      tword.append(word + aent->appndl);
 
       /* now go through the conds and make sure they all match */
-      cp = (unsigned char*)tword;
+      unsigned char* cp = (unsigned char*)tword.c_str();
       for (cond = 0; cond < aent->numconds; cond++) {
         if ((aent->conds[*cp++] & (1 << cond)) == 0)
           break;
       }
 
       if (cond >= aent->numconds) {
-        if ((hent = lookup(tword)) != NULL) {
+        if ((hent = lookup(tword.c_str())) != NULL) {
           if (numroots < MAX_ROOTS) {
             roots[numroots].hashent = hent;
             roots[numroots].prefix = aent;
