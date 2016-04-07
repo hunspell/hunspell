@@ -136,7 +136,7 @@ am_testparser_OBJECTS = firstparser.$(OBJEXT) xmlparser.$(OBJEXT) \
 	textparser.$(OBJEXT) htmlparser.$(OBJEXT) odfparser.$(OBJEXT)
 testparser_OBJECTS = $(am_testparser_OBJECTS)
 testparser_LDADD = $(LDADD)
-testparser_DEPENDENCIES = ../hunspell/libhunspell-1.3.la
+testparser_DEPENDENCIES = ../hunspell/libhunspell-1.4.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -411,7 +411,7 @@ testparser_SOURCES = firstparser.cxx firstparser.hxx xmlparser.cxx \
 
 
 # need mystrdup()
-LDADD = ../hunspell/libhunspell-1.3.la
+LDADD = ../hunspell/libhunspell-1.4.la
 all: all-am
 
 .SUFFIXES:
