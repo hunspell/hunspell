@@ -437,8 +437,6 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
   int cond;
   unsigned char* cp;
   int i;
-  char tword[MAX_WD_LEN];
-  char* pp;
 
   for (aent = ep, i = num; i > 0; aent++, i--) {
     /* if conditions hold on root word
@@ -455,19 +453,12 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
       }
       if (cond < 0) {
         /* we have a matching condition */
-        int tlen = len;
-        strcpy(tword, word);
-        if (aent->stripl) {
-          tlen -= aent->stripl;
-        }
-        pp = (tword + tlen);
-        if (aent->appndl) {
-          strcpy(pp, aent->appnd);
-        } else
-          *pp = '\0';
+        std::string tword(word);
+        tword.resize(len - aent->stripl);
+        tword.append(aent->appnd);
 
         if (numwords < MAX_WORDS) {
-          wlist[numwords].word = mystrdup(tword);
+          wlist[numwords].word = mystrdup(tword.c_str());
           wlist[numwords].pallow = (aent->xpflg & XPRODUCT);
           numwords++;
         }
