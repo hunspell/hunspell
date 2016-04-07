@@ -1062,37 +1062,37 @@ int Hunspell::suggest(char*** slst, const char* word) {
   }
   // END OF LANG_hu section
 
+  std::string scw(cw);
+  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+
   // try ngram approach since found nothing or only compound words
   if (pAMgr && (ns == 0 || onlycmpdsug) && (pAMgr->get_maxngramsugs() != 0) &&
       (*slst)) {
     switch (captype) {
       case NOCAP: {
-        ns = pSMgr->ngsuggest(*slst, cw, ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, scw.c_str(), ns, pHMgr, maxdic);
         break;
       }
       case HUHINITCAP:
         capwords = 1;
       case HUHCAP: {
-        std::string u8buffer(cw, wl);
-        std::vector<w_char> u16buffer(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
-        mkallsmall2(u8buffer, u16buffer);
-        ns = pSMgr->ngsuggest(*slst, u8buffer.c_str(), ns, pHMgr, maxdic);
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
         break;
       }
       case INITCAP: {
         capwords = 1;
-        char wspace[MAXWORDUTF8LEN];
-        memcpy(wspace, cw, (wl + 1));
-        mkallsmall2(wspace, unicw, nc);
-        ns = pSMgr->ngsuggest(*slst, wspace, ns, pHMgr, maxdic);
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
         break;
       }
       case ALLCAP: {
-        char wspace[MAXWORDUTF8LEN];
-        memcpy(wspace, cw, (wl + 1));
-        mkallsmall2(wspace, unicw, nc);
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
         int oldns = ns;
-        ns = pSMgr->ngsuggest(*slst, wspace, ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
         for (int j = oldns; j < ns; j++)
           mkallcap((*slst)[j]);
         break;
@@ -1101,7 +1101,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
   }
 
   // try dash suggestion (Afo-American -> Afro-American)
-  std::string scw(cw);
   size_t dash_pos = scw.find('-');
   if (dash_pos != std::string::npos) {
     int nodashsug = 1;
