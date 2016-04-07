@@ -67,21 +67,17 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
-  int k;
-  int dp;
-  char buf[101];
-
   Hunspell* pMS = new Hunspell(argv[1], argv[2]);
 
   // load extra dictionaries
   if (argc > 4)
-    for (k = 3; k < argc - 1; k++)
+    for (int k = 3; k < argc - 1; ++k)
       pMS->add_dic(argv[k]);
 
-  while (fgets(buf, 100, wtclst)) {
-    k = strlen(buf);
-    *(buf + k - 1) = '\0';
-    dp = pMS->spell(buf);
+  char buf[100];
+  while (fgets(buf, sizeof(buf), wtclst)) {
+    buf[strcspn(buf, "\n")] = 0;
+    int dp = pMS->spell(buf);
     if (dp) {
       fprintf(stdout, "\"%s\" is okay\n", buf);
       fprintf(stdout, "\n");
