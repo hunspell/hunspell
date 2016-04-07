@@ -38,9 +38,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/* Un-munch a root word list with affix tags
- * to recreate the original word list
- */
+/* Munch a word list and generate a smaller root word list with affixes*/
 
 #include <ctype.h>
 #include <string.h>
@@ -51,37 +49,44 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
 
-#include "unmunch.h"
+#include "munch.h"
 
 int main(int argc, char** argv) {
-  int i;
-  int al, wl;
+  int i, j, k, n;
+  int rl, p, nwl;
+  int al;
 
   FILE* wrdlst;
   FILE* afflst;
 
-  char *wf, *af;
+  char *nword, *wf, *af;
+  char as[(MAX_PREFIXES + MAX_SUFFIXES)];
   char* ap;
-  char ts[MAX_LN_LEN];
+
+  struct hentry* ep;
+  struct hentry* ep1;
+  struct affent* pfxp;
+  struct affent* sfxp;
 
   (void)argc;
 
   /* first parse the command line options */
-  /* arg1 - munched wordlist, arg2 - affix file */
+  /* arg1 - wordlist, arg2 - affix file */
 
   if (argv[1]) {
     wf = mystrdup(argv[1]);
   } else {
     fprintf(stderr, "correct syntax is:\n");
-    fprintf(stderr, "unmunch dic_file affix_file\n");
+    fprintf(stderr, "munch word_list_file affix_file\n");
     exit(1);
   }
   if (argv[2]) {
     af = mystrdup(argv[2]);
   } else {
     fprintf(stderr, "correct syntax is:\n");
-    fprintf(stderr, "unmunch dic_file affix_file\n");
+    fprintf(stderr, "munch word_list_file affix_file\n");
     exit(1);
   }
 
@@ -97,13 +102,11 @@ int main(int argc, char** argv) {
 
   numpfx = 0;
   numsfx = 0;
-  fullstrip = 0;
 
   if (parse_aff_file(afflst)) {
     fprintf(stderr, "Error - in affix file loading\n");
     exit(1);
   }
-
   fclose(afflst);
 
   fprintf(stderr, "parsed in %d prefixes and %d suffixes\n", numpfx, numsfx);
@@ -117,45 +120,130 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
-  /* skip over the hash table size */
-  if (!fgets(ts, MAX_LN_LEN - 1, wrdlst)) {
-    fclose(wrdlst);
-    return 2;
+  if (load_tables(wrdlst)) {
+    fprintf(stderr, "Error building hash tables\n");
+    exit(1);
   }
-  mychomp(ts);
-
-  while (fgets(ts, MAX_LN_LEN - 1, wrdlst)) {
-    mychomp(ts);
-    /* split each line into word and affix char strings */
-    ap = strchr(ts, '/');
-    if (ap) {
-      *ap = '\0';
-      ap++;
-      al = strlen(ap);
-    } else {
-      al = 0;
-      ap = NULL;
-    }
-
-    wl = strlen(ts);
-
-    numwords = 0;
-    wlist[numwords].word = mystrdup(ts);
-    wlist[numwords].pallow = 0;
-    numwords++;
-
-    if (al)
-      expand_rootword(ts, wl, ap);
-
-    for (i = 0; i < numwords; i++) {
-      fprintf(stdout, "%s\n", wlist[i].word);
-      free(wlist[i].word);
-      wlist[i].word = NULL;
-      wlist[i].pallow = 0;
-    }
-  }
-
   fclose(wrdlst);
+
+  for (i = 0; i < tablesize; i++) {
+    ep = &tableptr[i];
+    if (ep->word == NULL)
+      continue;
+    for (; ep != NULL; ep = ep->next) {
+      numroots = 0;
+      aff_chk(ep->word, strlen(ep->word));
+      if (numroots) {
+        /* now there might be a number of combinations */
+        /* of prefixes and suffixes that might match this */
+        /* word.  So how to choose?  As a first shot look */
+        /* for the shortest remaining root word to */
+        /* to maximize the combinatorial power */
+
+        /* but be careful, do not REQUIRE a specific combination */
+        /* of a prefix and a suffix to generate the word since */
+        /* that violates the rule that the root word with just */
+        /* the prefix or just the suffix must also exist in the */
+        /* wordlist as well */
+
+        /* in fact because of the cross product issue, this not a  */
+        /* simple choice since some combinations of previous */
+        /* prefixes and new suffixes may not be valid. */
+        /*  The only way to know is to simply try them all */
+
+        rl = 1000;
+        p = -1;
+
+        for (j = 0; j < numroots; j++) {
+          /* first collect the root word info and build up */
+          /* the potential new affix string */
+          nword = (roots[j].hashent)->word;
+          nwl = strlen(nword);
+          *as = '\0';
+          ap = as;
+          if (roots[j].prefix)
+            *ap++ = (roots[j].prefix)->achar;
+          if (roots[j].suffix)
+            *ap++ = (roots[j].suffix)->achar;
+          if ((roots[j].hashent)->affstr) {
+            strcpy(ap, (roots[j].hashent)->affstr);
+          } else {
+            *ap = '\0';
+          }
+          al = strlen(as);
+
+          /* now expand the potential affix string to generate */
+          /* all legal words and make sure they all exist in the */
+          /* word list */
+          numwords = 0;
+          wlist[numwords].word = mystrdup(nword);
+          wlist[numwords].pallow = 0;
+          numwords++;
+          n = 0;
+          if (al)
+            expand_rootword(nword, nwl, as);
+          for (k = 0; k < numwords; k++) {
+            if (lookup(wlist[k].word))
+              n++;
+            free(wlist[k].word);
+            wlist[k].word = NULL;
+            wlist[k].pallow = 0;
+          }
+
+          /* if all exist in word list then okay */
+          if (n == numwords) {
+            if (nwl < rl) {
+              rl = nwl;
+              p = j;
+            }
+          }
+        }
+        if (p != -1) {
+          ep1 = roots[p].hashent;
+          pfxp = roots[p].prefix;
+          sfxp = roots[p].suffix;
+          ep1->keep = 1;
+          if (pfxp != NULL)
+            add_affix_char(ep1, pfxp->achar);
+          if (sfxp != NULL)
+            add_affix_char(ep1, sfxp->achar);
+        } else {
+          ep->keep = 1;
+        }
+      } else {
+        ep->keep = 1;
+      }
+    }
+  }
+
+  /* now output only the words to keep along with affixes info */
+  /* first count how many words that is */
+  k = 0;
+  for (i = 0; i < tablesize; i++) {
+    ep = &tableptr[i];
+    if (ep->word == NULL)
+      continue;
+    for (; ep != NULL; ep = ep->next) {
+      if (ep->keep > 0)
+        k++;
+    }
+  }
+  fprintf(stdout, "%d\n", k);
+
+  for (i = 0; i < tablesize; i++) {
+    ep = &tableptr[i];
+    if (ep->word == NULL)
+      continue;
+    for (; ep != NULL; ep = ep->next) {
+      if (ep->keep > 0) {
+        if (ep->affstr != NULL) {
+          fprintf(stdout, "%s/%s\n", ep->word, ep->affstr);
+        } else {
+          fprintf(stdout, "%s\n", ep->word);
+        }
+      }
+    }
+  }
   return 0;
 }
 
@@ -167,14 +255,12 @@ int parse_aff_file(FILE* afflst) {
   char ft;
   struct affent* ptr = NULL;
   struct affent* nptr = NULL;
-  char* line = malloc(MAX_LN_LEN);
+  char* line = (char*)malloc(MAX_LN_LEN);
 
   while (fgets(line, MAX_LN_LEN, afflst)) {
     mychomp(line);
     ft = ' ';
     fprintf(stderr, "parsing line: %s\n", line);
-    if (strncmp(line, "FULLSTRIP", 9) == 0)
-      fullstrip = 1;
     if (strncmp(line, "PFX", 3) == 0)
       ft = 'P';
     if (strncmp(line, "SFX", 3) == 0)
@@ -182,8 +268,8 @@ int parse_aff_file(FILE* afflst) {
     if (ft != ' ') {
       char* tp = line;
       char* piece;
-      ff = 0;
       i = 0;
+      ff = 0;
       while ((piece = mystrsep(&tp, ' '))) {
         if (*piece != '\0') {
           switch (i) {
@@ -205,7 +291,7 @@ int parse_aff_file(FILE* afflst) {
                 fprintf(stderr, "Error: too many entries: %d\n", numents);
                 numents = 0;
               } else {
-                ptr = malloc(numents * sizeof(struct affent));
+                ptr = (struct affent*)malloc(numents * sizeof(struct affent));
                 ptr->achar = achar;
                 ptr->xpflg = ff;
                 fprintf(stderr, "parsing %c entries %d\n", achar, numents);
@@ -257,16 +343,6 @@ int parse_aff_file(FILE* afflst) {
                   nptr->appnd = mystrdup("");
                   nptr->appndl = 0;
                 }
-                if (strchr(nptr->appnd, '/')) {
-                  char* addseparator =
-                      (char*)realloc(nptr->appnd, nptr->appndl + 2);
-                  if (addseparator) {
-                    nptr->appndl++;
-                    addseparator[nptr->appndl - 1] = '|';
-                    addseparator[nptr->appndl] = '\0';
-                    nptr->appnd = addseparator;
-                  }
-                }
                 break;
               }
               case 4: {
@@ -283,22 +359,18 @@ int parse_aff_file(FILE* afflst) {
         }
         nptr++;
       }
-      if (ptr) {
-        if (ft == 'P') {
-          ptable[numpfx].aep = ptr;
-          ptable[numpfx].num = numents;
-          fprintf(stderr, "ptable %d num is %d flag %c\n", numpfx,
-                  ptable[numpfx].num, ptr->achar);
-          numpfx++;
-        } else if (ft == 'S') {
-          stable[numsfx].aep = ptr;
-          stable[numsfx].num = numents;
-          fprintf(stderr, "stable %d num is %d flag %c\n", numsfx,
-                  stable[numsfx].num, ptr->achar);
-          numsfx++;
-        }
-        ptr = NULL;
+      if (ft == 'P') {
+        ptable[numpfx].aep = ptr;
+        ptable[numpfx].num = numents;
+        fprintf(stderr, "ptable %d num is %d\n", numpfx, ptable[numpfx].num);
+        numpfx++;
+      } else {
+        stable[numsfx].aep = ptr;
+        stable[numsfx].num = numents;
+        fprintf(stderr, "stable %d num is %d\n", numsfx, stable[numsfx].num);
+        numsfx++;
       }
+      ptr = NULL;
       nptr = NULL;
       numents = 0;
       achar = '\0';
@@ -395,6 +467,247 @@ void encodeit(struct affent* ptr, char* cs) {
   return;
 }
 
+/* search for a prefix */
+void pfx_chk(const char* word, int len, struct affent* ep, int num) {
+  struct affent* aent;
+  int cond;
+  struct hentry* hent;
+  unsigned char* cp;
+  int i;
+  char tword[MAX_WD_LEN];
+
+  for (aent = ep, i = num; i > 0; aent++, i--) {
+    int tlen = len - aent->appndl;
+
+    if (tlen > 0 &&
+        (aent->appndl == 0 || strncmp(aent->appnd, word, aent->appndl) == 0) &&
+        tlen + aent->stripl >= aent->numconds) {
+      if (aent->stripl)
+        strcpy(tword, aent->strip);
+      strcpy((tword + aent->stripl), (word + aent->appndl));
+
+      /* now go through the conds and make sure they all match */
+      cp = (unsigned char*)tword;
+      for (cond = 0; cond < aent->numconds; cond++) {
+        if ((aent->conds[*cp++] & (1 << cond)) == 0)
+          break;
+      }
+
+      if (cond >= aent->numconds) {
+        if ((hent = lookup(tword)) != NULL) {
+          if (numroots < MAX_ROOTS) {
+            roots[numroots].hashent = hent;
+            roots[numroots].prefix = aent;
+            roots[numroots].suffix = NULL;
+            numroots++;
+          }
+        }
+      }
+    }
+  }
+}
+
+void suf_chk(const char* word,
+             int len,
+             struct affent* ep,
+             int num,
+             struct affent* pfxent,
+             int cpflag) {
+  struct affent* aent;
+  int tlen;
+  int cond;
+  struct hentry* hent;
+  unsigned char* cp;
+  int i;
+  char tword[MAX_WD_LEN];
+
+  for (aent = ep, i = num; i > 0; aent++, i--) {
+    if ((cpflag & XPRODUCT) != 0 && (aent->xpflg & XPRODUCT) == 0)
+      continue;
+
+    tlen = len - aent->appndl;
+    if (tlen > 0 &&
+        (aent->appndl == 0 || strcmp(aent->appnd, (word + tlen)) == 0) &&
+        tlen + aent->stripl >= aent->numconds) {
+      strcpy(tword, word);
+      cp = (unsigned char*)(tword + tlen);
+      if (aent->stripl) {
+        strcpy((char*)cp, aent->strip);
+        tlen += aent->stripl;
+        cp = (unsigned char*)(tword + tlen);
+      } else
+        *cp = '\0';
+
+      for (cond = aent->numconds; --cond >= 0;) {
+        if ((aent->conds[*--cp] & (1 << cond)) == 0)
+          break;
+      }
+      if (cond < 0) {
+        if ((hent = lookup(tword)) != NULL) {
+          if (numroots < MAX_ROOTS) {
+            roots[numroots].hashent = hent;
+            roots[numroots].prefix = pfxent;
+            roots[numroots].suffix = aent;
+            numroots++;
+          }
+        }
+      }
+    }
+  }
+}
+
+void aff_chk(const char* word, int len) {
+  int i;
+  int j;
+  int nh = 0;
+  char* nword;
+  int nwl;
+
+  if (len < 4)
+    return;
+
+  for (i = 0; i < numpfx; i++) {
+    pfx_chk(word, len, ptable[i].aep, ptable[i].num);
+  }
+
+  nh = numroots;
+
+  if (nh > 0) {
+    for (j = 0; j < nh; j++) {
+      if (roots[j].prefix->xpflg & XPRODUCT) {
+        nword = mystrdup((roots[j].hashent)->word);
+        nwl = strlen(nword);
+        for (i = 0; i < numsfx; i++) {
+          suf_chk(nword, nwl, stable[i].aep, stable[i].num, roots[j].prefix,
+                  XPRODUCT);
+        }
+        free(nword);
+      }
+    }
+  }
+  for (i = 0; i < numsfx; i++) {
+    suf_chk(word, len, stable[i].aep, stable[i].num, NULL, 0);
+  }
+}
+
+/* lookup a root word in the hashtable */
+
+struct hentry* lookup(const char* word) {
+  struct hentry* dp;
+  dp = &tableptr[hash(word)];
+  if (dp->word == NULL)
+    return NULL;
+  for (; dp != NULL; dp = dp->next) {
+    if (strcmp(word, dp->word) == 0)
+      return dp;
+  }
+  return NULL;
+}
+
+/* add a word to the hash table */
+
+int add_word(char* word) {
+  int i;
+  struct hentry* dp;
+  struct hentry* hp = (struct hentry*)malloc(sizeof(struct hentry));
+
+  hp->word = word;
+  hp->affstr = NULL;
+  hp->keep = 0;
+  hp->next = NULL;
+
+  i = hash(word);
+  dp = &tableptr[i];
+
+  if (dp->word == NULL) {
+    *dp = *hp;
+    free(hp);
+  } else {
+    while (dp->next != NULL)
+      dp = dp->next;
+    dp->next = hp;
+  }
+  return 0;
+}
+
+/* load a word list and build a hash table on the fly */
+
+int load_tables(FILE* wdlst) {
+  char* ap;
+  char ts[MAX_LN_LEN];
+  int nExtra = 5;
+
+  /* first read the first line of file to get hash table size */
+  if (!fgets(ts, MAX_LN_LEN - 1, wdlst))
+    return 2;
+  mychomp(ts);
+  tablesize = atoi(ts);
+
+  if (tablesize <= 0 ||
+      (tablesize >= (INT_MAX - 1 - nExtra) / (int)sizeof(struct hentry*))) {
+    return 3;
+  }
+
+  tablesize += nExtra;
+  if ((tablesize % 2) == 0)
+    tablesize++;
+
+  /* allocate the hash table */
+  tableptr = (struct hentry*)calloc(tablesize, sizeof(struct hentry));
+  if (!tableptr)
+    return 3;
+
+  /* loop thorugh all words on much list and add to hash
+   * table and store away word and affix strings in tmpfile
+   */
+
+  while (fgets(ts, MAX_LN_LEN - 1, wdlst)) {
+    mychomp(ts);
+    ap = mystrdup(ts);
+    add_word(ap);
+  }
+  return 0;
+}
+
+/* the hash function is a simple load and rotate
+ * algorithm borrowed
+ */
+
+int hash(const char* word) {
+  int i;
+  long hv = 0;
+  for (i = 0; i < 4 && *word != 0; i++)
+    hv = (hv << 8) | (*word++);
+  while (*word != 0) {
+    ROTATE(hv, ROTATE_LEN);
+    hv ^= (*word++);
+  }
+  return (unsigned long)hv % tablesize;
+}
+
+void add_affix_char(struct hentry* ep, char ac) {
+  int al;
+  int i;
+  char* tmp;
+  if (ep->affstr == NULL) {
+    ep->affstr = (char*)malloc(2);
+    *(ep->affstr) = ac;
+    *((ep->affstr) + 1) = '\0';
+    return;
+  }
+  al = strlen(ep->affstr);
+  for (i = 0; i < al; i++)
+    if (ac == (ep->affstr)[i])
+      return;
+  tmp = (char*)calloc(al + 2, 1);
+  memcpy(tmp, ep->affstr, (al + 1));
+  *(tmp + al) = ac;
+  *(tmp + al + 1) = '\0';
+  free(ep->affstr);
+  ep->affstr = tmp;
+  return;
+}
+
 /* add a prefix to word */
 void pfx_add(const char* word, int len, struct affent* ep, int num) {
   struct affent* aent;
@@ -406,9 +719,7 @@ void pfx_add(const char* word, int len, struct affent* ep, int num) {
 
   for (aent = ep, i = num; i > 0; aent++, i--) {
     /* now make sure all conditions match */
-    if ((len + fullstrip > aent->stripl) && (len >= aent->numconds) &&
-        ((aent->stripl == 0) ||
-         (strncmp(aent->strip, word, aent->stripl) == 0))) {
+    if ((len > aent->stripl) && (len >= aent->numconds)) {
       cp = (unsigned char*)word;
       for (cond = 0; cond < aent->numconds; cond++) {
         if ((aent->conds[*cp++] & (1 << cond)) == 0)
@@ -418,7 +729,8 @@ void pfx_add(const char* word, int len, struct affent* ep, int num) {
         /* we have a match so add prefix */
         int tlen = 0;
         if (aent->appndl) {
-          strcpy(tword, aent->appnd);
+          strncpy(tword, aent->appnd, MAX_WD_LEN - 1);
+          tword[MAX_WD_LEN - 1] = '\0';
           tlen += aent->appndl;
         }
         pp = tword + tlen;
@@ -448,9 +760,7 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
      * then strip off strip string and add suffix
      */
 
-    if ((len + fullstrip > aent->stripl) && (len >= aent->numconds) &&
-        ((aent->stripl == 0) ||
-         (strcmp(aent->strip, word + len - aent->stripl) == 0))) {
+    if ((len > aent->stripl) && (len >= aent->numconds)) {
       cp = (unsigned char*)(word + len);
       for (cond = aent->numconds; --cond >= 0;) {
         if ((aent->conds[*--cp] & (1 << cond)) == 0)
@@ -459,7 +769,8 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
       if (cond < 0) {
         /* we have a matching condition */
         int tlen = len;
-        strcpy(tword, word);
+        strncpy(tword, word, MAX_WD_LEN - 1);
+        tword[MAX_WD_LEN - 1] = '\0';
         if (aent->stripl) {
           tlen -= aent->stripl;
         }
@@ -560,7 +871,7 @@ char* mystrdup(const char* s) {
 
 void mychomp(char* s) {
   int k = strlen(s);
-  if ((k > 0) && (*(s + k - 1) == '\n'))
+  if (k > 0)
     *(s + k - 1) = '\0';
   if ((k > 1) && (*(s + k - 2) == '\r'))
     *(s + k - 2) = '\0';

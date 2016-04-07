@@ -78,7 +78,7 @@ void code2table(struct item* tree, char** table, char* code, int deep) {
   int first = 0;
   if (!code) {
     first = 1;
-    code = malloc(CODELEN);
+    code = (char*)malloc(CODELEN);
   }
   code[deep] = '1';
   if (tree->left)
@@ -88,7 +88,7 @@ void code2table(struct item* tree, char** table, char* code, int deep) {
     code[deep] = '\0';
     if (tree->type == code_TERM)
       i = CODELEN; /* terminal code */
-    table[i] = malloc(deep + 1);
+    table[i] = (char*)malloc(deep + 1);
     strcpy(table[i], code);
   }
   code[deep] = '0';

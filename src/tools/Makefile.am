@@ -2,12 +2,12 @@ bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
 
 INCLUDES=-I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
-hzip_SOURCES=hzip.c
+hzip_SOURCES=hzip.cxx
 hunzip_SOURCES=hunzip.cxx
 hunzip_LDADD = ../hunspell/libhunspell-1.4.la
 
-munch_SOURCES=munch.c munch.h
-unmunch_SOURCES=unmunch.c unmunch.h
+munch_SOURCES=munch.cxx munch.h
+unmunch_SOURCES=unmunch.cxx unmunch.h
 
 example_SOURCES=example.cxx
 example_LDADD = ../hunspell/libhunspell-1.4.la
