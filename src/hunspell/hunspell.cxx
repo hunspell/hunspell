@@ -913,6 +913,10 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
   }
 
+  bool new_string_synced = false;
+  std::string scw;
+  std::vector<w_char> sunicw;
+
   switch (captype) {
     case NOCAP: {
       ns = pSMgr->suggest(slst, cw, ns, &onlycmpdsug);
@@ -1007,16 +1011,22 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
 
     case ALLCAP: {
-      char wspace[MAXWORDUTF8LEN];
-      memcpy(wspace, cw, (wl + 1));
-      mkallsmall2(wspace, unicw, nc);
-      ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
+
+      if (!new_string_synced) {
+        scw = std::string(cw);
+        sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+        new_string_synced = true;
+      }
+
+      std::string wspace(scw);
+      mkallsmall2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
       if (ns == -1)
         break;
-      if (pAMgr && pAMgr->get_keepcase() && spell(wspace))
-        ns = insert_sug(slst, wspace, ns);
-      mkinitcap2(wspace, unicw, nc);
-      ns = pSMgr->suggest(slst, wspace, ns, &onlycmpdsug);
+      if (pAMgr && pAMgr->get_keepcase() && spell(wspace.c_str()))
+        ns = insert_sug(slst, wspace.c_str(), ns);
+      mkinitcap2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
       for (int j = 0; j < ns; j++) {
         mkallcap((*slst)[j]);
         if (pAMgr && pAMgr->get_checksharps()) {
@@ -1042,6 +1052,11 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
   }
 
+  if (!new_string_synced) {
+    scw = std::string(cw);
+    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+  }
+
   // LANG_hu section: replace '-' with ' ' in Hungarian
   if (langnum == LANG_hu) {
     for (int j = 0; j < ns; j++) {
@@ -1061,9 +1076,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
     }
   }
   // END OF LANG_hu section
-
-  std::string scw(cw);
-  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
 
   // try ngram approach since found nothing or only compound words
   if (pAMgr && (ns == 0 || onlycmpdsug) && (pAMgr->get_maxngramsugs() != 0) &&
