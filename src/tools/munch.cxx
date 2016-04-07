@@ -512,36 +512,29 @@ void suf_chk(const char* word,
              struct affent* pfxent,
              int cpflag) {
   struct affent* aent;
-  int tlen;
   int cond;
   struct hentry* hent;
-  unsigned char* cp;
   int i;
-  char tword[MAX_WD_LEN];
 
   for (aent = ep, i = num; i > 0; aent++, i--) {
     if ((cpflag & XPRODUCT) != 0 && (aent->xpflg & XPRODUCT) == 0)
       continue;
 
-    tlen = len - aent->appndl;
+    int tlen = len - aent->appndl;
     if (tlen > 0 &&
         (aent->appndl == 0 || strcmp(aent->appnd, (word + tlen)) == 0) &&
         tlen + aent->stripl >= aent->numconds) {
-      strcpy(tword, word);
-      cp = (unsigned char*)(tword + tlen);
-      if (aent->stripl) {
-        strcpy((char*)cp, aent->strip);
-        tlen += aent->stripl;
-        cp = (unsigned char*)(tword + tlen);
-      } else
-        *cp = '\0';
+      std::string tword(word);
+      tword.resize(tlen);
+      tword.append(aent->strip);
+      unsigned char* cp = (unsigned char*)(tword.c_str() + tword.size());
 
       for (cond = aent->numconds; --cond >= 0;) {
         if ((aent->conds[*--cp] & (1 << cond)) == 0)
           break;
       }
       if (cond < 0) {
-        if ((hent = lookup(tword)) != NULL) {
+        if ((hent = lookup(tword.c_str())) != NULL) {
           if (numroots < MAX_ROOTS) {
             roots[numroots].hashent = hent;
             roots[numroots].prefix = pfxent;
