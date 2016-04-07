@@ -1098,11 +1098,9 @@ int Hunspell::suggest(char*** slst, const char* word) {
   size_t dash_pos = scw.find('-');
   if (dash_pos != std::string::npos) {
     int nodashsug = 1;
-    if (*slst) {
-      for (int j = 0; j < ns && nodashsug == 1; j++) {
-        if (strchr((*slst)[j], '-'))
-          nodashsug = 0;
-      }
+    for (int j = 0; j < ns && nodashsug == 1; j++) {
+      if (strchr((*slst)[j], '-'))
+        nodashsug = 0;
     }
 
     size_t prev_pos = 0;
