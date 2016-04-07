@@ -1101,31 +1101,33 @@ int Hunspell::suggest(char*** slst, const char* word) {
   }
 
   // try dash suggestion (Afo-American -> Afro-American)
-  if (char* pos = strchr(cw, '-')) {
-    char* ppos = cw;
+  std::string scw(cw);
+  size_t dash_pos = scw.find('-');
+  if (dash_pos != std::string::npos) {
     int nodashsug = 1;
-    char** nlst = NULL;
-    int nn = 0;
-    int last = 0;
     if (*slst) {
       for (int j = 0; j < ns && nodashsug == 1; j++) {
         if (strchr((*slst)[j], '-'))
           nodashsug = 0;
       }
     }
+
+    size_t prev_pos = 0;
+    bool last = false;
+
     while (nodashsug && !last) {
-      if (*pos == '\0')
+      if (dash_pos == scw.size())
         last = 1;
-      else
-        *pos = '\0';
-      if (!spell(ppos)) {
-        nn = suggest(&nlst, ppos);
+      std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
+      if (!spell(chunk.c_str())) {
+        char** nlst = NULL;
+        int nn = suggest(&nlst, chunk.c_str());
         for (int j = nn - 1; j >= 0; j--) {
-          std::string wspace(cw, ppos - cw);
+          std::string wspace = scw.substr(0, prev_pos);
           wspace.append(nlst[j]);
           if (!last) {
             wspace.append("-");
-            wspace.append(pos + 1);
+            wspace.append(scw.substr(dash_pos + 1));
           }
           ns = insert_sug(slst, wspace.c_str(), ns);
           free(nlst[j]);
@@ -1135,12 +1137,11 @@ int Hunspell::suggest(char*** slst, const char* word) {
         nodashsug = 0;
       }
       if (!last) {
-        *pos = '-';
-        ppos = pos + 1;
-        pos = strchr(ppos, '-');
+        prev_pos = dash_pos + 1;
+        dash_pos = scw.find('-', prev_pos);
       }
-      if (!pos)
-        pos = cw + strlen(cw);
+      if (dash_pos == std::string::npos)
+        dash_pos = scw.size();
     }
   }
 
