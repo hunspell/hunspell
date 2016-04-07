@@ -44,6 +44,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <string>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -401,8 +402,6 @@ void pfx_add(const char* word, int len, struct affent* ep, int num) {
   int cond;
   unsigned char* cp;
   int i;
-  char* pp;
-  char tword[MAX_WD_LEN];
 
   for (aent = ep, i = num; i > 0; aent++, i--) {
     /* now make sure all conditions match */
@@ -415,17 +414,15 @@ void pfx_add(const char* word, int len, struct affent* ep, int num) {
           break;
       }
       if (cond >= aent->numconds) {
+        std::string tword;
         /* we have a match so add prefix */
-        int tlen = 0;
         if (aent->appndl) {
-          strcpy(tword, aent->appnd);
-          tlen += aent->appndl;
+          tword.append(aent->appnd);
         }
-        pp = tword + tlen;
-        strcpy(pp, (word + aent->stripl));
+        tword.append(word + aent->stripl);
 
         if (numwords < MAX_WORDS) {
-          wlist[numwords].word = mystrdup(tword);
+          wlist[numwords].word = mystrdup(tword.c_str());
           wlist[numwords].pallow = 0;
           numwords++;
         }
