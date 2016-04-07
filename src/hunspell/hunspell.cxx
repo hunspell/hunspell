@@ -563,7 +563,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
         new_string_in_sync = true;
 
-        wl = mkallsmall2(scw, sunicw);
+        mkallsmall2(scw, sunicw);
         std::string u8buffer(scw);
         rv = spellsharps(u8buffer, 0, 0, 0, info, root);
         if (!rv) {
