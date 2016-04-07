@@ -573,8 +573,7 @@ void load_privdic(const char* filename, Hunspell* pMS) {
   FILE* dic = fopen(filename, "r");
   if (dic) {
     while (fgets(buf, MAXLNLEN, dic)) {
-      if (*(buf + strlen(buf) - 1) == '\n')
-        *(buf + strlen(buf) - 1) = '\0';
+      buf[strcspn(buf, "\n")] = 0;
       putdic(buf, pMS);
     }
     fclose(dic);
@@ -741,8 +740,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
 
 nextline:
   while (fgets(buf, MAXLNLEN, fileid)) {
-    if (*(buf + strlen(buf) - 1) == '\n')
-      *(buf + strlen(buf) - 1) = '\0';
+    buf[strcspn(buf, "\n")] = 0;
     lineno++;
 #ifdef LOG
     log(buf);

@@ -49,15 +49,9 @@ using namespace std;
 #endif
 
 int main(int, char** argv) {
-  FILE* wtclst;
-  int i;
-  int dp;
-  char buf[101];
-  Hunspell* pMS;
-
   /* first parse the command line options */
 
-  for (i = 1; i < 3; i++)
+  for (int i = 1; i < 3; ++i)
     if (!argv[i]) {
       fprintf(stderr, "correct syntax is:\nanalyze affix_file");
       fprintf(stderr, " dictionary_file file_of_words_to_check\n");
@@ -67,15 +61,16 @@ int main(int, char** argv) {
 
   /* open the words to check list */
 
-  wtclst = fopen(argv[3], "r");
+  FILE* wtclst = fopen(argv[3], "r");
   if (!wtclst) {
     fprintf(stderr, "Error - could not open file to check\n");
     exit(1);
   }
 
-  pMS = new Hunspell(argv[1], argv[2]);
-  while (fgets(buf, 100, wtclst)) {
-    *(buf + strlen(buf) - 1) = '\0';
+  Hunspell* pMS = new Hunspell(argv[1], argv[2]);
+  char buf[100];
+  while (fgets(buf, sizeof(buf), wtclst)) {
+    buf[strcspn(buf, "\n")] = 0;
     if (*buf == '\0')
       continue;
     // morphgen demo
@@ -91,7 +86,7 @@ int main(int, char** argv) {
       if (n == 0)
         fprintf(stdout, "generate(%s, %s) = NO DATA\n", buf, s + 1);
     } else {
-      dp = pMS->spell(buf);
+      int dp = pMS->spell(buf);
       fprintf(stdout, "> %s\n", buf);
       if (dp) {
         char** result;
