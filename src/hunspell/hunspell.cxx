@@ -480,10 +480,13 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   int nstate = NBEGIN;
   int i;
 
+  std::string scw(cw);
+  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+
   for (i = 0; (i < wl); i++) {
-    if ((cw[i] <= '9') && (cw[i] >= '0')) {
+    if ((scw[i] <= '9') && (scw[i] >= '0')) {
       nstate = NNUM;
-    } else if ((cw[i] == ',') || (cw[i] == '.') || (cw[i] == '-')) {
+    } else if ((scw[i] == ',') || (scw[i] == '.') || (scw[i] == '-')) {
       if ((nstate == NSEP) || (i == 0))
         break;
       nstate = NSEP;
@@ -492,9 +495,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   }
   if ((i == wl) && (nstate == NNUM))
     return 1;
-
-  std::string scw(cw);
-  std::vector<w_char> sunicw(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
 
   switch (captype) {
     case HUHCAP:
