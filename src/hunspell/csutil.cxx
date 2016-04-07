@@ -281,7 +281,7 @@ int u8_u16(w_char* dest, int size, const char* src) {
           u2->h = ((*u8 & 0x0f) << 4) + ((*(u8 + 1) & 0x3f) >> 2);
           u8++;
           if ((*(u8 + 1) & 0xc0) == 0x80) {
-            u2->l = (*u8 << 6) + (*(u8 + 1) & 0x3f);
+            u2->l = (static_cast<unsigned char>(*u8) << 6) + (*(u8 + 1) & 0x3f);
             u8++;
           } else {
             HUNSPELL_WARNING(stderr,
@@ -370,7 +370,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
           u2.h = ((*u8 & 0x0f) << 4) + ((*(u8 + 1) & 0x3f) >> 2);
           ++u8;
           if ((*(u8 + 1) & 0xc0) == 0x80) {
-            u2.l = (*u8 << 6) + (*(u8 + 1) & 0x3f);
+            u2.l = (static_cast<unsigned char>(*u8) << 6) + (*(u8 + 1) & 0x3f);
             ++u8;
           } else {
             HUNSPELL_WARNING(stderr,
