@@ -1499,17 +1499,20 @@ int AffixMgr::cpdcase_check(const char* word, int pos) {
   return 0;
 }
 
+struct metachar_data {
+  signed short btpp;  // metacharacter (*, ?) position for backtracking
+  signed short btwp;  // word position for metacharacters
+  int btnum;          // number of matched characters in metacharacter
+};
+
 // check compound patterns
 int AffixMgr::defcpd_check(hentry*** words,
                            short wnum,
                            hentry* rv,
                            hentry** def,
                            char all) {
-  signed short
-      btpp[MAXWORDLEN];  // metacharacter (*, ?) positions for backtracking
-  signed short btwp[MAXWORDLEN];  // word positions for metacharacters
-  int btnum[MAXWORDLEN];  // number of matched characters in metacharacter
-                          // positions
+  metachar_data btinfo[MAXWORDLEN];
+
   short bt = 0;
   int i, j;
   int ok;
@@ -1564,8 +1567,8 @@ int AffixMgr::defcpd_check(hentry*** words,
           int wend = (defcpdtable[i].def[pp + 1] == '?') ? wp : wnum;
           ok2 = 1;
           pp += 2;
-          btpp[bt] = pp;
-          btwp[bt] = wp;
+          btinfo[bt].btpp = pp;
+          btinfo[bt].btwp = wp;
           while (wp <= wend) {
             if (!(*words)[wp]->alen ||
                 !TESTAFF((*words)[wp]->astr, defcpdtable[i].def[pp - 2],
@@ -1577,8 +1580,8 @@ int AffixMgr::defcpd_check(hentry*** words,
           }
           if (wp <= wnum)
             ok2 = 0;
-          btnum[bt] = wp - btwp[bt];
-          if (btnum[bt] > 0)
+          btinfo[bt].btnum = wp - btinfo[bt].btwp;
+          if (btinfo[bt].btnum > 0)
             bt++;
           if (ok2)
             break;
@@ -1609,10 +1612,10 @@ int AffixMgr::defcpd_check(hentry*** words,
       if (bt)
         do {
           ok = 1;
-          btnum[bt - 1]--;
-          pp = btpp[bt - 1];
-          wp = btwp[bt - 1] + (signed short)btnum[bt - 1];
-        } while ((btnum[bt - 1] < 0) && --bt);
+          btinfo[bt - 1].btnum--;
+          pp = btinfo[bt - 1].btpp;
+          wp = btinfo[bt - 1].btwp + (signed short)btinfo[bt - 1].btnum;
+        } while ((btinfo[bt - 1].btnum < 0) && --bt);
     } while (bt);
 
     if (ok && ok2 && (!all || (defcpdtable[i].len <= pp)))
