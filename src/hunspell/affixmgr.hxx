@@ -260,7 +260,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                       int,
                       char*);
 
-  short get_syllable(const char* word, int wlen);
+  short get_syllable(const std::string& word);
   int cpdrep_check(const char* word, int len);
   int cpdpat_check(const char* word,
                    int len,

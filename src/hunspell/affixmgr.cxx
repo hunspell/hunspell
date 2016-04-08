@@ -1650,20 +1650,20 @@ inline int AffixMgr::candidate_check(const char* word, int len) {
 }
 
 // calculate number of syllable for compound-checking
-short AffixMgr::get_syllable(const char* word, int wlen) {
+short AffixMgr::get_syllable(const std::string& word) {
   if (cpdmaxsyllable == 0)
     return 0;
 
   short num = 0;
 
   if (!utf8) {
-    for (int i = 0; i < wlen; i++) {
+    for (int i = 0; i < word.size(); ++i) {
       if (strchr(cpdvowels, word[i]))
         num++;
     }
   } else if (cpdvowels_utf16) {
-    w_char w[MAXWORDUTF8LEN];
-    int i = u8_u16(w, MAXWORDUTF8LEN, word);
+    std::vector<w_char> w;
+    int i = u8_u16(w, word);
     for (; i > 0; i--) {
       if (std::binary_search(cpdvowels_utf16,
                              cpdvowels_utf16 + cpdvowels_utf16_len,
@@ -1956,10 +1956,10 @@ struct hentry* AffixMgr::compound_check(const char* word,
           // LANG_hu section: spec. Hungarian rule
           if (langnum == LANG_hu) {
             // calculate syllable number of the word
-            numsyllable += get_syllable(st, i);
+            numsyllable += get_syllable(std::string(st, i));
             // + 1 word, if syllable number of the prefix > 1 (hungarian
             // convention)
-            if (pfx && (get_syllable(pfx->getKey(), strlen(pfx->getKey())) > 1))
+            if (pfx && (get_syllable(pfx->getKey()) > 1))
               wordnum++;
           }
           // END of LANG_hu section
@@ -2041,7 +2041,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                  (compoundend && TESTAFF(rv->astr, compoundend, rv->alen))) &&
                 (((cpdwordmax == -1) || (wordnum + 1 < cpdwordmax)) ||
                  ((cpdmaxsyllable != 0) &&
-                  (numsyllable + get_syllable(HENTRY_WORD(rv), rv->clen) <=
+                  (numsyllable + get_syllable(std::string(HENTRY_WORD(rv), rv->clen)) <=
                    cpdmaxsyllable))) &&
                 (
                     // test CHECKCOMPOUNDPATTERN
@@ -2125,20 +2125,19 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
             if (langnum == LANG_hu) {
               // calculate syllable number of the word
-              numsyllable += get_syllable(word + i, strlen(word + i));
+              numsyllable += get_syllable(word + i);
 
               // - affix syllable num.
               // XXX only second suffix (inflections, not derivations)
               if (sfxappnd) {
                 char* tmp = myrevstrdup(sfxappnd);
-                numsyllable -= get_syllable(tmp, strlen(tmp)) + sfxextra;
+                numsyllable -= get_syllable(tmp) + sfxextra;
                 free(tmp);
               }
 
               // + 1 word, if syllable number of the prefix > 1 (hungarian
               // convention)
-              if (pfx &&
-                  (get_syllable(pfx->getKey(), strlen(pfx->getKey())) > 1))
+              if (pfx && (get_syllable(pfx->getKey()) > 1))
                 wordnum++;
 
               // increment syllable num, if last word has a SYLLABLENUM flag
@@ -2530,11 +2529,11 @@ int AffixMgr::compound_check_morph(const char* word,
         // LANG_hu section: spec. Hungarian rule
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(st, i);
+          numsyllable += get_syllable(std::string(st, i));
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
           // convention)
-          if (pfx && (get_syllable(pfx->getKey(), strlen(pfx->getKey())) > 1))
+          if (pfx && (get_syllable(pfx->getKey()) > 1))
             wordnum++;
         }
         // END of LANG_hu section
@@ -2610,7 +2609,7 @@ int AffixMgr::compound_check_morph(const char* word,
              (compoundend && TESTAFF(rv->astr, compoundend, rv->alen))) &&
             (((cpdwordmax == -1) || (wordnum + 1 < cpdwordmax)) ||
              ((cpdmaxsyllable != 0) &&
-              (numsyllable + get_syllable(HENTRY_WORD(rv), rv->blen) <=
+              (numsyllable + get_syllable(std::string(HENTRY_WORD(rv), rv->blen)) <=
                cpdmaxsyllable))) &&
             ((!checkcompounddup || (rv != rv_first)))) {
           // bad compound word
@@ -2703,19 +2702,19 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(word + i, strlen(word + i));
+          numsyllable += get_syllable(word + i);
 
           // - affix syllable num.
           // XXX only second suffix (inflections, not derivations)
           if (sfxappnd) {
             char* tmp = myrevstrdup(sfxappnd);
-            numsyllable -= get_syllable(tmp, strlen(tmp)) + sfxextra;
+            numsyllable -= get_syllable(tmp) + sfxextra;
             free(tmp);
           }
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
           // convention)
-          if (pfx && (get_syllable(pfx->getKey(), strlen(pfx->getKey())) > 1))
+          if (pfx && (get_syllable(pfx->getKey()) > 1))
             wordnum++;
 
           // increment syllable num, if last word has a SYLLABLENUM flag
