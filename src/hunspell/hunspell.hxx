@@ -263,6 +263,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(char* result, char* st);
+  void cat_result(std::string& result, char* st);
   char* stem_description(const char* desc);
   int spellml(char*** slst, const char* word);
   int get_xml_par(char* dest, const char* par, int maxl);

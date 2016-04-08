@@ -1624,6 +1624,15 @@ void Hunspell::cat_result(char* result, char* st) {
   }
 }
 
+void Hunspell::cat_result(std::string& result, char* st) {
+  if (st) {
+    if (!result.empty())
+      result.append("\n");
+    result.append(st);
+    free(st);
+  }
+}
+
 int Hunspell::analyze(char*** slst, const char* word) {
   char cw[MAXWORDUTF8LEN];
   w_char unicw[MAXWORDLEN];
@@ -1667,10 +1676,8 @@ int Hunspell::analyze(char*** slst, const char* word) {
       return 0;
   }
 
-  char result[MAXLNLEN];
+  std::string result;
   char* st = NULL;
-
-  *result = '\0';
 
   int n = 0;
   int n2 = 0;
@@ -1695,19 +1702,19 @@ int Hunspell::analyze(char*** slst, const char* word) {
       return 0;
     if ((n == wl) || ((n > 0) && ((cw[n] == '%') || (cw[n] == '\xB0')) &&
                       checkword(cw + n, NULL, NULL))) {
-      mystrcat(result, cw, MAXLNLEN);
-      result[n - 1] = '\0';
+      result.append(cw);
+      result.resize(n - 1);
       if (n == wl)
         cat_result(result, pSMgr->suggest_morph(cw + n - 1));
       else {
         char sign = cw[n];
         cw[n] = '\0';
         cat_result(result, pSMgr->suggest_morph(cw + n - 1));
-        mystrcat(result, "+", MAXLNLEN);  // XXX SPEC. MORPHCODE
+        result.push_back('+');  // XXX SPEC. MORPHCODE
         cw[n] = sign;
         cat_result(result, pSMgr->suggest_morph(cw + n));
       }
-      return line_tok(result, slst, MSEP_REC);
+      return line_tok(result.c_str(), slst, MSEP_REC);
     }
   }
   // END OF LANG_hu section
@@ -1767,7 +1774,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
     }
   }
 
-  if (*result) {
+  if (!result.empty()) {
     // word reversing wrapper for complex prefixes
     if (complexprefixes) {
       if (utf8)
@@ -1775,7 +1782,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       else
         reverseword(result);
     }
-    return line_tok(result, slst, MSEP_REC);
+    return line_tok(result.c_str(), slst, MSEP_REC);
   }
 
   // compound word with dash (HU) I18n
@@ -1800,16 +1807,16 @@ int Hunspell::analyze(char*** slst, const char* word) {
       if (spell(cw) && (spell("-e"))) {
         st = pSMgr->suggest_morph(cw);
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
         }
-        mystrcat(result, "+", MAXLNLEN);  // XXX spec. separator in MORPHCODE
+        result.push_back('+');  // XXX spec. separator in MORPHCODE
         st = pSMgr->suggest_morph("-e");
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
         }
-        return line_tok(result, slst, MSEP_REC);
+        return line_tok(result.c_str(), slst, MSEP_REC);
       }
     } else {
       // first word ending with dash: word- XXX ???
@@ -1823,16 +1830,16 @@ int Hunspell::analyze(char*** slst, const char* word) {
           ((strlen(dash + 1) > 1) || ((dash[1] > '0') && (dash[1] < '9')))) {
         st = pSMgr->suggest_morph(cw);
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
-          mystrcat(result, "+", MAXLNLEN);  // XXX spec. separator in MORPHCODE
+          result.push_back('+');  // XXX spec. separator in MORPHCODE
         }
         st = pSMgr->suggest_morph(dash + 1);
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
         }
-        return line_tok(result, slst, MSEP_REC);
+        return line_tok(result.c_str(), slst, MSEP_REC);
       }
     }
     // affixed number in correct word
@@ -1856,14 +1863,14 @@ int Hunspell::analyze(char*** slst, const char* word) {
       for (; n >= 1; n--) {
         if ((*(dash - n) >= '0') && (*(dash - n) <= '9') &&
             checkword(dash - n, NULL, NULL)) {
-          mystrcat(result, cw, MAXLNLEN);
-          result[dash - cw - n] = '\0';
+          result.append(cw);
+          result.resize(dash - cw - n);
           st = pSMgr->suggest_morph(dash - n);
           if (st) {
-            mystrcat(result, st, MAXLNLEN);
+            result.append(st);
             free(st);
           }
-          return line_tok(result, slst, MSEP_REC);
+          return line_tok(result.c_str(), slst, MSEP_REC);
         }
       }
     }
