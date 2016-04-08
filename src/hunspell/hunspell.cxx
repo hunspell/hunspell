@@ -1049,11 +1049,10 @@ int Hunspell::suggest(char*** slst, const char* word) {
       char* pos = strchr((*slst)[j], '-');
       if (pos) {
         int info;
-        char w[MAXWORDUTF8LEN];
         *pos = '\0';
-        strcpy(w, (*slst)[j]);
-        strcat(w, pos + 1);
-        (void)spell(w, &info, NULL);
+        std::string w((*slst)[j]);
+        w.append(pos + 1);
+        (void)spell(w.c_str(), &info, NULL);
         if ((info & SPELL_COMPOUND) && (info & SPELL_FORBIDDEN)) {
           *pos = ' ';
         } else
