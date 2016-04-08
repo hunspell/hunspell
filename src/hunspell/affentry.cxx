@@ -342,8 +342,6 @@ char* PfxEntry::check_twosfx_morph(const char* word,
                                    int len,
                                    char in_compound,
                                    const FLAG needflag) {
-  char tmpword[MAXTEMPWORDLEN];
-
   // on entry prefix is 0 length or already matches the beginning of the word.
   // So if the remaining root word has positive length
   // and if there are enough chars in root word and added back strip chars
@@ -356,11 +354,8 @@ char* PfxEntry::check_twosfx_morph(const char* word,
     // generate new root word by removing prefix and adding
     // back any characters that would have been stripped
 
-    if (strip.size()) {
-      strncpy(tmpword, strip.c_str(), MAXTEMPWORDLEN - 1);
-      tmpword[MAXTEMPWORDLEN - 1] = '\0';
-    }
-    strcpy((tmpword + strip.size()), (word + appnd.size()));
+    std::string tmpword(strip);
+    tmpword.append(word + appnd.size());
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -370,7 +365,7 @@ char* PfxEntry::check_twosfx_morph(const char* word,
     // if all conditions are met then check if resulting
     // root word in the dictionary
 
-    if (test_condition(tmpword)) {
+    if (test_condition(tmpword.c_str())) {
       tmpl += strip.size();
 
       // prefix matched but no root word was found
@@ -378,7 +373,8 @@ char* PfxEntry::check_twosfx_morph(const char* word,
       // ross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        return pmyMgr->suffix_check_twosfx_morph(tmpword, tmpl, aeXPRODUCT,
+        return pmyMgr->suffix_check_twosfx_morph(tmpword.c_str(), tmpl,
+                                                 aeXPRODUCT,
                                                  this, needflag);
       }
     }
