@@ -1626,7 +1626,6 @@ void Hunspell::cat_result(char* result, char* st) {
 
 int Hunspell::analyze(char*** slst, const char* word) {
   char cw[MAXWORDUTF8LEN];
-  char wspace[MAXWORDUTF8LEN];
   w_char unicw[MAXWORDLEN];
   int wl2 = 0;
   *slst = NULL;
@@ -1646,13 +1645,17 @@ int Hunspell::analyze(char*** slst, const char* word) {
 
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
-  if (convstatus < 0)
-    return 0;
-  else if (convstatus > 0)
-    wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
-  else
-    wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  {
+    char wspace[MAXWORDUTF8LEN];
+
+    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    if (convstatus < 0)
+      return 0;
+    else if (convstatus > 0)
+      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+    else
+      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+  }
 
   if (wl == 0) {
     if (abbv) {
