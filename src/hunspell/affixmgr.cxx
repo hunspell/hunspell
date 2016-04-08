@@ -1511,11 +1511,6 @@ int AffixMgr::defcpd_check(hentry*** words,
                            hentry* rv,
                            hentry** def,
                            char all) {
-  metachar_data btinfo[MAXWORDLEN];
-
-  short bt = 0;
-  int i, j;
-  int ok;
   int w = 0;
 
   if (!*words) {
@@ -1527,6 +1522,11 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
 
+  std::vector<metachar_data> btinfo(1);
+
+  short bt = 0;
+  int i, j;
+
   (*words)[wnum] = rv;
 
   // has the last word COMPOUNDRULE flag?
@@ -1536,7 +1536,7 @@ int AffixMgr::defcpd_check(hentry*** words,
       *words = NULL;
     return 0;
   }
-  ok = 0;
+  int ok = 0;
   for (i = 0; i < numdefcpd; i++) {
     for (j = 0; j < defcpdtable[i].len; j++) {
       if (defcpdtable[i].def[j] != '*' && defcpdtable[i].def[j] != '?' &&
@@ -1581,8 +1581,10 @@ int AffixMgr::defcpd_check(hentry*** words,
           if (wp <= wnum)
             ok2 = 0;
           btinfo[bt].btnum = wp - btinfo[bt].btwp;
-          if (btinfo[bt].btnum > 0)
-            bt++;
+          if (btinfo[bt].btnum > 0) {
+            ++bt;
+            btinfo.resize(bt+1);
+          }
           if (ok2)
             break;
         } else {
