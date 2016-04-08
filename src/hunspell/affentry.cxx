@@ -812,7 +812,7 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
     tmpl += strip.size();
 
     const char* beg = tmpword.c_str();
-    const char* st = beg + tmpl;
+    const char* end = beg + tmpl;
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -821,7 +821,7 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition(st, beg)) {
+    if (test_condition(end, beg)) {
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
@@ -848,7 +848,6 @@ char* SfxEntry::check_twosfx_morph(const char* word,
                                    PfxEntry* ppfx,
                                    const FLAG needflag) {
   unsigned char* cp;
-  char tmpword[MAXTEMPWORDLEN];
   PfxEntry* ep = ppfx;
   char* st;
 
@@ -875,15 +874,13 @@ char* SfxEntry::check_twosfx_morph(const char* word,
     // back any characters that would have been stripped or
     // or null terminating the shorter string
 
-    strncpy(tmpword, word, MAXTEMPWORDLEN - 1);
-    tmpword[MAXTEMPWORDLEN - 1] = '\0';
-    cp = (unsigned char*)(tmpword + tmpl);
-    if (strip.size()) {
-      strcpy((char*)cp, strip.c_str());
-      tmpl += strip.size();
-      cp = (unsigned char*)(tmpword + tmpl);
-    } else
-      *cp = '\0';
+    std::string tmpword(word);
+    tmpword.resize(tmpl);
+    tmpword.append(strip);
+    tmpl += strip.size();
+
+    const char* beg = tmpword.c_str();
+    const char* end = beg + tmpl;
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -892,11 +889,11 @@ char* SfxEntry::check_twosfx_morph(const char* word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition((char*)cp, (char*)tmpword)) {
+    if (test_condition(end, beg)) {
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen)) {
-          st = pmyMgr->suffix_check_morph(tmpword, tmpl, 0, NULL, aflag,
+          st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag,
                                           needflag);
           if (st) {
             if (ppfx->getMorph()) {
@@ -908,7 +905,7 @@ char* SfxEntry::check_twosfx_morph(const char* word,
             mychomp(result);
           }
         } else {
-          st = pmyMgr->suffix_check_morph(tmpword, tmpl, optflags, ppfx, aflag,
+          st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, optflags, ppfx, aflag,
                                           needflag);
           if (st) {
             mystrcat(result, st, MAXLNLEN);
@@ -918,7 +915,7 @@ char* SfxEntry::check_twosfx_morph(const char* word,
         }
       } else {
         st =
-            pmyMgr->suffix_check_morph(tmpword, tmpl, 0, NULL, aflag, needflag);
+            pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag, needflag);
         if (st) {
           mystrcat(result, st, MAXLNLEN);
           free(st);
