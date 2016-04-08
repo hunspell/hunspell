@@ -389,10 +389,7 @@ char* PfxEntry::check_morph(const char* word,
                             const FLAG needflag) {
   struct hentry* he;  // hash entry of root word or NULL
   char tmpword[MAXTEMPWORDLEN];
-  char result[MAXLNLEN];
   char* st;
-
-  *result = '\0';
 
   // on entry prefix is 0 length or already matches the beginning of the word.
   // So if the remaining root word has positive length
@@ -421,6 +418,8 @@ char* PfxEntry::check_morph(const char* word,
     // root word in the dictionary
 
     if (test_condition(tmpword)) {
+      std::string result;
+
       tmpl += strip.size();
       if ((he = pmyMgr->lookup(tmpword)) != NULL) {
         do {
@@ -431,28 +430,28 @@ char* PfxEntry::check_morph(const char* word,
               ((!needflag) || TESTAFF(he->astr, needflag, he->alen) ||
                (contclass && TESTAFF(contclass, needflag, contclasslen)))) {
             if (morphcode) {
-              mystrcat(result, " ", MAXLNLEN);
-              mystrcat(result, morphcode, MAXLNLEN);
+              result.append(" ");
+              result.append(morphcode);
             } else
-              mystrcat(result, getKey(), MAXLNLEN);
+              result.append(getKey());
             if (!HENTRY_FIND(he, MORPH_STEM)) {
-              mystrcat(result, " ", MAXLNLEN);
-              mystrcat(result, MORPH_STEM, MAXLNLEN);
-              mystrcat(result, HENTRY_WORD(he), MAXLNLEN);
+              result.append(" ");
+              result.append(MORPH_STEM);
+              result.append(HENTRY_WORD(he));
             }
             // store the pointer of the hash entry
             if (HENTRY_DATA(he)) {
-              mystrcat(result, " ", MAXLNLEN);
-              mystrcat(result, HENTRY_DATA2(he), MAXLNLEN);
+              result.append(" ");
+              result.append(HENTRY_DATA2(he));
             } else {
               // return with debug information
               char* flag = pmyMgr->encode_flag(getFlag());
-              mystrcat(result, " ", MAXLNLEN);
-              mystrcat(result, MORPH_FLAG, MAXLNLEN);
-              mystrcat(result, flag, MAXLNLEN);
+              result.append(" ");
+              result.append(MORPH_FLAG);
+              result.append(flag);
               free(flag);
             }
-            mystrcat(result, "\n", MAXLNLEN);
+            result.append("\n");
           }
           he = he->next_homonym;
         } while (he);
@@ -466,15 +465,16 @@ char* PfxEntry::check_morph(const char* word,
         st = pmyMgr->suffix_check_morph(tmpword, tmpl, aeXPRODUCT, this,
                                         FLAG_NULL, needflag);
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
         }
       }
+
+      if (!result.empty())
+        return mystrdup(result.c_str());
     }
   }
 
-  if (*result)
-    return mystrdup(result);
   return NULL;
 }
 
