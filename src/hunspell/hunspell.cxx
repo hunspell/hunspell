@@ -1677,7 +1677,6 @@ int Hunspell::analyze(char*** slst, const char* word) {
   }
 
   std::string result;
-  char* st = NULL;
 
   int n = 0;
   int n2 = 0;
@@ -1805,7 +1804,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       }
     } else if ((dash[1] == 'e') && (dash[2] == '\0')) {  // XXX (HU) -e hat.
       if (spell(cw) && (spell("-e"))) {
-        st = pSMgr->suggest_morph(cw);
+        char* st = pSMgr->suggest_morph(cw);
         if (st) {
           result.append(st);
           free(st);
@@ -1828,7 +1827,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       dash[0] = '\0';
       if (nresult && spell(dash + 1) &&
           ((strlen(dash + 1) > 1) || ((dash[1] > '0') && (dash[1] < '9')))) {
-        st = pSMgr->suggest_morph(cw);
+        char* st = pSMgr->suggest_morph(cw);
         if (st) {
           result.append(st);
           free(st);
@@ -1865,7 +1864,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
             checkword(dash - n, NULL, NULL)) {
           result.append(cw);
           result.resize(dash - cw - n);
-          st = pSMgr->suggest_morph(dash - n);
+          char* st = pSMgr->suggest_morph(dash - n);
           if (st) {
             result.append(st);
             free(st);
