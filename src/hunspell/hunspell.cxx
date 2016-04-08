@@ -1744,7 +1744,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
         memcpy(wspace, cw, wl);
         *(wspace + wl) = '.';
         *(wspace + wl + 1) = '\0';
-        cat_result(result, pSMgr->suggest_morph(cw));
+        cat_result(result, pSMgr->suggest_morph(wspace));
       }
       wl = mkallsmall2(cw, unicw, nc);
       memcpy(wspace, cw, (wl + 1));
