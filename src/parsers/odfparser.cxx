@@ -68,7 +68,7 @@ ODFParser::ODFParser(const char* wordchars) {
   init(wordchars);
 }
 
-ODFParser::ODFParser(unsigned short* wordchars, int len) {
+ODFParser::ODFParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 

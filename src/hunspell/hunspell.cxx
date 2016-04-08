@@ -726,7 +726,7 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
     w2.assign(w);
     if (utf8) {
       int ignoredchars_utf16_len;
-      unsigned short* ignoredchars_utf16 =
+      const w_char* ignoredchars_utf16 =
           pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
       remove_ignored_chars_utf(w2, ignoredchars_utf16, ignoredchars_utf16_len);
     } else {
@@ -1544,7 +1544,7 @@ const char* Hunspell::get_wordchars() {
   return pAMgr->get_wordchars();
 }
 
-unsigned short* Hunspell::get_wordchars_utf16(int* len) {
+const w_char* Hunspell::get_wordchars_utf16(int* len) {
   return pAMgr->get_wordchars_utf16(len);
 }
 
@@ -2347,7 +2347,7 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
     w2.assign(root_word);
     if (utf8) {
       int ignoredchars_utf16_len;
-      unsigned short* ignoredchars_utf16 =
+      const w_char* ignoredchars_utf16 =
           pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
       remove_ignored_chars_utf(w2, ignoredchars_utf16, ignoredchars_utf16_len);
     } else {

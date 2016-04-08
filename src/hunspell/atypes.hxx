@@ -57,6 +57,7 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 
 #include "hashmgr.hxx"
 #include "w_char.hxx"
+#include <algorithm>
 #include <string>
 
 #define SETSIZE 256
@@ -99,8 +100,7 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define FLAG_NULL 0x00
 #define FREE_FLAG(a) a = 0
 
-#define TESTAFF(a, b, c) \
-  (flag_bsearch((unsigned short*)a, (unsigned short)b, c))
+#define TESTAFF(a, b, c) (std::binary_search(a, a + c, b))
 
 struct affentry {
   std::string strip;

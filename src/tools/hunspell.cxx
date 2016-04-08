@@ -197,8 +197,8 @@ struct wordlist {
 char* wordchars = NULL;
 char* dicpath = NULL;
 int wordchars_len;
-unsigned short* wordchars_utf16 = NULL;
-int wordchars_utf16_free = 0;
+const w_char* wordchars_utf16 = NULL;
+bool wordchars_utf16_free = false;
 int wordchars_utf16_len;
 char* dicname = NULL;
 char* privdicname = NULL;
@@ -347,12 +347,12 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
         wordchars_utf16 =
-            (unsigned short*)malloc(sizeof(unsigned short) * wlen);
-        int n = u8_u16((w_char*)wordchars_utf16, wlen, text_conv);
+            (w_char*)malloc(sizeof(w_char) * wlen);
+        int n = u8_u16(wordchars_utf16, wlen, text_conv);
         if (n > 0)
           flag_qsort(wordchars_utf16, 0, n);
         wordchars_utf16_len = n;
-        wordchars_utf16_free = 1;
+        wordchars_utf16_free = true;
       }
     }
   } else {
@@ -2305,7 +2305,7 @@ int main(int argc, char** argv) {
   if (wordchars)
     free(wordchars);
   if (wordchars_utf16_free)
-    free(wordchars_utf16);
+    free(const_cast<w_char*>(wordchars_utf16));
 #ifdef HAVE_ICONV
   free_utf_tbl();
 #endif

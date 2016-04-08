@@ -42,13 +42,19 @@
 #define __WCHARHXX__
 
 #ifndef GCC
-typedef struct {
+struct w_char {
 #else
-typedef struct __attribute__((packed)) {
+struct __attribute__((packed)) w_char {
 #endif
   unsigned char l;
   unsigned char h;
-} w_char;
+
+  friend bool operator<(const w_char lhs, const w_char rhs) {
+    unsigned short l_idx = (lhs.h << 8) + lhs.l;
+    unsigned short r_idx = (rhs.h << 8) + rhs.l;
+    return l_idx < r_idx;
+  }
+};
 
 // two character arrays
 struct replentry {

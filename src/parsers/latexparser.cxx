@@ -132,7 +132,7 @@ LaTeXParser::LaTeXParser(const char* wordchars)
   init(wordchars);
 }
 
-LaTeXParser::LaTeXParser(unsigned short* wordchars, int len)
+LaTeXParser::LaTeXParser(const w_char* wordchars, int len)
     : pattern_num(0), depth(0), arg(0), opt(0) {
   init(wordchars, len);
 }

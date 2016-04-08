@@ -76,7 +76,7 @@ HTMLParser::HTMLParser(const char* wordchars) {
   init(wordchars);
 }
 
-HTMLParser::HTMLParser(unsigned short* wordchars, int len) {
+HTMLParser::HTMLParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 

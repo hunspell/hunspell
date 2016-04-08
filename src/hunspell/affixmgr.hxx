@@ -160,10 +160,10 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   PfxEntry* pfx;         // BUG: not stateless
   int checknum;
   char* wordchars;
-  unsigned short* wordchars_utf16;
+  w_char* wordchars_utf16;
   int wordchars_utf16_len;
   char* ignorechars;
-  unsigned short* ignorechars_utf16;
+  w_char* ignorechars_utf16;
   int ignorechars_utf16_len;
   char* version;
   char* lang;
@@ -317,9 +317,9 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   char* get_key_string();
   char* get_try_string() const;
   const char* get_wordchars() const;
-  unsigned short* get_wordchars_utf16(int* len) const;
+  const w_char* get_wordchars_utf16(int* len) const;
   char* get_ignore() const;
-  unsigned short* get_ignore_utf16(int* len) const;
+  const w_char* get_ignore_utf16(int* len) const;
   int get_compound() const;
   FLAG get_compoundflag() const;
   FLAG get_compoundbegin() const;

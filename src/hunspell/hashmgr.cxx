@@ -370,7 +370,7 @@ int HashMgr::remove(const char* word) {
       flags[dp->alen] = forbiddenword;
       dp->astr = flags;
       dp->alen++;
-      flag_qsort(flags, 0, dp->alen);
+      std::sort(flags, flags + dp->alen);
     }
     dp = dp->next_homonym;
   }
@@ -574,7 +574,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
           delete dict;
           return 6;
         }
-        flag_qsort(flags, 0, al);
+        std::sort(flags, flags + al);
       }
     } else {
       al = 0;
@@ -951,7 +951,7 @@ int HashMgr::parse_aliasf(char* line, FileMgr* af) {
           case 1: {
             aliasflen[j] =
                 (unsigned short)decode_flags(&(aliasf[j]), piece, af);
-            flag_qsort(aliasf[j], 0, aliasflen[j]);
+            std::sort(aliasf[j], aliasf[j] + aliasflen[j]);
             break;
           }
           default:

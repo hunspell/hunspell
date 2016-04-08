@@ -409,48 +409,6 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
   return dest.size();
 }
 
-void flag_qsort(unsigned short flags[], int begin, int end) {
-  unsigned short reg;
-  if (end > begin) {
-    unsigned short pivot = flags[begin];
-    int l = begin + 1;
-    int r = end;
-    while (l < r) {
-      if (flags[l] <= pivot) {
-        l++;
-      } else {
-        r--;
-        reg = flags[l];
-        flags[l] = flags[r];
-        flags[r] = reg;
-      }
-    }
-    l--;
-    reg = flags[begin];
-    flags[begin] = flags[l];
-    flags[l] = reg;
-
-    flag_qsort(flags, begin, l);
-    flag_qsort(flags, r, end);
-  }
-}
-
-int flag_bsearch(unsigned short flags[], unsigned short flag, int length) {
-  int mid;
-  int left = 0;
-  int right = length - 1;
-  while (left <= right) {
-    mid = (left + right) / 2;
-    if (flags[mid] == flag)
-      return 1;
-    if (flag < flags[mid])
-      right = mid - 1;
-    else
-      left = mid + 1;
-  }
-  return 0;
-}
-
 // strip strings into token based on single char delimiter
 // acts like strsep() but only uses a delim char and not
 // a delim string
@@ -3088,7 +3046,7 @@ int get_captype_utf8(const w_char* word, int nl, int langnum) {
 
 // strip all ignored characters in the string
 void remove_ignored_chars_utf(char* word,
-                              unsigned short ignored_chars[],
+                              const w_char* ignored_chars,
                               int ignored_len) {
   w_char w[MAXWORDLEN];
   w_char w2[MAXWORDLEN];
@@ -3096,7 +3054,9 @@ void remove_ignored_chars_utf(char* word,
   int j;
   int len = u8_u16(w, MAXWORDLEN, word);
   for (i = 0, j = 0; i < len; i++) {
-    if (!flag_bsearch(ignored_chars, ((unsigned short*)w)[i], ignored_len)) {
+    if (!std::binary_search(ignored_chars,
+                            ignored_chars + ignored_len,
+                            w[i])) {
       w2[j] = w[i];
       j++;
     }
@@ -3105,30 +3065,20 @@ void remove_ignored_chars_utf(char* word,
     u16_u8(word, MAXWORDUTF8LEN, w2, j);
 }
 
-namespace {
-union w_s {
-  w_char w;
-  unsigned short s;
-};
-
-unsigned short asushort(w_char in) {
-  w_s c;
-  c.w = in;
-  return c.s;
-}
-}
-
 // strip all ignored characters in the string
 std::string& remove_ignored_chars_utf(std::string& word,
-                                      unsigned short ignored_chars[],
+                                      const w_char* ignored_chars,
                                       int ignored_len) {
   std::vector<w_char> w;
   std::vector<w_char> w2;
   u8_u16(w, word);
 
   for (size_t i = 0; i < w.size(); ++i) {
-    if (!flag_bsearch(ignored_chars, asushort(w[i]), ignored_len))
+    if (!std::binary_search(ignored_chars,
+                            ignored_chars + ignored_len,
+                            w[i])) {
       w2.push_back(w[i]);
+    }
   }
 
   u16_u8(word, w2);
@@ -3207,7 +3157,7 @@ int parse_string(char* line, char** out, int ln) {
 
 int parse_array(char* line,
                 char** out,
-                unsigned short** out_utf16,
+                w_char** out_utf16,
                 int* out_utf16_len,
                 int utf8,
                 int ln) {
@@ -3217,11 +3167,11 @@ int parse_array(char* line,
     w_char w[MAXWORDLEN];
     int n = u8_u16(w, MAXWORDLEN, *out);
     if (n > 0) {
-      flag_qsort((unsigned short*)w, 0, n);
-      *out_utf16 = (unsigned short*)malloc(n * sizeof(unsigned short));
+      std::sort(w, w + n);
+      *out_utf16 = (w_char*)malloc(n * sizeof(w_char));
       if (!*out_utf16)
         return 1;
-      memcpy(*out_utf16, w, n * sizeof(unsigned short));
+      memcpy(*out_utf16, w, n * sizeof(w_char));
     }
     *out_utf16_len = n;
   }

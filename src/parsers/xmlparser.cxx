@@ -78,7 +78,7 @@ XMLParser::XMLParser(const char* wordchars)
   init(wordchars);
 }
 
-XMLParser::XMLParser(unsigned short* wordchars, int len)
+XMLParser::XMLParser(const w_char* wordchars, int len)
     : pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
   init(wordchars, len);
 }

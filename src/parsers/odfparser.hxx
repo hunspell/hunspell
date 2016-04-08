@@ -57,7 +57,7 @@
 class ODFParser : public XMLParser {
  public:
   ODFParser(const char* wc);
-  ODFParser(unsigned short* wordchars, int len);
+  ODFParser(const w_char* wordchars, int len);
   char* next_token();
   virtual ~ODFParser();
 };

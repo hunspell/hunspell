@@ -145,16 +145,6 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(w_char* dest, int size, const char* src);
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src);
 
-// sort 2-byte vector
-LIBHUNSPELL_DLL_EXPORTED void flag_qsort(unsigned short flags[],
-                                         int begin,
-                                         int end);
-
-// binary search in 2-byte vector
-LIBHUNSPELL_DLL_EXPORTED int flag_bsearch(unsigned short flags[],
-                                          unsigned short flag,
-                                          int right);
-
 // remove end of line char(s)
 LIBHUNSPELL_DLL_EXPORTED void mychomp(char* s);
 
@@ -304,12 +294,12 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const w_char* q, int nl, int langn
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars_utf(
     char* word,
-    unsigned short ignored_chars[],
+    const w_char* ignored_chars,
     int ignored_len);
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars_utf(
     std::string& word,
-    unsigned short ignored_chars[],
+    const w_char* ignored_chars,
     int ignored_len);
 
 // strip all ignored characters in the string
@@ -324,7 +314,7 @@ LIBHUNSPELL_DLL_EXPORTED int parse_string(char* line, char** out, int ln);
 
 LIBHUNSPELL_DLL_EXPORTED int parse_array(char* line,
                                          char** out,
-                                         unsigned short** out_utf16,
+                                         w_char** out_utf16,
                                          int* out_utf16_len,
                                          int utf8,
                                          int ln);

@@ -72,13 +72,13 @@
  */
 
 #include <stdlib.h>
-#include <string>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 
+#include <algorithm>
 #include <limits>
-
+#include <string>
 #include <vector>
 
 #include "affixmgr.hxx"
@@ -1665,9 +1665,11 @@ short AffixMgr::get_syllable(const char* word, int wlen) {
     w_char w[MAXWORDUTF8LEN];
     int i = u8_u16(w, MAXWORDUTF8LEN, word);
     for (; i > 0; i--) {
-      if (flag_bsearch((unsigned short*)cpdvowels_utf16,
-                       ((unsigned short*)w)[i - 1], cpdvowels_utf16_len))
-        num++;
+      if (std::binary_search(cpdvowels_utf16,
+                             cpdvowels_utf16 + cpdvowels_utf16_len,
+                             w[i - 1])) {
+        ++num;
+      }
     }
   }
   return num;
@@ -3653,7 +3655,7 @@ char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-unsigned short* AffixMgr::get_ignore_utf16(int* len) const {
+const w_char* AffixMgr::get_ignore_utf16(int* len) const {
   *len = ignorechars_utf16_len;
   return ignorechars_utf16;
 }
@@ -3677,7 +3679,7 @@ const char* AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-unsigned short* AffixMgr::get_wordchars_utf16(int* len) const {
+const w_char* AffixMgr::get_wordchars_utf16(int* len) const {
   *len = wordchars_utf16_len;
   return wordchars_utf16;
 }
@@ -3860,7 +3862,7 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
           } else {
             int n = u8_u16(w, MAXWORDLEN, piece);
             if (n > 0) {
-              flag_qsort((unsigned short*)w, 0, n);
+              std::sort(w, w + n);
               cpdvowels_utf16 = (w_char*)malloc(n * sizeof(w_char));
               if (!cpdvowels_utf16)
                 return 1;
@@ -4869,7 +4871,7 @@ int AffixMgr::parse_affix(char* line,
               } else {
                 entry->contclasslen = (unsigned short)pHMgr->decode_flags(
                     &(entry->contclass), dash + 1, af);
-                flag_qsort(entry->contclass, 0, entry->contclasslen);
+                std::sort(entry->contclass, entry->contclass + entry->contclasslen);
               }
               *dash = '/';
 

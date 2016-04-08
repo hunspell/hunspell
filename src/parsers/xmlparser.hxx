@@ -60,7 +60,7 @@ class XMLParser : public TextParser {
  public:
   XMLParser();
   XMLParser(const char* wc);
-  XMLParser(unsigned short* wordchars, int len);
+  XMLParser(const w_char* wordchars, int len);
   char* next_token(const char* p[][2],
                    unsigned int len,
                    const char* p2[][2],

@@ -80,6 +80,7 @@
 
 #include "htypes.hxx"
 #include "filemgr.hxx"
+#include "w_char.hxx"
 
 enum flag { FLAG_CHAR, FLAG_LONG, FLAG_NUM, FLAG_UNI };
 
@@ -95,7 +96,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   char* lang;
   struct cs_info* csconv;
   char* ignorechars;
-  unsigned short* ignorechars_utf16;
+  w_char* ignorechars_utf16;
   int ignorechars_utf16_len;
   int numaliasf;  // flag vector `compression' with aliases
   unsigned short** aliasf;

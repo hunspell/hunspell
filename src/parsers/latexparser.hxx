@@ -64,7 +64,7 @@ class LaTeXParser : public TextParser {
 
  public:
   LaTeXParser(const char* wc);
-  LaTeXParser(unsigned short* wordchars, int len);
+  LaTeXParser(const w_char* wordchars, int len);
   virtual ~LaTeXParser();
 
   virtual char* next_token();

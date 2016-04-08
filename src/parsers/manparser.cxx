@@ -56,7 +56,7 @@ ManParser::ManParser(const char* wordchars) {
   init(wordchars);
 }
 
-ManParser::ManParser(unsigned short* wordchars, int len) {
+ManParser::ManParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 

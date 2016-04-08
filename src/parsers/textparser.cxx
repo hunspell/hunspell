@@ -46,6 +46,8 @@
 #include "../hunspell/csutil.hxx"
 #include "textparser.hxx"
 
+#include <algorithm>
+
 #ifndef W32
 using namespace std;
 #endif
@@ -73,7 +75,7 @@ TextParser::TextParser(const char* wordchars) {
   init(wordchars);
 }
 
-TextParser::TextParser(unsigned short* wordchars, int len) {
+TextParser::TextParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 
@@ -89,7 +91,7 @@ int TextParser::is_wordchar(char* w) {
     idx = (wc.h << 8) + wc.l;
     return (unicodeisalpha(idx) ||
             (wordchars_utf16 &&
-             flag_bsearch(wordchars_utf16, *((unsigned short*)&wc), wclen)));
+             std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc)));
   } else {
     return wordcharacters[(*w + 256) % 256];
   }
@@ -129,7 +131,7 @@ void TextParser::init(const char* wordchars) {
   }
 }
 
-void TextParser::init(unsigned short* wc, int len) {
+void TextParser::init(const w_char* wc, int len) {
   for (int i = 0; i < MAXPREVLINE; i++) {
     line[i][0] = '\0';
   }

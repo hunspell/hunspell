@@ -56,6 +56,8 @@
 #define MAXLNLEN 8192
 #endif
 
+#include "../hunspell/w_char.hxx"
+
 /*
  * Base Text Parser
  *
@@ -73,15 +75,15 @@ class TextParser {
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
   int next_char(char* line, int* pos);
-  unsigned short* wordchars_utf16;
+  const w_char* wordchars_utf16;
   int wclen;
 
  public:
   TextParser();
-  TextParser(unsigned short* wordchars, int len);
+  TextParser(const w_char* wordchars, int len);
   TextParser(const char* wc);
   void init(const char*);
-  void init(unsigned short* wordchars, int len);
+  void init(const w_char* wordchars, int len);
   virtual ~TextParser();
 
   void put_line(char* line);
