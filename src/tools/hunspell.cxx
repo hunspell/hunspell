@@ -346,11 +346,12 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       } else {
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
-        wordchars_utf16 =
+        w_char* new_wordchars_utf16 =
             (w_char*)malloc(sizeof(w_char) * wlen);
-        int n = u8_u16(wordchars_utf16, wlen, text_conv);
+        int n = u8_u16(new_wordchars_utf16, wlen, text_conv);
         if (n > 0)
-          flag_qsort(wordchars_utf16, 0, n);
+          std::sort(new_wordchars_utf16, new_wordchars_utf16 + n);
+        wordchars_utf16 = new_wordchars_utf16;
         wordchars_utf16_len = n;
         wordchars_utf16_free = true;
       }
