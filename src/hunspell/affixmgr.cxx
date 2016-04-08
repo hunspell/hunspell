@@ -5107,11 +5107,7 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
           hentry* ht = ptr->checkword(nw.c_str(), nw.size(), 0, NULL, NULL, 0,
                                       NULL, 0, 0, 0);
           if (ht) {
-            slst[suff_words_cnt] = (char*)malloc(MAXWORDUTF8LEN * sizeof(char));
-            if (slst[suff_words_cnt]) {
-              strcpy(slst[suff_words_cnt], nw.c_str());
-              suff_words_cnt++;
-            }
+            slst[suff_words_cnt++] = mystrdup(nw.c_str());
           }
         }
         suff++;
