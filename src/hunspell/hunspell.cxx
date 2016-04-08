@@ -306,6 +306,17 @@ void Hunspell::mkallcap(char* p) {
   }
 }
 
+void Hunspell::mkallcap(std::string& u8) {
+  if (utf8) {
+    std::vector<w_char> u16;
+    u8_u16(u16, u8);
+    ::mkallcap_utf(u16, langnum);
+    u16_u8(u8, u16);
+  } else {
+    ::mkallcap(u8, csconv);
+  }
+}
+
 int Hunspell::mkallcap2(char* p, w_char* u, int nc) {
   if (utf8) {
     unsigned short idx;
@@ -326,13 +337,6 @@ int Hunspell::mkallcap2(char* p, w_char* u, int nc) {
     }
   }
   return nc;
-}
-
-void Hunspell::mkallsmall(char* p) {
-  while (*p != '\0') {
-    *p = csconv[((unsigned char)*p)].clower;
-    p++;
-  }
 }
 
 int Hunspell::mkallsmall2(char* p, w_char* u, int nc) {
@@ -1615,15 +1619,6 @@ struct cs_info* Hunspell::get_csconv() {
   return csconv;
 }
 
-void Hunspell::cat_result(char* result, char* st) {
-  if (st) {
-    if (*result)
-      mystrcat(result, "\n", MAXLNLEN);
-    mystrcat(result, st, MAXLNLEN);
-    free(st);
-  }
-}
-
 void Hunspell::cat_result(std::string& result, char* st) {
   if (st) {
     if (!result.empty())
@@ -1887,21 +1882,20 @@ int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
   int abbv = 0;
   char cw[MAXWORDUTF8LEN];
   cleanword(cw, word, &captype, &abbv);
-  char result[MAXLNLEN];
-  *result = '\0';
+  std::string result;
 
   for (int i = 0; i < pln; i++) {
     cat_result(result, pSMgr->suggest_gen(pl2, pl2n, pl[i]));
   }
   freelist(&pl2, pl2n);
 
-  if (*result) {
+  if (!result.empty()) {
     // allcap
     if (captype == ALLCAP)
       mkallcap(result);
 
     // line split
-    int linenum = line_tok(result, slst, MSEP_REC);
+    int linenum = line_tok(result.c_str(), slst, MSEP_REC);
 
     // capitalize
     if (captype == INITCAP || captype == HUHINITCAP) {
