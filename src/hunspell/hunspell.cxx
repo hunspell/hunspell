@@ -1715,10 +1715,9 @@ int Hunspell::analyze(char*** slst, const char* word) {
     case NOCAP: {
       cat_result(result, pSMgr->suggest_morph(cw));
       if (abbv) {
-        memcpy(wspace, cw, wl);
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        cat_result(result, pSMgr->suggest_morph(wspace));
+        std::string u8buffer(cw);
+        u8buffer.push_back('.');
+        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       }
       break;
     }
