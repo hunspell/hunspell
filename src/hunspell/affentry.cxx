@@ -785,8 +785,6 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
                                       PfxEntry* ppfx,
                                       const FLAG needflag) {
   struct hentry* he;  // hash entry pointer
-  unsigned char* cp;
-  char tmpword[MAXTEMPWORDLEN];
   PfxEntry* ep = ppfx;
 
   // if this suffix is being cross checked with a prefix
@@ -808,13 +806,14 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
     // back any characters that would have been stripped or
     // or null terminating the shorter string
 
+    char tmpword[MAXTEMPWORDLEN];
     strncpy(tmpword, word, MAXTEMPWORDLEN - 1);
     tmpword[MAXTEMPWORDLEN - 1] = '\0';
-    cp = (unsigned char*)(tmpword + tmpl);
+    char* cp = tmpword + tmpl;
     if (strip.size()) {
-      strcpy((char*)cp, strip.c_str());
+      strcpy(cp, strip.c_str());
       tmpl += strip.size();
-      cp = (unsigned char*)(tmpword + tmpl);
+      cp = tmpword + tmpl;
     } else
       *cp = '\0';
 
@@ -825,7 +824,7 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition((char*)cp, (char*)tmpword)) {
+    if (test_condition(cp, tmpword)) {
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
