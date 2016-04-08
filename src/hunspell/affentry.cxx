@@ -806,16 +806,13 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
     // back any characters that would have been stripped or
     // or null terminating the shorter string
 
-    char tmpword[MAXTEMPWORDLEN];
-    strncpy(tmpword, word, MAXTEMPWORDLEN - 1);
-    tmpword[MAXTEMPWORDLEN - 1] = '\0';
-    char* cp = tmpword + tmpl;
-    if (strip.size()) {
-      strcpy(cp, strip.c_str());
-      tmpl += strip.size();
-      cp = tmpword + tmpl;
-    } else
-      *cp = '\0';
+    std::string tmpword(word);
+    tmpword.resize(tmpl);
+    tmpword.append(strip);
+    tmpl += strip.size();
+
+    const char* beg = tmpword.c_str();
+    const char* st = beg + tmpl;
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -824,17 +821,17 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition(cp, tmpword)) {
+    if (test_condition(st, beg)) {
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
-          he = pmyMgr->suffix_check(tmpword, tmpl, 0, NULL, NULL, 0, NULL,
+          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
                                     (FLAG)aflag, needflag);
         else
-          he = pmyMgr->suffix_check(tmpword, tmpl, optflags, ppfx, NULL, 0,
+          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, optflags, ppfx, NULL, 0,
                                     NULL, (FLAG)aflag, needflag);
       } else {
-        he = pmyMgr->suffix_check(tmpword, tmpl, 0, NULL, NULL, 0, NULL,
+        he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
                                   (FLAG)aflag, needflag);
       }
       if (he)
