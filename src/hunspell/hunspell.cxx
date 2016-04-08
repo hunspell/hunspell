@@ -1741,27 +1741,24 @@ int Hunspell::analyze(char*** slst, const char* word) {
     case ALLCAP: {
       cat_result(result, pSMgr->suggest_morph(cw));
       if (abbv) {
-        memcpy(wspace, cw, wl);
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        cat_result(result, pSMgr->suggest_morph(wspace));
+        std::string u8buffer(cw);
+        u8buffer.push_back('.');
+        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       }
       wl = mkallsmall2(cw, unicw, nc);
-      memcpy(wspace, cw, (wl + 1));
+      std::string u8buffer(cw);
       wl2 = mkinitcap2(cw, unicw, nc);
 
-      cat_result(result, pSMgr->suggest_morph(wspace));
+      cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       cat_result(result, pSMgr->suggest_morph(cw));
       if (abbv) {
-        *(wspace + wl) = '.';
-        *(wspace + wl + 1) = '\0';
-        cat_result(result, pSMgr->suggest_morph(wspace));
+        u8buffer.push_back('.');
+        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
 
-        memcpy(wspace, cw, wl2);
-        *(wspace + wl2) = '.';
-        *(wspace + wl2 + 1) = '\0';
+        u8buffer = std::string(cw);
+        u8buffer.push_back('.');
 
-        cat_result(result, pSMgr->suggest_morph(wspace));
+        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       }
       break;
     }
