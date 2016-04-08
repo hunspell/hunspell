@@ -3846,7 +3846,6 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
   char* piece;
   int i = 0;
   int np = 0;
-  w_char w[MAXWORDLEN];
   piece = mystrsep(&tp, 0);
   while (piece) {
     if (*piece != '\0') {
@@ -3864,15 +3863,16 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
           if (!utf8) {
             cpdvowels = mystrdup(piece);
           } else {
-            int n = u8_u16(w, MAXWORDLEN, piece);
-            if (n > 0) {
-              std::sort(w, w + n);
-              cpdvowels_utf16 = (w_char*)malloc(n * sizeof(w_char));
+            std::vector<w_char> w;
+            u8_u16(w, piece);
+            if (!w.empty()) {
+              std::sort(w.begin(), w.end());
+              cpdvowels_utf16 = (w_char*)malloc(w.size() * sizeof(w_char));
               if (!cpdvowels_utf16)
                 return 1;
-              memcpy(cpdvowels_utf16, w, n * sizeof(w_char));
+              memcpy(cpdvowels_utf16, w.data(), w.size());
             }
-            cpdvowels_utf16_len = n;
+            cpdvowels_utf16_len = w.size();
           }
           np++;
           break;
