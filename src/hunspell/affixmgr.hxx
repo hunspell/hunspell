@@ -282,6 +282,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                                 short maxwordnum,
                                 short wnum,
                                 hentry** words,
+                                hentry** rwords,
                                 char hu_mov_rule,
                                 char is_sug,
                                 int* info);
@@ -293,6 +294,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                            short maxwordnum,
                            short wnum,
                            hentry** words,
+                           hentry** rwords,
                            char hu_mov_rule,
                            char** result,
                            char* partresult);

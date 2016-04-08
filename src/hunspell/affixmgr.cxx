@@ -1706,6 +1706,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                                         short maxwordnum,
                                         short wnum,
                                         hentry** words = NULL,
+                                        hentry** rwords = NULL,
                                         char hu_mov_rule = 0,
                                         char is_sug = 0,
                                         int* info = NULL) {
@@ -1713,7 +1714,6 @@ struct hentry* AffixMgr::compound_check(const char* word,
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   struct hentry* rv = NULL;
   struct hentry* rv_first;
-  struct hentry* rwords[MAXWORDLEN];  // buffer for COMPOUND pattern checking
   char st[MAXWORDUTF8LEN + 4];
   char ch = '\0';
   int cmin;
@@ -1805,9 +1805,9 @@ struct hentry* AffixMgr::compound_check(const char* word,
                    TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
                   (numdefcpd && onlycpdrule &&
                    ((!words && !wordnum &&
-                     defcpd_check(&words, wnum, rv, (hentry**)&rwords, 0)) ||
+                     defcpd_check(&words, wnum, rv, rwords, 0)) ||
                     (words &&
-                     defcpd_check(&words, wnum, rv, (hentry**)&rwords, 0))))) ||
+                     defcpd_check(&words, wnum, rv, rwords, 0))))) ||
                 (scpd != 0 && checkcpdtable[scpd - 1].cond != FLAG_NULL &&
                  !TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond, rv->alen)))) {
           rv = rv->next_homonym;
@@ -2194,7 +2194,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
             // perhaps second word is a compound word (recursive call)
             if (wordnum < maxwordnum) {
               rv = compound_check((st + i), strlen(st + i), wordnum + 1,
-                                  numsyllable, maxwordnum, wnum + 1, words, 0,
+                                  numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
 
               if (rv && numcheckcpd &&
@@ -2289,6 +2289,7 @@ int AffixMgr::compound_check_morph(const char* word,
                                    short maxwordnum,
                                    short wnum,
                                    hentry** words,
+                                   hentry** rwords,
                                    char hu_mov_rule = 0,
                                    char** result = NULL,
                                    char* partresult = NULL) {
@@ -2298,7 +2299,6 @@ int AffixMgr::compound_check_morph(const char* word,
 
   struct hentry* rv = NULL;
   struct hentry* rv_first;
-  struct hentry* rwords[MAXWORDLEN];  // buffer for COMPOUND pattern checking
   char st[MAXWORDUTF8LEN + 4];
   char ch;
 
@@ -2359,9 +2359,9 @@ int AffixMgr::compound_check_morph(const char* word,
                  TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
                 (numdefcpd && onlycpdrule &&
                  ((!words && !wordnum &&
-                   defcpd_check(&words, wnum, rv, (hentry**)&rwords, 0)) ||
+                   defcpd_check(&words, wnum, rv, rwords, 0)) ||
                   (words &&
-                   defcpd_check(&words, wnum, rv, (hentry**)&rwords, 0))))))) {
+                   defcpd_check(&words, wnum, rv, rwords, 0))))))) {
         rv = rv->next_homonym;
       }
 
@@ -2785,7 +2785,7 @@ int AffixMgr::compound_check_morph(const char* word,
         // perhaps second word is a compound word (recursive call)
         if ((wordnum < maxwordnum) && (ok == 0)) {
           compound_check_morph((word + i), strlen(word + i), wordnum + 1,
-                               numsyllable, maxwordnum, wnum + 1, words, 0,
+                               numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                result, presult);
         } else {
           rv = NULL;

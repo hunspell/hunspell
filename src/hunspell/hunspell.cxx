@@ -827,14 +827,15 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
       }
       // try check compound word
     } else if (pAMgr->get_compound()) {
-      he = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, 0, 0, info);
+      struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
+      he = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
       // LANG_hu section: `moving rule' with last dash
       if ((!he) && (langnum == LANG_hu) && (word[len - 1] == '-')) {
         char* dup = mystrdup(word);
         if (!dup)
           return NULL;
         dup[len - 1] = '\0';
-        he = pAMgr->compound_check(dup, len - 1, -5, 0, 100, 0, NULL, 1, 0,
+        he = pAMgr->compound_check(dup, len - 1, -5, 0, 100, 0, NULL, (hentry**)&rwords, 1, 0,
                                    info);
         free(dup);
       }

@@ -1707,7 +1707,8 @@ int SuggestMgr::checkword(const char* word,
   if (pAMgr) {
     if (cpdsuggest == 1) {
       if (pAMgr->get_compound()) {
-        rv = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, 0, 1,
+        struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
+        rv = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1,
                                    0);  // EXT
         if (rv &&
             (!(rv2 = pAMgr->lookup(word)) || !rv2->astr ||
@@ -1887,9 +1888,11 @@ char* SuggestMgr::suggest_morph(const char* w) {
     free(st);
   }
 
-  if (pAMgr->get_compound() && (*result == '\0'))
-    pAMgr->compound_check_morph(word, strlen(word), 0, 0, 100, 0, NULL, 0, &r,
+  if (pAMgr->get_compound() && (*result == '\0')) {
+    struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
+    pAMgr->compound_check_morph(word, strlen(word), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, &r,
                                 NULL);
+  }
 
   return (*result) ? mystrdup(line_uniq(result, MSEP_REC)) : NULL;
 }
