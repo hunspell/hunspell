@@ -92,11 +92,6 @@ int main(int argc, char** argv) {
       pMS->free_list(&wlst, ns);
       fprintf(stdout, "\n");
     }
-    // for the same of testing this code path
-    // do an analysis here and throw away the results
-    char** wlst;
-    int ns = pMS->analyze(&wlst, buf);
-    pMS->free_list(&wlst, ns);
   }
 
   delete pMS;

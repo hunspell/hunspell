@@ -1780,12 +1780,10 @@ int Hunspell::analyze(char*** slst, const char* word) {
   }
 
   // compound word with dash (HU) I18n
-  char* dash = NULL;
-  int nresult = 0;
   // LANG_hu section: set dash information for suggestions
-  if (langnum == LANG_hu)
-    dash = (char*)strchr(cw, '-');
-  if ((langnum == LANG_hu) && dash) {
+  char* dash = langnum == LANG_hu ? (char*)strchr(cw, '-') : NULL;
+  int nresult = 0;
+  if (dash) {
     *dash = '\0';
     // examine 2 sides of the dash
     if (dash[1] == '\0') {  // base word ending with dash
