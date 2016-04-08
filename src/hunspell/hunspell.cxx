@@ -529,7 +529,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       // Spec. prefix handling for Catalan, French, Italian:
       // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
       size_t apos = pAMgr ? scw.find('\'') : std::string::npos;
-      if (apos != std::string::npos) {
+      if (apos != std::string::npos && apos < scw.size() - 1) {
         mkallsmall2(scw, sunicw);
         std::string part1 = scw.substr(0, apos+1);
         std::string part2 = scw.substr(apos+1);
