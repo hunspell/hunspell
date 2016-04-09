@@ -533,32 +533,38 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       // Spec. prefix handling for Catalan, French, Italian:
       // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
       size_t apos = pAMgr ? scw.find('\'') : std::string::npos;
-      if (apos != std::string::npos && apos < scw.size() - 1) {
+      if (apos != std::string::npos) {
         mkallsmall2(scw, sunicw);
-        std::string part1 = scw.substr(0, apos+1);
-        std::string part2 = scw.substr(apos+1);
-        if (utf8) {
-          std::vector<w_char> part1u, part2u;
-          u8_u16(part1u, part1);
-          u8_u16(part2u, part2);
-          mkinitcap2(part2, part2u);
-          scw = part1 + part2;
-          sunicw = part1u;
-          sunicw.insert(sunicw.end(), part2u.begin(), part2u.end());
-          rv = checkword(scw.c_str(), info, root);
-          if (rv)
-            break;
-        } else {
-          mkinitcap2(part2, sunicw);
-          scw = part1 + part2;
+        //conversion may result in string with different len to pre-mkallsmall2
+        //so re-scan
+        if (apos != std::string::npos && apos < scw.size() - 1) {
+          std::string part1 = scw.substr(0, apos+1);
+          fprintf(stderr, "part1 is %s %d %d\n", part1.c_str(), apos, scw.size());
+          std::string part2 = scw.substr(apos+1);
+          fprintf(stderr, "part2 is %s\n", part2.c_str());
+          if (utf8) {
+            std::vector<w_char> part1u, part2u;
+            u8_u16(part1u, part1);
+            u8_u16(part2u, part2);
+            mkinitcap2(part2, part2u);
+            scw = part1 + part2;
+            sunicw = part1u;
+            sunicw.insert(sunicw.end(), part2u.begin(), part2u.end());
+            rv = checkword(scw.c_str(), info, root);
+            if (rv)
+              break;
+          } else {
+            mkinitcap2(part2, sunicw);
+            scw = part1 + part2;
+            rv = checkword(scw.c_str(), info, root);
+            if (rv)
+              break;
+          }
+          mkinitcap2(scw, sunicw);
           rv = checkword(scw.c_str(), info, root);
           if (rv)
             break;
         }
-        mkinitcap2(scw, sunicw);
-        rv = checkword(scw.c_str(), info, root);
-        if (rv)
-          break;
       }
       if (pAMgr && pAMgr->get_checksharps() && scw.find("SS") != std::string::npos) {
 
