@@ -3870,7 +3870,7 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
               cpdvowels_utf16 = (w_char*)malloc(w.size() * sizeof(w_char));
               if (!cpdvowels_utf16)
                 return 1;
-              memcpy(cpdvowels_utf16, w.data(), w.size());
+              memcpy(cpdvowels_utf16, &w[0], w.size());
             }
             cpdvowels_utf16_len = w.size();
           }

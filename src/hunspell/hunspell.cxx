@@ -960,7 +960,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
           if (utf8) {
             std::vector<w_char> postdotu;
             u8_u16(postdotu, postdot);
-            captype_ = get_captype_utf8(postdotu.data(), postdotu.size(), langnum);
+            captype_ = get_captype_utf8(&postdotu[0], postdotu.size(), langnum);
           } else {
             captype_ = get_captype(postdot.c_str(), postdot.size(), csconv);
           }
