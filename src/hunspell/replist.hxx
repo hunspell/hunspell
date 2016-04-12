@@ -79,6 +79,9 @@
 
 #include "w_char.hxx"
 
+#include <string>
+#include <vector>
+
 class LIBHUNSPELL_DLL_EXPORTED RepList {
  private:
   RepList(const RepList&);
@@ -99,5 +102,6 @@ class LIBHUNSPELL_DLL_EXPORTED RepList {
   int near(const char* word);
   int match(const char* word, int n);
   int conv(const char* word, char* dest, size_t destsize);
+  bool conv(const char* word, std::string& dest);
 };
 #endif

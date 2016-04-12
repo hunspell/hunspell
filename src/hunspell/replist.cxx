@@ -173,3 +173,21 @@ int RepList::conv(const char* word, char* dest, size_t destsize) {
   dest[stl] = '\0';
   return change;
 }
+
+bool RepList::conv(const char* word, std::string& dest) {
+  dest.clear();
+
+  bool change = false;
+  for (size_t i = 0; i < strlen(word); i++) {
+    int n = near(word + i);
+    int l = match(word + i, n);
+    if (l) {
+      dest.append(dat[n]->pattern2);
+      i += l - 1;
+      change = true;
+    } else {
+      dest.push_back(word[i]);
+    }
+  }
+  return change;
+}

@@ -1229,10 +1229,10 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // output conversion
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
-    char wspace[MAXWORDUTF8LEN];
-    if (rl->conv((*slst)[j], wspace, MAXWORDUTF8LEN) > 0) {
+    std::string wspace;
+    if (rl->conv((*slst)[j], wspace) > 0) {
       free((*slst)[j]);
-      (*slst)[j] = mystrdup(wspace);
+      (*slst)[j] = mystrdup(wspace.c_str());
     }
   }
 
