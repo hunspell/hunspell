@@ -1714,7 +1714,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   struct hentry* rv = NULL;
   struct hentry* rv_first;
-  char st[MAXWORDUTF8LEN + 4];
+  std::string st;
   char ch = '\0';
   int cmin;
   int cmax;
@@ -1733,7 +1733,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
   setcminmax(&cmin, &cmax, word, len);
 
-  strcpy(st, word);
+  st.assign(word);
 
   for (i = cmin; i < cmax; i++) {
     // go to end of the UTF-8 character
@@ -1765,11 +1765,11 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
           if (scpd > numcheckcpd)
             break;  // break simplified checkcompoundpattern loop
-          strcpy(st + i, checkcpdtable[scpd - 1].pattern);
+          st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern);
           soldi = i;
           i += strlen(checkcpdtable[scpd - 1].pattern);
-          strcpy(st + i, checkcpdtable[scpd - 1].pattern2);
-          strcpy(st + i + strlen(checkcpdtable[scpd - 1].pattern2),
+          st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern2);
+          st.replace(i + strlen(checkcpdtable[scpd - 1].pattern2), std::string::npos,
                  word + soldi + strlen(checkcpdtable[scpd - 1].pattern3));
 
           oldlen = len;
@@ -1778,7 +1778,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                  strlen(checkcpdtable[scpd - 1].pattern3);
           oldcmin = cmin;
           oldcmax = cmax;
-          setcminmax(&cmin, &cmax, st, len);
+          setcminmax(&cmin, &cmax, st.c_str(), len);
 
           cmax = len - cpdmin + 1;
         }
@@ -1792,7 +1792,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
         // FIRST WORD
 
         affixed = 1;
-        rv = lookup(st);  // perhaps without prefix
+        rv = lookup(st.c_str());  // perhaps without prefix
 
         // search homonym with compound flag
         while ((rv) && !hu_mov_rule &&
@@ -1820,14 +1820,14 @@ struct hentry* AffixMgr::compound_check(const char* word,
           if (onlycpdrule)
             break;
           if (compoundflag &&
-              !(rv = prefix_check(st, i,
+              !(rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundflag))) {
             if (((rv = suffix_check(
-                      st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundflag,
+                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundflag,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
-                  (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) &&
+                  (rv = suffix_check_twosfx(st.c_str(), i, 0, NULL, compoundflag)))) &&
                 !hu_mov_rule && sfx->getCont() &&
                 ((compoundforbidflag &&
                   TESTAFF(sfx->getCont(), compoundforbidflag,
@@ -1841,24 +1841,24 @@ struct hentry* AffixMgr::compound_check(const char* word,
           if (rv ||
               (((wordnum == 0) && compoundbegin &&
                 ((rv = suffix_check(
-                      st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundbegin,
+                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundbegin,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
-                       st, i, 0, NULL,
+                       st.c_str(), i, 0, NULL,
                        compoundbegin))) ||  // twofold suffixes + compound
-                 (rv = prefix_check(st, i,
+                 (rv = prefix_check(st.c_str(), i,
                                     hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                     compoundbegin)))) ||
                ((wordnum > 0) && compoundmiddle &&
                 ((rv = suffix_check(
-                      st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundmiddle,
+                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundmiddle,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
-                       st, i, 0, NULL,
+                       st.c_str(), i, 0, NULL,
                        compoundmiddle))) ||  // twofold suffixes + compound
-                 (rv = prefix_check(st, i,
+                 (rv = prefix_check(st.c_str(), i,
                                     hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                     compoundmiddle))))))
             checked_prefix = 1;
@@ -1949,7 +1949,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                 cpdcase_check(word, i))))
             // LANG_hu section: spec. Hungarian rule
             || ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
-                (rv = affix_check(st, i)) &&
+                (rv = affix_check(st.c_str(), i)) &&
                 (sfx && sfx->getCont() &&
                  (  // XXX hardwired Hungarian dic. codes
                      TESTAFF(sfx->getCont(), (unsigned short)'x',
@@ -1961,7 +1961,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
           // LANG_hu section: spec. Hungarian rule
           if (langnum == LANG_hu) {
             // calculate syllable number of the word
-            numsyllable += get_syllable(std::string(st, i));
+            numsyllable += get_syllable(st.substr(i));
             // + 1 word, if syllable number of the prefix > 1 (hungarian
             // convention)
             if (pfx && (get_syllable(pfx->getKey()) > 1))
@@ -1984,7 +1984,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                 striple = 1;
             }
 
-            rv = lookup((st + i));  // perhaps without prefix
+            rv = lookup(st.c_str() + i);  // perhaps without prefix
 
             // search homonym with compound flag
             while ((rv) &&
@@ -2193,7 +2193,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
             // perhaps second word is a compound word (recursive call)
             if (wordnum < maxwordnum) {
-              rv = compound_check((st + i), strlen(st + i), wordnum + 1,
+              rv = compound_check(st.c_str() + i, strlen(st.c_str() + i), wordnum + 1,
                                   numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
 
@@ -2217,11 +2217,11 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
                 // check first part
                 if (strncmp(rv->word, word + i, rv->blen) == 0) {
-                  char r = *(st + i + rv->blen);
-                  *(st + i + rv->blen) = '\0';
+                  char r = st[i + rv->blen];
+                  st[i + rv->blen] = '\0';
 
-                  if (checkcompoundrep && cpdrep_check(st, i + rv->blen)) {
-                    *(st + i + rv->blen) = r;
+                  if (checkcompoundrep && cpdrep_check(st.c_str(), i + rv->blen)) {
+                    st[ + i + rv->blen] = r;
                     continue;
                   }
 
@@ -2231,11 +2231,11 @@ struct hentry* AffixMgr::compound_check(const char* word,
                       rv2 = affix_check(word, len);
                     if (rv2 && rv2->astr &&
                         TESTAFF(rv2->astr, forbiddenword, rv2->alen) &&
-                        (strncmp(rv2->word, st, i + rv->blen) == 0)) {
+                        (strncmp(rv2->word, st.c_str(), i + rv->blen) == 0)) {
                       return NULL;
                     }
                   }
-                  *(st + i + rv->blen) = r;
+                  st[i + rv->blen] = r;
                 }
               }
               return rv_first;
@@ -2268,7 +2268,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
       if (soldi != 0) {
         i = soldi;
-        strcpy(st, word);  // XXX add more optim.
+        st.assign(word);  // XXX add more optim.
         soldi = 0;
       } else
         st[i] = ch;
