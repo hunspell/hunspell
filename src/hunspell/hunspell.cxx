@@ -285,27 +285,6 @@ int Hunspell::cleanword(char* dest,
   return strlen(dest);
 }
 
-void Hunspell::mkallcap(char* p) {
-  if (utf8) {
-    w_char u[MAXWORDLEN];
-    int nc = u8_u16(u, MAXWORDLEN, p);
-    unsigned short idx;
-    for (int i = 0; i < nc; i++) {
-      idx = (u[i].h << 8) + u[i].l;
-      if (idx != unicodetoupper(idx, langnum)) {
-        u[i].h = (unsigned char)(unicodetoupper(idx, langnum) >> 8);
-        u[i].l = (unsigned char)(unicodetoupper(idx, langnum) & 0x00FF);
-      }
-    }
-    u16_u8(p, MAXWORDUTF8LEN, u, nc);
-  } else {
-    while (*p != '\0') {
-      *p = csconv[((unsigned char)*p)].cupper;
-      p++;
-    }
-  }
-}
-
 void Hunspell::mkallcap(std::string& u8) {
   if (utf8) {
     std::vector<w_char> u16;
@@ -1023,25 +1002,20 @@ int Hunspell::suggest(char*** slst, const char* word) {
       mkinitcap2(wspace, sunicw);
       ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
       for (int j = 0; j < ns; j++) {
-        mkallcap((*slst)[j]);
+        std::string form((*slst)[j]);
+        mkallcap(form);
+
         if (pAMgr && pAMgr->get_checksharps()) {
-          char* pos;
           if (utf8) {
-            pos = strstr((*slst)[j], "\xC3\x9F");
-            while (pos) {
-              *pos = 'S';
-              *(pos + 1) = 'S';
-              pos = strstr(pos + 2, "\xC3\x9F");
-            }
+            mystrrep(form, "\xC3\x9F", "SS");
           } else {
-            pos = strchr((*slst)[j], '\xDF');
-            while (pos) {
-              (*slst)[j] = (char*)realloc((*slst)[j], strlen((*slst)[j]) + 2);
-              mystrrep((*slst)[j], "\xDF", "SS");
-              pos = strchr((*slst)[j], '\xDF');
-            }
+            mystrrep(form, "\xDF", "SS");
           }
         }
+
+        free((*slst)[j]);
+        (*slst)[j] = mystrdup(form.c_str());
+
       }
       break;
     }
@@ -1094,8 +1068,12 @@ int Hunspell::suggest(char*** slst, const char* word) {
         mkallsmall2(wspace, sunicw);
         int oldns = ns;
         ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
-        for (int j = oldns; j < ns; j++)
-          mkallcap((*slst)[j]);
+        for (int j = oldns; j < ns; j++) {
+          std::string form((*slst)[j]);
+          mkallcap(form);
+          free((*slst)[j]);
+          (*slst)[j] = mystrdup(form.c_str());
+        }
         break;
       }
     }
