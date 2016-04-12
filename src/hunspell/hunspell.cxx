@@ -1178,25 +1178,23 @@ int Hunspell::suggest(char*** slst, const char* word) {
         int l = 0;
         for (int j = 0; j < ns; j++) {
           if (!strchr((*slst)[j], ' ') && !spell((*slst)[j])) {
-            char s[MAXSWUTF8L];
-            w_char w[MAXSWL];
-            int len;
+            std::string s;
+            std::vector<w_char> w;
             if (utf8) {
-              len = u8_u16(w, MAXSWL, (*slst)[j]);
+              u8_u16(w, (*slst)[j]);
             } else {
-              strcpy(s, (*slst)[j]);
-              len = strlen(s);
+              s = (*slst)[j];
             }
-            mkallsmall2(s, w, len);
+            mkallsmall2(s, w);
             free((*slst)[j]);
-            if (spell(s)) {
-              (*slst)[l] = mystrdup(s);
+            if (spell(s.c_str())) {
+              (*slst)[l] = mystrdup(s.c_str());
               if ((*slst)[l])
                 l++;
             } else {
-              mkinitcap2(s, w, len);
-              if (spell(s)) {
-                (*slst)[l] = mystrdup(s);
+              mkinitcap2(s, w);
+              if (spell(s.c_str())) {
+                (*slst)[l] = mystrdup(s.c_str());
                 if ((*slst)[l])
                   l++;
               }
