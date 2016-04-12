@@ -539,9 +539,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         //so re-scan
         if (apos != std::string::npos && apos < scw.size() - 1) {
           std::string part1 = scw.substr(0, apos+1);
-          fprintf(stderr, "part1 is %s %d %d\n", part1.c_str(), apos, scw.size());
           std::string part2 = scw.substr(apos+1);
-          fprintf(stderr, "part2 is %s\n", part2.c_str());
           if (utf8) {
             std::vector<w_char> part1u, part2u;
             u8_u16(part1u, part1);
@@ -995,16 +993,18 @@ int Hunspell::suggest(char*** slst, const char* word) {
             int slen = strlen(space + 1);
             // different case after space (need capitalisation)
             if ((slen < wl) && strcmp(scw.c_str() + wl - slen, space + 1)) {
-              w_char w[MAXWORDLEN];
-              int wc = 0;
-              char* r = (*slst)[j];
+              std::string first((*slst)[j], space + 1);
+              std::string second(space + 1);
+              std::vector<w_char> w;
               if (utf8)
-                wc = u8_u16(w, MAXWORDLEN, space + 1);
-              mkinitcap2(space + 1, w, wc);
+                u8_u16(w, second);
+              mkinitcap2(second, w);
               // set as first suggestion
+              char* r = (*slst)[j];
               for (int k = j; k > 0; k--)
                 (*slst)[k] = (*slst)[k - 1];
-              (*slst)[0] = r;
+              free(r);
+              (*slst)[0] = mystrdup((first + second).c_str());
             }
           }
         }
