@@ -911,22 +911,19 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // check capitalized form for FORCEUCASE
   if (pAMgr && captype == NOCAP && pAMgr->get_forceucase()) {
     int info = SPELL_ORIGCAP;
-    char** wlst;
     if (checkword(scw.c_str(), &info, NULL)) {
-      if (*slst) {
-        wlst = *slst;
-      } else {
-        wlst = (char**)malloc(MAXSUGGESTION * sizeof(char*));
-        if (wlst == NULL)
-          return -1;
-        *slst = wlst;
-        for (int i = 0; i < MAXSUGGESTION; i++) {
-          wlst[i] = NULL;
-        }
-      }
       std::string form(scw);
       mkinitcap(form);
+
+      char** wlst = (char**)malloc(MAXSUGGESTION * sizeof(char*));
+      if (wlst == NULL)
+        return -1;
+      *slst = wlst;
       wlst[0] = mystrdup(form.c_str());
+      for (int i = 1; i < MAXSUGGESTION; ++i) {
+        wlst[i] = NULL;
+      }
+
       return 1;
     }
   }
