@@ -206,11 +206,11 @@ int Hunspell::cleanword2(char* dest,
   return nl;
 }
 
-int Hunspell::cleanword(char* dest,
+void Hunspell::cleanword(std::string& dest,
                         const char* src,
                         int* pcaptype,
                         int* pabbrev) {
-  unsigned char* p = (unsigned char*)dest;
+  dest.clear();
   const unsigned char* q = (const unsigned char*)src;
   int firstcap = 0;
 
@@ -229,8 +229,7 @@ int Hunspell::cleanword(char* dest,
   // if no characters are left it can't be capitalized
   if (nl <= 0) {
     *pcaptype = NOCAP;
-    *p = '\0';
-    return 0;
+    return;
   }
 
   // now determine the capitalization type of the first nl letters
@@ -245,27 +244,25 @@ int Hunspell::cleanword(char* dest,
         ncap++;
       if (csconv[(*q)].cupper == csconv[(*q)].clower)
         nneutral++;
-      *p++ = *q++;
+      dest.push_back(*q++);
       nl--;
     }
     // remember to terminate the destination string
-    *p = '\0';
-    firstcap = csconv[(unsigned char)(*dest)].ccase;
+    firstcap = csconv[static_cast<unsigned char>(dest[0])].ccase;
   } else {
-    unsigned short idx;
-    w_char t[MAXWORDLEN];
-    nc = u8_u16(t, MAXWORDLEN, src);
-    for (int i = 0; i < nc; i++) {
-      idx = (t[i].h << 8) + t[i].l;
+    std::vector<w_char> t;
+    u8_u16(t, src);
+    for (size_t i = 0; i < t.size(); ++i) {
+      unsigned short idx = (t[i].h << 8) + t[i].l;
       unsigned short low = unicodetolower(idx, langnum);
       if (idx != low)
         ncap++;
       if (unicodetoupper(idx, langnum) == low)
         nneutral++;
     }
-    u16_u8(dest, MAXWORDUTF8LEN, t, nc);
+    u16_u8(dest, t);
     if (ncap) {
-      idx = (t[0].h << 8) + t[0].l;
+      unsigned short idx = (t[0].h << 8) + t[0].l;
       firstcap = (idx != unicodetolower(idx, langnum));
     }
   }
@@ -282,7 +279,6 @@ int Hunspell::cleanword(char* dest,
   } else {
     *pcaptype = HUHCAP;
   }
-  return strlen(dest);
 }
 
 void Hunspell::mkallcap(std::string& u8) {
@@ -1634,7 +1630,7 @@ int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
   int pl2n = analyze(&pl2, word);
   int captype = 0;
   int abbv = 0;
-  char cw[MAXWORDUTF8LEN];
+  std::string cw;
   cleanword(cw, word, &captype, &abbv);
   std::string result;
 
