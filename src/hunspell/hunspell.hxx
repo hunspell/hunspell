@@ -229,12 +229,12 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
  private:
   void cleanword(std::string& dest, const char*, int* pcaptype, int* pabbrev);
-  int cleanword2(std::string& dest,
-                 std::vector<w_char>& dest_u,
-                 const char*,
-                 int* w_len,
-                 int* pcaptype,
-                 int* pabbrev);
+  size_t cleanword2(std::string& dest,
+                    std::vector<w_char>& dest_u,
+                    const char*,
+                    int* w_len,
+                    int* pcaptype,
+                    size_t* pabbrev);
   void mkinitcap(std::string& u8);
   int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
   int mkinitsmall2(std::string& u8, std::vector<w_char>& u16);

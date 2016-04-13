@@ -158,12 +158,12 @@ int Hunspell::add_dic(const char* dpath, const char* key) {
 // set the capitalization type
 // return the length of the "cleaned" (and UTF-8 encoded) word
 
-int Hunspell::cleanword2(std::string& dest,
+size_t Hunspell::cleanword2(std::string& dest,
                          std::vector<w_char>& dest_utf,
                          const char* src,
                          int* nc,
                          int* pcaptype,
-                         int* pabbrev) {
+                         size_t* pabbrev) {
   dest.clear();
   dest_utf.clear();
 
@@ -380,8 +380,8 @@ int Hunspell::spell(const char* word, int* info, char** root) {
       return 0;
   }
   int captype = NOCAP;
-  int abbv = 0;
-  int wl = 0;
+  size_t abbv = 0;
+  size_t wl = 0;
 
   std::string scw;
   std::vector<w_char> sunicw;
@@ -415,7 +415,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   // "..", "--" etc.)
   enum { NBEGIN, NNUM, NSEP };
   int nstate = NBEGIN;
-  int i;
+  size_t i;
 
   for (i = 0; (i < wl); i++) {
     if ((scw[i] <= '9') && (scw[i] >= '0')) {
@@ -596,7 +596,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 
     // check boundary patterns (^begin and end$)
     for (int j = 0; j < numbreak; j++) {
-      int plen = strlen(wordbreak[j]);
+      size_t plen = strlen(wordbreak[j]);
       if (plen == 1 || plen > wl)
         continue;
 
@@ -801,8 +801,8 @@ int Hunspell::suggest(char*** slst, const char* word) {
       return 0;
   }
   int captype = NOCAP;
-  int abbv = 0;
-  int wl = 0;
+  size_t abbv = 0;
+  size_t wl = 0;
 
   std::string scw;
   std::vector<w_char> sunicw;
@@ -911,7 +911,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
         for (int j = prevns; j < ns; j++) {
           char* space = strchr((*slst)[j], ' ');
           if (space) {
-            int slen = strlen(space + 1);
+            size_t slen = strlen(space + 1);
             // different case after space (need capitalisation)
             if ((slen < wl) && strcmp(scw.c_str() + wl - slen, space + 1)) {
               std::string first((*slst)[j], space + 1);
@@ -1326,8 +1326,8 @@ int Hunspell::analyze(char*** slst, const char* word) {
       return 0;
   }
   int captype = NOCAP;
-  int abbv = 0;
-  int wl = 0;
+  size_t abbv = 0;
+  size_t wl = 0;
 
   std::string scw;
   std::vector<w_char> sunicw;
@@ -1358,9 +1358,9 @@ int Hunspell::analyze(char*** slst, const char* word) {
 
   std::string result;
 
-  int n = 0;
-  int n2 = 0;
-  int n3 = 0;
+  size_t n = 0;
+  size_t n2 = 0;
+  size_t n3 = 0;
 
   // test numbers
   // LANG_hu section: set dash information for suggestions
