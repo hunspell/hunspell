@@ -346,9 +346,9 @@ int HashMgr::add_hidden_capitalized_word(char* word,
 int HashMgr::get_clen_and_captype(const char* word, int wbl, int* captype) {
   int len;
   if (utf8) {
-    w_char dest_utf[BUFSIZE];
-    len = u8_u16(dest_utf, BUFSIZE, word);
-    *captype = get_captype_utf8(dest_utf, len, langnum);
+    std::vector<w_char> dest_utf;
+    len = u8_u16(dest_utf, word);
+    *captype = get_captype_utf8(&dest_utf[0], len, langnum);
   } else {
     len = wbl;
     *captype = get_captype(word, len, csconv);

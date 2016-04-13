@@ -198,7 +198,7 @@ int Hunspell::cleanword2(std::string& dest,
       *pcaptype = NOCAP;
       return nl;
     }
-    *pcaptype = get_captype_utf8(dest_utf.data(), *nc, langnum);
+    *pcaptype = get_captype_utf8(&dest_utf[0], *nc, langnum);
   } else {
     *pcaptype = get_captype(dest.c_str(), nl, csconv);
     *nc = nl;
