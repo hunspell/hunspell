@@ -639,19 +639,17 @@ int SuggestMgr::badcharkey_utf(char** wlst,
                                int wl,
                                int ns,
                                int cpdsuggest) {
-  w_char tmpc;
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
+  std::string candidate;
+  std::vector<w_char> candidate_utf(word, word + wl);
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
   for (int i = 0; i < wl; i++) {
-    tmpc = candidate_utf[i];
+    w_char tmpc = candidate_utf[i];
     // check with uppercase letters
-    mkallcap_utf(candidate_utf + i, 1, langnum);
+    candidate_utf[i] = upper_utf(candidate_utf[i], 1);
     if (!w_char_eq(tmpc, candidate_utf[i])) {
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-      ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
       if (ns == -1)
         return -1;
@@ -666,16 +664,16 @@ int SuggestMgr::badcharkey_utf(char** wlst,
     while (loc < (ckey_utf + ckeyl)) {
       if ((loc > ckey_utf) && !w_char_eq(*(loc - 1), W_VLINE)) {
         candidate_utf[i] = *(loc - 1);
-        u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-        ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+        u16_u8(candidate, candidate_utf);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                      NULL);
         if (ns == -1)
           return -1;
       }
       if (((loc + 1) < (ckey_utf + ckeyl)) && !w_char_eq(*(loc + 1), W_VLINE)) {
         candidate_utf[i] = *(loc + 1);
-        u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-        ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+        u16_u8(candidate, candidate_utf);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                      NULL);
         if (ns == -1)
           return -1;
