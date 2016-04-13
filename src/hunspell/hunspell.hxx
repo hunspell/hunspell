@@ -236,11 +236,9 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
                  int* pcaptype,
                  int* pabbrev);
   void mkinitcap(std::string& u8);
-  int mkinitcap2(char* p, w_char* u, int nc);
   int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
   int mkinitsmall2(std::string& u8, std::vector<w_char>& u16);
   void mkallcap(std::string& u8);
-  int mkallsmall2(char* p, w_char* u, int nc);
   int mkallsmall2(std::string& u8, std::vector<w_char>& u16);
   struct hentry* checkword(const char*, int* info, char** root);
   std::string sharps_u8_l1(const std::string& source);

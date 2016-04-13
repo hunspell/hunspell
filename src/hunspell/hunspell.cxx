@@ -292,28 +292,6 @@ void Hunspell::mkallcap(std::string& u8) {
   }
 }
 
-int Hunspell::mkallsmall2(char* p, w_char* u, int nc) {
-  if (utf8) {
-    unsigned short idx;
-    for (int i = 0; i < nc; i++) {
-      idx = (u[i].h << 8) + u[i].l;
-      unsigned short low = unicodetolower(idx, langnum);
-      if (idx != low) {
-        u[i].h = (unsigned char)(low >> 8);
-        u[i].l = (unsigned char)(low & 0x00FF);
-      }
-    }
-    u16_u8(p, MAXWORDUTF8LEN, u, nc);
-    return strlen(p);
-  } else {
-    while (*p != '\0') {
-      *p = csconv[((unsigned char)*p)].clower;
-      p++;
-    }
-  }
-  return nc;
-}
-
 int Hunspell::mkallsmall2(std::string& u8, std::vector<w_char>& u16) {
   if (utf8) {
     ::mkallsmall_utf(u16, langnum);
@@ -1278,20 +1256,6 @@ void Hunspell::mkinitcap(std::string& u8) {
   } else {
     ::mkinitcap(u8, csconv);
   }
-}
-
-int Hunspell::mkinitcap2(char* p, w_char* u, int nc) {
-  if (!utf8) {
-    if (*p != '\0')
-      *p = csconv[((unsigned char)*p)].cupper;
-  } else if (nc > 0) {
-    unsigned short i = unicodetoupper((u[0].h << 8) + u[0].l, langnum);
-    u[0].h = (unsigned char)(i >> 8);
-    u[0].l = (unsigned char)(i & 0x00FF);
-    u16_u8(p, MAXWORDUTF8LEN, u, nc);
-    return strlen(p);
-  }
-  return nc;
 }
 
 int Hunspell::mkinitcap2(std::string& u8, std::vector<w_char>& u16) {
