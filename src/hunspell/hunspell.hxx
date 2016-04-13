@@ -240,7 +240,6 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
   int mkinitsmall2(std::string& u8, std::vector<w_char>& u16);
   void mkallcap(std::string& u8);
-  int mkallcap2(char* p, w_char* u, int nc);
   int mkallsmall2(char* p, w_char* u, int nc);
   int mkallsmall2(std::string& u8, std::vector<w_char>& u16);
   struct hentry* checkword(const char*, int* info, char** root);

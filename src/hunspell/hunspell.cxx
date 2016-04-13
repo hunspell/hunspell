@@ -292,28 +292,6 @@ void Hunspell::mkallcap(std::string& u8) {
   }
 }
 
-int Hunspell::mkallcap2(char* p, w_char* u, int nc) {
-  if (utf8) {
-    unsigned short idx;
-    for (int i = 0; i < nc; i++) {
-      idx = (u[i].h << 8) + u[i].l;
-      unsigned short up = unicodetoupper(idx, langnum);
-      if (idx != up) {
-        u[i].h = (unsigned char)(up >> 8);
-        u[i].l = (unsigned char)(up & 0x00FF);
-      }
-    }
-    u16_u8(p, MAXWORDUTF8LEN, u, nc);
-    return strlen(p);
-  } else {
-    while (*p != '\0') {
-      *p = csconv[((unsigned char)*p)].cupper;
-      p++;
-    }
-  }
-  return nc;
-}
-
 int Hunspell::mkallsmall2(char* p, w_char* u, int nc) {
   if (utf8) {
     unsigned short idx;
