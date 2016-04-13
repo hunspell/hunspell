@@ -946,42 +946,40 @@ int SuggestMgr::swapchar(char** wlst,
                          const char* word,
                          int ns,
                          int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  char* p;
-  char tmpc;
-  int wl = strlen(word);
+  std::string candidate(word);
+  if (candidate.size() < 2)
+    return ns;
+
   // try swapping adjacent chars one by one
-  strcpy(candidate, word);
-  for (p = candidate; p[1] != 0; p++) {
-    tmpc = *p;
-    *p = p[1];
-    p[1] = tmpc;
-    ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+  for (size_t i = 0; i < candidate.size(); ++i) {
+    std::swap(candidate[i], candidate[i+1]);
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    p[1] = *p;
-    *p = tmpc;
+    std::swap(candidate[i], candidate[i+1]);
   }
+
   // try double swaps for short words
   // ahev -> have, owudl -> would
-  if (wl == 4 || wl == 5) {
+  if (candidate.size() == 4 || candidate.size() == 5) {
     candidate[0] = word[1];
     candidate[1] = word[0];
     candidate[2] = word[2];
-    candidate[wl - 2] = word[wl - 1];
-    candidate[wl - 1] = word[wl - 2];
-    ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+    candidate[candidate.size() - 2] = word[candidate.size() - 1];
+    candidate[candidate.size() - 1] = word[candidate.size() - 2];
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    if (wl == 5) {
+    if (candidate.size() == 5) {
       candidate[0] = word[0];
       candidate[1] = word[2];
       candidate[2] = word[1];
-      ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
       if (ns == -1)
         return -1;
     }
   }
+
   return ns;
 }
 
