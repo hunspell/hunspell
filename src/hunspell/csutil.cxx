@@ -3045,27 +3045,6 @@ int get_captype_utf8(const w_char* word, int nl, int langnum) {
 }
 
 // strip all ignored characters in the string
-void remove_ignored_chars_utf(char* word,
-                              const w_char* ignored_chars,
-                              int ignored_len) {
-  w_char w[MAXWORDLEN];
-  w_char w2[MAXWORDLEN];
-  int i;
-  int j;
-  int len = u8_u16(w, MAXWORDLEN, word);
-  for (i = 0, j = 0; i < len; i++) {
-    if (!std::binary_search(ignored_chars,
-                            ignored_chars + ignored_len,
-                            w[i])) {
-      w2[j] = w[i];
-      j++;
-    }
-  }
-  if (j < i)
-    u16_u8(word, MAXWORDUTF8LEN, w2, j);
-}
-
-// strip all ignored characters in the string
 size_t remove_ignored_chars_utf(std::string& word,
                                 const w_char* ignored_chars,
                                 int ignored_len) {
