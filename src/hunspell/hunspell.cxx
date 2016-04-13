@@ -1542,7 +1542,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       }
     } else {
       // first word ending with dash: word- XXX ???
-      char r2 = *(dash + 1);
+      char r2 = dash[1];
       dash[0] = '-';
       dash[1] = '\0';
       nresult = spell(cw);
