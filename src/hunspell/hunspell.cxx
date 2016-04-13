@@ -389,13 +389,13 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
-    char wspace[MAXWORDUTF8LEN];
+    std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    int convstatus = rl ? rl->conv(word, wspace) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
   }
@@ -800,7 +800,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
     if (nc >= MAXWORDLEN)
       return 0;
   }
-  int captype = 0;
+  int captype = NOCAP;
   int abbv = 0;
   int wl = 0;
 
@@ -810,13 +810,13 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
-    char wspace[MAXWORDUTF8LEN];
+    std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    int convstatus = rl ? rl->conv(word, wspace) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
 
@@ -1325,7 +1325,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
     if (nc >= MAXWORDLEN)
       return 0;
   }
-  int captype = 0;
+  int captype = NOCAP;
   int abbv = 0;
   int wl = 0;
 
@@ -1335,13 +1335,13 @@ int Hunspell::analyze(char*** slst, const char* word) {
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
-    char wspace[MAXWORDUTF8LEN];
+    std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
+    int convstatus = rl ? rl->conv(word, wspace) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
   }
@@ -1562,7 +1562,7 @@ int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
     return 0;
   char** pl2;
   int pl2n = analyze(&pl2, word);
-  int captype = 0;
+  int captype = NOCAP;
   int abbv = 0;
   std::string cw;
   cleanword(cw, word, &captype, &abbv);
