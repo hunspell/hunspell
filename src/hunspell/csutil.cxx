@@ -842,10 +842,10 @@ char* mystrrep(char* word, const char* pat, const char* rep) {
 }
 
 // reverse word
-int reverseword(char* word) {
-  char r;
-  for (char *dest = word + strlen(word) - 1; word < dest; word++, dest--) {
-    r = *word;
+size_t reverseword(char* word) {
+  size_t len = strlen(word);
+  for (char *dest = word + len - 1; word < dest; word++, dest--) {
+    char r = *word;
     *word = *dest;
     *dest = r;
   }
@@ -853,19 +853,19 @@ int reverseword(char* word) {
 }
 
 // reverse word
-std::string& reverseword(std::string& word) {
+size_t reverseword(std::string& word) {
   std::reverse(word.begin(), word.end());
-  return word;
+  return word.size();
 }
 
-// reverse word (error: 1)
-int reverseword_utf(char* word) {
+// reverse word
+size_t reverseword_utf(char* word) {
   w_char w[MAXWORDLEN];
   w_char* p;
   w_char r;
   int l = u8_u16(w, MAXWORDLEN, word);
   if (l == -1)
-    return 1;
+    return 0;
   p = w;
   for (w_char *dest = w + l - 1; p < dest; p++, dest--) {
     r = *p;
@@ -873,16 +873,16 @@ int reverseword_utf(char* word) {
     *dest = r;
   }
   u16_u8(word, MAXWORDUTF8LEN, w, l);
-  return 0;
+  return l;
 }
 
 // reverse word
-std::string& reverseword_utf(std::string& word) {
+size_t reverseword_utf(std::string& word) {
   std::vector<w_char> w;
   u8_u16(w, word);
   std::reverse(w.begin(), w.end());
   u16_u8(word, w);
-  return word;
+  return w.size();
 }
 
 int uniqlist(char** list, int n) {
@@ -3066,9 +3066,9 @@ void remove_ignored_chars_utf(char* word,
 }
 
 // strip all ignored characters in the string
-std::string& remove_ignored_chars_utf(std::string& word,
-                                      const w_char* ignored_chars,
-                                      int ignored_len) {
+size_t remove_ignored_chars_utf(std::string& word,
+                                const w_char* ignored_chars,
+                                int ignored_len) {
   std::vector<w_char> w;
   std::vector<w_char> w2;
   u8_u16(w, word);
@@ -3082,7 +3082,7 @@ std::string& remove_ignored_chars_utf(std::string& word,
   }
 
   u16_u8(word, w2);
-  return word;
+  return w2.size();
 }
 
 // strip all ignored characters in the string
@@ -3109,11 +3109,11 @@ class is_any_of {
 }
 
 // strip all ignored characters in the string
-std::string& remove_ignored_chars(std::string& word,
-                                  const std::string& ignored_chars) {
+size_t remove_ignored_chars(std::string& word,
+                            const std::string& ignored_chars) {
   word.erase(
       std::remove_if(word.begin(), word.end(), is_any_of(ignored_chars)));
-  return word;
+  return word.size();
 }
 
 int parse_string(char* line, char** out, int ln) {

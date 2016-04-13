@@ -190,14 +190,14 @@ LIBHUNSPELL_DLL_EXPORTED char* line_uniq_app(char** text, char breakchar);
 LIBHUNSPELL_DLL_EXPORTED char* tr(char* text, char oldc, char newc);
 
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED int reverseword(char*);
+LIBHUNSPELL_DLL_EXPORTED size_t reverseword(char*);
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED std::string& reverseword(std::string& word);
+LIBHUNSPELL_DLL_EXPORTED size_t reverseword(std::string& word);
 
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED int reverseword_utf(char*);
+LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(char*);
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED std::string& reverseword_utf(std::string&);
+LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string&);
 
 // remove duplicates
 LIBHUNSPELL_DLL_EXPORTED int uniqlist(char** list, int n);
@@ -297,7 +297,7 @@ LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars_utf(
     const w_char* ignored_chars,
     int ignored_len);
 // strip all ignored characters in the string
-LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars_utf(
+LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     std::string& word,
     const w_char* ignored_chars,
     int ignored_len);
@@ -306,7 +306,7 @@ LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars_utf(
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars(char* word,
                                                    char* ignored_chars);
 // strip all ignored characters in the string
-LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars(
+LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     std::string& word,
     const std::string& ignored_chars);
 
