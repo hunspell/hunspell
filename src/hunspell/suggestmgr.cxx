@@ -379,7 +379,7 @@ int SuggestMgr::capchars(char** wlst,
                          int cpdsuggest) {
   std::string candidate(word);
   mkallcap(candidate, csconv);
-  return testsug(wlst, candidate.data(), candidate.size(), ns, cpdsuggest, NULL,
+  return testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                  NULL);
 }
 
@@ -692,26 +692,23 @@ int SuggestMgr::badcharkey_utf(char** wlst,
 
 // error is wrong char in place of correct one
 int SuggestMgr::badchar(char** wlst, const char* word, int ns, int cpdsuggest) {
-  char tmpc;
-  char candidate[MAXSWUTF8L];
+  std::string candidate(word);
   clock_t timelimit = clock();
   int timer = MINTIMER;
-  int wl = strlen(word);
-  strcpy(candidate, word);
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
   for (int j = 0; j < ctryl; j++) {
-    for (int i = wl - 1; i >= 0; i--) {
-      tmpc = candidate[i];
+    for (std::string::reverse_iterator aI = candidate.rbegin(), aEnd = candidate.rend(); aI != aEnd; ++aI) {
+      char tmpc = *aI;
       if (ctry[j] == tmpc)
         continue;
-      candidate[i] = ctry[j];
-      ns = testsug(wlst, candidate, wl, ns, cpdsuggest, &timer, &timelimit);
+      *aI = ctry[j];
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, &timer, &timelimit);
       if (ns == -1)
         return -1;
       if (!timer)
         return ns;
-      candidate[i] = tmpc;
+      *aI = tmpc;
     }
   }
   return ns;
