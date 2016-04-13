@@ -122,7 +122,7 @@ class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry {
 
   inline FLAG getFlag() { return aflag; }
   inline const char* getKey() { return appnd.c_str(); }
-  char* add(const char* word, int len);
+  char* add(const char* word, size_t len);
 
   inline short getKeyLen() { return appnd.size(); }
 
@@ -201,7 +201,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
 
   inline FLAG getFlag() { return aflag; }
   inline const char* getKey() { return rappnd; }
-  char* add(const char* word, int len);
+  char* add(const char* word, size_t len);
 
   inline const char* getMorph() { return morphcode; }
 

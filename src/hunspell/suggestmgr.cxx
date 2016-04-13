@@ -1330,7 +1330,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   if (ph) {
     if (utf8) {
       std::vector<w_char> _w;
-      int _wl = u8_u16(_w, word);
+      u8_u16(_w, word);
       mkallcap_utf(_w, langnum);
       u16_u8(candidate, _w);
     } else {
@@ -1374,7 +1374,7 @@ int SuggestMgr::ngsuggest(char** wlst,
         char target2[MAXSWUTF8L];
         if (utf8) {
           std::vector<w_char> _w;
-          int _wl = u8_u16(_w, HENTRY_WORD(hp));
+          u8_u16(_w, HENTRY_WORD(hp));
           mkallcap_utf(_w, langnum);
           u16_u8(candidate, _w);
         } else {

@@ -59,7 +59,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffEntry {
         contclasslen(0) {}
   std::string appnd;
   std::string strip;
-  char numconds;
+  unsigned char numconds;
   char opts;
   unsigned short aflag;
   union {

@@ -117,7 +117,7 @@ PfxEntry::~PfxEntry() {
 }
 
 // add prefix to this word assuming conditions hold
-char* PfxEntry::add(const char* word, int len) {
+char* PfxEntry::add(const char* word, size_t len) {
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word) &&
       (!strip.size() || (strncmp(word, strip.c_str(), strip.size()) == 0)) &&
@@ -517,7 +517,7 @@ SfxEntry::~SfxEntry() {
 }
 
 // add suffix to this word assuming conditions hold
-char* SfxEntry::add(const char* word, int len) {
+char* SfxEntry::add(const char* word, size_t len) {
   /* make sure all conditions match */
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word + len, word) &&
@@ -843,7 +843,6 @@ char* SfxEntry::check_twosfx_morph(const char* word,
                                    int optflags,
                                    PfxEntry* ppfx,
                                    const FLAG needflag) {
-  unsigned char* cp;
   PfxEntry* ep = ppfx;
   char* st;
 

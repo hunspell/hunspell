@@ -151,7 +151,7 @@ int RepList::add(char* pat1, char* pat2) {
 }
 
 int RepList::conv(const char* word, char* dest, size_t destsize) {
-  int stl = 0;
+  size_t stl = 0;
   int change = 0;
   for (size_t i = 0; i < strlen(word); i++) {
     int n = near(word + i);

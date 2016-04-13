@@ -1662,7 +1662,7 @@ short AffixMgr::get_syllable(const std::string& word) {
   short num = 0;
 
   if (!utf8) {
-    for (int i = 0; i < word.size(); ++i) {
+    for (size_t i = 0; i < word.size(); ++i) {
       if (strchr(cpdvowels, word[i]))
         num++;
     }
@@ -4738,7 +4738,7 @@ int AffixMgr::parse_affix(char* line,
           np++;
           numents = atoi(piece);
           if ((numents <= 0) || ((::std::numeric_limits<size_t>::max() /
-                                  sizeof(struct affentry)) < numents)) {
+                                  sizeof(struct affentry)) < static_cast<size_t>(numents))) {
             char* err = pHMgr->encode_flag(aflag);
             if (err) {
               HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",

@@ -698,7 +698,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   int terse_mode = 0;
   int verbose_mode = 0;
   int d = 0;
-  char* odftmpdir;
+  char* odftmpdir(NULL);
 
   char* extension = (filename) ? basename(filename, '.') : NULL;
   TextParser* parser = get_parser(format, extension, pMS[0]);
@@ -1066,7 +1066,7 @@ nextline:
     }  // if
   }    // while
 
-  if (bZippedOdf) {
+  if (odftmpdir) {
     fclose(fileid);
     sprintf(buf, "rm %s/content.xml; rmdir %s", odftmpdir, odftmpdir);
     if (system(buf) != 0)
@@ -1669,8 +1669,8 @@ ki2:
 void interactive_interface(Hunspell** pMS, char* filename, int format) {
   char buf[MAXLNLEN];
   char* odffilename = NULL;
-  char* odftempdir;  // external zip works only with temporary directories
-                     // (option -j)
+  char* odftempdir(NULL);  // external zip works only with temporary directories
+                           // (option -j)
 
   FILE* text = fopen(filename, "r");
   if (!text) {
@@ -1736,7 +1736,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           clear();
           refresh();
           fclose(tempfile);  // automatically deleted when closed
-          if (bZippedOdf) {
+          if (odftempdir) {
             sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
             if (system(buf) != 0)
               perror("write failed");
@@ -1775,7 +1775,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     }
   }
 
-  if (bZippedOdf) {
+  if (odftempdir) {
     sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
     if (system(buf) != 0)
       perror("write failed");

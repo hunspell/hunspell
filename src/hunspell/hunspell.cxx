@@ -669,7 +669,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 
     // other patterns
     for (int j = 0; j < numbreak; j++) {
-      int plen = strlen(wordbreak[j]);
+      size_t plen = strlen(wordbreak[j]);
       size_t found = scw.find(wordbreak[j]);
       if ((found > 0) && (found < wl - plen)) {
         if (!spell(scw.c_str() + found + plen))
@@ -1610,7 +1610,6 @@ void Hunspell::cat_result(std::string& result, char* st) {
 int Hunspell::analyze(char*** slst, const char* word) {
   char cw[MAXWORDUTF8LEN];
   w_char unicw[MAXWORDLEN];
-  int wl2 = 0;
   *slst = NULL;
   if (!pSMgr || maxdic == 0)
     return 0;
@@ -1707,7 +1706,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
     case INITCAP: {
       wl = mkallsmall2(cw, unicw, nc);
       std::string u8buffer(cw);
-      wl2 = mkinitcap2(cw, unicw, nc);
+      mkinitcap2(cw, unicw, nc);
       cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       cat_result(result, pSMgr->suggest_morph(cw));
       if (abbv) {
@@ -1730,7 +1729,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       }
       wl = mkallsmall2(cw, unicw, nc);
       std::string u8buffer(cw);
-      wl2 = mkinitcap2(cw, unicw, nc);
+      mkinitcap2(cw, unicw, nc);
 
       cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       cat_result(result, pSMgr->suggest_morph(cw));
