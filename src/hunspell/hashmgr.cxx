@@ -199,6 +199,43 @@ int HashMgr::add_word(const char* word,
                       int al,
                       const char* desc,
                       bool onlyupcase) {
+
+  std::string *word_copy = NULL;
+  std::string *desc_copy = NULL;
+  if (ignorechars || complexprefixes) {
+    word_copy = new std::string(word, wbl);
+
+    if (ignorechars != NULL) {
+      if (utf8) {
+        wcl = remove_ignored_chars_utf(*word_copy, ignorechars_utf16, ignorechars_utf16_len);
+      } else {
+        remove_ignored_chars(*word_copy, ignorechars);
+      }
+    }
+
+    if (complexprefixes) {
+      if (utf8)
+        wcl = reverseword_utf(*word_copy);
+      else
+        reverseword(*word_copy);
+
+      if (desc && !aliasm) {
+        desc_copy = new std::string(desc);
+
+        if (complexprefixes) {
+          if (utf8)
+            reverseword_utf(*desc_copy);
+          else
+            reverseword(*desc_copy);
+        }
+        desc = desc_copy->c_str();
+      }
+    }
+
+    wbl = word_copy->size();
+    word = word_copy->c_str();
+  }
+
   bool upcasehomonym = false;
   int descl = desc ? (aliasm ? sizeof(char*) : strlen(desc) + 1) : 0;
   // variable-length hash record with word and optional fields
@@ -206,21 +243,9 @@ int HashMgr::add_word(const char* word,
       (struct hentry*)malloc(sizeof(struct hentry) + wbl + descl);
   if (!hp)
     return 1;
+
   char* hpw = hp->word;
   strcpy(hpw, word);
-  if (ignorechars != NULL) {
-    if (utf8) {
-      remove_ignored_chars_utf(hpw, ignorechars_utf16, ignorechars_utf16_len);
-    } else {
-      remove_ignored_chars(hpw, ignorechars);
-    }
-  }
-  if (complexprefixes) {
-    if (utf8)
-      reverseword_utf(hpw);
-    else
-      reverseword(hpw);
-  }
 
   int i = hash(hpw);
 
@@ -239,12 +264,6 @@ int HashMgr::add_word(const char* word,
       store_pointer(hpw + wbl + 1, get_aliasm(atoi(desc)));
     } else {
       strcpy(hpw + wbl + 1, desc);
-      if (complexprefixes) {
-        if (utf8)
-          reverseword_utf(HENTRY_DATA(hp));
-        else
-          reverseword(HENTRY_DATA(hp));
-      }
     }
     if (strstr(HENTRY_DATA(hp), MORPH_PHON))
       hp->var += H_OPT_PHON;
@@ -299,6 +318,10 @@ int HashMgr::add_word(const char* word,
       free(hp->astr);
     free(hp);
   }
+
+  delete desc_copy;
+  delete word_copy;
+
   return 0;
 }
 
@@ -1070,19 +1093,14 @@ int HashMgr::parse_aliasm(char* line, FileMgr* af) {
               *(tp - 1) = ' ';
               tp = tp + strlen(tp);
             }
+            std::string chunk(piece);
             if (complexprefixes) {
               if (utf8)
-                reverseword_utf(piece);
+                reverseword_utf(chunk);
               else
-                reverseword(piece);
+                reverseword(chunk);
             }
-            aliasm[j] = mystrdup(piece);
-            if (!aliasm[j]) {
-              numaliasm = 0;
-              free(aliasm);
-              aliasm = NULL;
-              return 1;
-            }
+            aliasm[j] = mystrdup(chunk.c_str());
             break;
           }
           default:
