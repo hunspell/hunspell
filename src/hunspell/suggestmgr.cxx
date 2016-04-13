@@ -595,19 +595,16 @@ int SuggestMgr::badcharkey(char** wlst,
                            const char* word,
                            int ns,
                            int cpdsuggest) {
-  char tmpc;
-  char candidate[MAXSWUTF8L];
-  int wl = strlen(word);
-  strcpy(candidate, word);
+  std::string candidate(word);
+
   // swap out each char one by one and try uppercase and neighbor
   // keyboard chars in its place to see if that makes a good word
-
-  for (int i = 0; i < wl; i++) {
-    tmpc = candidate[i];
+  for (size_t i = 0; i < candidate.size(); ++i) {
+    char tmpc = candidate[i];
     // check with uppercase letters
     candidate[i] = csconv[((unsigned char)tmpc)].cupper;
     if (tmpc != candidate[i]) {
-      ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
       if (ns == -1)
         return -1;
       candidate[i] = tmpc;
@@ -619,13 +616,13 @@ int SuggestMgr::badcharkey(char** wlst,
     while (loc) {
       if ((loc > ckey) && (*(loc - 1) != '|')) {
         candidate[i] = *(loc - 1);
-        ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
         if (ns == -1)
           return -1;
       }
       if ((*(loc + 1) != '|') && (*(loc + 1) != '\0')) {
         candidate[i] = *(loc + 1);
-        ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
         if (ns == -1)
           return -1;
       }
