@@ -351,7 +351,7 @@ int HashMgr::get_clen_and_captype(const char* word, int wbl, int* captype) {
     *captype = get_captype_utf8(dest_utf, len, langnum);
   } else {
     len = wbl;
-    *captype = get_captype((char*)word, len, csconv);
+    *captype = get_captype(word, len, csconv);
   }
   return len;
 }
