@@ -741,13 +741,14 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
         return NULL;
       }
       if (root) {
-        *root = mystrdup(he->word);
-        if (*root && complexprefixes) {
+        std::string word_root(he->word);
+        if (complexprefixes) {
           if (utf8)
-            reverseword_utf(*root);
+            reverseword_utf(word_root);
           else
-            reverseword(*root);
+            reverseword(word_root);
         }
+        *root = mystrdup(word_root.c_str());
       }
       // try check compound word
     } else if (pAMgr->get_compound()) {
@@ -766,13 +767,14 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
       // end of LANG specific region
       if (he) {
         if (root) {
-          *root = mystrdup(he->word);
-          if (*root && complexprefixes) {
+          std::string word_root(he->word);
+          if (complexprefixes) {
             if (utf8)
-              reverseword_utf(*root);
+              reverseword_utf(word_root);
             else
-              reverseword(*root);
+              reverseword(word_root);
           }
+          *root = mystrdup(word_root.c_str());
         }
         if (info)
           *info += SPELL_COMPOUND;
@@ -1066,10 +1068,13 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
     for (int j = 0; j < ns; j++) {
+      std::string root((*slst)[j]);
+      free((*slst)[j]);
       if (utf8)
-        reverseword_utf((*slst)[j]);
+        reverseword_utf(root);
       else
-        reverseword((*slst)[j]);
+        reverseword(root);
+      (*slst)[j] = mystrdup(root.c_str());
     }
   }
 
