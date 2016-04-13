@@ -2299,7 +2299,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   struct hentry* rv = NULL;
   struct hentry* rv_first;
-  char st[MAXWORDUTF8LEN + 4];
+  std::string st;
   char ch;
 
   int checked_prefix;
@@ -2314,7 +2314,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   setcminmax(&cmin, &cmax, word, len);
 
-  strcpy(st, word);
+  st.assign(word);
 
   for (i = cmin; i < cmax; i++) {
     // go to end of the UTF-8 character
@@ -2346,7 +2346,7 @@ int AffixMgr::compound_check_morph(const char* word,
       if (partresult)
         mystrcat(presult, partresult, MAXLNLEN);
 
-      rv = lookup(st);  // perhaps without prefix
+      rv = lookup(st.c_str());  // perhaps without prefix
 
       // search homonym with compound flag
       while ((rv) && !hu_mov_rule &&
@@ -2369,10 +2369,10 @@ int AffixMgr::compound_check_morph(const char* word,
         affixed = 0;
 
       if (rv) {
-        sprintf(presult + strlen(presult), "%c%s%s", MSEP_FLD, MORPH_PART, st);
+        sprintf(presult + strlen(presult), "%c%s%s", MSEP_FLD, MORPH_PART, st.c_str());
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
           sprintf(presult + strlen(presult), "%c%s%s", MSEP_FLD, MORPH_STEM,
-                  st);
+                  st.c_str());
         }
         // store the pointer of the hash entry
         //            sprintf(presult + strlen(presult), "%c%s%p", MSEP_FLD,
@@ -2388,13 +2388,13 @@ int AffixMgr::compound_check_morph(const char* word,
           break;
         if (compoundflag &&
             !(rv =
-                  prefix_check(st, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
+                  prefix_check(st.c_str(), i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                compoundflag))) {
-          if (((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+          if (((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
                                   compoundflag,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
-                (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) &&
+                (rv = suffix_check_twosfx(st.c_str(), i, 0, NULL, compoundflag)))) &&
               !hu_mov_rule && sfx->getCont() &&
               ((compoundforbidflag &&
                 TESTAFF(sfx->getCont(), compoundforbidflag,
@@ -2407,44 +2407,44 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (rv ||
             (((wordnum == 0) && compoundbegin &&
-              ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
                                   compoundbegin,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
                 (rv = suffix_check_twosfx(
-                     st, i, 0, NULL,
+                     st.c_str(), i, 0, NULL,
                      compoundbegin))) ||  // twofold suffix+compound
-               (rv = prefix_check(st, i,
+               (rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundbegin)))) ||
              ((wordnum > 0) && compoundmiddle &&
-              ((rv = suffix_check(st, i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
                                   compoundmiddle,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
                 (rv = suffix_check_twosfx(
-                     st, i, 0, NULL,
+                     st.c_str(), i, 0, NULL,
                      compoundmiddle))) ||  // twofold suffix+compound
-               (rv = prefix_check(st, i,
+               (rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundmiddle)))))) {
           // char * p = prefix_check_morph(st, i, 0, compound);
           char* p = NULL;
           if (compoundflag)
-            p = affix_check_morph(st, i, compoundflag);
+            p = affix_check_morph(st.c_str(), i, compoundflag);
           if (!p || (*p == '\0')) {
             if (p)
               free(p);
             p = NULL;
             if ((wordnum == 0) && compoundbegin) {
-              p = affix_check_morph(st, i, compoundbegin);
+              p = affix_check_morph(st.c_str(), i, compoundbegin);
             } else if ((wordnum > 0) && compoundmiddle) {
-              p = affix_check_morph(st, i, compoundmiddle);
+              p = affix_check_morph(st.c_str(), i, compoundmiddle);
             }
           }
           if (p && (*p != '\0')) {
             sprintf(presult + strlen(presult), "%c%s%s%s", MSEP_FLD, MORPH_PART,
-                    st, line_uniq_app(&p, MSEP_REC));
+                    st.c_str(), line_uniq_app(&p, MSEP_REC));
           }
           if (p)
             free(p);
@@ -2525,7 +2525,7 @@ int AffixMgr::compound_check_morph(const char* word,
           // LANG_hu section: spec. Hungarian rule
           ||
           ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
-           (rv = affix_check(st, i)) &&
+           (rv = affix_check(st.c_str(), i)) &&
            (sfx && sfx->getCont() &&
             (TESTAFF(sfx->getCont(), (unsigned short)'x', sfx->getContLen()) ||
              TESTAFF(sfx->getCont(), (unsigned short)'%', sfx->getContLen()))))
@@ -2534,7 +2534,7 @@ int AffixMgr::compound_check_morph(const char* word,
         // LANG_hu section: spec. Hungarian rule
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(std::string(st, i));
+          numsyllable += get_syllable(st.substr(i));
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
           // convention)
@@ -2800,6 +2800,7 @@ int AffixMgr::compound_check_morph(const char* word,
   }
   return 0;
 }
+
 
 // return 1 if s1 (reversed) is a leading subset of end of s2
 /* inline int AffixMgr::isRevSubset(const char * s1, const char * end_of_s2, int
