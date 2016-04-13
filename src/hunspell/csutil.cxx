@@ -3064,17 +3064,6 @@ size_t remove_ignored_chars_utf(std::string& word,
   return w2.size();
 }
 
-// strip all ignored characters in the string
-void remove_ignored_chars(char* word, char* ignored_chars) {
-  for (char* p = word; *p != '\0'; p++) {
-    if (!strchr(ignored_chars, *p)) {
-      *word = *p;
-      word++;
-    }
-  }
-  *word = '\0';
-}
-
 namespace {
 class is_any_of {
  public:

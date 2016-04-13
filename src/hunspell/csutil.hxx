@@ -298,9 +298,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     int ignored_len);
 
 // strip all ignored characters in the string
-LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars(char* word,
-                                                   char* ignored_chars);
-// strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     std::string& word,
     const std::string& ignored_chars);
