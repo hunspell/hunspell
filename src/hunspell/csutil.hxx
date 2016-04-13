@@ -369,6 +369,4 @@ LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_FIND(struct hentry* h,
   return (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL);
 }
 
-#define w_char_eq(a, b) (((a).l == (b).l) && ((a).h == (b).h))
-
 #endif

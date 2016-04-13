@@ -49,10 +49,18 @@ struct __attribute__((packed)) w_char {
   unsigned char l;
   unsigned char h;
 
-  friend bool operator<(const w_char lhs, const w_char rhs) {
-    unsigned short l_idx = (lhs.h << 8) + lhs.l;
-    unsigned short r_idx = (rhs.h << 8) + rhs.l;
-    return l_idx < r_idx;
+  friend bool operator<(const w_char a, const w_char b) {
+    unsigned short a_idx = (a.h << 8) + a.l;
+    unsigned short b_idx = (b.h << 8) + b.l;
+    return a_idx < b_idx;
+  }
+
+  friend bool operator==(const w_char a, const w_char b) {
+    return (((a).l == (b).l) && ((a).h == (b).h));
+  }
+
+  friend bool operator!=(const w_char a, const w_char b) {
+    return !(a == b);;
   }
 };
 

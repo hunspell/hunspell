@@ -568,7 +568,7 @@ int SuggestMgr::doubletwochars_utf(char** wlst,
   if (wl < 5 || !pAMgr)
     return ns;
   for (int i = 2; i < wl; i++) {
-    if (w_char_eq(word[i], word[i - 2])) {
+    if (word[i] == word[i - 2]) {
       state++;
       if (state == 3) {
         memcpy(candidate_utf, word, (i - 1) * sizeof(w_char));
@@ -647,7 +647,7 @@ int SuggestMgr::badcharkey_utf(char** wlst,
     w_char tmpc = candidate_utf[i];
     // check with uppercase letters
     candidate_utf[i] = upper_utf(candidate_utf[i], 1);
-    if (!w_char_eq(tmpc, candidate_utf[i])) {
+    if (tmpc != candidate_utf[i]) {
       u16_u8(candidate, candidate_utf);
       ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
@@ -659,10 +659,10 @@ int SuggestMgr::badcharkey_utf(char** wlst,
     if (!ckey)
       continue;
     w_char* loc = ckey_utf;
-    while ((loc < (ckey_utf + ckeyl)) && !w_char_eq(*loc, tmpc))
+    while ((loc < (ckey_utf + ckeyl)) && *loc != tmpc)
       loc++;
     while (loc < (ckey_utf + ckeyl)) {
-      if ((loc > ckey_utf) && !w_char_eq(*(loc - 1), W_VLINE)) {
+      if ((loc > ckey_utf) && *(loc - 1) != W_VLINE) {
         candidate_utf[i] = *(loc - 1);
         u16_u8(candidate, candidate_utf);
         ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
@@ -670,7 +670,7 @@ int SuggestMgr::badcharkey_utf(char** wlst,
         if (ns == -1)
           return -1;
       }
-      if (((loc + 1) < (ckey_utf + ckeyl)) && !w_char_eq(*(loc + 1), W_VLINE)) {
+      if (((loc + 1) < (ckey_utf + ckeyl)) && (*(loc + 1) != W_VLINE)) {
         candidate_utf[i] = *(loc + 1);
         u16_u8(candidate, candidate_utf);
         ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
@@ -680,7 +680,7 @@ int SuggestMgr::badcharkey_utf(char** wlst,
       }
       do {
         loc++;
-      } while ((loc < (ckey_utf + ckeyl)) && !w_char_eq(*loc, tmpc));
+      } while ((loc < (ckey_utf + ckeyl)) && *loc != tmpc);
     }
     candidate_utf[i] = tmpc;
   }
@@ -717,7 +717,6 @@ int SuggestMgr::badchar_utf(char** wlst,
                             int wl,
                             int ns,
                             int cpdsuggest) {
-  w_char tmpc;
   w_char candidate_utf[MAXSWL];
   char candidate[MAXSWUTF8L];
   clock_t timelimit = clock();
@@ -727,8 +726,8 @@ int SuggestMgr::badchar_utf(char** wlst,
   // chars in its place to see if that makes a good word
   for (int j = 0; j < ctryl; j++) {
     for (int i = wl - 1; i >= 0; i--) {
-      tmpc = candidate_utf[i];
-      if (w_char_eq(tmpc, ctry_utf[j]))
+      w_char tmpc = candidate_utf[i];
+      if (tmpc == ctry_utf[j])
         continue;
       candidate_utf[i] = ctry_utf[j];
       u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
