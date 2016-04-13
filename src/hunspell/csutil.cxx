@@ -936,14 +936,6 @@ unsigned char ccase(const struct cs_info* csconv, int nIndex) {
 }
 }
 
-// convert null terminated string to all caps
-void mkallcap(char* p, const struct cs_info* csconv) {
-  while (*p != '\0') {
-    *p = cupper(csconv, static_cast<unsigned char>(*p));
-    p++;
-  }
-}
-
 // convert std::string to all caps
 std::string& mkallcap(std::string& s, const struct cs_info* csconv) {
   for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI) {

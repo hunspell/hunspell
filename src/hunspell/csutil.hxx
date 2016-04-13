@@ -243,8 +243,6 @@ LIBHUNSPELL_DLL_EXPORTED void enmkinitcap(char* d,
                                           const char* p,
                                           const char* encoding);
 
-// convert null terminated string to all caps
-LIBHUNSPELL_DLL_EXPORTED void mkallcap(char* p, const struct cs_info* csconv);
 // convert std::string to all caps
 LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string& s,
                                                const struct cs_info* csconv);
