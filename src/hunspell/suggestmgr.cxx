@@ -717,11 +717,10 @@ int SuggestMgr::badchar_utf(char** wlst,
                             int wl,
                             int ns,
                             int cpdsuggest) {
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
+  std::vector<w_char> candidate_utf(word, word + wl);
+  std::string candidate;
   clock_t timelimit = clock();
   int timer = MINTIMER;
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
   for (int j = 0; j < ctryl; j++) {
@@ -730,8 +729,8 @@ int SuggestMgr::badchar_utf(char** wlst,
       if (tmpc == ctry_utf[j])
         continue;
       candidate_utf[i] = ctry_utf[j];
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-      ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, &timer,
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, &timer,
                    &timelimit);
       if (ns == -1)
         return -1;
