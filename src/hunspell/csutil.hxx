@@ -278,8 +278,6 @@ mkallsmall_utf(std::vector<w_char>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
 
-// convert first nc characters of UTF-8 string to capital
-LIBHUNSPELL_DLL_EXPORTED void mkallcap_utf(w_char* u, int nc, int langnum);
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
