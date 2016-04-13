@@ -4824,13 +4824,13 @@ int AffixMgr::parse_affix(char* line,
           // piece 3 - is string to strip or 0 for null
           case 2: {
             np++;
+            entry->strip = piece;
             if (complexprefixes) {
               if (utf8)
-                reverseword_utf(piece);
+                reverseword_utf(entry->strip);
               else
-                reverseword(piece);
+                reverseword(entry->strip);
             }
-            entry->strip = piece;
             if (entry->strip.compare("0") == 0) {
               entry->strip.clear();
             }
@@ -4848,22 +4848,23 @@ int AffixMgr::parse_affix(char* line,
             if (dash) {
               *dash = '\0';
 
+              entry->appnd = piece;
+
               if (ignorechars) {
                 if (utf8) {
-                  remove_ignored_chars_utf(piece, ignorechars_utf16,
+                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16,
                                            ignorechars_utf16_len);
                 } else {
-                  remove_ignored_chars(piece, ignorechars);
+                  remove_ignored_chars(entry->appnd, ignorechars);
                 }
               }
 
               if (complexprefixes) {
                 if (utf8)
-                  reverseword_utf(piece);
+                  reverseword_utf(entry->appnd);
                 else
-                  reverseword(piece);
+                  reverseword(entry->appnd);
               }
-              entry->appnd = piece;
 
               if (pHMgr->is_aliasf()) {
                 int index = atoi(dash + 1);
@@ -4885,22 +4886,23 @@ int AffixMgr::parse_affix(char* line,
                 contclasses[(entry->contclass)[_i]] = 1;
               }
             } else {
+              entry->appnd = piece;
+
               if (ignorechars) {
                 if (utf8) {
-                  remove_ignored_chars_utf(piece, ignorechars_utf16,
+                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16,
                                            ignorechars_utf16_len);
                 } else {
-                  remove_ignored_chars(piece, ignorechars);
+                  remove_ignored_chars(entry->appnd, ignorechars);
                 }
               }
 
               if (complexprefixes) {
                 if (utf8)
-                  reverseword_utf(piece);
+                  reverseword_utf(entry->appnd);
                 else
-                  reverseword(piece);
+                  reverseword(entry->appnd);
               }
-              entry->appnd = piece;
             }
 
             if (entry->appnd.compare("0") == 0) {
