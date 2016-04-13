@@ -229,9 +229,9 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
  private:
   void cleanword(std::string& dest, const char*, int* pcaptype, int* pabbrev);
-  int cleanword2(char*,
+  int cleanword2(std::string& dest,
+                 std::vector<w_char>& dest_u,
                  const char*,
-                 w_char*,
                  int* w_len,
                  int* pcaptype,
                  int* pabbrev);

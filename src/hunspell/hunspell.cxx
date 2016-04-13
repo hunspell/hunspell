@@ -158,14 +158,16 @@ int Hunspell::add_dic(const char* dpath, const char* key) {
 // set the capitalization type
 // return the length of the "cleaned" (and UTF-8 encoded) word
 
-int Hunspell::cleanword2(char* dest,
+int Hunspell::cleanword2(std::string& dest,
+                         std::vector<w_char>& dest_utf,
                          const char* src,
-                         w_char* dest_utf,
                          int* nc,
                          int* pcaptype,
                          int* pabbrev) {
-  unsigned char* p = (unsigned char*)dest;
-  const unsigned char* q = (const unsigned char*)src;
+  dest.clear();
+  dest_utf.clear();
+
+  const char* q = src;
 
   // first skip over any leading blanks
   while ((*q != '\0') && (*q == ' '))
@@ -173,7 +175,7 @@ int Hunspell::cleanword2(char* dest,
 
   // now strip off any trailing periods (recording their presence)
   *pabbrev = 0;
-  int nl = strlen((const char*)q);
+  int nl = strlen(q);
   while ((nl > 0) && (*(q + nl - 1) == '.')) {
     nl--;
     (*pabbrev)++;
@@ -182,15 +184,13 @@ int Hunspell::cleanword2(char* dest,
   // if no characters are left it can't be capitalized
   if (nl <= 0) {
     *pcaptype = NOCAP;
-    *p = '\0';
     return 0;
   }
 
-  strncpy(dest, (char*)q, nl);
-  *(dest + nl) = '\0';
-  nl = strlen(dest);
+  dest.append(q, nl);
+  nl = dest.size();
   if (utf8) {
-    *nc = u8_u16(dest_utf, MAXWORDLEN, dest);
+    *nc = u8_u16(dest_utf, dest);
     // don't check too long words
     if (*nc >= MAXWORDLEN)
       return 0;
@@ -198,9 +198,9 @@ int Hunspell::cleanword2(char* dest,
       *pcaptype = NOCAP;
       return nl;
     }
-    *pcaptype = get_captype_utf8(dest_utf, *nc, langnum);
+    *pcaptype = get_captype_utf8(dest_utf.data(), *nc, langnum);
   } else {
-    *pcaptype = get_captype(dest, nl, csconv);
+    *pcaptype = get_captype(dest.c_str(), nl, csconv);
     *nc = nl;
   }
   return nl;
@@ -411,20 +411,15 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
-    char cw[MAXWORDUTF8LEN];
-    w_char unicw[MAXWORDLEN];
     char wspace[MAXWORDUTF8LEN];
 
     int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
     else
-      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
-
-    scw = std::string(cw);
-    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
   }
 
 #ifdef MOZILLA_CLIENT
@@ -837,23 +832,18 @@ int Hunspell::suggest(char*** slst, const char* word) {
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
-    w_char unicw[MAXWORDLEN];
-    char cw[MAXWORDUTF8LEN];
     char wspace[MAXWORDUTF8LEN];
 
     int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
     else
-      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
 
     if (wl == 0)
       return 0;
-
-    scw = std::string(cw);
-    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
   }
 
   int ns = 0;
@@ -1382,19 +1372,14 @@ int Hunspell::analyze(char*** slst, const char* word) {
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
     char wspace[MAXWORDUTF8LEN];
-    char cw[MAXWORDUTF8LEN];
-    w_char unicw[MAXWORDLEN];
 
     int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
     if (convstatus < 0)
       return 0;
     else if (convstatus > 0)
-      wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
     else
-      wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
-
-    scw = std::string(cw);
-    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
+      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
   }
 
   if (wl == 0) {
