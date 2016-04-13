@@ -1360,8 +1360,6 @@ void Hunspell::cat_result(std::string& result, char* st) {
 }
 
 int Hunspell::analyze(char*** slst, const char* word) {
-  char cw[MAXWORDUTF8LEN];
-  w_char unicw[MAXWORDLEN];
   *slst = NULL;
   if (!pSMgr || maxdic == 0)
     return 0;
@@ -1377,10 +1375,15 @@ int Hunspell::analyze(char*** slst, const char* word) {
   int abbv = 0;
   int wl = 0;
 
+  std::string scw;
+  std::vector<w_char> sunicw;
+
   // input conversion
   RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   {
     char wspace[MAXWORDUTF8LEN];
+    char cw[MAXWORDUTF8LEN];
+    w_char unicw[MAXWORDLEN];
 
     int convstatus = rl ? rl->conv(word, wspace, MAXWORDUTF8LEN) : 0;
     if (convstatus < 0)
@@ -1389,13 +1392,16 @@ int Hunspell::analyze(char*** slst, const char* word) {
       wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
     else
       wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
+    scw = std::string(cw);
+    sunicw = std::vector<w_char>(unicw, unicw + (utf8 ? (nc > -1 ? nc : 0) : 0));
   }
 
   if (wl == 0) {
     if (abbv) {
+      scw.clear();
       for (wl = 0; wl < abbv; wl++)
-        cw[wl] = '.';
-      cw[wl] = '\0';
+        scw.push_back('.');
       abbv = 0;
     } else
       return 0;
@@ -1410,12 +1416,12 @@ int Hunspell::analyze(char*** slst, const char* word) {
   // test numbers
   // LANG_hu section: set dash information for suggestions
   if (langnum == LANG_hu) {
-    while ((n < wl) && (((cw[n] <= '9') && (cw[n] >= '0')) ||
-                        (((cw[n] == '.') || (cw[n] == ',')) && (n > 0)))) {
+    while ((n < wl) && (((scw[n] <= '9') && (scw[n] >= '0')) ||
+                        (((scw[n] == '.') || (scw[n] == ',')) && (n > 0)))) {
       n++;
-      if ((cw[n] == '.') || (cw[n] == ',')) {
+      if ((scw[n] == '.') || (scw[n] == ',')) {
         if (((n2 == 0) && (n > 3)) ||
-            ((n2 > 0) && ((cw[n - 1] == '.') || (cw[n - 1] == ','))))
+            ((n2 > 0) && ((scw[n - 1] == '.') || (scw[n - 1] == ','))))
           break;
         n2++;
         n3 = n;
@@ -1424,19 +1430,19 @@ int Hunspell::analyze(char*** slst, const char* word) {
 
     if ((n == wl) && (n3 > 0) && (n - n3 > 3))
       return 0;
-    if ((n == wl) || ((n > 0) && ((cw[n] == '%') || (cw[n] == '\xB0')) &&
-                      checkword(cw + n, NULL, NULL))) {
-      result.append(cw);
+    if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) &&
+                      checkword(scw.c_str() + n, NULL, NULL))) {
+      result.append(scw);
       result.resize(n - 1);
       if (n == wl)
-        cat_result(result, pSMgr->suggest_morph(cw + n - 1));
+        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n - 1));
       else {
-        char sign = cw[n];
-        cw[n] = '\0';
-        cat_result(result, pSMgr->suggest_morph(cw + n - 1));
+        char sign = scw[n];
+        scw[n] = '\0';
+        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n - 1));
         result.push_back('+');  // XXX SPEC. MORPHCODE
-        cw[n] = sign;
-        cat_result(result, pSMgr->suggest_morph(cw + n));
+        scw[n] = sign;
+        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n));
       }
       return line_tok(result.c_str(), slst, MSEP_REC);
     }
@@ -1447,25 +1453,25 @@ int Hunspell::analyze(char*** slst, const char* word) {
     case HUHCAP:
     case HUHINITCAP:
     case NOCAP: {
-      cat_result(result, pSMgr->suggest_morph(cw));
+      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
       if (abbv) {
-        std::string u8buffer(cw);
+        std::string u8buffer(scw);
         u8buffer.push_back('.');
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       }
       break;
     }
     case INITCAP: {
-      wl = mkallsmall2(cw, unicw, nc);
-      std::string u8buffer(cw);
-      mkinitcap2(cw, unicw, nc);
+      wl = mkallsmall2(scw, sunicw);
+      std::string u8buffer(scw);
+      mkinitcap2(scw, sunicw);
       cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
-      cat_result(result, pSMgr->suggest_morph(cw));
+      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
       if (abbv) {
         u8buffer.push_back('.');
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
 
-        u8buffer = std::string(cw);
+        u8buffer = scw;
         u8buffer.push_back('.');
 
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
@@ -1473,23 +1479,23 @@ int Hunspell::analyze(char*** slst, const char* word) {
       break;
     }
     case ALLCAP: {
-      cat_result(result, pSMgr->suggest_morph(cw));
+      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
       if (abbv) {
-        std::string u8buffer(cw);
+        std::string u8buffer(scw);
         u8buffer.push_back('.');
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
       }
-      wl = mkallsmall2(cw, unicw, nc);
-      std::string u8buffer(cw);
-      mkinitcap2(cw, unicw, nc);
+      mkallsmall2(scw, sunicw);
+      std::string u8buffer(scw);
+      mkinitcap2(scw, sunicw);
 
       cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
-      cat_result(result, pSMgr->suggest_morph(cw));
+      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
       if (abbv) {
         u8buffer.push_back('.');
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
 
-        u8buffer = std::string(cw);
+        u8buffer = scw;
         u8buffer.push_back('.');
 
         cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
@@ -1511,23 +1517,26 @@ int Hunspell::analyze(char*** slst, const char* word) {
 
   // compound word with dash (HU) I18n
   // LANG_hu section: set dash information for suggestions
-  char* dash = langnum == LANG_hu ? (char*)strchr(cw, '-') : NULL;
+
+  size_t dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
   int nresult = 0;
-  if (dash) {
-    *dash = '\0';
+  if (dash_pos != std::string::npos) {
+    std::string part1 = scw.substr(0, dash_pos);
+    std::string part2 = scw.substr(dash_pos+1);
+
     // examine 2 sides of the dash
-    if (dash[1] == '\0') {  // base word ending with dash
-      if (spell(cw)) {
-        char* p = pSMgr->suggest_morph(cw);
+    if (part2.empty()) {  // base word ending with dash
+      if (spell(part1.c_str())) {
+        char* p = pSMgr->suggest_morph(part1.c_str());
         if (p) {
           int ret = line_tok(p, slst, MSEP_REC);
           free(p);
           return ret;
         }
       }
-    } else if ((dash[1] == 'e') && (dash[2] == '\0')) {  // XXX (HU) -e hat.
-      if (spell(cw) && (spell("-e"))) {
-        char* st = pSMgr->suggest_morph(cw);
+    } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
+      if (spell(part1.c_str()) && (spell("-e"))) {
+        char* st = pSMgr->suggest_morph(part1.c_str());
         if (st) {
           result.append(st);
           free(st);
@@ -1542,21 +1551,18 @@ int Hunspell::analyze(char*** slst, const char* word) {
       }
     } else {
       // first word ending with dash: word- XXX ???
-      char r2 = dash[1];
-      dash[0] = '-';
-      dash[1] = '\0';
-      nresult = spell(cw);
-      dash[1] = r2;
-      dash[0] = '\0';
-      if (nresult && spell(dash + 1) &&
-          ((strlen(dash + 1) > 1) || ((dash[1] > '0') && (dash[1] < '9')))) {
-        char* st = pSMgr->suggest_morph(cw);
+      part1.push_back(' ');
+      nresult = spell(part1.c_str());
+      part1.pop_back();
+      if (nresult && spell(part2.c_str()) &&
+          ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
+        char* st = pSMgr->suggest_morph(part1.c_str());
         if (st) {
           result.append(st);
           free(st);
           result.push_back('+');  // XXX spec. separator in MORPHCODE
         }
-        st = pSMgr->suggest_morph(dash + 1);
+        st = pSMgr->suggest_morph(part2.c_str());
         if (st) {
           result.append(st);
           free(st);
@@ -1565,29 +1571,30 @@ int Hunspell::analyze(char*** slst, const char* word) {
       }
     }
     // affixed number in correct word
-    if (nresult && (dash > cw) &&
-        (((*(dash - 1) <= '9') && (*(dash - 1) >= '0')) ||
-         (*(dash - 1) == '.'))) {
-      *dash = '-';
+    if (nresult && (dash_pos > 0) &&
+        (((scw[dash_pos - 1] <= '9') && (scw[dash_pos - 1] >= '0')) ||
+         (scw[dash_pos - 1] == '.'))) {
       n = 1;
-      if (*(dash - n) == '.')
+      if (scw[dash_pos - n] == '.')
         n++;
       // search first not a number character to left from dash
-      while (((dash - n) >= cw) && ((*(dash - n) == '0') || (n < 3)) &&
+      while (((dash_pos - n) >= 0) && ((scw[dash_pos - n] == '0') || (n < 3)) &&
              (n < 6)) {
         n++;
       }
-      if ((dash - n) < cw)
+      if ((dash_pos - n) < 0)
         n--;
       // numbers: valami1000000-hoz
       // examine 100000-hoz, 10000-hoz 1000-hoz, 10-hoz,
       // 56-hoz, 6-hoz
       for (; n >= 1; n--) {
-        if ((*(dash - n) >= '0') && (*(dash - n) <= '9') &&
-            checkword(dash - n, NULL, NULL)) {
-          result.append(cw);
-          result.resize(dash - cw - n);
-          char* st = pSMgr->suggest_morph(dash - n);
+        if (scw[dash_pos - n] < '0' || scw[dash_pos - n] > '9') {
+            continue;
+        }
+        std::string chunk = scw.substr(dash_pos - n);
+        if (checkword(chunk.c_str(), NULL, NULL)) {
+          result.append(chunk);
+          char* st = pSMgr->suggest_morph(chunk.c_str());
           if (st) {
             result.append(st);
             free(st);
