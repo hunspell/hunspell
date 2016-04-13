@@ -227,18 +227,6 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* need for putdic */
   int input_conv(const char* word, char* dest, size_t destsize);
 
-/* experimental and deprecated functions */
-
-#ifdef HUNSPELL_EXPERIMENTAL
-  /* suffix is an affix flag string, similarly in dictionary files */
-  int put_word_suffix(const char* word, const char* suffix);
-  char* morph_with_correction(const char* word);
-
-  /* spec. suggestions */
-  int suggest_auto(char*** slst, const char* word);
-  int suggest_pos_stems(char*** slst, const char* word);
-#endif
-
  private:
   int cleanword(char*, const char*, int* pcaptype, int* pabbrev);
   int cleanword2(char*,

@@ -67,27 +67,10 @@ LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest(Hunspell* pMS,
   return pMS->suggest(slst, word);
 }
 
-#ifdef HUNSPELL_EXPERIMENTAL
-LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest_auto(Hunspell* pMS,
-                                                   char* word,
-                                                   char*** slst) {
-  return pMS->suggest_auto(slst, word);
-}
-#endif
-
 LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell* pMS,
                                                  char*** slst,
                                                  int len) {
   pMS->free_list(slst, len);
-}
-
-// deprecated (use hunspell_free_list)
-LIBHUNSPELL_DLL_EXPORTED void hunspell_suggest_free(Hunspell* pMS,
-                                                    char** slst,
-                                                    int len) {
-  for (int i = 0; i < len; i++) {
-    free(slst[i]);
-  }
 }
 
 LIBHUNSPELL_DLL_EXPORTED char* hunspell_get_dic_encoding(Hunspell* pMS) {

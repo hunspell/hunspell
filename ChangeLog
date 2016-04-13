@@ -1,3 +1,6 @@
+2016-04-13 Caolán McNamara <caolanm at LibO>:
+	* gh#371 drop experimental code
+
 2015-09-11 Caolán McNamara <caolanm at LibO>:
 	* rhbz#1261421 crash on mashing hangul korean keyboard
 

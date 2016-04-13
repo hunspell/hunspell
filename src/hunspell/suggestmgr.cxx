@@ -357,76 +357,6 @@ int SuggestMgr::suggest(char*** slst,
   return nsug;
 }
 
-// generate suggestions for a word with typical mistake
-//    pass in address of array of char * pointers
-#ifdef HUNSPELL_EXPERIMENTAL
-int SuggestMgr::suggest_auto(char*** slst, const char* w, int nsug) {
-  int nocompoundtwowords = 0;
-  char** wlst;
-  int oldSug;
-
-  char w2[MAXWORDUTF8LEN];
-  const char* word = w;
-
-  // word reversing wrapper for complex prefixes
-  if (complexprefixes) {
-    strcpy(w2, w);
-    if (utf8)
-      reverseword_utf(w2);
-    else
-      reverseword(w2);
-    word = w2;
-  }
-
-  if (*slst) {
-    wlst = *slst;
-  } else {
-    wlst = (char**)malloc(maxSug * sizeof(char*));
-    if (wlst == NULL)
-      return -1;
-  }
-
-  for (int cpdsuggest = 0; (cpdsuggest < 2) && (nocompoundtwowords == 0);
-       cpdsuggest++) {
-    // limit compound suggestion
-    if (cpdsuggest > 0)
-      oldSug = nsug;
-
-    // perhaps we made a typical fault of spelling
-    if ((nsug < maxSug) && (nsug > -1))
-      nsug = replchars(wlst, word, nsug, cpdsuggest);
-
-    // perhaps we made chose the wrong char from a related set
-    if ((nsug < maxSug) && (nsug > -1) &&
-        (!cpdsuggest || (nsug < oldSug + maxcpdsugs)))
-      nsug = mapchars(wlst, word, nsug, cpdsuggest);
-
-    if ((cpdsuggest == 0) && (nsug > 0))
-      nocompoundtwowords = 1;
-
-    // perhaps we forgot to hit space and two words ran together
-
-    if ((nsug < maxSug) && (nsug > -1) &&
-        (!cpdsuggest || (nsug < oldSug + maxcpdsugs)) &&
-        check_forbidden(word, strlen(word))) {
-      nsug = twowords(wlst, word, nsug, cpdsuggest);
-    }
-
-  }  // repeating ``for'' statement compounding support
-
-  if (nsug < 0) {
-    for (int i = 0; i < maxSug; i++)
-      if (wlst[i] != NULL)
-        free(wlst[i]);
-    free(wlst);
-    return -1;
-  }
-
-  *slst = wlst;
-  return nsug;
-}
-#endif  // END OF HUNSPELL_EXPERIMENTAL CODE
-
 // suggestions for an uppercase word (html -> HTML)
 int SuggestMgr::capchars_utf(char** wlst,
                              const w_char* word,
@@ -1791,51 +1721,6 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
   return 0;
 }
 
-#ifdef HUNSPELL_EXPERIMENTAL
-// suggest possible stems
-int SuggestMgr::suggest_pos_stems(char*** slst, const char* w, int nsug) {
-  char** wlst;
-
-  struct hentry* rv = NULL;
-
-  char w2[MAXSWUTF8L];
-  const char* word = w;
-
-  // word reversing wrapper for complex prefixes
-  if (complexprefixes) {
-    strcpy(w2, w);
-    if (utf8)
-      reverseword_utf(w2);
-    else
-      reverseword(w2);
-    word = w2;
-  }
-
-  int wl = strlen(word);
-
-  if (*slst) {
-    wlst = *slst;
-  } else {
-    wlst = (char**)calloc(maxSug, sizeof(char*));
-    if (wlst == NULL)
-      return -1;
-  }
-
-  rv = pAMgr->suffix_check(word, wl, 0, NULL, wlst, maxSug, &nsug);
-
-  // delete dash from end of word
-  if (nsug > 0) {
-    for (int j = 0; j < nsug; j++) {
-      if (wlst[j][strlen(wlst[j]) - 1] == '-')
-        wlst[j][strlen(wlst[j]) - 1] = '\0';
-    }
-  }
-
-  *slst = wlst;
-  return nsug;
-}
-#endif  // END OF HUNSPELL_EXPERIMENTAL CODE
-
 char* SuggestMgr::suggest_morph(const char* w) {
   char result[MAXLNLEN];
   char* r = (char*)result;
@@ -1896,26 +1781,6 @@ char* SuggestMgr::suggest_morph(const char* w) {
 
   return (*result) ? mystrdup(line_uniq(result, MSEP_REC)) : NULL;
 }
-
-#ifdef HUNSPELL_EXPERIMENTAL
-char* SuggestMgr::suggest_morph_for_spelling_error(const char* word) {
-  char* p = NULL;
-  char** wlst = (char**)calloc(maxSug, sizeof(char*));
-  if (!**wlst)
-    return NULL;
-  // we will use only the first suggestion
-  for (int i = 0; i < maxSug - 1; i++)
-    wlst[i] = "";
-  int ns = suggest(&wlst, word, maxSug - 1, NULL);
-  if (ns == maxSug) {
-    p = suggest_morph(wlst[maxSug - 1]);
-    free(wlst[maxSug - 1]);
-  }
-  if (wlst)
-    free(wlst);
-  return p;
-}
-#endif  // END OF HUNSPELL_EXPERIMENTAL CODE
 
 /* affixation */
 char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {

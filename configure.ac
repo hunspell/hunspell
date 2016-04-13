@@ -47,10 +47,6 @@ AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages], 
      AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")
 ])
 
-AC_ARG_WITH(experimental,[  --with-experimental     compile with some extra functions], [
-     AC_DEFINE(HUNSPELL_EXPERIMENTAL,1,"Define if you use exterimental functions")
-])
-
 CURSESLIB=""
 AC_ARG_WITH(
    [ui],

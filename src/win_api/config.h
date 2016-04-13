@@ -179,9 +179,6 @@
 /* Define to 1 if you have the `__argz_stringify' function. */
 #define HAVE___ARGZ_STRINGIFY 1
 
-/* "Define if you use exterimental functions" */
-#undef HUNSPELL_EXPERIMENTAL
-
 /* "Define if you need warning messages" */
 #define HUNSPELL_WARNING_ON
 

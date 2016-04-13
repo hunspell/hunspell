@@ -253,9 +253,6 @@
 /* Define to 1 if you have the `__fsetlocking' function. */
 #undef HAVE___FSETLOCKING
 
-/* "Define if you use exterimental functions" */
-#undef HUNSPELL_EXPERIMENTAL
-
 /* "Define if you need warning messages" */
 #undef HUNSPELL_WARNING_ON
 

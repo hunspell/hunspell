@@ -1459,22 +1459,6 @@ int dialog(TextParser* parser,
           temp = basename(w, '-');
           if (w < temp) {
             *(temp - 1) = '\0';
-          } else {
-#ifdef HUNSPELL_EXPERIMENTAL
-            char** poslst = NULL;
-            int ps = pMS->suggest_pos_stems(&poslst, token);
-            if (ps > 0) {
-              strcpy(buf, poslst[0]);
-              for (int i = 0; i < ps; i++) {
-                if (strlen(poslst[i]) <= strlen(buf))
-                  strcpy(buf, poslst[i]);
-                free(poslst[i]);
-              }
-              strcpy(w, buf);
-            }
-            if (poslst)
-              free(poslst);
-#endif
           }
 
 #ifdef HAVE_READLINE
