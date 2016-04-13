@@ -363,12 +363,11 @@ int SuggestMgr::capchars_utf(char** wlst,
                              int wl,
                              int ns,
                              int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  w_char candidate_utf[MAXSWL];
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
-  mkallcap_utf(candidate_utf, wl, langnum);
-  u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-  return testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+  std::vector<w_char> candidate_utf(word, word + wl);
+  mkallcap_utf(candidate_utf, langnum);
+  std::string candidate;
+  u16_u8(candidate, candidate_utf);
+  return testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                  NULL);
 }
 
