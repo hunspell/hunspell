@@ -326,13 +326,13 @@ int HashMgr::add_hidden_capitalized_word(char* word,
       memcpy(flags2, flags, flagslen * sizeof(unsigned short));
     flags2[flagslen] = ONLYUPCASEFLAG;
     if (utf8) {
-      char st[BUFSIZE];
-      w_char w[BUFSIZE];
-      int wlen = u8_u16(w, BUFSIZE, word);
-      mkallsmall_utf(w, wlen, langnum);
-      mkallcap_utf(w, 1, langnum);
-      u16_u8(st, BUFSIZE, w, wlen);
-      return add_word(st, wbl, wcl, flags2, flagslen + 1, dp, true);
+      std::string st;
+      std::vector<w_char> w;
+      u8_u16(w, word);
+      mkallsmall_utf(w, langnum);
+      mkinitcap_utf(w, langnum);
+      u16_u8(st, w);
+      return add_word(st.c_str(), wbl, wcl, flags2, flagslen + 1, dp, true);
     } else {
       mkallsmall(word, csconv);
       mkinitcap(word, csconv);
