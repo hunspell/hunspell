@@ -1622,22 +1622,21 @@ int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
 }
 
 // minimal XML parser functions
-int Hunspell::get_xml_par(char* dest, const char* par, int max) {
-  char* d = dest;
+std::string Hunspell::get_xml_par(const char* par) {
+  std::string dest;
   if (!par)
-    return 0;
+    return dest;
   char end = *par;
-  char* dmax = dest + max;
   if (end == '>')
     end = '<';
   else if (end != '\'' && end != '"')
     return 0;  // bad XML
-  for (par++; d < dmax && *par != '\0' && *par != end; par++, d++)
-    *d = *par;
-  *d = '\0';
+  for (par++; *par != '\0' && *par != end; ++par) {
+    dest.push_back(*par);
+  }
   mystrrep(dest, "&lt;", "<");
   mystrrep(dest, "&amp;", "&");
-  return (int)(d - dest);
+  return dest;
 }
 
 int Hunspell::get_langnum() const {
@@ -1666,9 +1665,8 @@ const char* Hunspell::get_xml_pos(const char* s, const char* attr) {
 int Hunspell::check_xml_par(const char* q,
                             const char* attr,
                             const char* value) {
-  char cw[MAXWORDUTF8LEN];
-  if (get_xml_par(cw, get_xml_pos(q, attr), MAXWORDUTF8LEN - 1) &&
-      strcmp(cw, value) == 0)
+  std::string cw = get_xml_par(get_xml_pos(q, attr));
+  if (cw == value)
     return 1;
   return 0;
 }
@@ -1686,20 +1684,16 @@ int Hunspell::get_xml_list(char*** slst, const char* list, const char* tag) {
   if (!*slst)
     return 0;
   for (p = list, n = 0; ((p = strstr(p, tag)) != NULL); p++, n++) {
-    int l = strlen(p);
-    (*slst)[n] = (char*)malloc(l + 1);
-    if (!(*slst)[n])
-      return n;
-    if (!get_xml_par((*slst)[n], p + strlen(tag) - 1, l)) {
-      free((*slst)[n]);
+    std::string cw = get_xml_par(p + strlen(tag) - 1);
+    if (cw.empty()) {
       break;
     }
+    (*slst)[n] = mystrdup(cw.c_str());
   }
   return n;
 }
 
 int Hunspell::spellml(char*** slst, const char* word) {
-  char cw[MAXWORDUTF8LEN], cw2[MAXWORDUTF8LEN];
   const char* q = strstr(word, "<query");
   if (!q)
     return 0;  // bad XML input
@@ -1711,8 +1705,9 @@ int Hunspell::spellml(char*** slst, const char* word) {
     return 0;  // bad XML input
   if (check_xml_par(q, "type=", "analyze")) {
     int n = 0;
-    if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 10))
-      n = analyze(slst, cw);
+    std::string cw = get_xml_par(strchr(q2, '>'));
+    if (!cw.empty())
+      n = analyze(slst, cw.c_str());
     if (n == 0)
       return 0;
     // convert the result to <code><a>ana1</a><a>ana2</a></code> format
@@ -1734,22 +1729,25 @@ int Hunspell::spellml(char*** slst, const char* word) {
     (*slst)[0] = mystrdup(r.c_str());
     return 1;
   } else if (check_xml_par(q, "type=", "stem")) {
-    if (get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 1))
-      return stem(slst, cw);
+    std::string cw = get_xml_par(strchr(q2, '>'));
+    if (!cw.empty())
+      return stem(slst, cw.c_str());
   } else if (check_xml_par(q, "type=", "generate")) {
-    int n = get_xml_par(cw, strchr(q2, '>'), MAXWORDUTF8LEN - 1);
-    if (n == 0)
+    std::string cw = get_xml_par(strchr(q2, '>'));
+    if (cw.empty())
       return 0;
     const char* q3 = strstr(q2 + 1, "<word");
     if (q3) {
-      if (get_xml_par(cw2, strchr(q3, '>'), MAXWORDUTF8LEN - 1)) {
-        return generate(slst, cw, cw2);
+      std::string cw2 = get_xml_par(strchr(q3, '>'));
+      if (!cw2.empty()) {
+        return generate(slst, cw.c_str(), cw2.c_str());
       }
     } else {
       if ((q2 = strstr(q2 + 1, "<code")) != NULL) {
         char** slst2;
-        if ((n = get_xml_list(&slst2, strchr(q2, '>'), "<a>")) != 0) {
-          int n2 = generate(slst, cw, slst2, n);
+        int n = get_xml_list(&slst2, strchr(q2, '>'), "<a>");
+        if (n != 0) {
+          int n2 = generate(slst, cw.c_str(), slst2, n);
           freelist(&slst2, n);
           return uniqlist(*slst, n2);
         }

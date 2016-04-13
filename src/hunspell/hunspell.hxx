@@ -249,7 +249,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   void cat_result(std::string& result, char* st);
   char* stem_description(const char* desc);
   int spellml(char*** slst, const char* word);
-  int get_xml_par(char* dest, const char* par, int maxl);
+  std::string get_xml_par(const char* par);
   const char* get_xml_pos(const char* s, const char* attr);
   int get_xml_list(char*** slst, const char* list, const char* tag);
   int check_xml_par(const char* q, const char* attr, const char* value);
