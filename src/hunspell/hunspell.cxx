@@ -1502,7 +1502,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       // first word ending with dash: word- XXX ???
       part1.push_back(' ');
       nresult = spell(part1.c_str());
-      part1.pop_back();
+      part1.erase(part1.size() - 1);
       if (nresult && spell(part2.c_str()) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
         char* st = pSMgr->suggest_morph(part1.c_str());
