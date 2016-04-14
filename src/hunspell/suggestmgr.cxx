@@ -1977,7 +1977,7 @@ int SuggestMgr::leftcommonsubstring(const char* s1, const char* s2) {
     if (complexprefixes) {
       int l1 = u8_u16(su1, MAXSWL, s1);
       int l2 = u8_u16(su2, MAXSWL, s2);
-      if (*((short*)su1 + l1 - 1) == *((short*)su2 + l2 - 1))
+      if (*(su1 + l1 - 1) == *(su2 + l2 - 1))
         return 1;
     } else {
       int i;
@@ -2039,7 +2039,7 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
       mkallsmall_utf(su2, 1, langnum);
     }
     for (int i = 0; (i < l1) && (i < l2); i++) {
-      if (((short*)su1)[i] == ((short*)su2)[i]) {
+      if (su1[i] == su2[i]) {
         num++;
       } else {
         if (diff < 2)
@@ -2048,8 +2048,8 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
       }
     }
     if ((diff == 2) && (l1 == l2) &&
-        (((short*)su1)[diffpos[0]] == ((short*)su2)[diffpos[1]]) &&
-        (((short*)su1)[diffpos[1]] == ((short*)su2)[diffpos[0]]))
+        (su1[diffpos[0]] == su2[diffpos[1]]) &&
+        (su1[diffpos[1]] == su2[diffpos[0]]))
       *is_swap = 1;
   } else {
     size_t i;
