@@ -532,7 +532,6 @@ int SuggestMgr::doubletwochars(char** wlst,
                                const char* word,
                                int ns,
                                int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
   int state = 0;
   int wl = strlen(word);
   if (wl < 5 || !pAMgr)
@@ -541,9 +540,9 @@ int SuggestMgr::doubletwochars(char** wlst,
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3) {
-        strcpy(candidate, word);
-        strcpy(candidate + i - 1, word + i + 1);
-        ns = testsug(wlst, candidate, wl - 2, ns, cpdsuggest, NULL, NULL);
+        std::string candidate(word, i - 1);
+        candidate.append(word + i + 1);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
         if (ns == -1)
           return -1;
         state = 0;
