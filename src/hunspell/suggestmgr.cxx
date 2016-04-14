@@ -2024,10 +2024,10 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
   int diffpos[2];
   *is_swap = 0;
   if (utf8) {
-    w_char su1[MAXSWL];
-    w_char su2[MAXSWL];
-    int l1 = u8_u16(su1, MAXSWL, s1);
-    int l2 = u8_u16(su2, MAXSWL, s2);
+    std::vector<w_char> su1;
+    std::vector<w_char> su2;
+    int l1 = u8_u16(su1, s1);
+    int l2 = u8_u16(su2, s2);
 
     if (l1 <= 0 || l2 <= 0)
       return 0;
