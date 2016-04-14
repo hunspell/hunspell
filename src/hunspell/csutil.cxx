@@ -978,16 +978,6 @@ std::string& mkallsmall(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-void mkallsmall_utf(w_char* u, int nc, int langnum) {
-  for (int i = 0; i < nc; i++) {
-    unsigned short idx = (u[i].h << 8) + u[i].l;
-    if (idx != unicodetolower(idx, langnum)) {
-      u[i].h = (unsigned char)(unicodetolower(idx, langnum) >> 8);
-      u[i].l = (unsigned char)(unicodetolower(idx, langnum) & 0x00FF);
-    }
-  }
-}
-
 std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u,
                                     int langnum) {
   for (size_t i = 0; i < u.size(); ++i) {
