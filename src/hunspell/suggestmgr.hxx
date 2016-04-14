@@ -74,8 +74,6 @@
 #ifndef _SUGGESTMGR_HXX_
 #define _SUGGESTMGR_HXX_
 
-#define MAXSWL 100
-#define MAXSWUTF8L (MAXSWL * 4)
 #define MAX_ROOTS 100
 #define MAX_WORDS 100
 #define MAX_GUESS 200
