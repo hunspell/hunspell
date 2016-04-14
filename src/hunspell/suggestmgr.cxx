@@ -1178,7 +1178,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   int low = NGRAM_LOWERING;
 
   std::string w2;
-  char f[MAXSWUTF8L];
+  std::string f;
   const char* word = w;
 
   // word reversing wrapper for complex prefixes
@@ -1245,7 +1245,7 @@ int SuggestMgr::ngsuggest(char** wlst,
       if ((hp->var & H_OPT_PHON) &&
           copy_field(f, HENTRY_DATA(hp), MORPH_PHON)) {
         int sc2 = ngram(3, word, f, NGRAM_LONGER_WORSE + low) +
-                  +leftcommonsubstring(word, f);
+                  +leftcommonsubstring(word, f.c_str());
         if (sc2 > sc)
           sc = sc2;
       }
@@ -1337,11 +1337,13 @@ int SuggestMgr::ngsuggest(char** wlst,
   for (i = 0; i < MAX_ROOTS; i++) {
     if (roots[i]) {
       struct hentry* rp = roots[i];
+
+      const char *field = NULL;
+      if ((rp->var & H_OPT_PHON) && copy_field(f, HENTRY_DATA(rp), MORPH_PHON))
+          field = f.c_str();
       int nw = pAMgr->expand_rootword(
           glst, MAX_WORDS, HENTRY_WORD(rp), rp->blen, rp->astr, rp->alen, word,
-          nc,
-          ((rp->var & H_OPT_PHON) ? copy_field(f, HENTRY_DATA(rp), MORPH_PHON)
-                                  : NULL));
+          nc, field);
 
       for (int k = 0; k < nw; k++) {
         sc = ngram(n, word, glst[k].word, NGRAM_ANY_MISMATCH + low) +
