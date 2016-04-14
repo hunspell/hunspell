@@ -1098,7 +1098,7 @@ int SuggestMgr::movechar(char** wlst,
       if (ns == -1)
         return -1;
     }
-    candidate.assign(word);
+    std::copy(word, word + candidate.size(), candidate.begin());
   }
 
   for (std::string::iterator p = candidate.begin() + candidate.size() - 1; p > candidate.begin(); --p) {
@@ -1110,7 +1110,7 @@ int SuggestMgr::movechar(char** wlst,
       if (ns == -1)
         return -1;
     }
-    candidate.assign(word);
+    std::copy(word, word + candidate.size(), candidate.begin());
   }
 
   return ns;
@@ -1122,43 +1122,41 @@ int SuggestMgr::movechar_utf(char** wlst,
                              int wl,
                              int ns,
                              int cpdsuggest) {
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
-  w_char* p;
-  w_char* q;
-  w_char tmpc;
+  std::vector<w_char> candidate_utf(word, word + wl);
+  if (candidate_utf.size() < 2)
+    return ns;
+
   // try moving a char
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
-  for (p = candidate_utf; p < (candidate_utf + wl); p++) {
-    for (q = p + 1; (q < (candidate_utf + wl)) && ((q - p) < 10); q++) {
-      tmpc = *(q - 1);
-      *(q - 1) = *q;
-      *q = tmpc;
-      if ((q - p) < 2)
+  for (std::vector<w_char>::iterator p = candidate_utf.begin(); p < candidate_utf.end(); ++p) {
+    for (std::vector<w_char>::iterator q = p + 1; q < candidate_utf.end() && std::distance(p, q) < 10; ++q) {
+      std::swap(*q, *(q - 1));
+      if (std::distance(p, q) < 2)
         continue;  // omit swap char
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-      ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+      std::string candidate;
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
       if (ns == -1)
         return -1;
     }
-    memcpy(candidate_utf, word, wl * sizeof(w_char));
+    std::copy(word, word + candidate_utf.size(), candidate_utf.begin());
   }
-  for (p = candidate_utf + wl - 1; p > candidate_utf; p--) {
-    for (q = p - 1; (q >= candidate_utf) && ((p - q) < 10); q--) {
-      tmpc = *(q + 1);
-      *(q + 1) = *q;
-      *q = tmpc;
-      if ((p - q) < 2)
+
+  for (std::vector<w_char>::iterator p = candidate_utf.begin() + candidate_utf.size() - 1; p > candidate_utf.begin(); --p) {
+    for (std::vector<w_char>::iterator q = p - 1; q >= candidate_utf.begin() && std::distance(q, p) < 10; --q) {
+      std::swap(*q, *(q + 1));
+      if (std::distance(q, p) < 2)
         continue;  // omit swap char
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-      ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+      std::string candidate;
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
       if (ns == -1)
         return -1;
     }
-    memcpy(candidate_utf, word, wl * sizeof(w_char));
+    std::copy(word, word + candidate_utf.size(), candidate_utf.begin());
   }
+
   return ns;
 }
 
