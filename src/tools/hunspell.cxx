@@ -198,7 +198,7 @@ char* wordchars = NULL;
 char* dicpath = NULL;
 int wordchars_len;
 const w_char* wordchars_utf16 = NULL;
-bool wordchars_utf16_free = false;
+std::vector<w_char> new_wordchars_utf16;
 int wordchars_utf16_len;
 char* dicname = NULL;
 char* privdicname = NULL;
@@ -348,14 +348,10 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       } else {
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
-        w_char* new_wordchars_utf16 =
-            (w_char*)malloc(sizeof(w_char) * wlen);
-        int n = u8_u16(new_wordchars_utf16, wlen, text_conv);
-        if (n > 0)
-          std::sort(new_wordchars_utf16, new_wordchars_utf16 + n);
-        wordchars_utf16 = new_wordchars_utf16;
-        wordchars_utf16_len = n;
-        wordchars_utf16_free = true;
+        u8_u16(new_wordchars_utf16, text_conv);
+        std::sort(new_wordchars_utf16.begin(), new_wordchars_utf16.end());
+        wordchars_utf16 = &new_wordchars_utf16[0];
+        wordchars_utf16_len = new_wordchars_utf16.size();
       }
     }
   } else {
@@ -2293,8 +2289,6 @@ int main(int argc, char** argv) {
     free(dic);
   if (wordchars)
     free(wordchars);
-  if (wordchars_utf16_free)
-    free(const_cast<w_char*>(wordchars_utf16));
 #ifdef HAVE_ICONV
   free_utf_tbl();
 #endif
