@@ -214,7 +214,7 @@ std::string phonet(const std::string& inword, phonetable& parms) {
           if (p0 == 1 && z == 0) {
             /**  rule with '<' is used  **/
             if (!target.empty() && *s != '\0' &&
-                (target.back() == c || target.back() == *s)) {
+                (target[target.size()-1] == c || target[target.size()-1] == *s)) {
               target.erase(target.size() - 1);
             }
             z0 = 1;
@@ -234,7 +234,7 @@ std::string phonet(const std::string& inword, phonetable& parms) {
             i += k - 1;
             z = 0;
             while (*s != '\0' && *(s + 1) != '\0' && target.size() < len) {
-              if (target.empty() || target.back() != *s) {
+              if (target.empty() || target[target.size()-1] != *s) {
                 target.push_back(*s);
               }
               s++;
@@ -258,7 +258,7 @@ std::string phonet(const std::string& inword, phonetable& parms) {
     }   /**  end of if (n >= 0)  **/
     if (z0 == 0) {
       if (k && !p0 && target.size() < len && c != '\0' &&
-          (1 || target.empty() || target.back() != c)) {
+          (1 || target.empty() || target[target.size()-1] != c)) {
         /**  condense only double letters  **/
         target.push_back(c);
         /// printf("\n setting \n");
