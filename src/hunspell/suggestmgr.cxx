@@ -1043,26 +1043,19 @@ int SuggestMgr::longswapchar_utf(char** wlst,
                                  int wl,
                                  int ns,
                                  int cpdsuggest) {
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
-  w_char* p;
-  w_char* q;
-  w_char tmpc;
+  std::vector<w_char> candidate_utf(word, word + wl);
   // try swapping not adjacent chars
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
-  for (p = candidate_utf; p < (candidate_utf + wl); p++) {
-    for (q = candidate_utf; q < (candidate_utf + wl); q++) {
-      if (abs((int)(p - q)) > 1) {
-        tmpc = *p;
-        *p = *q;
-        *q = tmpc;
-        u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-        ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+  for (std::vector<w_char>::iterator p = candidate_utf.begin(); p < candidate_utf.end(); ++p) {
+    for (std::vector<w_char>::iterator q = candidate_utf.begin(); q < candidate_utf.end(); ++q) {
+      if (abs(std::distance(q, p)) > 1) {
+        std::swap(*p, *q);
+        std::string candidate;
+        u16_u8(candidate, candidate_utf);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                      NULL);
         if (ns == -1)
           return -1;
-        *q = *p;
-        *p = tmpc;
+        std::swap(*p, *q);
       }
     }
   }
