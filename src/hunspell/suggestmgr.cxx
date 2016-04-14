@@ -2120,15 +2120,15 @@ void SuggestMgr::lcs(const char* s,
                      int* l2,
                      char** result) {
   int n, m;
-  w_char su[MAXSWL];
-  w_char su2[MAXSWL];
+  std::vector<w_char> su;
+  std::vector<w_char> su2;
   char* b;
   char* c;
   int i;
   int j;
   if (utf8) {
-    m = u8_u16(su, MAXSWL, s);
-    n = u8_u16(su2, MAXSWL, s2);
+    m = u8_u16(su, s);
+    n = u8_u16(su2, s2);
   } else {
     m = strlen(s);
     n = strlen(s2);
@@ -2149,8 +2149,8 @@ void SuggestMgr::lcs(const char* s,
     c[j] = 0;
   for (i = 1; i <= m; i++) {
     for (j = 1; j <= n; j++) {
-      if (((utf8) && (*((short*)su + i - 1) == *((short*)su2 + j - 1))) ||
-          ((!utf8) && ((*(s + i - 1)) == (*(s2 + j - 1))))) {
+      if (((utf8) && (su[i - 1] == su2[j - 1])) ||
+          ((!utf8) && (s[i - 1] == s2[j - 1]))) {
         c[i * (n + 1) + j] = c[(i - 1) * (n + 1) + j - 1] + 1;
         b[i * (n + 1) + j] = LCS_UPLEFT;
       } else if (c[(i - 1) * (n + 1) + j] >= c[i * (n + 1) + j - 1]) {
