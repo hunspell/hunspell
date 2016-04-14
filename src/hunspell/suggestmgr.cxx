@@ -1220,8 +1220,7 @@ int SuggestMgr::ngsuggest(char** wlst,
       if (!nonbmp)
         mkallcap(candidate, csconv);
     }
-    phonet(candidate.c_str(), target, nc,
-           *ph);  // XXX phonet() is 8-bit (nc, not n)
+    phonet(candidate, target, *ph);  // XXX phonet() is 8-bit (nc, not n)
   }
 
   FLAG forbiddenword = pAMgr ? pAMgr->get_forbiddenword() : FLAG_NULL;
@@ -1263,7 +1262,7 @@ int SuggestMgr::ngsuggest(char** wlst,
           candidate.assign(HENTRY_WORD(hp));
           mkallcap(candidate, csconv);
         }
-        phonet(candidate.c_str(), target2, -1, *ph);
+        phonet(candidate, target2, *ph);
         scphon = 2 * ngram(3, target, target2, NGRAM_LONGER_WORSE);
       }
 

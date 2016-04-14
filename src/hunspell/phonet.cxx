@@ -69,30 +69,28 @@ static int myisalpha(char ch) {
 /*  phonetic transcription algorithm                   */
 /*  see: http://aspell.net/man-html/Phonetic-Code.html */
 /*  convert string to uppercase before this call       */
-int phonet(const char* inword, char* target, int len, phonetable& parms) {
+int phonet(const std::string& inword, char* target, phonetable& parms) {
   /**       Do phonetic transformation.       **/
-  /**  "len" = length of "inword" incl. '\0'. **/
-
   /**  result:  >= 0:  length of "target"    **/
   /**            otherwise:  error            **/
 
-  int i, j, k = 0, n, p, z;
+  int i, j, k = 0, p, z;
   int k0, n0, p0 = -333, z0;
-  char c, c0;
+  char c;
   const char* s;
   typedef unsigned char uchar;
-  char word[MAXPHONETUTF8LEN + 1];
-  if (len == -1)
-    len = strlen(inword);
+
+  int len = inword.size();
   if (len > MAXPHONETUTF8LEN)
     return 0;
-  strncpy(word, inword, MAXPHONETUTF8LEN);
+  char word[MAXPHONETUTF8LEN + 1];
+  strncpy(word, inword.c_str(), MAXPHONETUTF8LEN);
   word[MAXPHONETUTF8LEN] = '\0';
 
   /**  check word  **/
   i = j = z = 0;
   while ((c = word[i]) != '\0') {
-    n = parms.hash[(uchar)c];
+    int n = parms.hash[(uchar)c];
     z0 = 0;
 
     if (n >= 0) {
@@ -141,7 +139,7 @@ int phonet(const char* inword, char* target, int len, phonetable& parms) {
              (!myisalpha(word[i + k0])))) {
           /**  search for followup rules, if:     **/
           /**  parms.followup and k > 1  and  NO '-' in searchstring **/
-          c0 = word[i + k - 1];
+          char c0 = word[i + k - 1];
           n0 = parms.hash[(uchar)c0];
 
           //            if (parms.followup  &&  k > 1  &&  n0 >= 0
