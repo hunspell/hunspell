@@ -131,11 +131,6 @@
 LIBHUNSPELL_DLL_EXPORTED FILE* myfopen(const char* path, const char* mode);
 
 // convert UTF-16 characters to UTF-8
-LIBHUNSPELL_DLL_EXPORTED char* u16_u8(char* dest,
-                                      int size,
-                                      const w_char* src,
-                                      int srclen);
-// convert UTF-16 characters to UTF-8
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
                                              const std::vector<w_char>& src);
 

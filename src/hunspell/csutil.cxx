@@ -144,53 +144,6 @@ FILE* myfopen(const char* path, const char* mode) {
   return fopen(path, mode);
 }
 
-/* only UTF-16 (BMP) implementation */
-char* u16_u8(char* dest, int size, const w_char* src, int srclen) {
-  signed char* u8 = (signed char*)dest;
-  signed char* u8_max = (signed char*)(u8 + size);
-  const w_char* u2 = src;
-  const w_char* u2_max = src + srclen;
-  while ((u2 < u2_max) && (u8 < u8_max)) {
-    if (u2->h) {  // > 0xFF
-      // XXX 4-byte haven't implemented yet.
-      if (u2->h >= 0x08) {  // >= 0x800 (3-byte UTF-8 character)
-        *u8 = 0xe0 + (u2->h >> 4);
-        u8++;
-        if (u8 < u8_max) {
-          *u8 = 0x80 + ((u2->h & 0xf) << 2) + (u2->l >> 6);
-          u8++;
-          if (u8 < u8_max) {
-            *u8 = 0x80 + (u2->l & 0x3f);
-            u8++;
-          }
-        }
-      } else {  // < 0x800 (2-byte UTF-8 character)
-        *u8 = 0xc0 + (u2->h << 2) + (u2->l >> 6);
-        u8++;
-        if (u8 < u8_max) {
-          *u8 = 0x80 + (u2->l & 0x3f);
-          u8++;
-        }
-      }
-    } else {               // <= 0xFF
-      if (u2->l & 0x80) {  // >0x80 (2-byte UTF-8 character)
-        *u8 = 0xc0 + (u2->l >> 6);
-        u8++;
-        if (u8 < u8_max) {
-          *u8 = 0x80 + (u2->l & 0x3f);
-          u8++;
-        }
-      } else {  // < 0x80 (1-byte UTF-8 character)
-        *u8 = u2->l;
-        u8++;
-      }
-    }
-    u2++;
-  }
-  *u8 = '\0';
-  return dest;
-}
-
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
   std::vector<w_char>::const_iterator u2 = src.begin();

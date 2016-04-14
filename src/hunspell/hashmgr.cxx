@@ -76,6 +76,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <limits>
+#include <sstream>
 
 #include "hashmgr.hxx"
 #include "csutil.hxx"
@@ -743,22 +744,24 @@ unsigned short HashMgr::decode_flag(const char* f) {
 }
 
 char* HashMgr::encode_flag(unsigned short f) {
-  unsigned char ch[10];
   if (f == 0)
     return mystrdup("(NULL)");
+  std::string ch;
   if (flag_mode == FLAG_LONG) {
-    ch[0] = (unsigned char)(f >> 8);
-    ch[1] = (unsigned char)(f - ((f >> 8) << 8));
-    ch[2] = '\0';
+    ch.push_back((unsigned char)(f >> 8));
+    ch.push_back((unsigned char)(f - ((f >> 8) << 8)));
   } else if (flag_mode == FLAG_NUM) {
-    sprintf((char*)ch, "%d", f);
+    std::ostringstream stream;
+    stream << f;
+    ch = stream.str();
   } else if (flag_mode == FLAG_UNI) {
-    u16_u8((char*)&ch, 10, (w_char*)&f, 1);
+    const w_char* w_c = (const w_char*)&f;
+    std::vector<w_char> w(w_c, w_c + 1);
+    u16_u8(ch, w);
   } else {
-    ch[0] = (unsigned char)(f);
-    ch[1] = '\0';
+    ch.push_back((unsigned char)(f));
   }
-  return mystrdup((char*)ch);
+  return mystrdup(ch.c_str());
 }
 
 // read in aff file and set flag mode
