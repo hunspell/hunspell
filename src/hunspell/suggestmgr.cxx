@@ -2034,9 +2034,9 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
 
     // decapitalize dictionary word
     if (complexprefixes) {
-      mkallsmall_utf(su2 + l2 - 1, 1, langnum);
+      su2[l2 - 1] = lower_utf(su2[l2 - 1], langnum);
     } else {
-      mkallsmall_utf(su2, 1, langnum);
+      su2[0] = lower_utf(su2[0], langnum);
     }
     for (int i = 0; (i < l1) && (i < l2); i++) {
       if (su1[i] == su2[i]) {

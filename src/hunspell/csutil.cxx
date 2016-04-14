@@ -945,6 +945,15 @@ w_char upper_utf(w_char u, int langnum) {
   return u;
 }
 
+w_char lower_utf(w_char u, int langnum) {
+  unsigned short idx = (u.h << 8) + u.l;
+  if (idx != unicodetolower(idx, langnum)) {
+    u.h = (unsigned char)(unicodetolower(idx, langnum) >> 8);
+    u.l = (unsigned char)(unicodetolower(idx, langnum) & 0x00FF);
+  }
+  return u;
+}
+
 // convert std::string to all caps
 std::string& mkallcap(std::string& s, const struct cs_info* csconv) {
   for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI) {
