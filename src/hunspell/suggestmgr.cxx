@@ -843,8 +843,6 @@ int SuggestMgr::twowords(char** wlst,
                          const char* word,
                          int ns,
                          int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  char* p;
   int c1, c2;
   int forbidden = 0;
   int cwrd;
@@ -856,10 +854,12 @@ int SuggestMgr::twowords(char** wlst,
   if (langnum == LANG_hu)
     forbidden = check_forbidden(word, wl);
 
+  char* candidate = (char*)malloc(wl + 2);
   strcpy(candidate + 1, word);
+
   // split the string into two pieces after every char
   // if both pieces are good words make them a suggestion
-  for (p = candidate + 1; p[1] != '\0'; p++) {
+  for (char* p = candidate + 1; p[1] != '\0'; p++) {
     p[-1] = *p;
     // go to end of the UTF-8 character
     while (utf8 && ((p[1] & 0xc0) == 0x80)) {
@@ -894,12 +894,16 @@ int SuggestMgr::twowords(char** wlst,
         if (ns < maxSug) {
           if (cwrd) {
             wlst[ns] = mystrdup(candidate);
-            if (wlst[ns] == NULL)
+            if (wlst[ns] == NULL) {
+              free(candidate);
               return -1;
+            }
             ns++;
           }
-        } else
+        } else {
+          free(candidate);
           return ns;
+        }
         // add two word suggestion with dash, if TRY string contains
         // "a" or "-"
         // NOTE: cwrd doesn't modified for REP twoword sugg.
@@ -915,16 +919,21 @@ int SuggestMgr::twowords(char** wlst,
           if (ns < maxSug) {
             if (cwrd) {
               wlst[ns] = mystrdup(candidate);
-              if (wlst[ns] == NULL)
+              if (wlst[ns] == NULL) {
+                free(candidate);
                 return -1;
+              }
               ns++;
             }
-          } else
+          } else {
+            free(candidate);
             return ns;
+          }
         }
       }
     }
   }
+  free(candidate);
   return ns;
 }
 
