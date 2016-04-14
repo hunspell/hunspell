@@ -1532,7 +1532,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
       if (scw[dash_pos - n] == '.')
         n++;
       // search first not a number character to left from dash
-      while (((dash_pos - n) >= 0) && ((scw[dash_pos - n] == '0') || (n < 3)) &&
+      while ((dash_pos >= n) && ((scw[dash_pos - n] == '0') || (n < 3)) &&
              (n < 6)) {
         n++;
       }
