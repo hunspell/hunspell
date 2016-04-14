@@ -1970,25 +1970,20 @@ int SuggestMgr::ngram(int n,
 // length of the left common substring of s1 and (decapitalised) s2
 int SuggestMgr::leftcommonsubstring(const char* s1, const char* s2) {
   if (utf8) {
-    w_char su1[MAXSWL];
-    w_char su2[MAXSWL];
-    su1[0].l = su2[0].l = su1[0].h = su2[0].h = 0;
+    std::vector<w_char> su1;
+    std::vector<w_char> su2;
+    int l1 = u8_u16(su1, s1);
+    int l2 = u8_u16(su2, s2);
     // decapitalize dictionary word
     if (complexprefixes) {
-      int l1 = u8_u16(su1, MAXSWL, s1);
-      int l2 = u8_u16(su2, MAXSWL, s2);
       if (su1[l1 - 1] == su2[l2 - 1])
         return 1;
     } else {
-      int i;
-      u8_u16(su1, 1, s1);
-      u8_u16(su2, 1, s2);
-      unsigned short idx = (su2->h << 8) + su2->l;
-      unsigned short otheridx = (su1->h << 8) + su1->l;
+      unsigned short idx = su2.empty() ? 0 : (su2[0].h << 8) + su2[0].l;
+      unsigned short otheridx = su1.empty() ? 0 : (su1[0].h << 8) + su1[0].l;
       if (otheridx != idx && (otheridx != unicodetolower(idx, langnum)))
         return 0;
-      int l1 = u8_u16(su1, MAXSWL, s1);
-      int l2 = u8_u16(su2, MAXSWL, s2);
+      int i;
       for (i = 1; (i < l1) && (i < l2) && (su1[i].l == su2[i].l) &&
                   (su1[i].h == su2[i].h);
            i++)
