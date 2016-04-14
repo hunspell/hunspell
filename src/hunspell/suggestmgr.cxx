@@ -816,25 +816,25 @@ int SuggestMgr::forgotchar_utf(char** wlst,
                                int wl,
                                int ns,
                                int cpdsuggest) {
-  w_char candidate_utf[MAXSWL + 1];
-  char candidate[MAXSWUTF8L + 4];
-  w_char* p;
+  std::vector<w_char> candidate_utf(word, word + wl);
   clock_t timelimit = clock();
   int timer = MINTIMER;
+
   // try inserting a tryme character at the end of the word and before every
   // letter
-  for (int i = 0; i < ctryl; i++) {
-    memcpy(candidate_utf, word, wl * sizeof(w_char));
-    for (p = candidate_utf + wl; p >= candidate_utf; p--) {
-      *(p + 1) = *p;
-      *p = ctry_utf[i];
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl + 1);
-      ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, &timer,
+  for (int k = 0; k < ctryl; ++k) {
+    for (size_t i = 0; i <= candidate_utf.size(); ++i) {
+      size_t index = candidate_utf.size() - i;
+      candidate_utf.insert(candidate_utf.begin() + index, ctry_utf[k]);
+      std::string candidate;
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, &timer,
                    &timelimit);
       if (ns == -1)
         return -1;
       if (!timer)
         return ns;
+      candidate_utf.erase(candidate_utf.begin() + index);
     }
   }
   return ns;
