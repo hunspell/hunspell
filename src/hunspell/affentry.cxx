@@ -79,8 +79,6 @@
 #include "affentry.hxx"
 #include "csutil.hxx"
 
-#define MAXTEMPWORDLEN (MAXWORDUTF8LEN + 4)
-
 PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
     // register affix manager
     : pmyMgr(pmgr),
@@ -120,8 +118,7 @@ PfxEntry::~PfxEntry() {
 char* PfxEntry::add(const char* word, size_t len) {
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word) &&
-      (!strip.size() || (strncmp(word, strip.c_str(), strip.size()) == 0)) &&
-      ((MAXTEMPWORDLEN) > (len + appnd.size() - strip.size()))) {
+      (!strip.size() || (strncmp(word, strip.c_str(), strip.size()) == 0))) {
     /* we have a match so add prefix */
     std::string tword(appnd);
     tword.append(word + strip.size());
@@ -522,8 +519,7 @@ char* SfxEntry::add(const char* word, size_t len) {
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word + len, word) &&
       (!strip.size() ||
-       (strcmp(word + len - strip.size(), strip.c_str()) == 0)) &&
-      ((MAXTEMPWORDLEN) > (len + appnd.size() - strip.size()))) {
+       (strcmp(word + len - strip.size(), strip.c_str()) == 0))) {
     std::string tword(word);
     /* we have a match so add suffix */
     tword.replace(len - strip.size(), std::string::npos, appnd);
