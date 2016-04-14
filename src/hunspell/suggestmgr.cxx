@@ -1021,24 +1021,16 @@ int SuggestMgr::longswapchar(char** wlst,
                              const char* word,
                              int ns,
                              int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  char* p;
-  char* q;
-  char tmpc;
-  int wl = strlen(word);
+  std::string candidate(word);
   // try swapping not adjacent chars one by one
-  strcpy(candidate, word);
-  for (p = candidate; *p != 0; p++) {
-    for (q = candidate; *q != 0; q++) {
-      if (abs((int)(p - q)) > 1) {
-        tmpc = *p;
-        *p = *q;
-        *q = tmpc;
-        ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+  for (std::string::iterator p = candidate.begin(); p < candidate.end(); ++p) {
+    for (std::string::iterator q = candidate.begin(); q < candidate.end(); ++q) {
+      if (abs(std::distance(q, p)) > 1) {
+        std::swap(*p, *q);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
         if (ns == -1)
           return -1;
-        *q = *p;
-        *p = tmpc;
+        std::swap(*p, *q);
       }
     }
   }
