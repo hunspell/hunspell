@@ -66,15 +66,13 @@ static int myisalpha(char ch) {
   return 1;
 }
 
+/*  Do phonetic transformation.                        */
 /*  phonetic transcription algorithm                   */
 /*  see: http://aspell.net/man-html/Phonetic-Code.html */
 /*  convert string to uppercase before this call       */
-int phonet(const std::string& inword, char* target, phonetable& parms) {
-  /**       Do phonetic transformation.       **/
-  /**  result:  >= 0:  length of "target"    **/
-  /**            otherwise:  error            **/
+std::string phonet(const std::string& inword, phonetable& parms) {
 
-  int i, j, k = 0, p, z;
+  int i, k = 0, p, z;
   int k0, n0, p0 = -333, z0;
   char c;
   const char* s;
@@ -82,13 +80,14 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
 
   int len = inword.size();
   if (len > MAXPHONETUTF8LEN)
-    return 0;
+    return std::string();
   char word[MAXPHONETUTF8LEN + 1];
   strncpy(word, inword.c_str(), MAXPHONETUTF8LEN);
   word[MAXPHONETUTF8LEN] = '\0';
 
+  std::string target;
   /**  check word  **/
-  i = j = z = 0;
+  i = z = 0;
   while ((c = word[i]) != '\0') {
     int n = parms.hash[(uchar)c];
     z0 = 0;
@@ -214,9 +213,9 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
                    : 0;
           if (p0 == 1 && z == 0) {
             /**  rule with '<' is used  **/
-            if (j > 0 && *s != '\0' &&
-                (target[j - 1] == c || target[j - 1] == *s)) {
-              j--;
+            if (!target.empty() && *s != '\0' &&
+                (target.back() == c || target.back() == *s)) {
+              target.erase(target.size() - 1);
             }
             z0 = 1;
             z = 1;
@@ -234,10 +233,9 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
           } else { /** no '<' rule used **/
             i += k - 1;
             z = 0;
-            while (*s != '\0' && *(s + 1) != '\0' && j < len) {
-              if (j == 0 || target[j - 1] != *s) {
-                target[j] = *s;
-                j++;
+            while (*s != '\0' && *(s + 1) != '\0' && target.size() < len) {
+              if (target.empty() || target.back() != *s) {
+                target.push_back(*s);
               }
               s++;
             }
@@ -246,8 +244,7 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
             if (parms.rules[n][0] != '\0' &&
                 strstr(parms.rules[n] + 1, "^^") != NULL) {
               if (c != '\0') {
-                target[j] = c;
-                j++;
+                target.push_back(c);
               }
               strmove(&word[0], &word[0] + i + 1);
               i = 0;
@@ -260,15 +257,11 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
       } /**  end of while (parms.rules[n][0] == c)  **/
     }   /**  end of if (n >= 0)  **/
     if (z0 == 0) {
-      //        if (k && (assert(p0!=-333),!p0) &&  j < len &&  c != '\0'
-      //           && (!parms.collapse_result  ||  j == 0  ||  target[j-1] !=
-      //           c)){
-      if (k && !p0 && j < len && c != '\0' &&
-          (1 || j == 0 || target[j - 1] != c)) {
+      if (k && !p0 && target.size() < len && c != '\0' &&
+          (1 || target.empty() || target.back() != c)) {
         /**  condense only double letters  **/
-        target[j] = c;
+        target.push_back(c);
         /// printf("\n setting \n");
-        j++;
       }
 
       i++;
@@ -277,7 +270,5 @@ int phonet(const std::string& inword, char* target, phonetable& parms) {
     }
   } /**  end of   while ((c = word[i]) != '\0')  **/
 
-  target[j] = '\0';
-  return (j);
-
+  return target;
 } /**  end of function "phonet"  **/

@@ -1207,7 +1207,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   struct hentry* hp = NULL;
   int col = -1;
   phonetable* ph = (pAMgr) ? pAMgr->get_phonetable() : NULL;
-  char target[MAXSWUTF8L];
+  std::string target;
   std::string candidate;
   if (ph) {
     if (utf8) {
@@ -1220,7 +1220,7 @@ int SuggestMgr::ngsuggest(char** wlst,
       if (!nonbmp)
         mkallcap(candidate, csconv);
     }
-    phonet(candidate, target, *ph);  // XXX phonet() is 8-bit (nc, not n)
+    target = phonet(candidate, *ph);  // XXX phonet() is 8-bit (nc, not n)
   }
 
   FLAG forbiddenword = pAMgr ? pAMgr->get_forbiddenword() : FLAG_NULL;
@@ -1252,7 +1252,6 @@ int SuggestMgr::ngsuggest(char** wlst,
 
       int scphon = -20000;
       if (ph && (sc > 2) && (abs(n - (int)hp->clen) <= 3)) {
-        char target2[MAXSWUTF8L];
         if (utf8) {
           std::vector<w_char> _w;
           u8_u16(_w, HENTRY_WORD(hp));
@@ -1262,7 +1261,7 @@ int SuggestMgr::ngsuggest(char** wlst,
           candidate.assign(HENTRY_WORD(hp));
           mkallcap(candidate, csconv);
         }
-        phonet(candidate, target2, *ph);
+        std::string target2 = phonet(candidate, *ph);
         scphon = 2 * ngram(3, target, target2, NGRAM_LONGER_WORSE);
       }
 
