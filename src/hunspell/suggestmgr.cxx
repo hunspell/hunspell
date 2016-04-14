@@ -789,23 +789,22 @@ int SuggestMgr::forgotchar(char** wlst,
                            const char* word,
                            int ns,
                            int cpdsuggest) {
-  char candidate[MAXSWUTF8L + 4];
-  char* p;
+  std::string candidate(word);
   clock_t timelimit = clock();
   int timer = MINTIMER;
-  int wl = strlen(word);
+
   // try inserting a tryme character before every letter (and the null
   // terminator)
-  for (int i = 0; i < ctryl; i++) {
-    strcpy(candidate, word);
-    for (p = candidate + wl; p >= candidate; p--) {
-      *(p + 1) = *p;
-      *p = ctry[i];
-      ns = testsug(wlst, candidate, wl + 1, ns, cpdsuggest, &timer, &timelimit);
+  for (int k = 0; k < ctryl; ++k) {
+    for (size_t i = 0; i <= candidate.size(); ++i) {
+      size_t index = candidate.size() - i;
+      candidate.insert(candidate.begin() + index, ctry[k]);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, &timer, &timelimit);
       if (ns == -1)
         return -1;
       if (!timer)
         return ns;
+      candidate.erase(candidate.begin() + index);
     }
   }
   return ns;
