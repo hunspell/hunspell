@@ -2080,8 +2080,8 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
 
 int SuggestMgr::mystrlen(const char* word) {
   if (utf8) {
-    w_char w[MAXSWL];
-    return u8_u16(w, MAXSWL, word);
+    std::vector<w_char> w;
+    return u8_u16(w, word);
   } else
     return strlen(word);
 }
