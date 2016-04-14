@@ -859,24 +859,6 @@ size_t reverseword(std::string& word) {
 }
 
 // reverse word
-size_t reverseword_utf(char* word) {
-  w_char w[MAXWORDLEN];
-  w_char* p;
-  w_char r;
-  int l = u8_u16(w, MAXWORDLEN, word);
-  if (l == -1)
-    return 0;
-  p = w;
-  for (w_char *dest = w + l - 1; p < dest; p++, dest--) {
-    r = *p;
-    *p = *dest;
-    *dest = r;
-  }
-  u16_u8(word, MAXWORDUTF8LEN, w, l);
-  return l;
-}
-
-// reverse word
 size_t reverseword_utf(std::string& word) {
   std::vector<w_char> w;
   u8_u16(w, word);

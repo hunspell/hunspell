@@ -195,8 +195,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t reverseword(char*);
 LIBHUNSPELL_DLL_EXPORTED size_t reverseword(std::string& word);
 
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(char*);
-// reverse word
 LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string&);
 
 // remove duplicates
