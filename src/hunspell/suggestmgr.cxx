@@ -1084,40 +1084,35 @@ int SuggestMgr::movechar(char** wlst,
                          const char* word,
                          int ns,
                          int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  char* p;
-  char* q;
-  char tmpc;
+  std::string candidate(word);
+  if (candidate.size() < 2)
+    return ns;
 
-  int wl = strlen(word);
   // try moving a char
-  strcpy(candidate, word);
-  for (p = candidate; *p != 0; p++) {
-    for (q = p + 1; (*q != 0) && ((q - p) < 10); q++) {
-      tmpc = *(q - 1);
-      *(q - 1) = *q;
-      *q = tmpc;
-      if ((q - p) < 2)
+  for (std::string::iterator p = candidate.begin(); p < candidate.end(); ++p) {
+    for (std::string::iterator q = p + 1; q < candidate.end() && std::distance(p, q) < 10; ++q) {
+      std::swap(*q, *(q - 1));
+      if (std::distance(p, q) < 2)
         continue;  // omit swap char
-      ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
       if (ns == -1)
         return -1;
     }
-    strcpy(candidate, word);
+    candidate.assign(word);
   }
-  for (p = candidate + wl - 1; p > candidate; p--) {
-    for (q = p - 1; (q >= candidate) && ((p - q) < 10); q--) {
-      tmpc = *(q + 1);
-      *(q + 1) = *q;
-      *q = tmpc;
-      if ((p - q) < 2)
+
+  for (std::string::iterator p = candidate.begin() + candidate.size() - 1; p > candidate.begin(); --p) {
+    for (std::string::iterator q = p - 1; q >= candidate.begin() && std::distance(q, p) < 10; --q) {
+      std::swap(*q, *(q + 1));
+      if (std::distance(q, p) < 2)
         continue;  // omit swap char
-      ns = testsug(wlst, candidate, wl, ns, cpdsuggest, NULL, NULL);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
       if (ns == -1)
         return -1;
     }
-    strcpy(candidate, word);
+    candidate.assign(word);
   }
+
   return ns;
 }
 
