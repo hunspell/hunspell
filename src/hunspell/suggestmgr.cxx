@@ -1191,10 +1191,9 @@ int SuggestMgr::ngsuggest(char** wlst,
     word = w2.c_str();
   }
 
-  char mw[MAXSWUTF8L];
-  w_char u8[MAXSWL];
+  std::vector<w_char> u8;
   int nc = strlen(word);
-  int n = (utf8) ? u8_u16(u8, MAXSWL, word) : nc;
+  int n = (utf8) ? u8_u16(u8, word) : nc;
 
   // set character based ngram suggestion for words with non-BMP Unicode
   // characters
@@ -1298,14 +1297,17 @@ int SuggestMgr::ngsuggest(char** wlst,
   int thresh = 0;
   for (int sp = 1; sp < 4; sp++) {
     if (utf8) {
-      for (int k = sp; k < n; k += 4)
-        *((unsigned short*)u8 + k) = '*';
-      u16_u8(mw, MAXSWUTF8L, u8, n);
+      for (int k = sp; k < n; k += 4) {
+        u8[k].l = '*';
+        u8[k].h = 0;
+      }
+      std::string mw;
+      u16_u8(mw, u8);
       thresh = thresh + ngram(n, word, mw, NGRAM_ANY_MISMATCH + low);
     } else {
-      strcpy(mw, word);
+      std::string mw(word);
       for (int k = sp; k < n; k += 4)
-        *(mw + k) = '*';
+        mw[k] = '*';
       thresh = thresh + ngram(n, word, mw, NGRAM_ANY_MISMATCH + low);
     }
   }
