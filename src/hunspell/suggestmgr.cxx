@@ -540,8 +540,8 @@ int SuggestMgr::doubletwochars(char** wlst,
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3) {
-        std::string candidate(word, i - 1);
-        candidate.append(word + i + 1);
+        std::string candidate(word, word + i - 1);
+        candidate.insert(candidate.end(), word + i + 1, word + wl);
         ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
         if (ns == -1)
           return -1;
@@ -561,8 +561,6 @@ int SuggestMgr::doubletwochars_utf(char** wlst,
                                    int wl,
                                    int ns,
                                    int cpdsuggest) {
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
   int state = 0;
   if (wl < 5 || !pAMgr)
     return ns;
@@ -570,11 +568,11 @@ int SuggestMgr::doubletwochars_utf(char** wlst,
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3) {
-        memcpy(candidate_utf, word, (i - 1) * sizeof(w_char));
-        memcpy(candidate_utf + i - 1, word + i + 1,
-               (wl - i - 1) * sizeof(w_char));
-        u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl - 2);
-        ns = testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL,
+        std::vector<w_char> candidate_utf(word, word + i - 1);
+        candidate_utf.insert(candidate_utf.end(), word + i + 1, word + wl);
+        std::string candidate;
+        u16_u8(candidate, candidate_utf);
+        ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                      NULL);
         if (ns == -1)
           return -1;
