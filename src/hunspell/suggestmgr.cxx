@@ -745,24 +745,20 @@ int SuggestMgr::extrachar_utf(char** wlst,
                               int wl,
                               int ns,
                               int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  w_char candidate_utf[MAXSWL];
-  w_char* p;
-  w_char tmpc = W_VLINE;  // not used value, only for VCC warning message
-  if (wl < 2)
+  std::vector<w_char> candidate_utf(word, word + wl);
+  if (candidate_utf.size() < 2)
     return ns;
   // try omitting one char of word at a time
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
-  for (p = candidate_utf + wl - 1; p >= candidate_utf; p--) {
-    w_char tmpc2 = *p;
-    if (p < candidate_utf + wl - 1)
-      *p = tmpc;
-    u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl - 1);
-    ns =
-        testsug(wlst, candidate, strlen(candidate), ns, cpdsuggest, NULL, NULL);
+  for (size_t i = 0; i < candidate_utf.size(); ++i) {
+    size_t index = candidate_utf.size() - 1 - i;
+    w_char tmpc = candidate_utf[index];
+    candidate_utf.erase(candidate_utf.begin() + index);
+    std::string candidate;
+    u16_u8(candidate, candidate_utf);
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    tmpc = tmpc2;
+    candidate_utf.insert(candidate_utf.begin() + index, tmpc);
   }
   return ns;
 }
