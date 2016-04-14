@@ -177,8 +177,7 @@ class LIBHUNSPELL_DLL_EXPORTED SuggestMgr {
 
   int mapchars(char**, const char*, int, int);
   int map_related(const char*,
-                  char*,
-                  int,
+                  std::string&,
                   int,
                   char** wlst,
                   int,

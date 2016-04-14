@@ -387,10 +387,9 @@ int SuggestMgr::mapchars(char** wlst,
                          const char* word,
                          int ns,
                          int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
+  std::string candidate;
   clock_t timelimit;
   int timer;
-  candidate[0] = '\0';
 
   int wl = strlen(word);
   if (wl < 2 || !pAMgr)
@@ -403,14 +402,13 @@ int SuggestMgr::mapchars(char** wlst,
 
   timelimit = clock();
   timer = MINTIMER;
-  return map_related(word, (char*)&candidate, 0, 0, wlst, cpdsuggest, ns,
+  return map_related(word, candidate, 0, wlst, cpdsuggest, ns,
                      maptable, nummap, &timer, &timelimit);
 }
 
 int SuggestMgr::map_related(const char* word,
-                            char* candidate,
+                            std::string& candidate,
                             int wn,
-                            int cn,
                             char** wlst,
                             int cpdsuggest,
                             int ns,
@@ -420,17 +418,15 @@ int SuggestMgr::map_related(const char* word,
                             clock_t* timelimit) {
   if (*(word + wn) == '\0') {
     int cwrd = 1;
-    *(candidate + cn) = '\0';
-    int wl = strlen(candidate);
     for (int m = 0; m < ns; m++) {
-      if (strcmp(candidate, wlst[m]) == 0) {
+      if (candidate == wlst[m]) {
         cwrd = 0;
         break;
       }
     }
-    if ((cwrd) && checkword(candidate, wl, cpdsuggest, timer, timelimit)) {
+    if ((cwrd) && checkword(candidate.c_str(), candidate.size(), cpdsuggest, timer, timelimit)) {
       if (ns < maxSug) {
-        wlst[ns] = mystrdup(candidate);
+        wlst[ns] = mystrdup(candidate.c_str());
         if (wlst[ns] == NULL)
           return -1;
         ns++;
@@ -444,9 +440,11 @@ int SuggestMgr::map_related(const char* word,
       int len = strlen(maptable[j].set[k]);
       if (strncmp(maptable[j].set[k], word + wn, len) == 0) {
         in_map = 1;
+        size_t cn = candidate.size();
         for (int l = 0; l < maptable[j].len; l++) {
-          strcpy(candidate + cn, maptable[j].set[l]);
-          ns = map_related(word, candidate, wn + len, strlen(candidate), wlst,
+          candidate.resize(cn);
+          candidate.append(maptable[j].set[l]);
+          ns = map_related(word, candidate, wn + len, wlst,
                            cpdsuggest, ns, maptable, nummap, timer, timelimit);
           if (!(*timer))
             return ns;
@@ -455,8 +453,8 @@ int SuggestMgr::map_related(const char* word,
     }
   }
   if (!in_map) {
-    *(candidate + cn) = *(word + wn);
-    ns = map_related(word, candidate, wn + 1, cn + 1, wlst, cpdsuggest, ns,
+    candidate.push_back(*(word + wn));
+    ns = map_related(word, candidate, wn + 1, wlst, cpdsuggest, ns,
                      maptable, nummap, timer, timelimit);
   }
   return ns;
