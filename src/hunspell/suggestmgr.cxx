@@ -951,7 +951,7 @@ int SuggestMgr::swapchar(char** wlst,
     return ns;
 
   // try swapping adjacent chars one by one
-  for (size_t i = 0; i < candidate.size(); ++i) {
+  for (size_t i = 0; i < candidate.size() - 1; ++i) {
     std::swap(candidate[i], candidate[i+1]);
     ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
@@ -989,44 +989,39 @@ int SuggestMgr::swapchar_utf(char** wlst,
                              int wl,
                              int ns,
                              int cpdsuggest) {
-  w_char candidate_utf[MAXSWL];
-  char candidate[MAXSWUTF8L];
-  w_char* p;
-  w_char tmpc;
-  int len = 0;
+  std::vector<w_char> candidate_utf(word, word + wl);
+  if (candidate_utf.size() < 2)
+    return ns;
+
+  std::string candidate;
   // try swapping adjacent chars one by one
-  memcpy(candidate_utf, word, wl * sizeof(w_char));
-  for (p = candidate_utf; p < (candidate_utf + wl - 1); p++) {
-    tmpc = *p;
-    *p = p[1];
-    p[1] = tmpc;
-    u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-    if (len == 0)
-      len = strlen(candidate);
-    ns = testsug(wlst, candidate, len, ns, cpdsuggest, NULL, NULL);
+  for (size_t i = 0; i < candidate_utf.size() - 1; ++i) {
+    std::swap(candidate_utf[i], candidate_utf[i+1]);
+    u16_u8(candidate, candidate_utf);
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    p[1] = *p;
-    *p = tmpc;
+    std::swap(candidate_utf[i], candidate_utf[i+1]);
   }
+
   // try double swaps for short words
   // ahev -> have, owudl -> would, suodn -> sound
-  if (wl == 4 || wl == 5) {
+  if (candidate_utf.size() == 4 || candidate_utf.size() == 5) {
     candidate_utf[0] = word[1];
     candidate_utf[1] = word[0];
     candidate_utf[2] = word[2];
-    candidate_utf[wl - 2] = word[wl - 1];
-    candidate_utf[wl - 1] = word[wl - 2];
-    u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-    ns = testsug(wlst, candidate, len, ns, cpdsuggest, NULL, NULL);
+    candidate_utf[candidate_utf.size() - 2] = word[candidate_utf.size() - 1];
+    candidate_utf[candidate_utf.size() - 1] = word[candidate_utf.size() - 2];
+    u16_u8(candidate, candidate_utf);
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    if (wl == 5) {
+    if (candidate_utf.size() == 5) {
       candidate_utf[0] = word[0];
       candidate_utf[1] = word[2];
       candidate_utf[2] = word[1];
-      u16_u8(candidate, MAXSWUTF8L, candidate_utf, wl);
-      ns = testsug(wlst, candidate, len, ns, cpdsuggest, NULL, NULL);
+      u16_u8(candidate, candidate_utf);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
       if (ns == -1)
         return -1;
     }
