@@ -1977,7 +1977,7 @@ int SuggestMgr::leftcommonsubstring(const char* s1, const char* s2) {
     if (complexprefixes) {
       int l1 = u8_u16(su1, MAXSWL, s1);
       int l2 = u8_u16(su2, MAXSWL, s2);
-      if (*(su1 + l1 - 1) == *(su2 + l2 - 1))
+      if (su1[l1 - 1] == su2[l2 - 1])
         return 1;
     } else {
       int i;
@@ -1999,7 +1999,7 @@ int SuggestMgr::leftcommonsubstring(const char* s1, const char* s2) {
     if (complexprefixes) {
       int l1 = strlen(s1);
       int l2 = strlen(s2);
-      if (l1 <= l2 && *(s2 + l1 - 1) == *(s2 + l2 - 1))
+      if (l1 <= l2 && s2[l1 - 1] == s2[l2 - 1])
         return 1;
     } else if (csconv) {
       const char* olds = s1;
