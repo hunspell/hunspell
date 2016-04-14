@@ -372,7 +372,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int parse_defcpdtable(char* line, FileMgr* af);
   int parse_affix(char* line, const char at, FileMgr* af, char* dupflags);
 
-  void reverse_condition(char*);
+  void reverse_condition(std::string&);
   void debugflag(char* result, unsigned short flag);
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const char*);

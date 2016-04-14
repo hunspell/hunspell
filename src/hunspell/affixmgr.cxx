@@ -4643,9 +4643,12 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
   return 0;
 }
 
-void AffixMgr::reverse_condition(char* piece) {
+void AffixMgr::reverse_condition(std::string& piece) {
+  if (piece.empty())
+      return;
+
   int neg = 0;
-  for (char* k = piece + strlen(piece) - 1; k >= piece; k--) {
+  for (std::string::iterator k = piece.begin() + piece.size() - 1; k >= piece.begin(); --k) {
     switch (*k) {
       case '[': {
         if (neg)
@@ -4913,45 +4916,48 @@ int AffixMgr::parse_affix(char* line,
 
           // piece 5 - is the conditions descriptions
           case 4: {
+            std::string chunk(piece);
             np++;
             if (complexprefixes) {
               if (utf8)
-                reverseword_utf(piece);
+                reverseword_utf(chunk);
               else
-                reverseword(piece);
-              reverse_condition(piece);
+                reverseword(chunk);
+              reverse_condition(chunk);
             }
-            if (!entry->strip.empty() && (strcmp(piece, ".") != 0) &&
-                redundant_condition(at, entry->strip.c_str(), entry->strip.size(), piece,
+            if (!entry->strip.empty() && chunk != "." &&
+                redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
                                     af->getlinenum()))
-              strcpy(piece, ".");
+              chunk = ".";
             if (at == 'S') {
-              reverseword(piece);
-              reverse_condition(piece);
+              reverseword(chunk);
+              reverse_condition(chunk);
             }
-            if (encodeit(*entry, piece))
+            if (encodeit(*entry, chunk.c_str()))
               return 1;
             break;
           }
 
           case 5: {
+            std::string chunk(piece);
             np++;
             if (pHMgr->is_aliasm()) {
-              int index = atoi(piece);
+              int index = atoi(chunk.c_str());
               entry->morphcode = pHMgr->get_aliasm(index);
             } else {
               if (complexprefixes) {  // XXX - fix me for morph. gen.
                 if (utf8)
-                  reverseword_utf(piece);
+                  reverseword_utf(chunk);
                 else
-                  reverseword(piece);
+                  reverseword(chunk);
               }
               // add the remaining of the line
               if (*tp) {
                 *(tp - 1) = ' ';
-                tp = tp + strlen(tp);
+                chunk.push_back(' ');
+                chunk.append(tp);
               }
-              entry->morphcode = mystrdup(piece);
+              entry->morphcode = mystrdup(chunk.c_str());
               if (!entry->morphcode)
                 return 1;
             }
