@@ -286,8 +286,7 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const w_char* q, int nl, int langn
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     std::string& word,
-    const w_char* ignored_chars,
-    int ignored_len);
+    const std::vector<w_char>& ignored_chars);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
@@ -295,13 +294,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     const std::string& ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED int parse_string(char* line, char** out, int ln);
-
-LIBHUNSPELL_DLL_EXPORTED int parse_array(char* line,
-                                         char** out,
-                                         w_char** out_utf16,
-                                         int* out_utf16_len,
-                                         int utf8,
-                                         int ln);
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_array(char* line,
                                           char** out,

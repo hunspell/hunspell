@@ -77,6 +77,7 @@
 #include "hunvisapi.h"
 
 #include <stdio.h>
+#include <vector>
 
 #include "htypes.hxx"
 #include "filemgr.hxx"
@@ -96,8 +97,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   char* lang;
   struct cs_info* csconv;
   char* ignorechars;
-  w_char* ignorechars_utf16;
-  int ignorechars_utf16_len;
+  std::vector<w_char> ignorechars_utf16;
   int numaliasf;  // flag vector `compression' with aliases
   unsigned short** aliasf;
   unsigned short* aliasflen;

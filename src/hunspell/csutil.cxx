@@ -3007,15 +3007,14 @@ int get_captype_utf8(const w_char* word, int nl, int langnum) {
 
 // strip all ignored characters in the string
 size_t remove_ignored_chars_utf(std::string& word,
-                                const w_char* ignored_chars,
-                                int ignored_len) {
+                                const std::vector<w_char>& ignored_chars) {
   std::vector<w_char> w;
   std::vector<w_char> w2;
   u8_u16(w, word);
 
   for (size_t i = 0; i < w.size(); ++i) {
-    if (!std::binary_search(ignored_chars,
-                            ignored_chars + ignored_len,
+    if (!std::binary_search(ignored_chars.begin(),
+                            ignored_chars.end(),
                             w[i])) {
       w2.push_back(w[i]);
     }
@@ -3080,29 +3079,6 @@ int parse_string(char* line, char** out, int ln) {
   if (np != 2) {
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n", ln);
     return 1;
-  }
-  return 0;
-}
-
-int parse_array(char* line,
-                char** out,
-                w_char** out_utf16,
-                int* out_utf16_len,
-                int utf8,
-                int ln) {
-  if (parse_string(line, out, ln))
-    return 1;
-  if (utf8) {
-    w_char w[MAXWORDLEN];
-    int n = u8_u16(w, MAXWORDLEN, *out);
-    if (n > 0) {
-      std::sort(w, w + n);
-      *out_utf16 = (w_char*)malloc(n * sizeof(w_char));
-      if (!*out_utf16)
-        return 1;
-      memcpy(*out_utf16, w, n * sizeof(w_char));
-    }
-    *out_utf16_len = n;
   }
   return 0;
 }

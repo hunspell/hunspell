@@ -162,8 +162,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   char* wordchars;
   std::vector<w_char> wordchars_utf16;
   char* ignorechars;
-  w_char* ignorechars_utf16;
-  int ignorechars_utf16_len;
+  std::vector<w_char> ignorechars_utf16;
   char* version;
   char* lang;
   int langnum;
@@ -318,9 +317,9 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   char* get_key_string();
   char* get_try_string() const;
   const char* get_wordchars() const;
-  const w_char* get_wordchars_utf16(int* len) const;
+  const std::vector<w_char>& get_wordchars_utf16() const;
   char* get_ignore() const;
-  const w_char* get_ignore_utf16(int* len) const;
+  const std::vector<w_char>& get_ignore_utf16() const;
   int get_compound() const;
   FLAG get_compoundflag() const;
   FLAG get_compoundbegin() const;

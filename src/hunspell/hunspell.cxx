@@ -656,9 +656,9 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
     w2.assign(w);
     if (utf8) {
       int ignoredchars_utf16_len;
-      const w_char* ignoredchars_utf16 =
-          pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
-      remove_ignored_chars_utf(w2, ignoredchars_utf16, ignoredchars_utf16_len);
+      const std::vector<w_char>& ignoredchars_utf16 =
+          pAMgr->get_ignore_utf16();
+      remove_ignored_chars_utf(w2, ignoredchars_utf16);
     } else {
       remove_ignored_chars(w2, ignoredchars);
     }
@@ -1248,8 +1248,8 @@ const char* Hunspell::get_wordchars() {
   return pAMgr->get_wordchars();
 }
 
-const w_char* Hunspell::get_wordchars_utf16(int* len) {
-  return pAMgr->get_wordchars_utf16(len);
+const std::vector<w_char>& Hunspell::get_wordchars_utf16() {
+  return pAMgr->get_wordchars_utf16();
 }
 
 void Hunspell::mkinitcap(std::string& u8) {
@@ -1859,9 +1859,9 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
     w2.assign(root_word);
     if (utf8) {
       int ignoredchars_utf16_len;
-      const w_char* ignoredchars_utf16 =
-          pAMgr->get_ignore_utf16(&ignoredchars_utf16_len);
-      remove_ignored_chars_utf(w2, ignoredchars_utf16, ignoredchars_utf16_len);
+      const std::vector<w_char>& ignoredchars_utf16 =
+          pAMgr->get_ignore_utf16();
+      remove_ignored_chars_utf(w2, ignoredchars_utf16);
     } else {
       remove_ignored_chars(w2, ignoredchars);
     }

@@ -331,7 +331,9 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   }
 
   if (io_utf8) {
-    wordchars_utf16 = pMS->get_wordchars_utf16(&wordchars_utf16_len);
+    const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+    wordchars_utf16 = &vec_wordchars_utf16[0];
+    wordchars_utf16_len = vec_wordchars_utf16.size();
     if ((strcmp(denc, "UTF-8") != 0) && pMS->get_wordchars()) {
       char* wchars = (char*)pMS->get_wordchars();
       int wlen = strlen(wchars);
@@ -399,7 +401,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     char* wchars = (char*)pMS->get_wordchars();
     if (wchars) {
       if ((strcmp(denc, "UTF-8") == 0)) {
-        pMS->get_wordchars_utf16(&len);
+        len = pMS->get_wordchars_utf16().size();
       } else {
         len = strlen(wchars);
       }
@@ -422,7 +424,9 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   }
 #else
   if (strcmp(denc, "UTF-8") == 0) {
-    wordchars_utf16 = pMS->get_wordchars_utf16(&wordchars_utf16_len);
+    const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+    wordchars_utf16 = &vec_wordchars_utf16[0];
+    wordchars_utf16_len = vec_wordchars_utf16.size();
     io_utf8 = 1;
   } else {
     char* casechars = get_casechars(denc);

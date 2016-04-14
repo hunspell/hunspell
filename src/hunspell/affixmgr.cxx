@@ -153,8 +153,6 @@ AffixMgr::AffixMgr(const char* affpath,
   checknum = 0;               // checking numbers, and word with numbers
   wordchars = NULL;           // letters + spec. word characters
   ignorechars = NULL;         // letters + spec. word characters
-  ignorechars_utf16 = NULL;   // letters + spec. word characters
-  ignorechars_utf16_len = 0;  // letters + spec. word characters
   version = NULL;             // affix and dictionary file version string
   havecontclass = 0;  // flags of possible continuing classes (double affix)
   // LEMMA_PRESENT: not put root into the morphological output. Lemma presents
@@ -336,8 +334,6 @@ AffixMgr::~AffixMgr() {
     free(wordchars);
   if (ignorechars)
     free(ignorechars);
-  if (ignorechars_utf16)
-    free(ignorechars_utf16);
   if (version)
     free(version);
   checknum = 0;
@@ -638,8 +634,8 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacretics
      * charachters */
     if (strncmp(line, "IGNORE", 6) == 0) {
-      if (parse_array(line, &ignorechars, &ignorechars_utf16,
-                      &ignorechars_utf16_len, utf8, afflst->getlinenum())) {
+      if (!parse_array(line, &ignorechars, ignorechars_utf16,
+                       utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3656,8 +3652,7 @@ char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-const w_char* AffixMgr::get_ignore_utf16(int* len) const {
-  *len = ignorechars_utf16_len;
+const std::vector<w_char>& AffixMgr::get_ignore_utf16() const {
   return ignorechars_utf16;
 }
 
@@ -3680,9 +3675,8 @@ const char* AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-const w_char* AffixMgr::get_wordchars_utf16(int* len) const {
-  *len = wordchars_utf16.size();
-  return &wordchars_utf16[0];
+const std::vector<w_char>& AffixMgr::get_wordchars_utf16() const {
+  return wordchars_utf16;
 }
 
 // is there compounding?
@@ -4851,8 +4845,7 @@ int AffixMgr::parse_affix(char* line,
 
               if (ignorechars) {
                 if (utf8) {
-                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16,
-                                           ignorechars_utf16_len);
+                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
                 } else {
                   remove_ignored_chars(entry->appnd, ignorechars);
                 }
@@ -4889,8 +4882,7 @@ int AffixMgr::parse_affix(char* line,
 
               if (ignorechars) {
                 if (utf8) {
-                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16,
-                                           ignorechars_utf16_len);
+                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
                 } else {
                   remove_ignored_chars(entry->appnd, ignorechars);
                 }
