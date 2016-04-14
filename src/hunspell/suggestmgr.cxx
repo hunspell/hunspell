@@ -772,21 +772,18 @@ int SuggestMgr::extrachar(char** wlst,
                           const char* word,
                           int ns,
                           int cpdsuggest) {
-  char tmpc = '\0';
-  char candidate[MAXSWUTF8L];
-  char* p;
-  int wl = strlen(word);
-  if (wl < 2)
+  std::string candidate(word);
+  if (candidate.size() < 2)
     return ns;
   // try omitting one char of word at a time
-  strcpy(candidate, word);
-  for (p = candidate + wl - 1; p >= candidate; p--) {
-    char tmpc2 = *p;
-    *p = tmpc;
-    ns = testsug(wlst, candidate, wl - 1, ns, cpdsuggest, NULL, NULL);
+  for (size_t i = 0; i < candidate.size(); ++i) {
+    size_t index = candidate.size() - 1 - i;
+    char tmpc = candidate[index];
+    candidate.erase(candidate.begin() + index);
+    ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL, NULL);
     if (ns == -1)
       return -1;
-    tmpc = tmpc2;
+    candidate.insert(candidate.begin() + index, tmpc);
   }
   return ns;
 }
