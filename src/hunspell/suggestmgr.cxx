@@ -125,11 +125,11 @@ SuggestMgr::SuggestMgr(const char* tryme, int maxn, AffixMgr* aptr) {
 
   if (ckey) {
     if (utf8) {
-      w_char t[MAXSWL];
-      ckeyl = u8_u16(t, MAXSWL, ckey);
+      std::vector<w_char> t;
+      ckeyl = u8_u16(t, ckey);
       ckey_utf = (w_char*)malloc(ckeyl * sizeof(w_char));
       if (ckey_utf)
-        memcpy(ckey_utf, t, ckeyl * sizeof(w_char));
+        memcpy(ckey_utf, &t[0], ckeyl * sizeof(w_char));
       else
         ckeyl = 0;
     } else {
