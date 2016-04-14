@@ -466,8 +466,7 @@ int SuggestMgr::replchars(char** wlst,
                           const char* word,
                           int ns,
                           int cpdsuggest) {
-  char candidate[MAXSWUTF8L];
-  const char* r;
+  std::string candidate;
   int lenr, lenp;
   int wl = strlen(word);
   if (wl < 2 || !pAMgr)
@@ -477,45 +476,43 @@ int SuggestMgr::replchars(char** wlst,
   if (reptable == NULL)
     return ns;
   for (int i = 0; i < numrep; i++) {
-    r = word;
+    const char* r = word;
     lenr = strlen(reptable[i].pattern2);
     lenp = strlen(reptable[i].pattern);
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern)) != NULL &&
            (!reptable[i].end || strlen(r) == strlen(reptable[i].pattern)) &&
            (!reptable[i].start || r == word)) {
-      strcpy(candidate, word);
-      if (r - word + lenr + strlen(r + lenp) >= MAXSWUTF8L)
-        break;
-      strcpy(candidate + (r - word), reptable[i].pattern2);
-      strcpy(candidate + (r - word) + lenr, r + lenp);
-      ns = testsug(wlst, candidate, wl - lenp + lenr, ns, cpdsuggest, NULL,
+      candidate.assign(word);
+      candidate.resize(r - word);
+      candidate.append(reptable[i].pattern2);
+      candidate.append(r + lenp);
+      ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
       if (ns == -1)
         return -1;
       // check REP suggestions with space
-      char* sp = strchr(candidate, ' ');
-      if (sp) {
-        char* prev = candidate;
-        while (sp) {
-          *sp = '\0';
-          if (checkword(prev, strlen(prev), 0, NULL, NULL)) {
+      size_t sp = candidate.find(' ');
+      if (sp != std::string::npos) {
+        size_t prev = 0;
+        while (sp != std::string::npos) {
+          std::string prev_chunk = candidate.substr(prev, sp - prev);
+          if (checkword(prev_chunk.c_str(), prev_chunk.size(), 0, NULL, NULL)) {
             int oldns = ns;
-            *sp = ' ';
-            ns = testsug(wlst, sp + 1, strlen(sp + 1), ns, cpdsuggest, NULL,
+            std::string post_chunk = candidate.substr(sp + 1);
+            ns = testsug(wlst, post_chunk.c_str(), post_chunk.size(), ns, cpdsuggest, NULL,
                          NULL);
             if (ns == -1)
               return -1;
             if (oldns < ns) {
               free(wlst[ns - 1]);
-              wlst[ns - 1] = mystrdup(candidate);
+              wlst[ns - 1] = mystrdup(candidate.c_str());
               if (!wlst[ns - 1])
                 return -1;
             }
           }
-          *sp = ' ';
           prev = sp + 1;
-          sp = strchr(prev, ' ');
+          sp = candidate.find(' ', prev);
         }
       }
       r++;  // search for the next letter
