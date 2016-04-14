@@ -1536,7 +1536,7 @@ int Hunspell::analyze(char*** slst, const char* word) {
              (n < 6)) {
         n++;
       }
-      if ((dash_pos - n) < 0)
+      if (dash_pos < n)
         n--;
       // numbers: valami1000000-hoz
       // examine 100000-hoz, 10000-hoz 1000-hoz, 10-hoz,
