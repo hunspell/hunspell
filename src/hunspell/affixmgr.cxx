@@ -1470,14 +1470,14 @@ int AffixMgr::cpdpat_check(const char* word,
 // bounds
 int AffixMgr::cpdcase_check(const char* word, int pos) {
   if (utf8) {
-    w_char u, w;
     const char* p;
-    u8_u16(&u, 1, word + pos);
     for (p = word + pos - 1; (*p & 0xc0) == 0x80; p--)
       ;
-    u8_u16(&w, 1, p);
-    unsigned short a = (u.h << 8) + u.l;
-    unsigned short b = (w.h << 8) + w.l;
+    std::string pair(p);
+    std::vector<w_char> pair_u;
+    u8_u16(pair_u, pair);
+    unsigned short a = pair_u.size() > 1 ? ((pair_u[1].h << 8) + pair_u[1].l) : 0;
+    unsigned short b = !pair_u.empty() ? ((pair_u[0].h << 8) + pair_u[0].l) : 0;
     if (((unicodetoupper(a, langnum) == a) ||
          (unicodetoupper(b, langnum) == b)) &&
         (a != '-') && (b != '-'))
