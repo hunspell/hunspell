@@ -142,11 +142,11 @@ SuggestMgr::SuggestMgr(const char* tryme, int maxn, AffixMgr* aptr) {
     if (ctry)
       ctryl = strlen(ctry);
     if (ctry && utf8) {
-      w_char t[MAXSWL];
-      ctryl = u8_u16(t, MAXSWL, tryme);
+      std::vector<w_char> t;
+      ctryl = u8_u16(t, tryme);
       ctry_utf = (w_char*)malloc(ctryl * sizeof(w_char));
       if (ctry_utf)
-        memcpy(ctry_utf, t, ctryl * sizeof(w_char));
+        memcpy(ctry_utf, &t[0], ctryl * sizeof(w_char));
       else
         ctryl = 0;
     }
@@ -213,7 +213,7 @@ int SuggestMgr::suggest(char*** slst,
                         int* onlycompoundsug) {
   int nocompoundtwowords = 0;
   char** wlst;
-  w_char word_utf[MAXSWL];
+  std::vector<w_char> word_utf;
   int wl = 0;
   int nsugorig = nsug;
   std::string w2;
@@ -242,7 +242,7 @@ int SuggestMgr::suggest(char*** slst,
   }
 
   if (utf8) {
-    wl = u8_u16(word_utf, MAXSWL, word);
+    wl = u8_u16(word_utf, word);
     if (wl == -1) {
       *slst = wlst;
       return nsug;
@@ -257,7 +257,7 @@ int SuggestMgr::suggest(char*** slst,
 
     // suggestions for an uppercase word (html -> HTML)
     if ((nsug < maxSug) && (nsug > -1)) {
-      nsug = (utf8) ? capchars_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? capchars_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : capchars(wlst, word, nsug, cpdsuggest);
     }
 
@@ -280,56 +280,56 @@ int SuggestMgr::suggest(char*** slst,
     // did we swap the order of chars by mistake
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? swapchar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? swapchar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : swapchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we swap the order of non adjacent chars by mistake
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? longswapchar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? longswapchar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : longswapchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we just hit the wrong key in place of a good char (case and keyboard)
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? badcharkey_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? badcharkey_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : badcharkey(wlst, word, nsug, cpdsuggest);
     }
 
     // did we add a char that should not be there
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? extrachar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? extrachar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : extrachar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we forgot a char
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? forgotchar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? forgotchar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : forgotchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we move a char
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? movechar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? movechar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : movechar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we just hit the wrong key in place of a good char
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? badchar_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? badchar_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : badchar(wlst, word, nsug, cpdsuggest);
     }
 
     // did we double two characters
     if ((nsug < maxSug) && (nsug > -1) &&
         (!cpdsuggest || (nsug < oldSug + maxcpdsugs))) {
-      nsug = (utf8) ? doubletwochars_utf(wlst, word_utf, wl, nsug, cpdsuggest)
+      nsug = (utf8) ? doubletwochars_utf(wlst, &word_utf[0], wl, nsug, cpdsuggest)
                     : doubletwochars(wlst, word, nsug, cpdsuggest);
     }
 
