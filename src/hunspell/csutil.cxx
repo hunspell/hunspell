@@ -842,17 +842,6 @@ char* mystrrep(char* word, const char* pat, const char* rep) {
 }
 
 // reverse word
-size_t reverseword(char* word) {
-  size_t len = strlen(word);
-  for (char *dest = word + len - 1; word < dest; word++, dest--) {
-    char r = *word;
-    *word = *dest;
-    *dest = r;
-  }
-  return 0;
-}
-
-// reverse word
 size_t reverseword(std::string& word) {
   std::reverse(word.begin(), word.end());
   return word.size();
