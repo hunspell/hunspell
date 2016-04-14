@@ -303,6 +303,12 @@ LIBHUNSPELL_DLL_EXPORTED int parse_array(char* line,
                                          int utf8,
                                          int ln);
 
+LIBHUNSPELL_DLL_EXPORTED bool parse_array(char* line,
+                                          char** out,
+                                          std::vector<w_char>& out_utf16,
+                                          int utf8,
+                                          int ln);
+
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 
 LIBHUNSPELL_DLL_EXPORTED char* copy_field(char* dest,

@@ -3106,3 +3106,17 @@ int parse_array(char* line,
   }
   return 0;
 }
+
+bool parse_array(char* line,
+                 char** out,
+                 std::vector<w_char>& out_utf16,
+                 int utf8,
+                 int ln) {
+  if (parse_string(line, out, ln))
+    return false;
+  if (utf8) {
+    u8_u16(out_utf16, *out);
+    std::sort(out_utf16.begin(), out_utf16.end());
+  }
+  return true;
+}

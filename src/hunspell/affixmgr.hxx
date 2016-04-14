@@ -160,8 +160,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   PfxEntry* pfx;         // BUG: not stateless
   int checknum;
   char* wordchars;
-  w_char* wordchars_utf16;
-  int wordchars_utf16_len;
+  std::vector<w_char> wordchars_utf16;
   char* ignorechars;
   w_char* ignorechars_utf16;
   int ignorechars_utf16_len;

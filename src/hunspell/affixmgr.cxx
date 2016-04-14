@@ -152,8 +152,6 @@ AffixMgr::AffixMgr(const char* affpath,
   cpdsyllablenum = NULL;      // syllable count incrementing flag
   checknum = 0;               // checking numbers, and word with numbers
   wordchars = NULL;           // letters + spec. word characters
-  wordchars_utf16 = NULL;     // letters + spec. word characters
-  wordchars_utf16_len = 0;    // letters + spec. word characters
   ignorechars = NULL;         // letters + spec. word characters
   ignorechars_utf16 = NULL;   // letters + spec. word characters
   ignorechars_utf16_len = 0;  // letters + spec. word characters
@@ -336,8 +334,6 @@ AffixMgr::~AffixMgr() {
     free(lang);
   if (wordchars)
     free(wordchars);
-  if (wordchars_utf16)
-    free(wordchars_utf16);
   if (ignorechars)
     free(ignorechars);
   if (ignorechars_utf16)
@@ -632,8 +628,8 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the extra word characters */
     if (strncmp(line, "WORDCHARS", 9) == 0) {
-      if (parse_array(line, &wordchars, &wordchars_utf16, &wordchars_utf16_len,
-                      utf8, afflst->getlinenum())) {
+      if (!parse_array(line, &wordchars, wordchars_utf16,
+                       utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3685,8 +3681,8 @@ const char* AffixMgr::get_wordchars() const {
 }
 
 const w_char* AffixMgr::get_wordchars_utf16(int* len) const {
-  *len = wordchars_utf16_len;
-  return wordchars_utf16;
+  *len = wordchars_utf16.size();
+  return &wordchars_utf16[0];
 }
 
 // is there compounding?
