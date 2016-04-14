@@ -694,12 +694,13 @@ int HashMgr::decode_flags(unsigned short** result, char* flags, FileMgr* af) {
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      w_char w[BUFSIZE / 2];
-      len = u8_u16(w, BUFSIZE / 2, flags);
+      std::vector<w_char> w;
+      u8_u16(w, flags);
+      len = w.size();
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
-      memcpy(*result, w, len * sizeof(short));
+      memcpy(*result, &w[0], len * sizeof(short));
       break;
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
