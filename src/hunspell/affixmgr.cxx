@@ -1174,7 +1174,7 @@ std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
 }
 
 // calculate the character length of the condition
-int AffixMgr::condlen(char* st) {
+int AffixMgr::condlen(const char* st) {
   int l = 0;
   bool group = false;
   for (; *st; st++) {
@@ -1189,7 +1189,7 @@ int AffixMgr::condlen(char* st) {
   return l;
 }
 
-int AffixMgr::encodeit(affentry& entry, char* cs) {
+int AffixMgr::encodeit(affentry& entry, const char* cs) {
   if (strcmp(cs, ".") != 0) {
     entry.numconds = (char)condlen(cs);
     // coverity[buffer_size_warning] - deliberate use of lack of end of conds
