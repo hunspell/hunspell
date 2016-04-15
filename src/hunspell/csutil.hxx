@@ -147,9 +147,6 @@ LIBHUNSPELL_DLL_EXPORTED char* mystrdup(const char* s);
 // strcat for limited length destination string
 LIBHUNSPELL_DLL_EXPORTED char* mystrcat(char* dest, const char* st, int max);
 
-// duplicate reverse of string
-LIBHUNSPELL_DLL_EXPORTED char* myrevstrdup(const char* s);
-
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED char* mystrsep(char** sptr, const char delim);
 // parse into tokens with char delimiter

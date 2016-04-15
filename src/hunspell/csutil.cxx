@@ -343,25 +343,6 @@ void mychomp(char* s) {
     *(s + k - 2) = '\0';
 }
 
-//  does an ansi strdup of the reverse of a string
-char* myrevstrdup(const char* s) {
-  char* d = NULL;
-  if (s) {
-    size_t sl = strlen(s);
-    d = (char*)malloc(sl + 1);
-    if (d) {
-      const char* p = s + sl - 1;
-      char* q = d;
-      while (p >= s)
-        *q++ = *p--;
-      *q = '\0';
-    } else {
-      HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
-    }
-  }
-  return d;
-}
-
 // break text to lines
 // return number of lines
 int line_tok(const char* text, char*** lines, char breakchar) {

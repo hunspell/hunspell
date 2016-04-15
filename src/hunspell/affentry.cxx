@@ -494,7 +494,8 @@ SfxEntry::SfxEntry(AffixMgr* pmgr, affentry* dp)
     c.l.conds2 = dp->c.l.conds2;
   } else
     memcpy(c.conds, dp->c.conds, MAXCONDLEN);
-  rappnd = myrevstrdup(appnd.c_str());
+  rappnd = appnd;
+  reverseword(rappnd);
   morphcode = dp->morphcode;
   contclass = dp->contclass;
   contclasslen = dp->contclasslen;
@@ -502,8 +503,6 @@ SfxEntry::SfxEntry(AffixMgr* pmgr, affentry* dp)
 
 SfxEntry::~SfxEntry() {
   aflag = 0;
-  if (rappnd)
-    free(rappnd);
   pmyMgr = NULL;
   if (opts & aeLONGCOND)
     free(c.l.conds2);

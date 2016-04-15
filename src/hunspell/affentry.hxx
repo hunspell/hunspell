@@ -154,7 +154,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
 
  private:
   AffixMgr* pmyMgr;
-  char* rappnd;
+  std::string rappnd;
 
   SfxEntry* next;
   SfxEntry* nexteq;
@@ -200,7 +200,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
                                   const FLAG needflag);
 
   inline FLAG getFlag() { return aflag; }
-  inline const char* getKey() { return rappnd; }
+  inline const char* getKey() { return rappnd.c_str(); }
   char* add(const char* word, size_t len);
 
   inline const char* getMorph() { return morphcode; }
