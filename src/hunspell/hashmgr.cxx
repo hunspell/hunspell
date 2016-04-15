@@ -238,8 +238,11 @@ int HashMgr::add_word(const char* word,
   // variable-length hash record with word and optional fields
   struct hentry* hp =
       (struct hentry*)malloc(sizeof(struct hentry) + wbl + descl);
-  if (!hp)
+  if (!hp) {
+    delete desc_copy;
+    delete word_copy;
     return 1;
+  }
 
   char* hpw = hp->word;
   strcpy(hpw, word);
@@ -270,6 +273,8 @@ int HashMgr::add_word(const char* word,
   struct hentry* dp = tableptr[i];
   if (!dp) {
     tableptr[i] = hp;
+    delete desc_copy;
+    delete word_copy;
     return 0;
   }
   while (dp->next != NULL) {
@@ -281,6 +286,8 @@ int HashMgr::add_word(const char* word,
           dp->astr = hp->astr;
           dp->alen = hp->alen;
           free(hp);
+          delete desc_copy;
+          delete word_copy;
           return 0;
         } else {
           dp->next_homonym = hp;
@@ -299,6 +306,8 @@ int HashMgr::add_word(const char* word,
         dp->astr = hp->astr;
         dp->alen = hp->alen;
         free(hp);
+        delete desc_copy;
+        delete word_copy;
         return 0;
       } else {
         dp->next_homonym = hp;
@@ -318,7 +327,6 @@ int HashMgr::add_word(const char* word,
 
   delete desc_copy;
   delete word_copy;
-
   return 0;
 }
 
