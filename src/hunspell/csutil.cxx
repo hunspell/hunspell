@@ -2791,7 +2791,8 @@ class is_any_of {
 size_t remove_ignored_chars(std::string& word,
                             const std::string& ignored_chars) {
   word.erase(
-      std::remove_if(word.begin(), word.end(), is_any_of(ignored_chars)));
+      std::remove_if(word.begin(), word.end(), is_any_of(ignored_chars)),
+      word.end());
   return word.size();
 }
 
