@@ -583,23 +583,6 @@ int fieldlen(const char* r) {
   return n;
 }
 
-char* copy_field(char* dest, const char* morph, const char* var) {
-  if (!morph)
-    return NULL;
-  const char* beg = strstr(morph, var);
-  if (beg) {
-    char* d = dest;
-    for (beg += MORPH_TAG_LEN;
-         *beg != ' ' && *beg != '\t' && *beg != '\n' && *beg != '\0';
-         d++, beg++) {
-      *d = *beg;
-    }
-    *d = '\0';
-    return dest;
-  }
-  return NULL;
-}
-
 bool copy_field(std::string& dest,
                 const std::string& morph,
                 const std::string& var) {

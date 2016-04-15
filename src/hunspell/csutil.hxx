@@ -268,9 +268,6 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(char* line,
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 
-LIBHUNSPELL_DLL_EXPORTED char* copy_field(char* dest,
-                                          const char* morph,
-                                          const char* var);
 LIBHUNSPELL_DLL_EXPORTED bool copy_field(std::string& dest,
                                          const std::string& morph,
                                          const std::string& var);
