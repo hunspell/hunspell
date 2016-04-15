@@ -364,15 +364,15 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 }
 
 // detect captype and modify word length for UTF-8 encoding
-int HashMgr::get_clen_and_captype(const char* word, int wbl, int* captype) {
+int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
   int len;
   if (utf8) {
     std::vector<w_char> dest_utf;
     len = u8_u16(dest_utf, word);
     *captype = get_captype_utf8(dest_utf, langnum);
   } else {
-    len = wbl;
-    *captype = get_captype(word, len, csconv);
+    len = word.size();
+    *captype = get_captype(word.c_str(), len, csconv);
   }
   return len;
 }
@@ -433,7 +433,7 @@ int HashMgr::add(const std::string& word) {
   if (remove_forbidden_flag(word)) {
     int captype;
     int wbl = word.size();
-    int wcl = get_clen_and_captype(word.c_str(), wbl, &captype);
+    int wcl = get_clen_and_captype(word, &captype);
     add_word(word.c_str(), wbl, wcl, flags, al, NULL, false);
     return add_hidden_capitalized_word(word, wcl, flags, al, NULL,
                                        captype);
@@ -448,7 +448,7 @@ int HashMgr::add_with_affix(const char* word, const char* example) {
   if (dp && dp->astr) {
     int captype;
     int wbl = strlen(word);
-    int wcl = get_clen_and_captype(word, wbl, &captype);
+    int wcl = get_clen_and_captype(word, &captype);
     if (aliasf) {
       add_word(word, wbl, wcl, dp->astr, dp->alen, NULL, false);
     } else {
@@ -605,7 +605,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 
     int captype;
     int wbl = strlen(ts);
-    int wcl = get_clen_and_captype(ts, wbl, &captype);
+    int wcl = get_clen_and_captype(ts, &captype);
     // add the word and its index plus its capitalized form optionally
     if (add_word(ts, wbl, wcl, flags, al, dp, false) ||
         add_hidden_capitalized_word(ts, wcl, flags, al, dp, captype)) {

@@ -125,7 +125,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   char* get_aliasm(int index);
 
  private:
-  int get_clen_and_captype(const char* word, int wbl, int* captype);
+  int get_clen_and_captype(const std::string& word, int* captype);
   int load_tables(const char* tpath, const char* key);
   int add_word(const char* word,
                int wbl,
