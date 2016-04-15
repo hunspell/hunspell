@@ -368,7 +368,7 @@ int HashMgr::get_clen_and_captype(const char* word, int wbl, int* captype) {
   if (utf8) {
     std::vector<w_char> dest_utf;
     len = u8_u16(dest_utf, word);
-    *captype = get_captype_utf8(&dest_utf[0], len, langnum);
+    *captype = get_captype_utf8(dest_utf, langnum);
   } else {
     len = wbl;
     *captype = get_captype(word, len, csconv);

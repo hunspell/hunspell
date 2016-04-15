@@ -2921,19 +2921,16 @@ int get_captype(const char* word, int nl, cs_info* csconv) {
   return HUHCAP;
 }
 
-int get_captype_utf8(const w_char* word, int nl, int langnum) {
+int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   // now determine the capitalization type of the first nl letters
   int ncap = 0;
   int nneutral = 0;
   int firstcap = 0;
   unsigned short idx;
   // don't check too long words
-  if (nl >= MAXWORDLEN)
+  if (word.size() >= MAXWORDLEN)
     return 0;
-  // big Unicode character (non BMP area)
-  if (nl == -1)
-    return NOCAP;
-  for (int i = 0; i < nl; i++) {
+  for (size_t i = 0; i < word.size(); ++i) {
     idx = (word[i].h << 8) + word[i].l;
     if (idx != unicodetolower(idx, langnum))
       ncap++;
@@ -2950,7 +2947,7 @@ int get_captype_utf8(const w_char* word, int nl, int langnum) {
     return NOCAP;
   } else if ((ncap == 1) && firstcap) {
     return INITCAP;
-  } else if ((ncap == nl) || ((ncap + nneutral) == nl)) {
+  } else if ((ncap == word.size()) || ((ncap + nneutral) == word.size())) {
     return ALLCAP;
   } else if ((ncap > 1) && firstcap) {
     return HUHINITCAP;
