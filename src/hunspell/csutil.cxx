@@ -830,12 +830,6 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
   return u;
 }
 
-// convert null terminated string to have initial capital
-void mkinitcap(char* p, const struct cs_info* csconv) {
-  if (*p != '\0')
-    *p = cupper(csconv, static_cast<unsigned char>(*p));
-}
-
 std::string& mkinitcap(std::string& s, const struct cs_info* csconv) {
   if (!s.empty()) {
     s[0] = cupper(csconv, static_cast<unsigned char>(s[0]));
