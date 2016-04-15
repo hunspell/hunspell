@@ -4731,7 +4731,7 @@ int AffixMgr::parse_affix(char* line,
         case 3: {
           np++;
           numents = atoi(piece);
-          if ((numents <= 0) || ((::std::numeric_limits<size_t>::max() /
+          if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
                                   sizeof(struct affentry)) < static_cast<size_t>(numents))) {
             char* err = pHMgr->encode_flag(aflag);
             if (err) {

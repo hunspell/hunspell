@@ -52,6 +52,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits>
 
 #include "unmunch.h"
 
@@ -201,8 +202,8 @@ int parse_aff_file(FILE* afflst) {
             }
             case 3: {
               numents = atoi(piece);
-              if ((numents < 0) ||
-                  ((SIZE_MAX / sizeof(struct affent)) < static_cast<size_t>(numents))) {
+              if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
+                                      sizeof(struct affent)) < static_cast<size_t>(numents))) {
                 fprintf(stderr, "Error: too many entries: %d\n", numents);
                 numents = 0;
               } else {

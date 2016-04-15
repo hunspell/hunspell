@@ -50,7 +50,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <limits.h>
+#include <limits>
 
 #include "munch.h"
 
@@ -287,8 +287,8 @@ int parse_aff_file(FILE* afflst) {
             }
             case 3: {
               numents = atoi(piece);
-              if ((numents < 0) ||
-                  ((SIZE_MAX / sizeof(struct affent)) < static_cast<size_t>(numents))) {
+              if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
+                                      sizeof(struct affent)) < static_cast<size_t>(numents))) {
                 fprintf(stderr, "Error: too many entries: %d\n", numents);
                 numents = 0;
               } else {
@@ -635,7 +635,7 @@ int load_tables(FILE* wdlst) {
   tablesize = atoi(ts);
 
   if (tablesize <= 0 ||
-      (tablesize >= (INT_MAX - 1 - nExtra) / (int)sizeof(struct hentry*))) {
+      (tablesize >= (std::numeric_limits<int>::max() - 1 - nExtra) / (int)sizeof(struct hentry*))) {
     return 3;
   }
 
