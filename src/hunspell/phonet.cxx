@@ -78,7 +78,7 @@ std::string phonet(const std::string& inword, phonetable& parms) {
   const char* s;
   typedef unsigned char uchar;
 
-  int len = inword.size();
+  size_t len = inword.size();
   if (len > MAXPHONETUTF8LEN)
     return std::string();
   char word[MAXPHONETUTF8LEN + 1];

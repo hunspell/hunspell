@@ -467,7 +467,6 @@ int SuggestMgr::replchars(char** wlst,
                           int ns,
                           int cpdsuggest) {
   std::string candidate;
-  int lenr, lenp;
   int wl = strlen(word);
   if (wl < 2 || !pAMgr)
     return ns;
@@ -477,8 +476,6 @@ int SuggestMgr::replchars(char** wlst,
     return ns;
   for (int i = 0; i < numrep; i++) {
     const char* r = word;
-    lenr = strlen(reptable[i].pattern2);
-    lenp = strlen(reptable[i].pattern);
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern)) != NULL &&
            (!reptable[i].end || strlen(r) == strlen(reptable[i].pattern)) &&
@@ -486,6 +483,7 @@ int SuggestMgr::replchars(char** wlst,
       candidate.assign(word);
       candidate.resize(r - word);
       candidate.append(reptable[i].pattern2);
+      int lenp = strlen(reptable[i].pattern);
       candidate.append(r + lenp);
       ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);

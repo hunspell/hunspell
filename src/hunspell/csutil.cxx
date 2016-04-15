@@ -2728,9 +2728,9 @@ int get_captype(const std::string& word, cs_info* csconv) {
 
 int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   // now determine the capitalization type of the first nl letters
-  int ncap = 0;
-  int nneutral = 0;
-  int firstcap = 0;
+  size_t ncap = 0;
+  size_t nneutral = 0;
+  size_t firstcap = 0;
   for (size_t i = 0; i < word.size(); ++i) {
     unsigned short idx = (word[i].h << 8) + word[i].l;
     if (idx != unicodetolower(idx, langnum))
