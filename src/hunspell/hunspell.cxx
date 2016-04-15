@@ -1156,11 +1156,10 @@ char* Hunspell::get_dic_encoding() {
 
 int Hunspell::stem(char*** slst, char** desc, int n) {
   char result[MAXLNLEN];
-  char result2[MAXLNLEN];
+  std::string result2;
   *slst = NULL;
   if (n == 0)
     return 0;
-  *result2 = '\0';
   for (int i = 0; i < n; i++) {
     *result = '\0';
     // add compound word parts (except the last one)
@@ -1196,22 +1195,28 @@ int Hunspell::stem(char*** slst, char** desc, int n) {
           int genl = line_tok(sg, &gen, MSEP_REC);
           free(sg);
           for (int j = 0; j < genl; j++) {
-            sprintf(result2 + strlen(result2), "%c%s%s", MSEP_REC, result,
-                    gen[j]);
+            result2.push_back(MSEP_REC);
+            result2.append(result);
+            result2.append(gen[j]);
           }
           freelist(&gen, genl);
         }
       } else {
-        sprintf(result2 + strlen(result2), "%c%s", MSEP_REC, result);
+        result2.push_back(MSEP_REC);
+        result2.append(result);
         if (strstr(pl[k], MORPH_SURF_PFX)) {
-          copy_field(result2 + strlen(result2), pl[k], MORPH_SURF_PFX);
+          std::string field;
+          copy_field(field, pl[k], MORPH_SURF_PFX);
+          result2.append(field);
         }
-        copy_field(result2 + strlen(result2), pl[k], MORPH_STEM);
+        std::string field;
+        copy_field(field, pl[k], MORPH_STEM);
+        result2.append(field);
       }
     }
     freelist(&pl, pln);
   }
-  int sln = line_tok(result2, slst, MSEP_REC);
+  int sln = line_tok(result2.c_str(), slst, MSEP_REC);
   return uniqlist(*slst, sln);
 }
 
