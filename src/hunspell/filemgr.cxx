@@ -89,13 +89,9 @@ FileMgr::FileMgr(const char* file, const char* key) : hin(NULL), linenum(0) {
   fin = myfopen(file, "r");
   if (!fin) {
     // check hzipped file
-    char* st = (char*)malloc(strlen(file) + strlen(HZIP_EXTENSION) + 1);
-    if (st) {
-      strcpy(st, file);
-      strcat(st, HZIP_EXTENSION);
-      hin = new Hunzip(st, key);
-      free(st);
-    }
+    std::string st(file);
+    st.append(HZIP_EXTENSION);
+    hin = new Hunzip(st.c_str(), key);
   }
   if (!fin && !hin)
     fail(MSG_OPEN, file);
