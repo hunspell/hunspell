@@ -372,7 +372,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
     *captype = get_captype_utf8(dest_utf, langnum);
   } else {
     len = word.size();
-    *captype = get_captype(word.c_str(), len, csconv);
+    *captype = get_captype(word, csconv);
   }
   return len;
 }

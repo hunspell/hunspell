@@ -2889,14 +2889,14 @@ int unicodeisalpha(unsigned short c) {
 }
 
 /* get type of capitalization */
-int get_captype(const char* word, int nl, cs_info* csconv) {
+int get_captype(const std::string& word, cs_info* csconv) {
   // now determine the capitalization type of the first nl letters
-  int ncap = 0;
-  int nneutral = 0;
-  int firstcap = 0;
+  size_t ncap = 0;
+  size_t nneutral = 0;
+  size_t firstcap = 0;
   if (csconv == NULL)
     return NOCAP;
-  for (const char* q = word; *q != '\0'; q++) {
+  for (std::string::const_iterator q = word.begin(); q != word.end(); ++q) {
     unsigned char nIndex = static_cast<unsigned char>(*q);
     if (ccase(csconv, nIndex))
       ncap++;
@@ -2913,7 +2913,7 @@ int get_captype(const char* word, int nl, cs_info* csconv) {
     return NOCAP;
   } else if ((ncap == 1) && firstcap) {
     return INITCAP;
-  } else if ((ncap == nl) || ((ncap + nneutral) == nl)) {
+  } else if ((ncap == word.size()) || ((ncap + nneutral) == word.size())) {
     return ALLCAP;
   } else if ((ncap > 1) && firstcap) {
     return HUHINITCAP;

@@ -193,7 +193,7 @@ size_t Hunspell::cleanword2(std::string& dest,
     *nc = u8_u16(dest_utf, dest);
     *pcaptype = get_captype_utf8(dest_utf, langnum);
   } else {
-    *pcaptype = get_captype(dest.c_str(), dest.size(), csconv);
+    *pcaptype = get_captype(dest, csconv);
     *nc = nl;
   }
   return nl;
@@ -859,7 +859,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
             u8_u16(postdotu, postdot);
             captype_ = get_captype_utf8(postdotu, langnum);
           } else {
-            captype_ = get_captype(postdot.c_str(), postdot.size(), csconv);
+            captype_ = get_captype(postdot, csconv);
           }
           if (captype_ == INITCAP) {
             std::string str(scw);

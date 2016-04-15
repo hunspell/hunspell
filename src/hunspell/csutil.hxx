@@ -273,7 +273,7 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 // get type of capitalization
-LIBHUNSPELL_DLL_EXPORTED int get_captype(const char* q, int nl, cs_info*);
+LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, cs_info*);
 
 // get type of capitalization (UTF-8)
 LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int langnum);
