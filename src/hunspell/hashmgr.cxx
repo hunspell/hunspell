@@ -399,8 +399,8 @@ int HashMgr::remove(const char* word) {
 }
 
 /* remove forbidden flag to add a personal word to the hash */
-int HashMgr::remove_forbidden_flag(const char* word) {
-  struct hentry* dp = lookup(word);
+int HashMgr::remove_forbidden_flag(const std::string& word) {
+  struct hentry* dp = lookup(word.c_str());
   if (!dp)
     return 1;
   while (dp) {
@@ -430,7 +430,7 @@ int HashMgr::remove_forbidden_flag(const char* word) {
 int HashMgr::add(const std::string& word) {
   unsigned short* flags = NULL;
   int al = 0;
-  if (remove_forbidden_flag(word.c_str())) {
+  if (remove_forbidden_flag(word)) {
     int captype;
     int wbl = word.size();
     int wcl = get_clen_and_captype(word.c_str(), wbl, &captype);
