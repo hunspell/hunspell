@@ -67,6 +67,7 @@ static struct {
                {{"\\label", NULL}, 1},
                {{"\\ref", NULL}, 1},
                {{"\\pageref", NULL}, 1},
+               {{"\\autoref", NULL}, 1},
                {{"\\parbox", NULL}, 1},
                {{"\\begin{verbatim}", "\\end{verbatim}"}, 0},
                {{"\\verb+", "+"}, 0},
