@@ -77,6 +77,7 @@
 #include "hunvisapi.h"
 
 #include <stdio.h>
+#include <string>
 #include <vector>
 
 #include "htypes.hxx"
@@ -135,8 +136,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
                bool onlyupcase);
   int load_config(const char* affpath, const char* key);
   int parse_aliasf(char* line, FileMgr* af);
-  int add_hidden_capitalized_word(const char* word,
-                                  int wbl,
+  int add_hidden_capitalized_word(const std::string& word,
                                   int wcl,
                                   unsigned short* flags,
                                   int al,

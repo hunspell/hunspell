@@ -322,8 +322,7 @@ int HashMgr::add_word(const char* word,
   return 0;
 }
 
-int HashMgr::add_hidden_capitalized_word(const char* word,
-                                         int wbl,
+int HashMgr::add_hidden_capitalized_word(const std::string& word,
                                          int wcl,
                                          unsigned short* flags,
                                          int flagslen,
@@ -352,9 +351,9 @@ int HashMgr::add_hidden_capitalized_word(const char* word,
       mkallsmall_utf(w, langnum);
       mkinitcap_utf(w, langnum);
       u16_u8(st, w);
-      return add_word(st.c_str(), wbl, wcl, flags2, flagslen + 1, dp, true);
+      return add_word(st.c_str(), st.size(), wcl, flags2, flagslen + 1, dp, true);
     } else {
-      std::string new_word(word, wbl);
+      std::string new_word(word);
       mkallsmall(new_word, csconv);
       mkinitcap(new_word, csconv);
       int ret = add_word(new_word.c_str(), new_word.size(), wcl, flags2, flagslen + 1, dp, true);
@@ -436,7 +435,7 @@ int HashMgr::add(const char* word) {
     int wbl = strlen(word);
     int wcl = get_clen_and_captype(word, wbl, &captype);
     add_word(word, wbl, wcl, flags, al, NULL, false);
-    return add_hidden_capitalized_word(word, wbl, wcl, flags, al, NULL,
+    return add_hidden_capitalized_word(word, wcl, flags, al, NULL,
                                        captype);
   }
   return 0;
@@ -462,7 +461,7 @@ int HashMgr::add_with_affix(const char* word, const char* example) {
       } else
         return 1;
     }
-    return add_hidden_capitalized_word(word, wbl, wcl, dp->astr,
+    return add_hidden_capitalized_word(word, wcl, dp->astr,
                                        dp->alen, NULL, captype);
   }
   return 1;
@@ -609,7 +608,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     int wcl = get_clen_and_captype(ts, wbl, &captype);
     // add the word and its index plus its capitalized form optionally
     if (add_word(ts, wbl, wcl, flags, al, dp, false) ||
-        add_hidden_capitalized_word(ts, wbl, wcl, flags, al, dp, captype)) {
+        add_hidden_capitalized_word(ts, wcl, flags, al, dp, captype)) {
       delete dict;
       return 5;
     }
