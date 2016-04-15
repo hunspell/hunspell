@@ -734,9 +734,13 @@ unsigned short HashMgr::decode_flag(const char* f) {
                          i, DEFAULTFLAGS - 1);
       s = (unsigned short)i;
       break;
-    case FLAG_UNI:
-      u8_u16((w_char*)&s, 1, f);
+    case FLAG_UNI: {
+      std::vector<w_char> w;
+      u8_u16(w, f);
+      if (!w.empty())
+          memcpy(&s, &w[0], 1 * sizeof(short));
       break;
+    }
     default:
       s = (unsigned short)*((unsigned char*)f);
   }
