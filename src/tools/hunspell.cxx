@@ -46,6 +46,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sstream>
 #include <string>
 #include <string.h>
 #include "config.h"
@@ -707,20 +708,20 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     odftmpdir = tmpnam(NULL);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
-    sprintf(buf,
-            "mkdir %s && unzip -p '%s' content.xml | sed "
+    std::ostringstream sbuf;
+    sbuf << "mkdir " << odftmpdir << " && unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
-            ">%s/content.xml",
-            odftmpdir, filename, odftmpdir);
-    if (!secure_filename(filename) || system(buf) != 0) {
+            ">" << odftmpdir << "/content.xml";
+    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
       exit(1);
     }
-    sprintf(buf, "%s/content.xml", odftmpdir);
-    fileid = fopen(buf, "r");
+    std::string file(odftmpdir);
+    file.append("/content.xml");
+    fileid = fopen(file.c_str(), "r");
     if (fileid == NULL) {
       perror(gettext("Can't open inputfile"));
       exit(1);
@@ -1065,8 +1066,9 @@ nextline:
 
   if (bZippedOdf) {
     fclose(fileid);
-    sprintf(buf, "rm %s/content.xml; rmdir %s", odftmpdir, odftmpdir);
-    if (system(buf) != 0)
+    std::ostringstream sbuf;
+    sbuf << "rm " << odftmpdir << "/content.xml; rmdir " << odftmpdir;
+    if (system(sbuf.str().c_str()) != 0)
       perror("write failed");
   }
 
@@ -1670,12 +1672,11 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     fclose(text);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
-    sprintf(buf,
-            "mkdir %s && unzip -p '%s' content.xml | sed "
+    std::ostringstream sbuf;
+    sbuf << "mkdir " << odftempdir << " && unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
-            ">%s/content.xml",
-            odftempdir, filename, odftempdir);
-    if (!secure_filename(filename) || system(buf) != 0) {
+            ">" << odftempdir << "/content.xml";
+    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
@@ -1684,8 +1685,9 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       exit(1);
     }
     odffilename = filename;
-    sprintf(buf, "%s/content.xml", odftempdir);
-    filename = mystrdup(buf);
+    std::string file(odftempdir);
+    file.append("/content.xml");
+    filename = mystrdup(file.c_str());
     text = fopen(filename, "r");
     if (!text) {
       perror(gettext("Can't open inputfile"));
@@ -1715,8 +1717,9 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           refresh();
           fclose(tempfile);  // automatically deleted when closed
           if (bZippedOdf) {
-            sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
-            if (system(buf) != 0)
+            std::ostringstream sbuf;
+            sbuf << "rm " << filename << "; rmdir " << odftempdir;
+            if (system(sbuf.str().c_str()) != 0)
               perror("write failed");
             free(filename);
           }
@@ -1746,16 +1749,18 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       }
       fclose(text);
       if (bZippedOdf) {
-        sprintf(buf, "zip -j '%s' %s", odffilename, filename);
-        if (system(buf) != 0)
+        std::ostringstream sbuf;
+        sbuf << "zip -j '" << odffilename << "' " << filename;
+        if (system(sbuf.str().c_str()) != 0)
           perror("write failed");
       }
     }
   }
 
   if (bZippedOdf) {
-    sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
-    if (system(buf) != 0)
+    std::ostringstream sbuf;
+    sbuf << "rm " << filename << "; rmdir " << odftempdir;
+    if (system(sbuf.str().c_str()) != 0)
       perror("write failed");
     free(filename);
   }
