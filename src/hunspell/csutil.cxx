@@ -915,14 +915,6 @@ void enmkallsmall(char* d, const char* p, const char* encoding) {
   *d = '\0';
 }
 
-// convert null terminated string to have initial capital using encoding
-void enmkinitcap(char* d, const char* p, const char* encoding) {
-  struct cs_info* csconv = get_current_cs(encoding);
-  memcpy(d, p, (strlen(p) + 1));
-  if (*p != '\0')
-    *d = cupper(csconv, static_cast<unsigned char>(*p));
-}
-
 // these are simple character mappings for the
 // encodings supported
 // supplying isupper, tolower, and toupper

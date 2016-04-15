@@ -229,11 +229,6 @@ LIBHUNSPELL_DLL_EXPORTED void enmkallsmall(char* d,
                                            const char* p,
                                            const char* encoding);
 
-// convert null terminated string to have initial capital using encoding
-LIBHUNSPELL_DLL_EXPORTED void enmkinitcap(char* d,
-                                          const char* p,
-                                          const char* encoding);
-
 // convert std::string to all caps
 LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string& s,
                                                const struct cs_info* csconv);
