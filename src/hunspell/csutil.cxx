@@ -508,15 +508,6 @@ std::string& strlinecat(std::string& str, const std::string& apd) {
   return str;
 }
 
-// change \n to char c
-char* tr(char* text, char oldc, char newc) {
-  char* p;
-  for (p = text; *p; p++)
-    if (*p == oldc)
-      *p = newc;
-  return text;
-}
-
 // morphcmp(): compare MORPH_DERI_SFX, MORPH_INFL_SFX and MORPH_TERM_SFX fields
 // in the first line of the inputs
 // return 0, if inputs equal

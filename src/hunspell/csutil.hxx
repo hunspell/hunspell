@@ -179,9 +179,6 @@ LIBHUNSPELL_DLL_EXPORTED int line_tok(const char* text,
 LIBHUNSPELL_DLL_EXPORTED char* line_uniq(char* text, char breakchar);
 LIBHUNSPELL_DLL_EXPORTED char* line_uniq_app(char** text, char breakchar);
 
-// change oldchar to newchar in place
-LIBHUNSPELL_DLL_EXPORTED char* tr(char* text, char oldc, char newc);
-
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED size_t reverseword(std::string& word);
 
