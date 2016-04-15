@@ -219,11 +219,6 @@ LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const char* lang);
 // get characters of the given 8bit encoding with lower- and uppercase forms
 LIBHUNSPELL_DLL_EXPORTED char* get_casechars(const char* enc);
 
-// convert null terminated string to all caps using encoding
-LIBHUNSPELL_DLL_EXPORTED void enmkallcap(char* d,
-                                         const char* p,
-                                         const char* encoding);
-
 // convert std::string to all caps
 LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string& s,
                                                const struct cs_info* csconv);

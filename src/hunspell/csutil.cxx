@@ -893,17 +893,6 @@ char* get_stored_pointer(const char* s) {
 }
 
 #ifndef MOZILLA_CLIENT
-// convert null terminated string to all caps using encoding
-void enmkallcap(char* d, const char* p, const char* encoding)
-
-{
-  struct cs_info* csconv = get_current_cs(encoding);
-  while (*p != '\0') {
-    *d++ = cupper(csconv, static_cast<unsigned char>(*p));
-    p++;
-  }
-  *d = '\0';
-}
 
 // these are simple character mappings for the
 // encodings supported
