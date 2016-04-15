@@ -2926,19 +2926,15 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   int ncap = 0;
   int nneutral = 0;
   int firstcap = 0;
-  unsigned short idx;
-  // don't check too long words
-  if (word.size() >= MAXWORDLEN)
-    return 0;
   for (size_t i = 0; i < word.size(); ++i) {
-    idx = (word[i].h << 8) + word[i].l;
+    unsigned short idx = (word[i].h << 8) + word[i].l;
     if (idx != unicodetolower(idx, langnum))
       ncap++;
     if (unicodetoupper(idx, langnum) == unicodetolower(idx, langnum))
       nneutral++;
   }
   if (ncap) {
-    idx = (word[0].h << 8) + word[0].l;
+    unsigned short idx = (word[0].h << 8) + word[0].l;
     firstcap = (idx != unicodetolower(idx, langnum));
   }
 
