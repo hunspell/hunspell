@@ -135,8 +135,6 @@ LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
                                              const std::vector<w_char>& src);
 
 // convert UTF-8 characters to UTF-16
-LIBHUNSPELL_DLL_EXPORTED int u8_u16(w_char* dest, int size, const char* src);
-// convert UTF-8 characters to UTF-16
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src);
 
