@@ -336,7 +336,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     wordchars_utf16 = &vec_wordchars_utf16[0];
     wordchars_utf16_len = vec_wordchars_utf16.size();
     if ((strcmp(denc, "UTF-8") != 0) && pMS->get_wordchars()) {
-      char* wchars = (char*)pMS->get_wordchars();
+      const char* wchars = pMS->get_wordchars();
       int wlen = strlen(wchars);
       size_t c1 = wlen;
       size_t c2 = MAXLNLEN;
@@ -378,7 +378,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         size_t res = iconv(conv, (ICONV_CONST char**)&ch8bit, &c1, &dest, &c2);
         if (res != (size_t)-1) {
           std::vector<w_char> w;
-          u8_u16(w, u8);
+          u8_u16(w, std::string(u8, dest));
           unsigned short idx = w.empty() ? 0 : (w[0].h << 8) + w[0].l;
           if (unicodeisalpha(idx)) {
             *pletters = (char)i;
@@ -392,7 +392,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
 
     // UTF-8 wordchars -> 8 bit wordchars
     int len = 0;
-    char* wchars = (char*)pMS->get_wordchars();
+    const char* wchars = pMS->get_wordchars();
     if (wchars) {
       if ((strcmp(denc, "UTF-8") == 0)) {
         len = pMS->get_wordchars_utf16().size();
