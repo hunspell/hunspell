@@ -799,14 +799,6 @@ std::string& mkallcap(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-// convert null terminated string to all little
-void mkallsmall(char* p, const struct cs_info* csconv) {
-  while (*p != '\0') {
-    *p = clower(csconv, static_cast<unsigned char>(*p));
-    p++;
-  }
-}
-
 // convert std::string to all little
 std::string& mkallsmall(std::string& s, const struct cs_info* csconv) {
   for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI) {
