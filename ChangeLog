@@ -1,10 +1,4 @@
 2016-04-15 Caolán McNamara <caolanm at LibO>:
-	* remove MAXWORDUTF8LEN and MAXWORDLEN limits
-	  - prior to this words over certain limits would not be
-	    spellchecked. Its possible that some clients may suffer
-	    performance issues now that we have dropped the limits
-	    and need to determine a length limit of their own
-	    to use to not send strings for spellchecking.
 	* generally using std::string and std::vector internally
 
 2016-04-13 Caolán McNamara <caolanm at LibO>:

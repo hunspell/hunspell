@@ -1,8 +1,5 @@
 2016-04-15: Hunspell 1.4.0 release:
   - various abi changes due to moving away from char* to std::string
-  - remove MAXWORDUTF8LEN and MAXWORDLEN limits. Clients that
-    relied on hunspell implicitly skipping long words might want to
-    now explicitly skip spelling long words.
 
 2014-06-02: Hunspell 1.3.3 release:
   - OpenDocument (ODF and Flat ODF) support (ODF needs unzip program)
