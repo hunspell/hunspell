@@ -94,7 +94,7 @@ class TextParser {
   void set_url_checking(int check);
 
   int get_tokenpos();
-  int is_wordchar(char* w);
+  int is_wordchar(const char* w);
   inline int is_utf8() { return utf8; }
   const char* get_latin1(char* s);
   char* next_char();

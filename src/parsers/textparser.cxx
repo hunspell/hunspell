@@ -81,17 +81,19 @@ TextParser::TextParser(const w_char* wordchars, int len) {
 
 TextParser::~TextParser() {}
 
-int TextParser::is_wordchar(char* w) {
+int TextParser::is_wordchar(const char* w) {
   if (*w == '\0')
     return 0;
   if (utf8) {
-    w_char wc;
+    std::vector<w_char> wc;
     unsigned short idx;
-    u8_u16(&wc, 1, w);
-    idx = (wc.h << 8) + wc.l;
+    u8_u16(wc, w);
+    if (wc.empty())
+        return 0;
+    idx = (wc[0].h << 8) + wc[0].l;
     return (unicodeisalpha(idx) ||
             (wordchars_utf16 &&
-             std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc)));
+             std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc[0])));
   } else {
     return wordcharacters[(*w + 256) % 256];
   }
