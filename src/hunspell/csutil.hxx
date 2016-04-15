@@ -164,9 +164,6 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str,
                                                const std::string& replace);
 
 // append s to ends of every lines in text
-LIBHUNSPELL_DLL_EXPORTED void strlinecat(char* lines, const char* s);
-
-// append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED std::string& strlinecat(std::string& str,
                                                  const std::string& apd);
 

@@ -478,26 +478,6 @@ char* line_uniq_app(char** text, char breakchar) {
 }
 
 // append s to ends of every lines in text
-void strlinecat(char* dest, const char* s) {
-  char* dup = mystrdup(dest);
-  char* source = dup;
-  int len = strlen(s);
-  if (dup) {
-    while (*source) {
-      if (*source == '\n') {
-        strncpy(dest, s, len);
-        dest += len;
-      }
-      *dest = *source;
-      source++;
-      dest++;
-    }
-    strcpy(dest, s);
-    free(dup);
-  }
-}
-
-// append s to ends of every lines in text
 std::string& strlinecat(std::string& str, const std::string& apd) {
   size_t pos = 0;
   while ((pos = str.find('\n', pos)) != std::string::npos) {
