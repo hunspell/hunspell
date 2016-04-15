@@ -191,13 +191,6 @@ size_t Hunspell::cleanword2(std::string& dest,
   nl = dest.size();
   if (utf8) {
     *nc = u8_u16(dest_utf, dest);
-    // don't check too long words
-    if (*nc >= MAXWORDLEN)
-      return 0;
-    if (*nc == -1) {  // big Unicode character (non BMP area)
-      *pcaptype = NOCAP;
-      return nl;
-    }
     *pcaptype = get_captype_utf8(dest_utf, langnum);
   } else {
     *pcaptype = get_captype(dest.c_str(), dest.size(), csconv);
@@ -372,13 +365,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   if (strcmp(word, SPELL_XML) == 0)
     return 1;
   int nc = strlen(word);
-  if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
-      return 0;
-  } else {
-    if (nc >= MAXWORDLEN)
-      return 0;
-  }
   int captype = NOCAP;
   size_t abbv = 0;
   size_t wl = 0;
@@ -795,13 +781,6 @@ int Hunspell::suggest(char*** slst, const char* word) {
     return spellml(slst, word);
   }
   int nc = strlen(word);
-  if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
-      return 0;
-  } else {
-    if (nc >= MAXWORDLEN)
-      return 0;
-  }
   int captype = NOCAP;
   size_t abbv = 0;
   size_t wl = 0;
@@ -1323,13 +1302,6 @@ int Hunspell::analyze(char*** slst, const char* word) {
   if (!pSMgr || maxdic == 0)
     return 0;
   int nc = strlen(word);
-  if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
-      return 0;
-  } else {
-    if (nc >= MAXWORDLEN)
-      return 0;
-  }
   int captype = NOCAP;
   size_t abbv = 0;
   size_t wl = 0;

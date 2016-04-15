@@ -62,8 +62,6 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 
 #define SETSIZE 256
 #define CONTSIZE 65536
-#define MAXWORDLEN 100
-#define MAXWORDUTF8LEN 256
 
 // affentry options
 #define aeXPRODUCT (1 << 0)
