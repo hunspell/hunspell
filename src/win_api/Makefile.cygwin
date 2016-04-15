@@ -114,7 +114,6 @@ csutil.o: license.hunspell config.h license.myspell csutil.hxx w_char.hxx
 csutil.o: atypes.hxx hashmgr.hxx htypes.hxx filemgr.hxx hunzip.hxx
 csutil.o: langnum.hxx utf_info.cxx
 csutil.o: w_char.hxx
-dictmgr.o: dictmgr.hxx
 example.o: hunspell.hxx hashmgr.hxx htypes.hxx filemgr.hxx hunzip.hxx
 example.o: affixmgr.hxx atypes.hxx w_char.hxx baseaffix.hxx phonet.hxx
 filemgr.o: hunzip.hxx

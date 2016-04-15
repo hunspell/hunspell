@@ -408,14 +408,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\hunspell\dictmgr.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\hunspell\dictmgr.hxx"
-				>
-			</File>
-			<File
 				RelativePath="..\hunspell\filemgr.cxx"
 				>
 			</File>

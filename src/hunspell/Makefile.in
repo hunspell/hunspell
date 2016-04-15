@@ -150,8 +150,8 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libhunspell_1_4_la_LIBADD =
 am_libhunspell_1_4_la_OBJECTS = affentry.lo affixmgr.lo csutil.lo \
-	dictmgr.lo hashmgr.lo hunspell.lo suggestmgr.lo phonet.lo \
-	filemgr.lo hunzip.lo replist.lo
+	hashmgr.lo hunspell.lo suggestmgr.lo phonet.lo filemgr.lo \
+	hunzip.lo replist.lo
 libhunspell_1_4_la_OBJECTS = $(am_libhunspell_1_4_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -403,12 +403,12 @@ top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libhunspell-1.4.la
 libhunspell_1_4_includedir = $(includedir)/hunspell
 libhunspell_1_4_la_SOURCES = affentry.cxx affixmgr.cxx csutil.cxx \
-		     dictmgr.cxx hashmgr.cxx hunspell.cxx \
+		     hashmgr.cxx hunspell.cxx \
 	             suggestmgr.cxx license.myspell license.hunspell \
 	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx
 
 libhunspell_1_4_include_HEADERS = affentry.hxx htypes.hxx affixmgr.hxx \
-	        csutil.hxx hunspell.hxx atypes.hxx dictmgr.hxx hunspell.h \
+	        csutil.hxx hunspell.hxx atypes.hxx hunspell.h \
 		suggestmgr.hxx baseaffix.hxx hashmgr.hxx langnum.hxx \
 		phonet.hxx filemgr.hxx hunzip.hxx w_char.hxx replist.hxx \
 		hunvisapi.h
@@ -500,7 +500,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/affentry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/affixmgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csutil.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictmgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filemgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hashmgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hunspell.Plo@am__quote@

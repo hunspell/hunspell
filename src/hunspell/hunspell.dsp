@@ -97,10 +97,6 @@ SOURCE=.\csutil.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\dictmgr.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\hashmgr.cxx
 # End Source File
 # Begin Source File
@@ -134,10 +130,6 @@ SOURCE=.\baseaffix.hxx
 # Begin Source File
 
 SOURCE=.\csutil.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\dictmgr.hxx
 # End Source File
 # Begin Source File
 
