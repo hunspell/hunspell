@@ -149,8 +149,6 @@ LIBHUNSPELL_DLL_EXPORTED char* mystrcat(char* dest, const char* st, int max);
 
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED char* mystrsep(char** sptr, const char delim);
-// parse into tokens with char delimiter
-LIBHUNSPELL_DLL_EXPORTED char* mystrsep2(char** sptr, const char delim);
 
 // replace pat by rep in word and return word
 LIBHUNSPELL_DLL_EXPORTED char* mystrrep(char* word,
