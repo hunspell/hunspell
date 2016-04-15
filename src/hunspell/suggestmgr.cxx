@@ -1178,7 +1178,6 @@ int SuggestMgr::ngsuggest(char** wlst,
   int low = NGRAM_LOWERING;
 
   std::string w2;
-  std::string f;
   const char* word = w;
 
   // word reversing wrapper for complex prefixes
@@ -1242,6 +1241,7 @@ int SuggestMgr::ngsuggest(char** wlst,
            leftcommonsubstring(word, HENTRY_WORD(hp));
 
       // check special pronounciation
+      std::string f;
       if ((hp->var & H_OPT_PHON) &&
           copy_field(f, HENTRY_DATA(hp), MORPH_PHON)) {
         int sc2 = ngram(3, word, f, NGRAM_LONGER_WORSE + low) +
@@ -1338,6 +1338,7 @@ int SuggestMgr::ngsuggest(char** wlst,
     if (roots[i]) {
       struct hentry* rp = roots[i];
 
+      std::string f;
       const char *field = NULL;
       if ((rp->var & H_OPT_PHON) && copy_field(f, HENTRY_DATA(rp), MORPH_PHON))
           field = f.c_str();
