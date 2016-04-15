@@ -113,7 +113,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   int hash(const char*) const;
   struct hentry* walk_hashtable(int& col, struct hentry* hp) const;
 
-  int add(const char* word);
+  int add(const std::string& word);
   int add_with_affix(const char* word, const char* pattern);
   int remove(const char* word);
   int decode_flags(unsigned short** result, char* flags, FileMgr* af);
