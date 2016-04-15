@@ -5,6 +5,7 @@
 	    performance issues now that we have dropped the limits
 	    and need to determine a length limit of their own
 	    to use to not send strings for spellchecking.
+	* generally using std::string and std::vector internally
 
 2016-04-13 Caolán McNamara <caolanm at LibO>:
 	* gh#371 drop experimental code
