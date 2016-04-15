@@ -905,16 +905,6 @@ void enmkallcap(char* d, const char* p, const char* encoding)
   *d = '\0';
 }
 
-// convert null terminated string to all little using encoding
-void enmkallsmall(char* d, const char* p, const char* encoding) {
-  struct cs_info* csconv = get_current_cs(encoding);
-  while (*p != '\0') {
-    *d++ = clower(csconv, static_cast<unsigned char>(*p));
-    p++;
-  }
-  *d = '\0';
-}
-
 // these are simple character mappings for the
 // encodings supported
 // supplying isupper, tolower, and toupper
