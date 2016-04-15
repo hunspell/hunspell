@@ -1797,7 +1797,6 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
   if (n == 0 || !pAMgr)
     return NULL;
 
-  std::string result;
   std::string result2;
   std::string newpattern;
   struct hentry* rv = NULL;
@@ -1805,7 +1804,8 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
   // search affixed forms with and without derivational suffixes
   while (1) {
     for (int k = 0; k < n; k++) {
-      result.clear();
+      std::string result;
+
       // add compound word parts (except the last one)
       char* s = (char*)desc[k];
       char* part = strstr(s, MORPH_PART);

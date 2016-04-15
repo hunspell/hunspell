@@ -1155,20 +1155,24 @@ char* Hunspell::get_dic_encoding() {
 }
 
 int Hunspell::stem(char*** slst, char** desc, int n) {
-  char result[MAXLNLEN];
+
   std::string result2;
   *slst = NULL;
   if (n == 0)
     return 0;
   for (int i = 0; i < n; i++) {
-    *result = '\0';
+
+    std::string result;
+
     // add compound word parts (except the last one)
     char* s = (char*)desc[i];
     char* part = strstr(s, MORPH_PART);
     if (part) {
       char* nextpart = strstr(part + 1, MORPH_PART);
       while (nextpart) {
-        copy_field(result + strlen(result), part, MORPH_PART);
+        std::string field;
+        copy_field(field, part, MORPH_PART);
+        result.append(field);
         part = nextpart;
         nextpart = strstr(part + 1, MORPH_PART);
       }
