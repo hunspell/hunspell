@@ -1798,9 +1798,8 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
     return NULL;
 
   char result[MAXLNLEN];
-  char result2[MAXLNLEN];
+  std::string result2;
   std::string newpattern;
-  *result2 = '\0';
   struct hentry* rv = NULL;
 
   // search affixed forms with and without derivational suffixes
@@ -1854,16 +1853,14 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
               free(sg);
               sg = NULL;
               for (int j = 0; j < genl; j++) {
+                result2.push_back(MSEP_REC);
+                result2.append(result);
                 if (strstr(pl[i], MORPH_SURF_PFX)) {
-                  int r2l = strlen(result2);
-                  result2[r2l] = MSEP_REC;
-                  strcpy(result2 + r2l + 1, result);
-                  copy_field(result2 + strlen(result2), pl[i], MORPH_SURF_PFX);
-                  mystrcat(result2, gen[j], MAXLNLEN);
-                } else {
-                  sprintf(result2 + strlen(result2), "%c%s%s", MSEP_REC, result,
-                          gen[j]);
+                  std::string field;
+                  copy_field(field, pl[i], MORPH_SURF_PFX);
+                  result2.append(field);
                 }
+                result2.append(gen[j]);
               }
               freelist(&gen, genl);
             }
@@ -1874,14 +1871,14 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
       freelist(&pl, pln);
     }
 
-    if (*result2 || !strstr(pattern, MORPH_DERI_SFX))
+    if (!result2.empty() || !strstr(pattern, MORPH_DERI_SFX))
       break;
 
     newpattern.assign(pattern);
     mystrrep(newpattern, MORPH_DERI_SFX, MORPH_TERM_SFX);
     pattern = newpattern.c_str();
   }
-  return (*result2 ? mystrdup(result2) : NULL);
+  return (!result2.empty() ? mystrdup(result2.c_str()) : NULL);
 }
 
 // generate an n-gram score comparing s1 and s2
