@@ -376,12 +376,9 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         ch[1] = '\0';
         size_t res = iconv(conv, (ICONV_CONST char**)&ch8bit, &c1, &dest, &c2);
         if (res != (size_t)-1) {
-          unsigned short idx;
-          w_char w;
-          w.l = 0;
-          w.h = 0;
-          u8_u16(&w, 1, u8);
-          idx = (w.h << 8) + w.l;
+          std::vector<w_char> w;
+          u8_u16(w, u8);
+          unsigned short idx = w.empty() ? 0 : (w[0].h << 8) + w[0].l;
           if (unicodeisalpha(idx)) {
             *pletters = (char)i;
             pletters++;
