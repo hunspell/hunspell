@@ -1246,24 +1246,21 @@ void dialogscreen(TextParser* parser,
                                      "S)tem Q)uit e(X)it or ? for help\n"));
 }
 
-char* lower_first_char(char* token, const char* io_enc, int langnum) {
-  const char* utf8str = chenc(token, io_enc, "UTF-8");
-  int max = strlen(utf8str);
-  w_char* u = new w_char[max];
-  int len = u8_u16(u, max, utf8str);
-  unsigned short idx = (u[0].h << 8) + u[0].l;
-  idx = unicodetolower(idx, langnum);
-  u[0].h = (unsigned char)(idx >> 8);
-  u[0].l = (unsigned char)(idx & 0x00FF);
-  char* scratch = (char*)malloc(max + 1 + 4);
-  u16_u8(scratch, max + 4, u, len);
-  delete[] u;
-  char* result = chenc(scratch, "UTF-8", io_enc);
-  if (result != scratch) {
-    free(scratch);
-    result = mystrdup(result);
+char* lower_first_char(const std::string& token, const char* io_enc, int langnum) {
+  std::string utf8str(token);
+  chenc(utf8str, io_enc, "UTF-8");
+  std::vector<w_char> u;
+  u8_u16(u, utf8str);
+  if (!u.empty()) {
+    unsigned short idx = (u[0].h << 8) + u[0].l;
+    idx = unicodetolower(idx, langnum);
+    u[0].h = (unsigned char)(idx >> 8);
+    u[0].l = (unsigned char)(idx & 0x00FF);
   }
-  return result;
+  std::string scratch;
+  u16_u8(scratch, u);
+  chenc(scratch, "UTF-8", io_enc);
+  return mystrdup(scratch.c_str());
 }
 
 // for terminal interface
