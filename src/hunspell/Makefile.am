@@ -16,4 +16,4 @@ libhunspell_1_4_la_LDFLAGS=-no-undefined
 
 AM_CXXFLAGS=$(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL
 
-EXTRA_DIST=hunspell.dsp makefile.mk README utf_info.cxx
+EXTRA_DIST=hunspell.dsp README utf_info.cxx
