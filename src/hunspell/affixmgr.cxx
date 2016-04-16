@@ -1320,7 +1320,6 @@ char* AffixMgr::prefix_check_morph(const char* word,
                                    int len,
                                    char in_compound,
                                    const FLAG needflag) {
-  char* st;
 
   char result[MAXLNLEN];
   result[0] = '\0';
@@ -1332,7 +1331,7 @@ char* AffixMgr::prefix_check_morph(const char* word,
   // first handle the special case of 0 length prefixes
   PfxEntry* pe = pStart[0];
   while (pe) {
-    st = pe->check_morph(word, len, in_compound, needflag);
+    char* st = pe->check_morph(word, len, in_compound, needflag);
     if (st) {
       mystrcat(result, st, MAXLNLEN);
       free(st);
@@ -1347,7 +1346,7 @@ char* AffixMgr::prefix_check_morph(const char* word,
 
   while (pptr) {
     if (isSubset(pptr->getKey(), word)) {
-      st = pptr->check_morph(word, len, in_compound, needflag);
+      char* st = pptr->check_morph(word, len, in_compound, needflag);
       if (st) {
         // fogemorpheme
         if ((in_compound != IN_CPD_NOT) ||
@@ -1374,8 +1373,6 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
                                           int len,
                                           char in_compound,
                                           const FLAG needflag) {
-  char* st;
-
   char result[MAXLNLEN];
   result[0] = '\0';
 
@@ -1386,7 +1383,7 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
   // first handle the special case of 0 length prefixes
   PfxEntry* pe = pStart[0];
   while (pe) {
-    st = pe->check_twosfx_morph(word, len, in_compound, needflag);
+    char* st = pe->check_twosfx_morph(word, len, in_compound, needflag);
     if (st) {
       mystrcat(result, st, MAXLNLEN);
       free(st);
@@ -1400,7 +1397,7 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
 
   while (pptr) {
     if (isSubset(pptr->getKey(), word)) {
-      st = pptr->check_twosfx_morph(word, len, in_compound, needflag);
+      char* st = pptr->check_twosfx_morph(word, len, in_compound, needflag);
       if (st) {
         mystrcat(result, st, MAXLNLEN);
         free(st);
@@ -1419,13 +1416,12 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
 
 // Is word a non compound with a REP substitution (see checkcompoundrep)?
 int AffixMgr::cpdrep_check(const char* word, int wl) {
-  const char* r;
 
   if ((wl < 2) || !numrep)
     return 0;
 
   for (int i = 0; i < numrep; i++) {
-    r = word;
+    const char* r = word;
     int lenp = strlen(reptable[i].pattern);
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern)) != NULL) {
