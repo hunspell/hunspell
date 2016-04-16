@@ -4638,11 +4638,11 @@ void AffixMgr::reverse_condition(std::string& piece) {
       return;
 
   int neg = 0;
-  for (std::string::iterator k = piece.begin() + piece.size() - 1; k >= piece.begin(); --k) {
+  for (std::string::reverse_iterator k = piece.rbegin(); k != piece.rend(); ++k) {
     switch (*k) {
       case '[': {
         if (neg)
-          *(k + 1) = '[';
+          *(k - 1) = '[';
         else
           *k = ']';
         break;
@@ -4650,20 +4650,20 @@ void AffixMgr::reverse_condition(std::string& piece) {
       case ']': {
         *k = '[';
         if (neg)
-          *(k + 1) = '^';
+          *(k - 1) = '^';
         neg = 0;
         break;
       }
       case '^': {
-        if (*(k + 1) == ']')
+        if (*(k - 1) == ']')
           neg = 1;
         else
-          *(k + 1) = *k;
+          *(k - 1) = *k;
         break;
       }
       default: {
         if (neg)
-          *(k + 1) = *k;
+          *(k - 1) = *k;
       }
     }
   }
