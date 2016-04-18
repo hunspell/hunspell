@@ -1387,9 +1387,7 @@ gl_locale_name_default (void)
 	switch (sub)
 	  {
 	  case SUBLANG_SINDHI_PAKISTAN: return "sd_PK";
-#if SUBLANG_SINDHI_AFGHANISTAN != SUBLANG_SINDHI_PAKISTAN
 	  case SUBLANG_SINDHI_AFGHANISTAN: return "sd_AF";
-#endif
 	  }
 	return "sd";
       case LANG_SINHALESE: return "si_LK";

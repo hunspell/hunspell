@@ -99,8 +99,8 @@ class LIBHUNSPELL_DLL_EXPORTED RepList {
   int get_pos();
   int add(char* pat1, char* pat2);
   replentry* item(int n);
-  int near(const char* word);
-  int match(const char* word, int n);
+  int find(const char* word);
+  char* replace(const char* word, int n, bool atstart);
   int conv(const char* word, char* dest, size_t destsize);
   bool conv(const char* word, std::string& dest);
 };

@@ -67,9 +67,8 @@ struct __attribute__((packed)) w_char {
 // two character arrays
 struct replentry {
   char* pattern;
-  char* pattern2;
-  bool start;
-  bool end;
+  char* outstrings[4]; // med, ini, fin, isol
+  size_t plen;
 };
 
 #endif

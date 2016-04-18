@@ -261,7 +261,8 @@ AffixMgr::~AffixMgr() {
   if (reptable) {
     for (int j = 0; j < numrep; j++) {
       free(reptable[j].pattern);
-      free(reptable[j].pattern2);
+      for (int k = 0; k < 4; ++k)
+        free(reptable[j].outstrings[k]);
     }
     free(reptable);
     reptable = NULL;
@@ -1426,7 +1427,10 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern)) != NULL) {
       std::string candidate(word);
-      candidate.replace(r - word, lenp, reptable[i].pattern2);
+      int type = r == word ? 1 : 0;
+      if (r - word + reptable[i].plen == lenp)
+        type += 2;
+      candidate.replace(r - word, lenp, reptable[i].outstrings[type]);
       if (candidate_check(candidate.c_str(), candidate.size()))
         return 1;
       r++;  // search for the next letter
@@ -3908,7 +3912,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          reptable = (replentry*)malloc(numrep * sizeof(struct replentry));
+          reptable = (replentry*)calloc(numrep, sizeof(struct replentry));
           if (!reptable)
             return 1;
           np++;
@@ -3935,8 +3939,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
     mychomp(nl);
     tp = nl;
     i = 0;
-    reptable[j].pattern = NULL;
-    reptable[j].pattern2 = NULL;
+    int type = 0;
     piece = mystrsep(&tp, 0);
     while (piece) {
       if (*piece != '\0') {
@@ -3952,21 +3955,19 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
           }
           case 1: {
             if (*piece == '^')
-              reptable[j].start = true;
-            else
-              reptable[j].start = false;
+              type = 1;
             reptable[j].pattern =
-                mystrrep(mystrdup(piece + int(reptable[j].start)), "_", " ");
+                mystrrep(mystrdup(piece + type), "_", " ");
             int lr = strlen(reptable[j].pattern) - 1;
             if (reptable[j].pattern[lr] == '$') {
-              reptable[j].end = true;
+              type += 2;
               reptable[j].pattern[lr] = '\0';
-            } else
-              reptable[j].end = false;
+            }
+            reptable[j].plen = strlen(reptable[j].pattern);
             break;
           }
           case 2: {
-            reptable[j].pattern2 = mystrrep(mystrdup(piece), "_", " ");
+            reptable[j].outstrings[type] = mystrrep(mystrdup(piece), "_", " ");
             break;
           }
           default:
@@ -3976,7 +3977,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
       }
       piece = mystrsep(&tp, 0);
     }
-    if ((!(reptable[j].pattern)) || (!(reptable[j].pattern2))) {
+    if ((!(reptable[j].pattern)) || (!(reptable[j].outstrings[type]))) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       numrep = 0;
@@ -4060,11 +4061,11 @@ int AffixMgr::parse_convtable(char* line,
             break;
           }
           case 1: {
-            pattern = mystrrep(mystrdup(piece), "_", " ");
+            pattern = mystrdup(piece);
             break;
           }
           case 2: {
-            pattern2 = mystrrep(mystrdup(piece), "_", " ");
+            pattern2 = mystrdup(piece);
             break;
           }
           default:
