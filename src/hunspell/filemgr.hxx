@@ -79,6 +79,7 @@
 
 #include "hunzip.hxx"
 #include <stdio.h>
+#include <string>
 
 class LIBHUNSPELL_DLL_EXPORTED FileMgr {
  private:
@@ -95,6 +96,7 @@ class LIBHUNSPELL_DLL_EXPORTED FileMgr {
  public:
   FileMgr(const char* filename, const char* key = NULL);
   ~FileMgr();
+  bool getline(std::string&);
   char* getline();
   int getlinenum();
 };

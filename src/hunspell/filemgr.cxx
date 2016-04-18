@@ -115,6 +115,14 @@ char* FileMgr::getline() {
   return NULL;
 }
 
+bool FileMgr::getline(std::string& dest) {
+  char* line = getline();
+  if (!line)
+    return false;
+  dest.assign(line);
+  return true;
+}
+
 int FileMgr::getlinenum() {
   return linenum;
 }
