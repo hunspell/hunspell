@@ -572,36 +572,35 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   }
 
   // recursive breaking at break points
-  if (wordbreak) {
+  if (!wordbreak.empty()) {
 
     int nbr = 0;
     wl = scw.size();
-    int numbreak = pAMgr ? pAMgr->get_numbreak() : 0;
 
     // calculate break points for recursion limit
-    for (int j = 0; j < numbreak; j++) {
-      size_t len = strlen(wordbreak[j]);
+    for (size_t j = 0; j < wordbreak.size(); ++j) {
       size_t pos = 0;
-      while ((pos = scw.find(wordbreak[j], pos, len)) != std::string::npos) {
+      fprintf(stderr, "entry is %s %d\n", wordbreak[j].c_str(), wordbreak.size());
+      while ((pos = scw.find(wordbreak[j], pos)) != std::string::npos) {
         ++nbr;
-        pos += len;
+        pos += wordbreak[j].size();
       }
     }
     if (nbr >= 10)
       return 0;
 
     // check boundary patterns (^begin and end$)
-    for (int j = 0; j < numbreak; j++) {
-      size_t plen = strlen(wordbreak[j]);
+    for (size_t j = 0; j < wordbreak.size(); ++j) {
+      size_t plen = wordbreak[j].size();
       if (plen == 1 || plen > wl)
         continue;
 
       if (wordbreak[j][0] == '^' &&
-          scw.compare(0, plen - 1, wordbreak[j] + 1, plen -1) == 0 && spell(scw.c_str() + plen - 1))
+          scw.compare(0, plen - 1, wordbreak[j], 1, plen -1) == 0 && spell(scw.c_str() + plen - 1))
         return 1;
 
       if (wordbreak[j][plen - 1] == '$' &&
-          scw.compare(wl - plen + 1, plen - 1, wordbreak[j], plen - 1) == 0) {
+          scw.compare(wl - plen + 1, plen - 1, wordbreak[j], 0, plen - 1) == 0) {
         char r = scw[wl - plen + 1];
         scw[wl - plen + 1] = '\0';
         if (spell(scw.c_str()))
@@ -611,8 +610,8 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     }
 
     // other patterns
-    for (int j = 0; j < numbreak; j++) {
-      size_t plen = strlen(wordbreak[j]);
+    for (size_t j = 0; j < wordbreak.size(); ++j) {
+      size_t plen = wordbreak[j].size();
       size_t found = scw.find(wordbreak[j]);
       if ((found > 0) && (found < wl - plen)) {
         if (!spell(scw.c_str() + found + plen))
@@ -625,7 +624,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
         scw[found] = r;
 
         // LANG_hu: spec. dash rule
-        if (langnum == LANG_hu && strcmp(wordbreak[j], "-") == 0) {
+        if (langnum == LANG_hu && wordbreak[j] == "-") {
           r = scw[found + 1];
           scw[found + 1] = '\0';
           if (spell(scw.c_str()))

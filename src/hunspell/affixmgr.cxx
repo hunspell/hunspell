@@ -103,8 +103,7 @@ AffixMgr::AffixMgr(const char* affpath,
   complexprefixes = 0;
   maptable = NULL;
   nummap = 0;
-  breaktable = NULL;
-  numbreak = -1;
+  parsedbreaktable = false;
   reptable = NULL;
   numrep = 0;
   iconvtable = NULL;
@@ -248,16 +247,6 @@ AffixMgr::~AffixMgr() {
     maptable = NULL;
   }
   nummap = 0;
-  if (breaktable) {
-    for (int j = 0; j < numbreak; j++) {
-      if (breaktable[j])
-        free(breaktable[j]);
-      breaktable[j] = NULL;
-    }
-    free(breaktable);
-    breaktable = NULL;
-  }
-  numbreak = 0;
   if (reptable) {
     for (int j = 0; j < numrep; j++) {
       free(reptable[j].pattern);
@@ -871,15 +860,11 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
   }
 
   // default BREAK definition
-  if (numbreak == -1) {
-    breaktable = (char**)malloc(sizeof(char*) * 3);
-    if (!breaktable)
-      return 1;
-    breaktable[0] = mystrdup("-");
-    breaktable[1] = mystrdup("^-");
-    breaktable[2] = mystrdup("-$");
-    if (breaktable[0] && breaktable[1] && breaktable[2])
-      numbreak = 3;
+  if (!parsedbreaktable) {
+    breaktable.push_back("-");
+    breaktable.push_back("^-");
+    breaktable.push_back("-$");
+    parsedbreaktable = true;
   }
   return 0;
 }
@@ -3586,15 +3571,8 @@ struct mapentry* AffixMgr::get_maptable() const {
   return maptable;
 }
 
-// return length of word break table
-int AffixMgr::get_numbreak() const {
-  return numbreak;
-}
-
 // return character map table
-char** AffixMgr::get_breaktable() const {
-  if (!breaktable)
-    return NULL;
+const std::vector<std::string>& AffixMgr::get_breaktable() const {
   return breaktable;
 }
 
@@ -4543,13 +4521,15 @@ int AffixMgr::parse_maptable(char* line, FileMgr* af) {
 
 /* parse in the word breakpoint table */
 int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
-  if (numbreak > -1) {
+  if (parsedbreaktable) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return 1;
   }
+  parsedbreaktable = true;
   char* tp = line;
   char* piece;
+  int numbreak = -1;
   int i = 0;
   int np = 0;
   piece = mystrsep(&tp, 0);
@@ -4569,9 +4549,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
           }
           if (numbreak == 0)
             return 0;
-          breaktable = (char**)malloc(numbreak * sizeof(char*));
-          if (!breaktable)
-            return 1;
+          breaktable.reserve(numbreak);
           np++;
           break;
         }
@@ -4589,7 +4567,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
   }
 
   /* now parse the numbreak lines to read in the remainder of the table */
-  for (int j = 0; j < numbreak; j++) {
+  for (size_t j = 0; j < numbreak; j++) {
     std::string nl;
     if (!af->getline(nl))
       return 1;
@@ -4609,7 +4587,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
           break;
         }
         case 1: {
-          breaktable[j] = mystrdup(std::string(start_piece, iter).c_str());
+          breaktable.push_back(std::string(start_piece, iter));
           break;
         }
         default:
@@ -4618,13 +4596,14 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
       ++i;
       start_piece = mystrsep(nl, iter);
     }
-    if (!breaktable) {
-      HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                       af->getlinenum());
-      numbreak = 0;
-      return 1;
-    }
   }
+
+  if (breaktable.size() != numbreak) {
+    HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                     af->getlinenum());
+    return 1;
+  }
+
   return 0;
 }
 

@@ -107,7 +107,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int langnum;
   int utf8;
   int complexprefixes;
-  char** wordbreak;
+  std::vector<std::string> wordbreak;	//To-Do ref
 
  public:
   /* Hunspell(aff, dic) - constructor of Hunspell class
