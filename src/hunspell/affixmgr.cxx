@@ -4907,10 +4907,10 @@ int AffixMgr::parse_affix(char* line,
   // build an ordered (sorted by affix string) list
   for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
     if (at == 'P') {
-      PfxEntry* pfxptr = new PfxEntry(this, &(*entry));
+      PfxEntry* pfxptr = new PfxEntry(this, *entry);
       build_pfxtree(pfxptr);
     } else {
-      SfxEntry* sfxptr = new SfxEntry(this, &(*entry));
+      SfxEntry* sfxptr = new SfxEntry(this, *entry);
       build_sfxtree(sfxptr);
     }
   }

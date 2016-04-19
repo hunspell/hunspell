@@ -96,7 +96,7 @@ class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry {
   PfxEntry* flgnxt;
 
  public:
-  PfxEntry(AffixMgr* pmgr, affentry* dp);
+  PfxEntry(AffixMgr* pmgr, affentry& dp);
   ~PfxEntry();
 
   inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }
@@ -166,7 +166,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
   SfxEntry* eq_morph;
 
  public:
-  SfxEntry(AffixMgr* pmgr, affentry* dp);
+  SfxEntry(AffixMgr* pmgr, affentry& dp);
   ~SfxEntry();
 
   inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }

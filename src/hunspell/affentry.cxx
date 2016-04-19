@@ -79,7 +79,7 @@
 #include "affentry.hxx"
 #include "csutil.hxx"
 
-PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
+PfxEntry::PfxEntry(AffixMgr* pmgr, affentry& dp)
     // register affix manager
     : pmyMgr(pmgr),
       next(NULL),
@@ -87,20 +87,20 @@ PfxEntry::PfxEntry(AffixMgr* pmgr, affentry* dp)
       nextne(NULL),
       flgnxt(NULL) {
   // set up its initial values
-  aflag = dp->aflag;        // flag
-  strip = dp->strip;        // string to strip
-  appnd = dp->appnd;        // string to append
-  numconds = dp->numconds;  // length of the condition
-  opts = dp->opts;          // cross product flag
+  aflag = dp.aflag;        // flag
+  strip = dp.strip;        // string to strip
+  appnd = dp.appnd;        // string to append
+  numconds = dp.numconds;  // length of the condition
+  opts = dp.opts;          // cross product flag
   // then copy over all of the conditions
   if (opts & aeLONGCOND) {
-    memcpy(c.conds, dp->c.l.conds1, MAXCONDLEN_1);
-    c.l.conds2 = dp->c.l.conds2;
+    memcpy(c.conds, dp.c.l.conds1, MAXCONDLEN_1);
+    c.l.conds2 = dp.c.l.conds2;
   } else
-    memcpy(c.conds, dp->c.conds, MAXCONDLEN);
-  morphcode = dp->morphcode;
-  contclass = dp->contclass;
-  contclasslen = dp->contclasslen;
+    memcpy(c.conds, dp.c.conds, MAXCONDLEN);
+  morphcode = dp.morphcode;
+  contclass = dp.contclass;
+  contclasslen = dp.contclasslen;
 }
 
 PfxEntry::~PfxEntry() {
@@ -471,7 +471,7 @@ char* PfxEntry::check_morph(const char* word,
   return NULL;
 }
 
-SfxEntry::SfxEntry(AffixMgr* pmgr, affentry* dp)
+SfxEntry::SfxEntry(AffixMgr* pmgr, affentry& dp)
     : pmyMgr(pmgr)  // register affix manager
       ,
       next(NULL),
@@ -482,23 +482,23 @@ SfxEntry::SfxEntry(AffixMgr* pmgr, affentry* dp)
       r_morph(NULL),
       eq_morph(NULL) {
   // set up its initial values
-  aflag = dp->aflag;        // char flag
-  strip = dp->strip;        // string to strip
-  appnd = dp->appnd;        // string to append
-  numconds = dp->numconds;  // length of the condition
-  opts = dp->opts;          // cross product flag
+  aflag = dp.aflag;        // char flag
+  strip = dp.strip;        // string to strip
+  appnd = dp.appnd;        // string to append
+  numconds = dp.numconds;  // length of the condition
+  opts = dp.opts;          // cross product flag
 
   // then copy over all of the conditions
   if (opts & aeLONGCOND) {
-    memcpy(c.l.conds1, dp->c.l.conds1, MAXCONDLEN_1);
-    c.l.conds2 = dp->c.l.conds2;
+    memcpy(c.l.conds1, dp.c.l.conds1, MAXCONDLEN_1);
+    c.l.conds2 = dp.c.l.conds2;
   } else
-    memcpy(c.conds, dp->c.conds, MAXCONDLEN);
+    memcpy(c.conds, dp.c.conds, MAXCONDLEN);
   rappnd = appnd;
   reverseword(rappnd);
-  morphcode = dp->morphcode;
-  contclass = dp->contclass;
-  contclasslen = dp->contclasslen;
+  morphcode = dp.morphcode;
+  contclass = dp.contclass;
+  contclasslen = dp.contclasslen;
 }
 
 SfxEntry::~SfxEntry() {
