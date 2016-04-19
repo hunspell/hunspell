@@ -129,8 +129,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   replentry* reptable;
   RepList* iconvtable;
   RepList* oconvtable;
-  int nummap;
-  mapentry* maptable;
+  bool parsedmaptable;
+  std::vector<mapentry> maptable;
   bool parsedbreaktable;
   std::vector<std::string> breaktable;
   int numcheckcpd;
@@ -308,8 +308,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   RepList* get_iconvtable() const;
   RepList* get_oconvtable() const;
   struct phonetable* get_phonetable() const;
-  int get_nummap() const;
-  struct mapentry* get_maptable() const;
+  const std::vector<mapentry>& get_maptable() const;
   const std::vector<std::string>& get_breaktable() const;
   char* get_encoding();
   int get_langnum() const;

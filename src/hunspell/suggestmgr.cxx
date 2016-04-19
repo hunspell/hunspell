@@ -395,15 +395,14 @@ int SuggestMgr::mapchars(char** wlst,
   if (wl < 2 || !pAMgr)
     return ns;
 
-  int nummap = pAMgr->get_nummap();
-  struct mapentry* maptable = pAMgr->get_maptable();
-  if (maptable == NULL)
+  const std::vector<mapentry>& maptable = pAMgr->get_maptable();
+  if (maptable.empty())
     return ns;
 
   timelimit = clock();
   timer = MINTIMER;
   return map_related(word, candidate, 0, wlst, cpdsuggest, ns,
-                     maptable, nummap, &timer, &timelimit);
+                     maptable, &timer, &timelimit);
 }
 
 int SuggestMgr::map_related(const char* word,
@@ -412,8 +411,7 @@ int SuggestMgr::map_related(const char* word,
                             char** wlst,
                             int cpdsuggest,
                             int ns,
-                            const mapentry* maptable,
-                            int nummap,
+                            const std::vector<mapentry>& maptable,
                             int* timer,
                             clock_t* timelimit) {
   if (*(word + wn) == '\0') {
@@ -435,17 +433,17 @@ int SuggestMgr::map_related(const char* word,
     return ns;
   }
   int in_map = 0;
-  for (int j = 0; j < nummap; j++) {
-    for (int k = 0; k < maptable[j].len; k++) {
-      int len = strlen(maptable[j].set[k]);
-      if (strncmp(maptable[j].set[k], word + wn, len) == 0) {
+  for (size_t j = 0; j < maptable.size(); ++j) {
+    for (size_t k = 0; k < maptable[j].size(); ++k) {
+      size_t len = maptable[j][k].size();
+      if (strncmp(maptable[j][k].c_str(), word + wn, len) == 0) {
         in_map = 1;
         size_t cn = candidate.size();
-        for (int l = 0; l < maptable[j].len; l++) {
+        for (size_t l = 0; l < maptable[j].size(); ++l) {
           candidate.resize(cn);
-          candidate.append(maptable[j].set[l]);
+          candidate.append(maptable[j][l]);
           ns = map_related(word, candidate, wn + len, wlst,
-                           cpdsuggest, ns, maptable, nummap, timer, timelimit);
+                           cpdsuggest, ns, maptable, timer, timelimit);
           if (!(*timer))
             return ns;
         }
@@ -455,7 +453,7 @@ int SuggestMgr::map_related(const char* word,
   if (!in_map) {
     candidate.push_back(*(word + wn));
     ns = map_related(word, candidate, wn + 1, wlst, cpdsuggest, ns,
-                     maptable, nummap, timer, timelimit);
+                     maptable, timer, timelimit);
   }
   return ns;
 }

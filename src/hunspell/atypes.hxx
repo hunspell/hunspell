@@ -124,10 +124,7 @@ struct guessword {
   char* orig;
 };
 
-struct mapentry {
-  char** set;
-  int len;
-};
+typedef std::vector<std::string> mapentry;
 
 struct flagentry {
   FLAG* def;

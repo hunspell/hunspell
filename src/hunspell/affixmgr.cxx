@@ -101,8 +101,7 @@ AffixMgr::AffixMgr(const char* affpath,
   csconv = NULL;
   utf8 = 0;
   complexprefixes = 0;
-  maptable = NULL;
-  nummap = 0;
+  parsedmaptable = false;
   parsedbreaktable = false;
   reptable = NULL;
   numrep = 0;
@@ -233,20 +232,6 @@ AffixMgr::~AffixMgr() {
   if (encoding)
     free(encoding);
   encoding = NULL;
-  if (maptable) {
-    for (int j = 0; j < nummap; j++) {
-      for (int k = 0; k < maptable[j].len; k++) {
-        if (maptable[j].set[k])
-          free(maptable[j].set[k]);
-      }
-      free(maptable[j].set);
-      maptable[j].set = NULL;
-      maptable[j].len = 0;
-    }
-    free(maptable);
-    maptable = NULL;
-  }
-  nummap = 0;
   if (reptable) {
     for (int j = 0; j < numrep; j++) {
       free(reptable[j].pattern);
@@ -3559,15 +3544,8 @@ struct phonetable* AffixMgr::get_phonetable() const {
   return phone;
 }
 
-// return length of character map table
-int AffixMgr::get_nummap() const {
-  return nummap;
-}
-
 // return character map table
-struct mapentry* AffixMgr::get_maptable() const {
-  if (!maptable)
-    return NULL;
+const std::vector<mapentry>& AffixMgr::get_maptable() const {
   return maptable;
 }
 
@@ -4402,13 +4380,15 @@ int AffixMgr::parse_defcpdtable(char* line, FileMgr* af) {
 
 /* parse in the character map table */
 int AffixMgr::parse_maptable(char* line, FileMgr* af) {
-  if (nummap != 0) {
+  if (parsedmaptable) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return 1;
   }
+  parsedmaptable = true;
   char* tp = line;
   char* piece;
+  int nummap = -1;
   int i = 0;
   int np = 0;
   piece = mystrsep(&tp, 0);
@@ -4426,9 +4406,7 @@ int AffixMgr::parse_maptable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          maptable = (mapentry*)malloc(nummap * sizeof(struct mapentry));
-          if (!maptable)
-            return 1;
+          maptable.reserve(nummap);
           np++;
           break;
         }
@@ -4446,70 +4424,57 @@ int AffixMgr::parse_maptable(char* line, FileMgr* af) {
   }
 
   /* now parse the nummap lines to read in the remainder of the table */
-  char* nl;
-  for (int j = 0; j < nummap; j++) {
-    if (!(nl = af->getline()))
+  for (int j = 0; j < nummap; ++j) {
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+    std::string::const_iterator iter = nl.begin();
     i = 0;
-    maptable[j].set = NULL;
-    maptable[j].len = 0;
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
-        switch (i) {
-          case 0: {
-            if (strncmp(piece, "MAP", 3) != 0) {
-              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                               af->getlinenum());
-              nummap = 0;
-              return 1;
-            }
-            break;
+    maptable.push_back(mapentry());
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      switch (i) {
+        case 0: {
+          if (nl.compare(start_piece - nl.begin(), 3, "MAP", 3) != 0) {
+            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                             af->getlinenum());
+            nummap = 0;
+            return 1;
           }
-          case 1: {
-            int setn = 0;
-            maptable[j].len = strlen(piece);
-            maptable[j].set = (char**)malloc(maptable[j].len * sizeof(char*));
-            if (!maptable[j].set)
-              return 1;
-            for (int k = 0; k < maptable[j].len; k++) {
-              int chl = 1;
-              int chb = k;
-              if (piece[k] == '(') {
-                char* parpos = strchr(piece + k, ')');
-                if (parpos != NULL) {
-                  chb = k + 1;
-                  chl = (int)(parpos - piece) - k - 1;
-                  k = k + chl + 1;
-                }
-              } else {
-                if (utf8 && (piece[k] & 0xc0) == 0xc0) {
-                  for (k++; utf8 && (piece[k] & 0xc0) == 0x80; k++)
-                    ;
-                  chl = k - chb;
-                  k--;
-                }
-              }
-              maptable[j].set[setn] = (char*)malloc(chl + 1);
-              if (!maptable[j].set[setn])
-                return 1;
-              strncpy(maptable[j].set[setn], piece + chb, chl);
-              maptable[j].set[setn][chl] = '\0';
-              setn++;
-            }
-            maptable[j].len = setn;
-            break;
-          }
-          default:
-            break;
+          break;
         }
-        i++;
+        case 1: {
+          for (std::string::const_iterator k = start_piece; k != iter; ++k) {
+            std::string::const_iterator chb = k;
+            std::string::const_iterator chl = k + 1;
+            if (*k == '(') {
+              std::string::const_iterator parpos = std::find(k, iter, ')');
+              if (parpos != iter) {
+                chb = k + 1;
+                chl = parpos;
+                k = parpos;
+              }
+            } else {
+              if (utf8 && (*k & 0xc0) == 0xc0) {
+                ++k;
+                while (k != iter && (*k & 0xc0) == 0x80)
+                    ++k;
+                chl = k;
+                --k;
+              }
+            }
+            maptable.back().push_back(std::string(chb, chl));
+          }
+          break;
+        }
+        default:
+          break;
       }
-      piece = mystrsep(&tp, 0);
+      ++i;
+      start_piece = mystrsep(nl, iter);
     }
-    if (!maptable[j].set || !maptable[j].len) {
+    if (maptable.back().empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       nummap = 0;

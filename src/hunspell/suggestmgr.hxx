@@ -180,8 +180,7 @@ class LIBHUNSPELL_DLL_EXPORTED SuggestMgr {
                   char** wlst,
                   int,
                   int,
-                  const mapentry*,
-                  int,
+                  const std::vector<mapentry>&,
                   int*,
                   clock_t*);
   int ngram(int n, const std::string& s1, const std::string& s2, int opt);
