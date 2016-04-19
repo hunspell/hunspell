@@ -727,6 +727,71 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return len;
 }
 
+bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) {
+  if (flags.empty()) {
+    return false;
+  }
+  switch (flag_mode) {
+    case FLAG_LONG: {  // two-character flags (1x2yZz -> 1x 2y Zz)
+      size_t len = flags.size();
+      if (len % 2 == 1)
+        HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n",
+                         af->getlinenum());
+      len /= 2;
+      result.reserve(result.size() + len);
+      for (size_t i = 0; i < len; ++i) {
+        result.push_back((((unsigned short)flags[i * 2]) << 8) +
+                         (unsigned short)flags[i * 2 + 1]);
+      }
+      break;
+    }
+    case FLAG_NUM: {  // decimal numbers separated by comma (4521,23,233 -> 4521
+                      // 23 233)
+      const char* src = flags.c_str();
+      for (const char* p = src; *p; p++) {
+        if (*p == ',') {
+          int i = atoi(src);
+          if (i >= DEFAULTFLAGS)
+            HUNSPELL_WARNING(
+                stderr, "error: line %d: flag id %d is too large (max: %d)\n",
+                af->getlinenum(), i, DEFAULTFLAGS - 1);
+          result.push_back((unsigned short)i);
+          if (result.back() == 0)
+            HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
+                             af->getlinenum());
+          src = p + 1;
+        }
+      }
+      int i = atoi(src);
+      if (i >= DEFAULTFLAGS)
+        HUNSPELL_WARNING(stderr,
+                         "error: line %d: flag id %d is too large (max: %d)\n",
+                         af->getlinenum(), i, DEFAULTFLAGS - 1);
+      result.push_back((unsigned short)i);
+      if (result.back() == 0)
+        HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
+                         af->getlinenum());
+      break;
+    }
+    case FLAG_UNI: {  // UTF-8 characters
+      std::vector<w_char> w;
+      u8_u16(w, flags);
+      size_t len = w.size();
+      size_t origsize = result.size();
+      result.resize(origsize + len);
+      memcpy(&result[origsize], &w[0], len * sizeof(short));
+      break;
+    }
+    default: {  // Ispell's one-character flags (erfg -> e r f g)
+      result.reserve(flags.size());
+      for (size_t i = 0; i < flags.size(); ++i) {
+        result.push_back((unsigned short)flags[i]);
+      }
+    }
+  }
+  return true;
+}
+
 unsigned short HashMgr::decode_flag(const char* f) {
   unsigned short s = 0;
   int i;

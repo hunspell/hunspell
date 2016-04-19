@@ -125,11 +125,7 @@ struct guessword {
 };
 
 typedef std::vector<std::string> mapentry;
-
-struct flagentry {
-  FLAG* def;
-  int len;
-};
+typedef std::vector<FLAG> flagentry;
 
 struct patentry {
   char* pattern;

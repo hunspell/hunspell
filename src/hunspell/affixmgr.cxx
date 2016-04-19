@@ -111,8 +111,7 @@ AffixMgr::AffixMgr(const char* affpath,
   // allow simplified compound forms (see 3rd field of CHECKCOMPOUNDPATTERN)
   simplifiedcpd = 0;
   numcheckcpd = 0;
-  defcpdtable = NULL;
-  numdefcpd = 0;
+  parseddefcpd = false;
   phone = NULL;
   compoundflag = FLAG_NULL;        // permits word in compound forms
   compoundbegin = FLAG_NULL;       // may be first word in compound forms
@@ -255,14 +254,6 @@ AffixMgr::~AffixMgr() {
     phone = NULL;
   }
 
-  if (defcpdtable) {
-    for (int j = 0; j < numdefcpd; j++) {
-      free(defcpdtable[j].def);
-      defcpdtable[j].def = NULL;
-    }
-    free(defcpdtable);
-    defcpdtable = NULL;
-  }
   numrep = 0;
   if (checkcpdtable) {
     for (int j = 0; j < numcheckcpd; j++) {
@@ -1499,10 +1490,10 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
   int ok = 0;
-  for (i = 0; i < numdefcpd; i++) {
-    for (j = 0; j < defcpdtable[i].len; j++) {
-      if (defcpdtable[i].def[j] != '*' && defcpdtable[i].def[j] != '?' &&
-          TESTAFF(rv->astr, defcpdtable[i].def[j], rv->alen)) {
+  for (i = 0; i < defcpdtable.size(); i++) {
+    for (j = 0; j < defcpdtable[i].size(); j++) {
+      if (defcpdtable[i][j] != '*' && defcpdtable[i][j] != '?' &&
+          TESTAFF(rv->astr, defcpdtable[i][j], rv->alen)) {
         ok = 1;
         break;
       }
@@ -1515,25 +1506,25 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
 
-  for (i = 0; i < numdefcpd; i++) {
+  for (i = 0; i < defcpdtable.size(); i++) {
     signed short pp = 0;  // pattern position
     signed short wp = 0;  // "words" position
     int ok2;
     ok = 1;
     ok2 = 1;
     do {
-      while ((pp < defcpdtable[i].len) && (wp <= wnum)) {
-        if (((pp + 1) < defcpdtable[i].len) &&
-            ((defcpdtable[i].def[pp + 1] == '*') ||
-             (defcpdtable[i].def[pp + 1] == '?'))) {
-          int wend = (defcpdtable[i].def[pp + 1] == '?') ? wp : wnum;
+      while ((pp < defcpdtable[i].size()) && (wp <= wnum)) {
+        if (((pp + 1) < defcpdtable[i].size()) &&
+            ((defcpdtable[i][pp + 1] == '*') ||
+             (defcpdtable[i][pp + 1] == '?'))) {
+          int wend = (defcpdtable[i][pp + 1] == '?') ? wp : wnum;
           ok2 = 1;
           pp += 2;
           btinfo[bt].btpp = pp;
           btinfo[bt].btwp = wp;
           while (wp <= wend) {
             if (!(*words)[wp]->alen ||
-                !TESTAFF((*words)[wp]->astr, defcpdtable[i].def[pp - 2],
+                !TESTAFF((*words)[wp]->astr, defcpdtable[i][pp - 2],
                          (*words)[wp]->alen)) {
               ok2 = 0;
               break;
@@ -1552,24 +1543,24 @@ int AffixMgr::defcpd_check(hentry*** words,
         } else {
           ok2 = 1;
           if (!(*words)[wp] || !(*words)[wp]->alen ||
-              !TESTAFF((*words)[wp]->astr, defcpdtable[i].def[pp],
+              !TESTAFF((*words)[wp]->astr, defcpdtable[i][pp],
                        (*words)[wp]->alen)) {
             ok = 0;
             break;
           }
           pp++;
           wp++;
-          if ((defcpdtable[i].len == pp) && !(wp > wnum))
+          if ((defcpdtable[i].size() == pp) && !(wp > wnum))
             ok = 0;
         }
       }
       if (ok && ok2) {
         int r = pp;
-        while ((defcpdtable[i].len > r) && ((r + 1) < defcpdtable[i].len) &&
-               ((defcpdtable[i].def[r + 1] == '*') ||
-                (defcpdtable[i].def[r + 1] == '?')))
+        while ((defcpdtable[i].size() > r) && ((r + 1) < defcpdtable[i].size()) &&
+               ((defcpdtable[i][r + 1] == '*') ||
+                (defcpdtable[i][r + 1] == '?')))
           r += 2;
-        if (defcpdtable[i].len <= r)
+        if (defcpdtable[i].size() <= r)
           return 1;
       }
       // backtrack
@@ -1582,16 +1573,16 @@ int AffixMgr::defcpd_check(hentry*** words,
         } while ((btinfo[bt - 1].btnum < 0) && --bt);
     } while (bt);
 
-    if (ok && ok2 && (!all || (defcpdtable[i].len <= pp)))
+    if (ok && ok2 && (!all || (defcpdtable[i].size() <= pp)))
       return 1;
 
     // check zero ending
-    while (ok && ok2 && (defcpdtable[i].len > pp) &&
-           ((pp + 1) < defcpdtable[i].len) &&
-           ((defcpdtable[i].def[pp + 1] == '*') ||
-            (defcpdtable[i].def[pp + 1] == '?')))
+    while (ok && ok2 && (defcpdtable[i].size() > pp) &&
+           ((pp + 1) < defcpdtable[i].size()) &&
+           ((defcpdtable[i][pp + 1] == '*') ||
+            (defcpdtable[i][pp + 1] == '?')))
       pp += 2;
-    if (ok && ok2 && (defcpdtable[i].len <= pp))
+    if (ok && ok2 && (defcpdtable[i].size() <= pp))
       return 1;
   }
   (*words)[wnum] = NULL;
@@ -1765,7 +1756,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                    TESTAFF(rv->astr, compoundbegin, rv->alen)) ||
                   (compoundmiddle && wordnum && !words && !onlycpdrule &&
                    TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
-                  (numdefcpd && onlycpdrule &&
+                  (!defcpdtable.empty() && onlycpdrule &&
                    ((!words && !wordnum &&
                      defcpd_check(&words, wnum, rv, rwords, 0)) ||
                     (words &&
@@ -1885,8 +1876,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
               ((oldwordnum == 0) && compoundbegin &&
                TESTAFF(rv->astr, compoundbegin, rv->alen)) ||
               ((oldwordnum > 0) && compoundmiddle &&
-               TESTAFF(rv->astr, compoundmiddle, rv->alen))  // ||
-              //            (numdefcpd && )
+               TESTAFF(rv->astr, compoundmiddle, rv->alen))
 
               // LANG_hu section: spec. Hungarian rule
               || ((langnum == LANG_hu) && hu_mov_rule &&
@@ -1955,7 +1945,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                        TESTAFF(rv->astr, compoundflag, rv->alen)) ||
                       (compoundend && !words &&
                        TESTAFF(rv->astr, compoundend, rv->alen)) ||
-                      (numdefcpd && words &&
+                      (!defcpdtable.empty() && words &&
                        defcpd_check(&words, wnum + 1, rv, NULL, 1))) ||
                     (scpd != 0 && checkcpdtable[scpd - 1].cond2 != FLAG_NULL &&
                      !TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2,
@@ -2043,7 +2033,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                                IN_CPD_END);
             }
 
-            if (!rv && numdefcpd && words) {
+            if (!rv && !defcpdtable.empty() && words) {
               rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
@@ -2235,7 +2225,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
       } else
         st[i] = ch;
 
-    } while (numdefcpd && oldwordnum == 0 &&
+    } while (!defcpdtable.empty() && oldwordnum == 0 &&
              onlycpdrule++ < 1);  // end of onlycpd loop
   }
 
@@ -2319,7 +2309,7 @@ int AffixMgr::compound_check_morph(const char* word,
                  TESTAFF(rv->astr, compoundbegin, rv->alen)) ||
                 (compoundmiddle && wordnum && !words && !onlycpdrule &&
                  TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
-                (numdefcpd && onlycpdrule &&
+                (!defcpdtable.empty() && onlycpdrule &&
                  ((!words && !wordnum &&
                    defcpd_check(&words, wnum, rv, rwords, 0)) ||
                   (words &&
@@ -2515,7 +2505,7 @@ int AffixMgr::compound_check_morph(const char* word,
                            TESTAFF(rv->astr, compoundflag, rv->alen)) ||
                           (compoundend && !words &&
                            TESTAFF(rv->astr, compoundend, rv->alen)) ||
-                          (numdefcpd && words &&
+                          (!defcpdtable.empty() && words &&
                            defcpd_check(&words, wnum + 1, rv, NULL, 1))))) {
           rv = rv->next_homonym;
         }
@@ -2623,7 +2613,7 @@ int AffixMgr::compound_check_morph(const char* word,
           rv = affix_check((word + i), strlen(word + i), compoundend);
         }
 
-        if (!rv && numdefcpd && words) {
+        if (!rv && !defcpdtable.empty() && words) {
           rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             char* m = NULL;
@@ -2757,7 +2747,7 @@ int AffixMgr::compound_check_morph(const char* word,
       wordnum = oldwordnum;
       numsyllable = oldnumsyllable;
 
-    } while (numdefcpd && oldwordnum == 0 &&
+    } while (!defcpdtable.empty() && oldwordnum == 0 &&
              onlycpdrule++ < 1);  // end of onlycpd loop
   }
   return 0;
@@ -3637,7 +3627,7 @@ const std::vector<w_char>& AffixMgr::get_wordchars_utf16() const {
 
 // is there compounding?
 int AffixMgr::get_compound() const {
-  return compoundflag || compoundbegin || numdefcpd;
+  return compoundflag || compoundbegin || !defcpdtable.empty();
 }
 
 // return the compound words control flag
@@ -4263,13 +4253,15 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
 
 /* parse in the compound rule table */
 int AffixMgr::parse_defcpdtable(char* line, FileMgr* af) {
-  if (numdefcpd != 0) {
+  if (parseddefcpd) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return 1;
   }
+  parseddefcpd = true;
   char* tp = line;
   char* piece;
+  int numdefcpd = -1;
   int i = 0;
   int np = 0;
   piece = mystrsep(&tp, 0);
@@ -4287,9 +4279,7 @@ int AffixMgr::parse_defcpdtable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          defcpdtable = (flagentry*)malloc(numdefcpd * sizeof(flagentry));
-          if (!defcpdtable)
-            return 1;
+          defcpdtable.reserve(numdefcpd);
           np++;
           break;
         }
@@ -4307,68 +4297,58 @@ int AffixMgr::parse_defcpdtable(char* line, FileMgr* af) {
   }
 
   /* now parse the numdefcpd lines to read in the remainder of the table */
-  char* nl;
-  for (int j = 0; j < numdefcpd; j++) {
-    if (!(nl = af->getline()))
+  for (int j = 0; j < numdefcpd; ++j) {
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+    std::string::const_iterator iter = nl.begin();
     i = 0;
-    defcpdtable[j].def = NULL;
-    defcpdtable[j].len = 0;
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
-        switch (i) {
-          case 0: {
-            if (strncmp(piece, "COMPOUNDRULE", 12) != 0) {
-              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                               af->getlinenum());
-              numdefcpd = 0;
-              return 1;
-            }
-            break;
+    defcpdtable.push_back(flagentry());
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      switch (i) {
+        case 0: {
+          if (nl.compare(start_piece - nl.begin(), 12, "COMPOUNDRULE", 12) != 0) {
+            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                             af->getlinenum());
+            numdefcpd = 0;
+            return 1;
           }
-          case 1: {  // handle parenthesized flags
-            if (strchr(piece, '(')) {
-              defcpdtable[j].def = (FLAG*)malloc(strlen(piece) * sizeof(FLAG));
-              defcpdtable[j].len = 0;
-              int end = 0;
-              FLAG* conv;
-              while (!end) {
-                char* par = piece + 1;
-                while (*par != '(' && *par != ')' && *par != '\0')
-                  par++;
-                if (*par == '\0')
-                  end = 1;
-                else
-                  *par = '\0';
-                if (*piece == '(')
-                  piece++;
-                if (*piece == '*' || *piece == '?') {
-                  defcpdtable[j].def[defcpdtable[j].len++] = (FLAG)*piece;
-                } else if (*piece != '\0') {
-                  int l = pHMgr->decode_flags(&conv, piece, af);
-                  for (int k = 0; k < l; k++)
-                    defcpdtable[j].def[defcpdtable[j].len++] = conv[k];
-                  free(conv);
-                }
-                piece = par + 1;
-              }
-            } else {
-              defcpdtable[j].len =
-                  pHMgr->decode_flags(&(defcpdtable[j].def), piece, af);
-            }
-            break;
-          }
-          default:
-            break;
+          break;
         }
-        i++;
+        case 1: {  // handle parenthesized flags
+          if (std::find(start_piece, iter, '(') != iter) {
+            for (std::string::const_iterator k = start_piece; k != iter; ++k) {
+              std::string::const_iterator chb = k;
+              std::string::const_iterator che = k + 1;
+              if (*k == '(') {
+                std::string::const_iterator parpos = std::find(k, iter, ')');
+                if (parpos != iter) {
+                  chb = k + 1;
+                  che = parpos;
+                  k = parpos;
+                }
+              }
+
+              if (*chb == '*' || *chb == '?') {
+                defcpdtable.back().push_back((FLAG)*chb);
+              } else {
+                pHMgr->decode_flags(defcpdtable.back(), std::string(chb, che), af);
+              }
+            }
+          } else {
+            pHMgr->decode_flags(defcpdtable.back(), std::string(start_piece, iter), af);
+          }
+          break;
+        }
+        default:
+          break;
       }
-      piece = mystrsep(&tp, 0);
+      ++i;
+      start_piece = mystrsep(nl, iter);
     }
-    if (!defcpdtable[j].len) {
+    if (defcpdtable.back().empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       numdefcpd = 0;
@@ -4447,12 +4427,12 @@ int AffixMgr::parse_maptable(char* line, FileMgr* af) {
         case 1: {
           for (std::string::const_iterator k = start_piece; k != iter; ++k) {
             std::string::const_iterator chb = k;
-            std::string::const_iterator chl = k + 1;
+            std::string::const_iterator che = k + 1;
             if (*k == '(') {
               std::string::const_iterator parpos = std::find(k, iter, ')');
               if (parpos != iter) {
                 chb = k + 1;
-                chl = parpos;
+                che = parpos;
                 k = parpos;
               }
             } else {
@@ -4460,11 +4440,11 @@ int AffixMgr::parse_maptable(char* line, FileMgr* af) {
                 ++k;
                 while (k != iter && (*k & 0xc0) == 0x80)
                     ++k;
-                chl = k;
+                che = k;
                 --k;
               }
             }
-            maptable.back().push_back(std::string(chb, chl));
+            maptable.back().push_back(std::string(chb, che));
           }
           break;
         }

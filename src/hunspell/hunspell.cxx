@@ -580,7 +580,6 @@ int Hunspell::spell(const char* word, int* info, char** root) {
     // calculate break points for recursion limit
     for (size_t j = 0; j < wordbreak.size(); ++j) {
       size_t pos = 0;
-      fprintf(stderr, "entry is %s %d\n", wordbreak[j].c_str(), wordbreak.size());
       while ((pos = scw.find(wordbreak[j], pos)) != std::string::npos) {
         ++nbr;
         pos += wordbreak[j].size();

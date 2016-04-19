@@ -137,7 +137,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   patentry* checkcpdtable;
   int simplifiedcpd;
   int numdefcpd;
-  flagentry* defcpdtable;
+  bool parseddefcpd;
+  std::vector<flagentry> defcpdtable;
   phonetable* phone;
   int maxngramsugs;
   int maxcpdsugs;
