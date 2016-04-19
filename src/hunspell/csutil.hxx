@@ -140,6 +140,7 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
 
 // remove end of line char(s)
 LIBHUNSPELL_DLL_EXPORTED void mychomp(char* s);
+LIBHUNSPELL_DLL_EXPORTED void mychomp(std::string& s);
 
 // duplicate string
 LIBHUNSPELL_DLL_EXPORTED char* mystrdup(const char* s);
@@ -149,6 +150,8 @@ LIBHUNSPELL_DLL_EXPORTED char* mystrcat(char* dest, const char* st, int max);
 
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED char* mystrsep(char** sptr, const char delim);
+LIBHUNSPELL_DLL_EXPORTED std::string::const_iterator mystrsep(const std::string &str,
+                                                              std::string::const_iterator& start);
 
 // replace pat by rep in word and return word
 LIBHUNSPELL_DLL_EXPORTED char* mystrrep(char* word,
@@ -204,6 +207,7 @@ LIBHUNSPELL_DLL_EXPORTED struct cs_info* get_current_cs(const char* es);
 
 // get language identifiers of language codes
 LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const char* lang);
+LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const std::string& lang);
 
 // get characters of the given 8bit encoding with lower- and uppercase forms
 LIBHUNSPELL_DLL_EXPORTED char* get_casechars(const char* enc);
@@ -257,6 +261,16 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     const std::string& ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED int parse_string(char* line, char** out, int ln);
+
+LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
+                                           std::string& out,
+                                           int ln);
+
+LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
+                                          std::string& out,
+                                          std::vector<w_char>& out_utf16,
+                                          int utf8,
+                                          int ln);
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_array(char* line,
                                           char** out,

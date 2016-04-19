@@ -4589,36 +4589,34 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
   }
 
   /* now parse the numbreak lines to read in the remainder of the table */
-  char* nl;
   for (int j = 0; j < numbreak; j++) {
-    if (!(nl = af->getline()))
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+    std::string::const_iterator iter = nl.begin();
     i = 0;
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
-        switch (i) {
-          case 0: {
-            if (strncmp(piece, "BREAK", 5) != 0) {
-              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                               af->getlinenum());
-              numbreak = 0;
-              return 1;
-            }
-            break;
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      switch (i) {
+        case 0: {
+          if (nl.compare(start_piece - nl.begin(), 5, "BREAK", 5) != 0) {
+            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                             af->getlinenum());
+            numbreak = 0;
+            return 1;
           }
-          case 1: {
-            breaktable[j] = mystrdup(piece);
-            break;
-          }
-          default:
-            break;
+          break;
         }
-        i++;
+        case 1: {
+          breaktable[j] = mystrdup(std::string(start_piece, iter).c_str());
+          break;
+        }
+        default:
+          break;
       }
-      piece = mystrsep(&tp, 0);
+      ++i;
+      start_piece = mystrsep(nl, iter);
     }
     if (!breaktable) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",

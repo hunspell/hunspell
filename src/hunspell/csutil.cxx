@@ -305,6 +305,37 @@ char* mystrsep(char** stringp, const char delim) {
   return NULL;
 }
 
+namespace {
+class is_any_of {
+ public:
+  is_any_of(const std::string& in) : chars(in) {}
+
+  bool operator()(char c) { return chars.find(c) != std::string::npos; }
+
+ private:
+  const std::string& chars;
+};
+}
+
+std::string::const_iterator mystrsep(const std::string &str,
+                                     std::string::const_iterator& start) {
+  std::string::const_iterator end = str.end();
+
+  is_any_of op(" \t");
+  // don't use isspace() here, the string can be in some random charset
+  // that's way different than the locale's
+  std::string::const_iterator sp = start;
+  while (sp != end && op(*sp))
+      ++sp;
+
+  std::string::const_iterator dp = sp;
+  while (dp != end && !op(*dp))
+      ++dp;
+
+  start = dp;
+  return sp;
+}
+
 // replaces strdup with ansi version
 char* mystrdup(const char* s) {
   char* d = NULL;
@@ -341,6 +372,16 @@ void mychomp(char* s) {
     *(s + k - 1) = '\0';
   if ((k > 1) && (*(s + k - 2) == '\r'))
     *(s + k - 2) = '\0';
+}
+
+void mychomp(std::string& s) {
+  size_t k = s.size();
+  size_t newsize = k;
+  if ((k > 0) && ((s[k - 1] == '\r') || (s[k - 1] == '\n')))
+    --newsize;
+  if ((k > 1) && (s[k - 2] == '\r'))
+    --newsize;
+  s.resize(newsize);
 }
 
 // break text to lines
@@ -2773,18 +2814,6 @@ size_t remove_ignored_chars_utf(std::string& word,
 
   u16_u8(word, w2);
   return w2.size();
-}
-
-namespace {
-class is_any_of {
- public:
-  is_any_of(const std::string& in) : chars(in) {}
-
-  bool operator()(char c) { return chars.find(c) != std::string::npos; }
-
- private:
-  const std::string& chars;
-};
 }
 
 // strip all ignored characters in the string
