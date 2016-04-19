@@ -477,14 +477,21 @@ int SuggestMgr::replchars(char** wlst,
   for (int i = 0; i < numrep; i++) {
     const char* r = word;
     // search every occurence of the pattern in the word
-    while ((r = strstr(r, reptable[i].pattern)) != NULL &&
-           (!reptable[i].end || strlen(r) == strlen(reptable[i].pattern)) &&
-           (!reptable[i].start || r == word)) {
+    while ((r = strstr(r, reptable[i].pattern)) != NULL) {
+      int type = (r == word) ? 1 : 0;
+      if (r - word + reptable[i].plen == strlen(word))
+        type += 2;
+      while (type && !reptable[i].outstrings[type])
+        type = (type == 2 && r != word) ? 0 : type - 1;
+      char *out = reptable[i].outstrings[type];
+      if (!out) {
+        ++r;
+        continue;
+      }
       candidate.assign(word);
       candidate.resize(r - word);
-      candidate.append(reptable[i].pattern2);
-      int lenp = strlen(reptable[i].pattern);
-      candidate.append(r + lenp);
+      candidate.append(reptable[i].outstrings[type]);
+      candidate.append(r + reptable[i].plen);
       ns = testsug(wlst, candidate.c_str(), candidate.size(), ns, cpdsuggest, NULL,
                    NULL);
       if (ns == -1)

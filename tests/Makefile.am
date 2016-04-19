@@ -115,6 +115,7 @@ opentaal_cpdpat2.test \
 2999225.test \
 onlyincompound2.test \
 forceucase.test \
+nepali.test \
 warn.test
 
 # infixes.test
