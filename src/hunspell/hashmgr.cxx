@@ -639,7 +639,7 @@ int HashMgr::hash(const char* word) const {
   return (unsigned long)hv % tablesize;
 }
 
-int HashMgr::decode_flags(unsigned short** result, char* flags, FileMgr* af) {
+int HashMgr::decode_flags(unsigned short** result, const char* flags, FileMgr* af) {
   int len;
   if (*flags == '\0') {
     *result = NULL;
@@ -665,9 +665,9 @@ int HashMgr::decode_flags(unsigned short** result, char* flags, FileMgr* af) {
                       // 23 233)
       int i;
       len = 1;
-      char* src = flags;
+      const char* src = flags;
       unsigned short* dest;
-      char* p;
+      const char* p;
       for (p = flags; *p; p++) {
         if (*p == ',')
           len++;
