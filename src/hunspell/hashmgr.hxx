@@ -116,7 +116,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   int add(const std::string& word);
   int add_with_affix(const char* word, const char* pattern);
   int remove(const char* word);
-  int decode_flags(unsigned short** result, const char* flags, FileMgr* af);
+  int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af);
   unsigned short decode_flag(const char* flag);
   char* encode_flag(unsigned short flag);
   int is_aliasf();

@@ -639,15 +639,15 @@ int HashMgr::hash(const char* word) const {
   return (unsigned long)hv % tablesize;
 }
 
-int HashMgr::decode_flags(unsigned short** result, const char* flags, FileMgr* af) {
+int HashMgr::decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) {
   int len;
-  if (*flags == '\0') {
+  if (flags.empty()) {
     *result = NULL;
     return 0;
   }
   switch (flag_mode) {
     case FLAG_LONG: {  // two-character flags (1x2yZz -> 1x 2y Zz)
-      len = strlen(flags);
+      len = flags.size();
       if (len % 2 == 1)
         HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n",
                          af->getlinenum());
@@ -665,18 +665,17 @@ int HashMgr::decode_flags(unsigned short** result, const char* flags, FileMgr* a
                       // 23 233)
       int i;
       len = 1;
-      const char* src = flags;
       unsigned short* dest;
-      const char* p;
-      for (p = flags; *p; p++) {
-        if (*p == ',')
+      for (size_t i = 0; i < flags.size(); ++i) {
+        if (flags[i] == ',')
           len++;
       }
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
       dest = *result;
-      for (p = flags; *p; p++) {
+      const char* src = flags.c_str();
+      for (const char* p = src; *p; p++) {
         if (*p == ',') {
           i = atoi(src);
           if (i >= DEFAULTFLAGS)
@@ -714,13 +713,13 @@ int HashMgr::decode_flags(unsigned short** result, const char* flags, FileMgr* a
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
       unsigned short* dest;
-      len = strlen(flags);
+      len = flags.size();
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
       dest = *result;
-      for (unsigned char* p = (unsigned char*)flags; *p; p++) {
-        *dest = (unsigned short)*p;
+      for (size_t i = 0; i < flags.size(); ++i) {
+        *dest = (unsigned short)flags[i];
         dest++;
       }
     }
