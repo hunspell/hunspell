@@ -140,8 +140,11 @@ char *RepList::replace(const char* word, int ind, bool atstart) {
 }
 
 int RepList::add(char* pat1, char* pat2) {
-  if (pos >= size || pat1 == NULL || pat2 == NULL)
+  if (pos >= size || pat1 == NULL || pat2 == NULL) {
+    if (pat1) free(pat1);
+    if (pat2) free(pat2);
     return 1;
+  }
   // analyse word context
   int type = 0;
   if (*pat1 == '_') {
@@ -157,6 +160,7 @@ int RepList::add(char* pat1, char* pat2) {
   // find existing entry
   int m = find(pat1);
   if (m >= 0 && !strcmp(dat[m]->pattern, pat1)) {
+    free(pat1);     // since already used
     dat[m]->outstrings[type] = mystrrep(pat2, "_", " ");
     return 0;
   }
@@ -187,6 +191,7 @@ int RepList::add(char* pat1, char* pat2) {
   }
   memmove(dat + i + 1, dat + i, (pos - i - 1) * sizeof(replentry *));
   dat[i] = r;
+  return 0;
 }
 
 int RepList::conv(const char* word, char* dest, size_t destsize) {
