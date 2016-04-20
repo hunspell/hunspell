@@ -79,39 +79,22 @@
 #include "affentry.hxx"
 #include "csutil.hxx"
 
-PfxEntry::PfxEntry(AffixMgr* pmgr, affentry& dp)
-    // register affix manager
-    : pmyMgr(pmgr),
-      next(NULL),
-      nexteq(NULL),
-      nextne(NULL),
-      flgnxt(NULL) {
-  // set up its initial values
-  aflag = dp.aflag;        // flag
-  strip = dp.strip;        // string to strip
-  appnd = dp.appnd;        // string to append
-  numconds = dp.numconds;  // length of the condition
-  opts = dp.opts;          // cross product flag
-  // then copy over all of the conditions
-  if (opts & aeLONGCOND) {
-    memcpy(c.conds, dp.c.l.conds1, MAXCONDLEN_1);
-    c.l.conds2 = dp.c.l.conds2;
-  } else
-    memcpy(c.conds, dp.c.conds, MAXCONDLEN);
-  morphcode = dp.morphcode;
-  contclass = dp.contclass;
-  contclasslen = dp.contclasslen;
-}
-
-PfxEntry::~PfxEntry() {
-  aflag = 0;
-  pmyMgr = NULL;
+AffEntry::~AffEntry() {
   if (opts & aeLONGCOND)
     free(c.l.conds2);
   if (morphcode && !(opts & aeALIASM))
     free(morphcode);
   if (contclass && !(opts & aeALIASF))
     free(contclass);
+}
+
+PfxEntry::PfxEntry(AffixMgr* pmgr)
+    // register affix manager
+    : pmyMgr(pmgr),
+      next(NULL),
+      nexteq(NULL),
+      nextne(NULL),
+      flgnxt(NULL) {
 }
 
 // add prefix to this word assuming conditions hold
@@ -471,7 +454,7 @@ char* PfxEntry::check_morph(const char* word,
   return NULL;
 }
 
-SfxEntry::SfxEntry(AffixMgr* pmgr, affentry& dp)
+SfxEntry::SfxEntry(AffixMgr* pmgr)
     : pmyMgr(pmgr)  // register affix manager
       ,
       next(NULL),
@@ -481,35 +464,6 @@ SfxEntry::SfxEntry(AffixMgr* pmgr, affentry& dp)
       l_morph(NULL),
       r_morph(NULL),
       eq_morph(NULL) {
-  // set up its initial values
-  aflag = dp.aflag;        // char flag
-  strip = dp.strip;        // string to strip
-  appnd = dp.appnd;        // string to append
-  numconds = dp.numconds;  // length of the condition
-  opts = dp.opts;          // cross product flag
-
-  // then copy over all of the conditions
-  if (opts & aeLONGCOND) {
-    memcpy(c.l.conds1, dp.c.l.conds1, MAXCONDLEN_1);
-    c.l.conds2 = dp.c.l.conds2;
-  } else
-    memcpy(c.conds, dp.c.conds, MAXCONDLEN);
-  rappnd = appnd;
-  reverseword(rappnd);
-  morphcode = dp.morphcode;
-  contclass = dp.contclass;
-  contclasslen = dp.contclasslen;
-}
-
-SfxEntry::~SfxEntry() {
-  aflag = 0;
-  pmyMgr = NULL;
-  if (opts & aeLONGCOND)
-    free(c.l.conds2);
-  if (morphcode && !(opts & aeALIASM))
-    free(morphcode);
-  if (contclass && !(opts & aeALIASF))
-    free(contclass);
 }
 
 // add suffix to this word assuming conditions hold
@@ -946,6 +900,11 @@ struct hentry* SfxEntry::get_next_homonym(struct hentry* he,
       return he;
   }
   return NULL;
+}
+
+void SfxEntry::initReverseWord() {
+  rappnd = appnd;
+  reverseword(rappnd);
 }
 
 #if 0

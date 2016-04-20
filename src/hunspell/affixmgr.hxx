@@ -373,7 +373,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   void debugflag(char* result, unsigned short flag);
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const char*);
-  int encodeit(affentry& entry, const char* cs);
+  int encodeit(AffEntry& entry, const char* cs);
   int build_pfxtree(PfxEntry* pfxptr);
   int build_sfxtree(SfxEntry* sfxptr);
   int process_pfx_order();

@@ -82,7 +82,7 @@
 
 /* A Prefix Entry  */
 
-class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry {
+class LIBHUNSPELL_DLL_EXPORTED PfxEntry : public AffEntry {
  private:
   PfxEntry(const PfxEntry&);
   PfxEntry& operator=(const PfxEntry&);
@@ -96,8 +96,7 @@ class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry {
   PfxEntry* flgnxt;
 
  public:
-  PfxEntry(AffixMgr* pmgr, affentry& dp);
-  ~PfxEntry();
+  PfxEntry(AffixMgr* pmgr);
 
   inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
@@ -147,7 +146,7 @@ class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry {
 
 /* A Suffix Entry */
 
-class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
+class LIBHUNSPELL_DLL_EXPORTED SfxEntry : public AffEntry {
  private:
   SfxEntry(const SfxEntry&);
   SfxEntry& operator=(const SfxEntry&);
@@ -166,8 +165,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
   SfxEntry* eq_morph;
 
  public:
-  SfxEntry(AffixMgr* pmgr, affentry& dp);
-  ~SfxEntry();
+  SfxEntry(AffixMgr* pmgr);
 
   inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
@@ -224,6 +222,7 @@ class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry {
   inline void setNextNE(SfxEntry* ptr) { nextne = ptr; }
   inline void setNextEQ(SfxEntry* ptr) { nexteq = ptr; }
   inline void setFlgNxt(SfxEntry* ptr) { flgnxt = ptr; }
+  void initReverseWord();
 
   inline char* nextchar(char* p);
   inline int test_condition(const char* st, const char* begin);

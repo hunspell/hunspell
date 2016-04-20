@@ -49,7 +49,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffEntry {
   AffEntry(const AffEntry&);
   AffEntry& operator=(const AffEntry&);
 
- protected:
+ public:
   AffEntry()
       : numconds(0),
         opts(0),
@@ -57,6 +57,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffEntry {
         morphcode(0),
         contclass(NULL),
         contclasslen(0) {}
+  ~AffEntry();
   std::string appnd;
   std::string strip;
   unsigned char numconds;

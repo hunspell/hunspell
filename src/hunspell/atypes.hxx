@@ -63,7 +63,7 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define SETSIZE 256
 #define CONTSIZE 65536
 
-// affentry options
+// AffEntry options
 #define aeXPRODUCT (1 << 0)
 #define aeUTF8 (1 << 1)
 #define aeALIASF (1 << 2)
@@ -99,24 +99,6 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define FREE_FLAG(a) a = 0
 
 #define TESTAFF(a, b, c) (std::binary_search(a, a + c, b))
-
-struct affentry {
-  std::string strip;
-  std::string appnd;
-  char numconds;
-  char opts;
-  unsigned short aflag;
-  unsigned short* contclass;
-  short contclasslen;
-  union {
-    char conds[MAXCONDLEN];
-    struct {
-      char conds1[MAXCONDLEN_1];
-      char* conds2;
-    } l;
-  } c;
-  char* morphcode;
-};
 
 struct guessword {
   char* word;

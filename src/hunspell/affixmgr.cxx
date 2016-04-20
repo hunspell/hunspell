@@ -911,6 +911,9 @@ int AffixMgr::build_pfxtree(PfxEntry* pfxptr) {
 // both by suffix flag, and sorted by the reverse of the
 // suffix string itself; so we need to set up two indexes
 int AffixMgr::build_sfxtree(SfxEntry* sfxptr) {
+
+  sfxptr->initReverseWord();
+
   SfxEntry* ptr;
   SfxEntry* pptr;
   SfxEntry* ep = sfxptr;
@@ -1143,7 +1146,7 @@ int AffixMgr::condlen(const char* st) {
   return l;
 }
 
-int AffixMgr::encodeit(affentry& entry, const char* cs) {
+int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
   if (strcmp(cs, ".") != 0) {
     entry.numconds = (char)condlen(cs);
     // coverity[buffer_size_warning] - deliberate use of lack of end of conds
@@ -4588,16 +4591,67 @@ void AffixMgr::reverse_condition(std::string& piece) {
   }
 }
 
+class entries_container {
+  std::vector<AffEntry*> entries;
+  AffixMgr* m_mgr;
+  char m_at;
+public:
+  entries_container(char at, AffixMgr* mgr)
+    : m_at(at)
+    , m_mgr(mgr) {
+  }
+  void release() {
+    entries.clear();
+  }
+  void initialize(int numents,
+                  char opts, unsigned short aflag) {
+    entries.reserve(numents);
+
+    if (m_at == 'P') {
+      entries.push_back(new PfxEntry(m_mgr));
+    } else {
+      entries.push_back(new SfxEntry(m_mgr));
+    }
+
+    entries.back()->opts = opts;
+    entries.back()->aflag = aflag;
+  }
+
+  AffEntry* add_entry(char opts) {
+    if (m_at == 'P') {
+      entries.push_back(new PfxEntry(m_mgr));
+    } else {
+      entries.push_back(new SfxEntry(m_mgr));
+    }
+    AffEntry* ret = entries.back();
+    ret->opts = entries[0]->opts & opts;
+    return ret;
+  }
+
+  AffEntry* first_entry() {
+    return entries.empty() ? NULL : entries[0];
+  }
+
+  ~entries_container() {
+    for (size_t i = 0; i < entries.size(); ++i) {
+        delete entries[i];
+    }
+  }
+
+  std::vector<AffEntry*>::iterator begin() { return entries.begin(); }
+  std::vector<AffEntry*>::iterator end() { return entries.end(); }
+};
+
 int AffixMgr::parse_affix(char* line,
                           const char at,
                           FileMgr* af,
                           char* dupflags) {
-  int numents = 0;  // number of affentry structures to parse
+  int numents = 0;  // number of AffEntry structures to parse
 
   unsigned short aflag = 0;  // affix char identifier
 
   char ff = 0;
-  std::vector<affentry> affentries;
+  entries_container affentries(at, this);
 
   char* tp = line;
   char* nl = line;
@@ -4651,7 +4705,7 @@ int AffixMgr::parse_affix(char* line,
           np++;
           numents = atoi(piece);
           if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
-                                  sizeof(struct affentry)) < static_cast<size_t>(numents))) {
+                                  sizeof(AffEntry)) < static_cast<size_t>(numents))) {
             char* err = pHMgr->encode_flag(aflag);
             if (err) {
               HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
@@ -4660,15 +4714,15 @@ int AffixMgr::parse_affix(char* line,
             }
             return 1;
           }
-          affentries.resize(numents);
-          affentries[0].opts = ff;
+
+          char opts = ff;
           if (utf8)
-            affentries[0].opts += aeUTF8;
+            opts += aeUTF8;
           if (pHMgr->is_aliasf())
-            affentries[0].opts += aeALIASF;
+            opts += aeALIASF;
           if (pHMgr->is_aliasm())
-            affentries[0].opts += aeALIASM;
-          affentries[0].aflag = aflag;
+            opts += aeALIASM;
+          affentries.initialize(numents, opts, aflag);
         }
 
         default:
@@ -4690,9 +4744,8 @@ int AffixMgr::parse_affix(char* line,
   }
 
   // now parse numents affentries for this affix
-  std::vector<affentry>::iterator start = affentries.begin();
-  std::vector<affentry>::iterator end = affentries.end();
-  for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
+  AffEntry* entry = affentries.first_entry();
+  for (int ent = 0; ent < numents; ++ent) {
     if ((nl = af->getline()) == NULL)
       return 1;
     mychomp(nl);
@@ -4708,9 +4761,8 @@ int AffixMgr::parse_affix(char* line,
           // piece 1 - is type
           case 0: {
             np++;
-            if (entry != start)
-              entry->opts = start->opts &
-                            (char)(aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM);
+            if (ent != 0)
+              entry = affentries.add_entry((char)(aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM));
             break;
           }
 
@@ -4728,8 +4780,10 @@ int AffixMgr::parse_affix(char* line,
               return 1;
             }
 
-            if (entry != start)
-              entry->aflag = start->aflag;
+            if (ent != 0) {
+              AffEntry* start_entry = affentries.first_entry();
+              entry->aflag = start_entry->aflag;
+            }
             break;
           }
 
@@ -4905,15 +4959,19 @@ int AffixMgr::parse_affix(char* line,
 
   // now create SfxEntry or PfxEntry objects and use links to
   // build an ordered (sorted by affix string) list
-  for (std::vector<affentry>::iterator entry = start; entry != end; ++entry) {
+  std::vector<AffEntry*>::iterator start = affentries.begin();
+  std::vector<AffEntry*>::iterator end = affentries.end();
+  for (std::vector<AffEntry*>::iterator entry = start; entry != end; ++entry) {
     if (at == 'P') {
-      PfxEntry* pfxptr = new PfxEntry(this, *entry);
-      build_pfxtree(pfxptr);
+      build_pfxtree(static_cast<PfxEntry*>(*entry));
     } else {
-      SfxEntry* sfxptr = new SfxEntry(this, *entry);
-      build_sfxtree(sfxptr);
+      build_sfxtree(static_cast<SfxEntry*>(*entry));
     }
   }
+
+  //contents belong to AffixMgr now
+  affentries.release();
+
   return 0;
 }
 
