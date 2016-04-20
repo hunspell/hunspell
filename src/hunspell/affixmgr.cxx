@@ -1481,7 +1481,6 @@ int AffixMgr::defcpd_check(hentry*** words,
   std::vector<metachar_data> btinfo(1);
 
   short bt = 0;
-  int i, j;
 
   (*words)[wnum] = rv;
 
@@ -1493,8 +1492,8 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
   int ok = 0;
-  for (i = 0; i < defcpdtable.size(); i++) {
-    for (j = 0; j < defcpdtable[i].size(); j++) {
+  for (size_t i = 0; i < defcpdtable.size(); ++i) {
+    for (size_t j = 0; j < defcpdtable[i].size(); ++j) {
       if (defcpdtable[i][j] != '*' && defcpdtable[i][j] != '?' &&
           TESTAFF(rv->astr, defcpdtable[i][j], rv->alen)) {
         ok = 1;
@@ -1509,8 +1508,8 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
 
-  for (i = 0; i < defcpdtable.size(); i++) {
-    signed short pp = 0;  // pattern position
+  for (size_t i = 0; i < defcpdtable.size(); ++i) {
+    size_t pp = 0;  // pattern position
     signed short wp = 0;  // "words" position
     int ok2;
     ok = 1;
@@ -1558,7 +1557,7 @@ int AffixMgr::defcpd_check(hentry*** words,
         }
       }
       if (ok && ok2) {
-        int r = pp;
+        size_t r = pp;
         while ((defcpdtable[i].size() > r) && ((r + 1) < defcpdtable[i].size()) &&
                ((defcpdtable[i][r + 1] == '*') ||
                 (defcpdtable[i][r + 1] == '?')))
@@ -4515,7 +4514,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
   }
 
   /* now parse the numbreak lines to read in the remainder of the table */
-  for (size_t j = 0; j < numbreak; j++) {
+  for (int j = 0; j < numbreak; ++j) {
     std::string nl;
     if (!af->getline(nl))
       return 1;
@@ -4546,7 +4545,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
     }
   }
 
-  if (breaktable.size() != numbreak) {
+  if (breaktable.size() != static_cast<size_t>(numbreak)) {
     HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                      af->getlinenum());
     return 1;
@@ -4597,8 +4596,8 @@ class entries_container {
   char m_at;
 public:
   entries_container(char at, AffixMgr* mgr)
-    : m_at(at)
-    , m_mgr(mgr) {
+    : m_mgr(mgr)
+    , m_at(at) {
   }
   void release() {
     entries.clear();
