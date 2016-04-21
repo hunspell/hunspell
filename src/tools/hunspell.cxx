@@ -248,6 +248,8 @@ static const char* fix_encoding_name(const char* enc) {
 /* change character encoding */
 std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
 #ifndef HAVE_ICONV
+  (void)enc1;
+  (void)enc2;
   return st;
 #else
   if (st.empty())
@@ -305,6 +307,9 @@ char* chenc(char* st, const char* enc1, const char* enc2) {
         out = text_conv;
     }
   }
+#else
+  (void)enc1;
+  (void)enc2;
 #endif
   return out;
 }
