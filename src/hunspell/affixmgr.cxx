@@ -406,7 +406,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the data used by compound_check() method */
     if (strncmp(line, "COMPOUNDWORDMAX", 15) == 0) {
-      if (parse_num(line, &cpdwordmax, afflst)) {
+      if (!parse_num(line, &cpdwordmax, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -524,7 +524,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the minimal length for words in compounds */
     if (strncmp(line, "COMPOUNDMIN", 11) == 0) {
-      if (parse_num(line, &cpdmin, afflst)) {
+      if (!parse_num(line, &cpdmin, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -652,7 +652,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     }
 
     if (strncmp(line, "MAXNGRAMSUGS", 12) == 0) {
-      if (parse_num(line, &maxngramsugs, afflst)) {
+      if (!parse_num(line, &maxngramsugs, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -662,14 +662,14 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
       onlymaxdiff = 1;
 
     if (strncmp(line, "MAXDIFF", 7) == 0) {
-      if (parse_num(line, &maxdiff, afflst)) {
+      if (!parse_num(line, &maxdiff, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
     }
 
     if (strncmp(line, "MAXCPDSUGS", 10) == 0) {
-      if (parse_num(line, &maxcpdsugs, afflst)) {
+      if (!parse_num(line, &maxcpdsugs, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3721,20 +3721,19 @@ bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr*
 }
 
 /* parse num */
-int AffixMgr::parse_num(char* line, int* out, FileMgr* af) {
-  char* s = NULL;
+bool AffixMgr::parse_num(const std::string& line, int* out, FileMgr* af) {
   if (*out != -1) {
     HUNSPELL_WARNING(
         stderr,
         "error: line %d: multiple definitions of an affix file parameter\n",
         af->getlinenum());
-    return 1;
+    return false;
   }
-  if (parse_string(line, &s, af->getlinenum()))
-    return 1;
-  *out = atoi(s);
-  free(s);
-  return 0;
+  std::string s;
+  if (!parse_string(line, s, af->getlinenum()))
+    return false;
+  *out = atoi(s.c_str());
+  return true;
 }
 
 /* parse in the max syllablecount of compound words and  */
