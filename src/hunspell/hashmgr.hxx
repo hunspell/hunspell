@@ -97,7 +97,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   char* enc;
   char* lang;
   struct cs_info* csconv;
-  char* ignorechars;
+  std::string ignorechars;
   std::vector<w_char> ignorechars_utf16;
   int numaliasf;  // flag vector `compression' with aliases
   unsigned short** aliasf;

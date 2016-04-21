@@ -101,7 +101,6 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   lang = NULL;
   enc = NULL;
   csconv = 0;
-  ignorechars = NULL;
   load_config(apath, key);
   int ec = load_tables(tpath, key);
   if (ec) {
@@ -164,9 +163,6 @@ HashMgr::~HashMgr() {
   if (lang)
     free(lang);
 
-  if (ignorechars)
-    free(ignorechars);
-
 #ifdef MOZILLA_CLIENT
   delete[] csconv;
 #endif
@@ -199,10 +195,10 @@ int HashMgr::add_word(const char* word,
 
   std::string *word_copy = NULL;
   std::string *desc_copy = NULL;
-  if (ignorechars || complexprefixes) {
+  if (!ignorechars.empty() || complexprefixes) {
     word_copy = new std::string(word, wbl);
 
-    if (ignorechars != NULL) {
+    if (!ignorechars.empty()) {
       if (utf8) {
         wcl = remove_ignored_chars_utf(*word_copy, ignorechars_utf16);
       } else {
@@ -923,7 +919,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacritics
      * characters */
     if (strncmp(line, "IGNORE", 6) == 0) {
-      if (!parse_array(line, &ignorechars, ignorechars_utf16,
+      if (!parse_array(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
         delete afflst;
         return 1;
