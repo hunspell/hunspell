@@ -323,7 +323,7 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
                                          int wcl,
                                          unsigned short* flags,
                                          int flagslen,
-                                         char* dp,
+                                         const char* dp,
                                          int captype) {
   if (flags == NULL)
     flagslen = 0;
