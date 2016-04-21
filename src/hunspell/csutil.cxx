@@ -218,7 +218,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
       case 0xd0: {  // 2-byte UTF-8 codes
         if ((*(u8 + 1) & 0xc0) == 0x80) {
           u2.h = (*u8 & 0x1f) >> 2;
-          u2.l = (*u8 << 6) + (*(u8 + 1) & 0x3f);
+          u2.l = (static_cast<unsigned char>(*u8) << 6) + (*(u8 + 1) & 0x3f);
           ++u8;
         } else {
           HUNSPELL_WARNING(stderr,
