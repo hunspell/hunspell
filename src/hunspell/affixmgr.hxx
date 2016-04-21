@@ -136,7 +136,6 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   bool parsedcheckcpd;
   std::vector<patentry> checkcpdtable;
   int simplifiedcpd;
-  int numdefcpd;
   bool parseddefcpd;
   std::vector<flagentry> defcpdtable;
   phonetable* phone;
@@ -366,7 +365,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int parse_breaktable(char* line, FileMgr* af);
   int parse_checkcpdtable(char* line, FileMgr* af);
   int parse_defcpdtable(char* line, FileMgr* af);
-  int parse_affix(char* line, const char at, FileMgr* af, char* dupflags);
+  int parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
   void reverse_condition(std::string&);
   void debugflag(char* result, unsigned short flag);

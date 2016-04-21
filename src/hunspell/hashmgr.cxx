@@ -663,7 +663,6 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
     }
     case FLAG_NUM: {  // decimal numbers separated by comma (4521,23,233 -> 4521
                       // 23 233)
-      int i;
       len = 1;
       unsigned short* dest;
       for (size_t i = 0; i < flags.size(); ++i) {
@@ -677,7 +676,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       const char* src = flags.c_str();
       for (const char* p = src; *p; p++) {
         if (*p == ',') {
-          i = atoi(src);
+          int i = atoi(src);
           if (i >= DEFAULTFLAGS)
             HUNSPELL_WARNING(
                 stderr, "error: line %d: flag id %d is too large (max: %d)\n",
@@ -690,7 +689,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
           dest++;
         }
       }
-      i = atoi(src);
+      int i = atoi(src);
       if (i >= DEFAULTFLAGS)
         HUNSPELL_WARNING(stderr,
                          "error: line %d: flag id %d is too large (max: %d)\n",

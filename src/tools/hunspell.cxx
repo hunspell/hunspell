@@ -402,8 +402,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       char* dest = letters + strlen(letters);  // append wordchars
       size_t c1 = len + 1;
       size_t c2 = len + 1;
-      iconv_t conv =
-          iconv_open(fix_encoding_name(io_enc), fix_encoding_name(denc));
+      conv = iconv_open(fix_encoding_name(io_enc), fix_encoding_name(denc));
       if (conv == (iconv_t)-1) {
         fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), io_enc,
                 denc);

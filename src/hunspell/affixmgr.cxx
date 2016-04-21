@@ -4573,7 +4573,7 @@ public:
   std::vector<AffEntry*>::iterator end() { return entries.end(); }
 };
 
-int AffixMgr::parse_affix(char* line,
+int AffixMgr::parse_affix(const std::string& line,
                           const char at,
                           FileMgr* af,
                           char* dupflags) {
@@ -4584,8 +4584,6 @@ int AffixMgr::parse_affix(char* line,
   char ff = 0;
   entries_container affentries(at, this);
 
-  char* tp = line;
-  char* piece;
   int i = 0;
 
 // checking lines with bad syntax
@@ -4596,71 +4594,69 @@ int AffixMgr::parse_affix(char* line,
   // split affix header line into pieces
 
   int np = 0;
-
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        // piece 1 - is type of affix
-        case 0: {
-          np++;
-          break;
-        }
-
-        // piece 2 - is affix char
-        case 1: {
-          np++;
-          aflag = pHMgr->decode_flag(piece);
-          if (((at == 'S') && (dupflags[aflag] & dupSFX)) ||
-              ((at == 'P') && (dupflags[aflag] & dupPFX))) {
-            HUNSPELL_WARNING(
-                stderr,
-                "error: line %d: multiple definitions of an affix flag\n",
-                af->getlinenum());
-            // return 1; XXX permissive mode for bad dictionaries
-          }
-          dupflags[aflag] += (char)((at == 'S') ? dupSFX : dupPFX);
-          break;
-        }
-        // piece 3 - is cross product indicator
-        case 2: {
-          np++;
-          if (*piece == 'Y')
-            ff = aeXPRODUCT;
-          break;
-        }
-
-        // piece 4 - is number of affentries
-        case 3: {
-          np++;
-          numents = atoi(piece);
-          if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
-                                  sizeof(AffEntry)) < static_cast<size_t>(numents))) {
-            char* err = pHMgr->encode_flag(aflag);
-            if (err) {
-              HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                               af->getlinenum());
-              free(err);
-            }
-            return 1;
-          }
-
-          char opts = ff;
-          if (utf8)
-            opts += aeUTF8;
-          if (pHMgr->is_aliasf())
-            opts += aeALIASF;
-          if (pHMgr->is_aliasm())
-            opts += aeALIASM;
-          affentries.initialize(numents, opts, aflag);
-        }
-
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      // piece 1 - is type of affix
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+
+      // piece 2 - is affix char
+      case 1: {
+        np++;
+        aflag = pHMgr->decode_flag(std::string(start_piece, iter).c_str());
+        if (((at == 'S') && (dupflags[aflag] & dupSFX)) ||
+            ((at == 'P') && (dupflags[aflag] & dupPFX))) {
+          HUNSPELL_WARNING(
+              stderr,
+              "error: line %d: multiple definitions of an affix flag\n",
+              af->getlinenum());
+          // return 1; XXX permissive mode for bad dictionaries
+        }
+        dupflags[aflag] += (char)((at == 'S') ? dupSFX : dupPFX);
+        break;
+      }
+      // piece 3 - is cross product indicator
+      case 2: {
+        np++;
+        if (*start_piece == 'Y')
+          ff = aeXPRODUCT;
+        break;
+      }
+
+      // piece 4 - is number of affentries
+      case 3: {
+        np++;
+        numents = atoi(std::string(start_piece, iter).c_str());
+        if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
+                                sizeof(AffEntry)) < static_cast<size_t>(numents))) {
+          char* err = pHMgr->encode_flag(aflag);
+          if (err) {
+            HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+                             af->getlinenum());
+            free(err);
+          }
+          return 1;
+        }
+
+        char opts = ff;
+        if (utf8)
+          opts += aeUTF8;
+        if (pHMgr->is_aliasf())
+          opts += aeALIASF;
+        if (pHMgr->is_aliasm())
+          opts += aeALIASM;
+        affentries.initialize(numents, opts, aflag);
+      }
+
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   // check to make sure we parsed enough pieces
   if (np != 4) {
@@ -4681,12 +4677,12 @@ int AffixMgr::parse_affix(char* line,
       return 1;
     mychomp(nl);
 
-    std::string::const_iterator iter = nl.begin();
+    iter = nl.begin();
     i = 0;
     np = 0;
 
     // split line into pieces
-    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       switch (i) {
         // piece 1 - is type
@@ -4888,11 +4884,11 @@ int AffixMgr::parse_affix(char* line,
   // build an ordered (sorted by affix string) list
   std::vector<AffEntry*>::iterator start = affentries.begin();
   std::vector<AffEntry*>::iterator end = affentries.end();
-  for (std::vector<AffEntry*>::iterator entry = start; entry != end; ++entry) {
+  for (std::vector<AffEntry*>::iterator affentry = start; affentry != end; ++affentry) {
     if (at == 'P') {
-      build_pfxtree(static_cast<PfxEntry*>(*entry));
+      build_pfxtree(static_cast<PfxEntry*>(*affentry));
     } else {
-      build_sfxtree(static_cast<SfxEntry*>(*entry));
+      build_sfxtree(static_cast<SfxEntry*>(*affentry));
     }
   }
 

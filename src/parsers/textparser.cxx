@@ -147,13 +147,13 @@ void TextParser::init(const w_char* wc, int len) {
   wclen = len;
 }
 
-int TextParser::next_char(char* line, int* pos) {
-  if (*(line + *pos) == '\0')
+int TextParser::next_char(char* ln, int* pos) {
+  if (*(ln + *pos) == '\0')
     return 1;
   if (utf8) {
-    if (*(line + *pos) >> 7) {
+    if (*(ln + *pos) >> 7) {
       // jump to next UTF-8 character
-      for ((*pos)++; (*(line + *pos) & 0xc0) == 0x80; (*pos)++)
+      for ((*pos)++; (*(ln + *pos) & 0xc0) == 0x80; (*pos)++)
         ;
     } else {
       (*pos)++;
@@ -288,8 +288,8 @@ void TextParser::check_urls() {
   }
 }
 
-int TextParser::get_url(int token_pos, int* head) {
-  for (int i = *head; urlline[i] && *(line[actual] + i); i++, (*head)++)
+int TextParser::get_url(int token_pos, int* hd) {
+  for (int i = *hd; urlline[i] && *(line[actual] + i); i++, (*hd)++)
     ;
   return checkurl ? 0 : urlline[token_pos];
 }
@@ -298,17 +298,17 @@ void TextParser::set_url_checking(int check) {
   checkurl = check;
 }
 
-char* TextParser::alloc_token(int token, int* head) {
-  int url_head = *head;
-  if (get_url(token, &url_head))
+char* TextParser::alloc_token(int tokn, int* hd) {
+  int url_head = *hd;
+  if (get_url(tokn, &url_head))
     return NULL;
-  char* t = (char*)malloc(*head - token + 1);
+  char* t = (char*)malloc(*hd - tokn + 1);
   if (t) {
-    t[*head - token] = '\0';
-    strncpy(t, line[actual] + token, *head - token);
+    t[*hd - tokn] = '\0';
+    strncpy(t, line[actual] + tokn, *hd - tokn);
     // remove colon for Finnish and Swedish language
-    if (t[*head - token - 1] == ':') {
-      t[*head - token - 1] = '\0';
+    if (t[*hd - tokn - 1] == ':') {
+      t[*hd - tokn - 1] = '\0';
       if (!t[0]) {
         free(t);
         return NULL;
