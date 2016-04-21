@@ -621,7 +621,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the word breakpoints table */
     if (strncmp(line, "BREAK", 5) == 0) {
-      if (parse_breaktable(line, afflst)) {
+      if (!parse_breaktable(line, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -4369,61 +4369,58 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
 }
 
 /* parse in the word breakpoint table */
-int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
+bool AffixMgr::parse_breaktable(const std::string& line, FileMgr* af) {
   if (parsedbreaktable) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
   parsedbreaktable = true;
-  char* tp = line;
-  char* piece;
   int numbreak = -1;
   int i = 0;
   int np = 0;
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          numbreak = atoi(piece);
-          if (numbreak < 0) {
-            HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                             af->getlinenum());
-            return 1;
-          }
-          if (numbreak == 0)
-            return 0;
-          breaktable.reserve(numbreak);
-          np++;
-          break;
-        }
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+      case 1: {
+        numbreak = atoi(std::string(start_piece, iter).c_str());
+        if (numbreak < 0) {
+          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+                           af->getlinenum());
+          return false;
+        }
+        if (numbreak == 0)
+          return true;
+        breaktable.reserve(numbreak);
+        np++;
+        break;
+      }
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
 
   /* now parse the numbreak lines to read in the remainder of the table */
   for (int j = 0; j < numbreak; ++j) {
     std::string nl;
     if (!af->getline(nl))
-      return 1;
+      return false;
     mychomp(nl);
-    std::string::const_iterator iter = nl.begin();
     i = 0;
-    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    iter = nl.begin();
+    start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       switch (i) {
         case 0: {
@@ -4431,7 +4428,7 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
             HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                              af->getlinenum());
             numbreak = 0;
-            return 1;
+            return false;
           }
           break;
         }
@@ -4450,10 +4447,10 @@ int AffixMgr::parse_breaktable(char* line, FileMgr* af) {
   if (breaktable.size() != static_cast<size_t>(numbreak)) {
     HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
 
-  return 0;
+  return true;
 }
 
 void AffixMgr::reverse_condition(std::string& piece) {
