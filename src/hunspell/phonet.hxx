@@ -38,9 +38,7 @@
 
 struct phonetable {
   char utf8;
-  cs_info* lang;
-  int num;
-  char** rules;
+  std::vector<std::string> rules;
   int hash[HASHSIZE];
 };
 

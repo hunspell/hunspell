@@ -239,19 +239,9 @@ AffixMgr::~AffixMgr() {
     free(reptable);
     reptable = NULL;
   }
-  if (iconvtable)
-    delete iconvtable;
-  if (oconvtable)
-    delete oconvtable;
-  if (phone && phone->rules) {
-    for (int j = 0; j < phone->num + 1; j++) {
-      free(phone->rules[j * 2]);
-      free(phone->rules[j * 2 + 1]);
-    }
-    free(phone->rules);
-    free(phone);
-    phone = NULL;
-  }
+  delete iconvtable;
+  delete oconvtable;
+  delete phone;
 
   numrep = 0;
   FREE_FLAG(compoundflag);
@@ -4032,6 +4022,7 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
   }
   char* tp = line;
   char* piece;
+  int num = -1;
   int i = 0;
   int np = 0;
   piece = mystrsep(&tp, 0);
@@ -4043,23 +4034,14 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
           break;
         }
         case 1: {
-          phone = (phonetable*)malloc(sizeof(struct phonetable));
-          if (!phone)
-            return 1;
-          phone->num = atoi(piece);
-          phone->rules = NULL;
-          phone->utf8 = (char)utf8;
-          if (phone->num < 1) {
+          num = atoi(piece);
+          if (num < 1) {
             HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
                              af->getlinenum());
             return 1;
           }
-          phone->rules = (char**)malloc(2 * (phone->num + 1) * sizeof(char*));
-          if (!phone->rules) {
-            free(phone);
-            phone = NULL;
-            return 1;
-          }
+          phone = new phonetable;
+          phone->utf8 = (char)utf8;
           np++;
           break;
         }
@@ -4078,14 +4060,13 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
 
   /* now parse the phone->num lines to read in the remainder of the table */
   char* nl;
-  for (int j = 0; j < phone->num; j++) {
+  for (int j = 0; j < num; ++j) {
     if (!(nl = af->getline()))
       return 1;
     mychomp(nl);
     tp = nl;
     i = 0;
-    phone->rules[j * 2] = NULL;
-    phone->rules[j * 2 + 1] = NULL;
+    const size_t old_size = phone->rules.size();
     piece = mystrsep(&tp, 0);
     while (piece) {
       if (*piece != '\0') {
@@ -4094,17 +4075,18 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
             if (strncmp(piece, "PHONE", 5) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
-              phone->num = 0;
               return 1;
             }
             break;
           }
           case 1: {
-            phone->rules[j * 2] = mystrrep(mystrdup(piece), "_", "");
+            std::string chunk(piece);
+            phone->rules.push_back(mystrrep(chunk, "_", ""));
             break;
           }
           case 2: {
-            phone->rules[j * 2 + 1] = mystrrep(mystrdup(piece), "_", "");
+            std::string chunk(piece);
+            phone->rules.push_back(mystrrep(chunk, "_", ""));
             break;
           }
           default:
@@ -4114,15 +4096,15 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
       }
       piece = mystrsep(&tp, 0);
     }
-    if ((!(phone->rules[j * 2])) || (!(phone->rules[j * 2 + 1]))) {
+    if (phone->rules.size() != old_size + 2) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
-      phone->num = 0;
+      phone->rules.clear();
       return 1;
     }
   }
-  phone->rules[phone->num * 2] = mystrdup("");
-  phone->rules[phone->num * 2 + 1] = mystrdup("");
+  phone->rules.push_back("");
+  phone->rules.push_back("");
   init_phonet_hash(*phone);
   return 0;
 }
