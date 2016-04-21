@@ -103,7 +103,7 @@ AffixMgr::AffixMgr(const char* affpath,
   complexprefixes = 0;
   parsedmaptable = false;
   parsedbreaktable = false;
-  parsedrep = false;
+  numrep = 0;
   iconvtable = NULL;
   oconvtable = NULL;
   // allow simplified compound forms (see 3rd field of CHECKCOMPOUNDPATTERN)
@@ -233,6 +233,7 @@ AffixMgr::~AffixMgr() {
   delete oconvtable;
   delete phone;
 
+  numrep = 0;
   FREE_FLAG(compoundflag);
   FREE_FLAG(compoundbegin);
   FREE_FLAG(compoundmiddle);
@@ -3795,13 +3796,11 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
 
 /* parse in the typical fault correcting table */
 int AffixMgr::parse_reptable(char* line, FileMgr* af) {
-  if (parsedrep) {
+  if (numrep != 0) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return 1;
   }
-  parsedrep = true;
-  int numrep = -1;
   char* tp = line;
   char* piece;
   int i = 0;
@@ -3839,48 +3838,50 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
   }
 
   /* now parse the numrep lines to read in the remainder of the table */
-  for (int j = 0; j < numrep; ++j) {
-    std::string nl;
-    if (!af->getline(nl))
+  char* nl;
+  for (int j = 0; j < numrep; j++) {
+    if ((nl = af->getline()) == NULL)
       return 1;
     mychomp(nl);
     reptable.push_back(replentry());
-    std::string::const_iterator iter = nl.begin();
+    tp = nl;
     i = 0;
     int type = 0;
-    std::string::const_iterator start_piece = mystrsep(nl, iter);
-    while (start_piece != nl.end()) {
-      switch (i) {
-        case 0: {
-          if (nl.compare(start_piece - nl.begin(), 3, "REP", 3) != 0) {
-            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                             af->getlinenum());
-            reptable.clear();
-            return 1;
+    piece = mystrsep(&tp, 0);
+    while (piece) {
+      if (*piece != '\0') {
+        switch (i) {
+          case 0: {
+            if (strncmp(piece, "REP", 3) != 0) {
+              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                               af->getlinenum());
+              numrep = 0;
+              return 1;
+            }
+            break;
           }
-          break;
-        }
-        case 1: {
-          if (*start_piece == '^')
-            type = 1;
-          reptable.back().pattern.assign(start_piece + type, iter);
-          mystrrep(reptable.back().pattern, "_", " ");
-          if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
-            type += 2;
-            reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
+          case 1: {
+            if (*piece == '^')
+              type = 1;
+            reptable.back().pattern = piece + type;
+            mystrrep(reptable.back().pattern, "_", " ");
+            if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
+              type += 2;
+              reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
+            }
+            break;
           }
-          break;
+          case 2: {
+            reptable.back().outstrings[type] = piece;
+            mystrrep(reptable.back().outstrings[type], "_", " ");
+            break;
+          }
+          default:
+            break;
         }
-        case 2: {
-          reptable.back().outstrings[type].assign(start_piece, iter);
-          mystrrep(reptable.back().outstrings[type], "_", " ");
-          break;
-        }
-        default:
-          break;
+        i++;
       }
-      ++i;
-      start_piece = mystrsep(nl, iter);
+      piece = mystrsep(&tp, 0);
     }
     if (reptable.back().pattern.empty() || reptable.back().outstrings[type].empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",

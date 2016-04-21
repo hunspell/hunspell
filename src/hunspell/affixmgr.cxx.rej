@@ -1,0 +1,100 @@
+--- src/hunspell/affixmgr.cxx
++++ src/hunspell/affixmgr.cxx
+@@ -3836,57 +3837,58 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
+   }
+ 
+   /* now parse the numrep lines to read in the remainder of the table */
+-  char* nl;
+-  for (int j = 0; j < numrep; j++) {
+-    if ((nl = af->getline()) == NULL)
++  for (int j = 0; j < numrep; ++j) {
++    std::string nl;
++    if (!af->getline(nl))
+       return 1;
+     mychomp(nl);
+     reptable.push_back(replentry());
+-    tp = nl;
++    std::string::const_iterator iter = nl.begin();
+     i = 0;
+-    piece = mystrsep(&tp, 0);
+-    while (piece) {
+-      if (*piece != '\0') {
+-        switch (i) {
+-          case 0: {
+-            if (strncmp(piece, "REP", 3) != 0) {
+-              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+-                               af->getlinenum());
+-              numrep = 0;
+-              return 1;
+-            }
+-            break;
+-          }
+-          case 1: {
+-            if (*piece == '^')
+-              reptable.back().start = true;
+-            else
+-              reptable.back().start = false;
+-            reptable.back().pattern = piece + int(reptable.back().start);
+-            mystrrep(reptable.back().pattern, "_", " ");
+-            if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
+-              reptable.back().end = true;
+-              reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
+-            } else
+-              reptable.back().end = false;
+-            break;
++    std::string::const_iterator start_piece = mystrsep(nl, iter);
++    while (start_piece != nl.end()) {
++      switch (i) {
++        case 0: {
++          if (nl.compare(start_piece - nl.begin(), 3, "REP", 3) != 0) {
++            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
++                             af->getlinenum());
++            reptable.clear();
++            return 1;
+           }
+-          case 2: {
+-            reptable.back().pattern2 = piece;
+-            mystrrep(reptable.back().pattern2, "_", " ");
+-            break;
++          break;
++        }
++        case 1: {
++          if (*start_piece == '^') {
++            reptable.back().start = true;
++            reptable.back().pattern.assign(start_piece + 1, iter);
++          } else {
++            reptable.back().start = false;
++            reptable.back().pattern.assign(start_piece, iter);
+           }
+-          default:
+-            break;
++          mystrrep(reptable.back().pattern, "_", " ");
++          if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
++            reptable.back().end = true;
++            reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
++          } else
++            reptable.back().end = false;
++          break;
++        }
++        case 2: {
++          reptable.back().pattern2.assign(start_piece, iter);
++          mystrrep(reptable.back().pattern2, "_", " ");
++          break;
+         }
+-        i++;
++        default:
++          break;
+       }
+-      piece = mystrsep(&tp, 0);
++      ++i;
++      
++      start_piece = mystrsep(nl, iter);
+     }
+     if (reptable.back().pattern.empty() || reptable.back().pattern2.empty()) {
+       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                        af->getlinenum());
+-      numrep = 0;
++      reptable.clear();
+       return 1;
+     }
+   }
