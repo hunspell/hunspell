@@ -148,8 +148,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int cpdwordmax;
   int cpdmaxsyllable;
   std::string cpdvowels; // vowels (for calculating of Hungarian compounding limit,
-  w_char* cpdvowels_utf16;
-  int cpdvowels_utf16_len;
+  std::vector<w_char> cpdvowels_utf16; //vowels for UTF-8 encoding
   char* cpdsyllablenum;
   const char* pfxappnd;  // BUG: not stateless
   const char* sfxappnd;  // BUG: not stateless

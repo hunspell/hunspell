@@ -136,9 +136,6 @@ AffixMgr::AffixMgr(const char* affpath,
   cpdwordmax = -1;        // default: unlimited wordcount in compound words
   cpdmin = -1;            // undefined
   cpdmaxsyllable = 0;     // default: unlimited syllablecount in compound words
-  cpdvowels_utf16 =
-      NULL;  // vowels for UTF-8 encoding (bsearch instead of O(n) search)
-  cpdvowels_utf16_len = 0;  // vowels
   pfxappnd = NULL;  // previous prefix for counting syllables of the prefix BUG
   sfxappnd = NULL;  // previous suffix for counting syllables of the suffix BUG
   sfxextra = 0;     // modifier for syllable count of sfxappnd BUG
@@ -250,8 +247,6 @@ AffixMgr::~AffixMgr() {
   pHMgr = NULL;
   cpdmin = 0;
   cpdmaxsyllable = 0;
-  if (cpdvowels_utf16)
-    free(cpdvowels_utf16);
   if (cpdsyllablenum)
     free(cpdsyllablenum);
   free_utf_tbl();
@@ -1585,12 +1580,12 @@ short AffixMgr::get_syllable(const std::string& word) {
         ++num;
       }
     }
-  } else if (cpdvowels_utf16) {
+  } else if (!cpdvowels_utf16.empty()) {
     std::vector<w_char> w;
     u8_u16(w, word);
     for (size_t i = 0; i < w.size(); ++i) {
-      if (std::binary_search(cpdvowels_utf16,
-                             cpdvowels_utf16 + cpdvowels_utf16_len,
+      if (std::binary_search(cpdvowels_utf16.begin(),
+                             cpdvowels_utf16.end(),
                              w[i])) {
         ++num;
       }
@@ -3758,16 +3753,8 @@ bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
           std::sort(cpdvowels.begin(), cpdvowels.end());
         } else {
           std::string piece(start_piece, iter);
-          std::vector<w_char> w;
-          u8_u16(w, piece);
-          if (!w.empty()) {
-            std::sort(w.begin(), w.end());
-            cpdvowels_utf16 = (w_char*)malloc(w.size() * sizeof(w_char));
-            if (!cpdvowels_utf16)
-              return 1;
-            memcpy(cpdvowels_utf16, &w[0], w.size());
-          }
-          cpdvowels_utf16_len = w.size();
+          u8_u16(cpdvowels_utf16, piece);
+          std::sort(cpdvowels_utf16.begin(), cpdvowels_utf16.end());
         }
         np++;
         break;
