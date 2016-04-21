@@ -885,13 +885,12 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       }
     }
     if (strncmp(line, "FORBIDDENWORD", 13) == 0) {
-      char* st = NULL;
-      if (parse_string(line, &st, afflst->getlinenum())) {
+      std::string st;
+      if (!parse_string(line, st, afflst->getlinenum())) {
         delete afflst;
         return 1;
       }
-      forbiddenword = decode_flag(st);
-      free(st);
+      forbiddenword = decode_flag(st.c_str());
     }
     if (strncmp(line, "SET", 3) == 0) {
       if (parse_string(line, &enc, afflst->getlinenum())) {
