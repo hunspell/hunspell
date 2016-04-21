@@ -1129,10 +1129,10 @@ int SuggestMgr::movechar_utf(char** wlst,
     std::copy(word, word + candidate_utf.size(), candidate_utf.begin());
   }
 
-  for (std::vector<w_char>::iterator p = candidate_utf.begin() + candidate_utf.size() - 1; p > candidate_utf.begin(); --p) {
-    for (std::vector<w_char>::iterator q = p - 1; q >= candidate_utf.begin() && std::distance(q, p) < 10; --q) {
-      std::swap(*q, *(q + 1));
-      if (std::distance(q, p) < 2)
+  for (std::vector<w_char>::reverse_iterator p = candidate_utf.rbegin(); p < candidate_utf.rend(); ++p) {
+    for (std::vector<w_char>::reverse_iterator q = p + 1; q < candidate_utf.rend() && std::distance(p, q) < 10; ++q) {
+      std::swap(*q, *(q - 1));
+      if (std::distance(p, q) < 2)
         continue;  // omit swap char
       std::string candidate;
       u16_u8(candidate, candidate_utf);

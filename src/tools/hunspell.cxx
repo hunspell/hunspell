@@ -333,8 +333,8 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
 
   if (io_utf8) {
     const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
-    wordchars_utf16 = &vec_wordchars_utf16[0];
     wordchars_utf16_len = vec_wordchars_utf16.size();
+    wordchars_utf16 = wordchars_utf16_len ? &vec_wordchars_utf16[0] : NULL;
     if ((strcmp(denc, "UTF-8") != 0) && pMS->get_wordchars()) {
       const char* wchars = pMS->get_wordchars();
       int wlen = strlen(wchars);
