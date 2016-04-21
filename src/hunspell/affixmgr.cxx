@@ -589,7 +589,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the phonetic translation table */
     if (strncmp(line, "PHONE", 5) == 0) {
-      if (parse_phonetable(line, afflst)) {
+      if (!parse_phonetable(line, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3968,60 +3968,57 @@ bool AffixMgr::parse_convtable(const std::string& line,
 }
 
 /* parse in the typical fault correcting table */
-int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
+bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
   if (phone) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
-  char* tp = line;
-  char* piece;
   int num = -1;
   int i = 0;
   int np = 0;
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          num = atoi(piece);
-          if (num < 1) {
-            HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                             af->getlinenum());
-            return 1;
-          }
-          phone = new phonetable;
-          phone->utf8 = (char)utf8;
-          np++;
-          break;
-        }
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+      case 1: {
+        num = atoi(std::string(start_piece, iter).c_str());
+        if (num < 1) {
+          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+                           af->getlinenum());
+          return false;
+        }
+        phone = new phonetable;
+        phone->utf8 = (char)utf8;
+        np++;
+        break;
+      }
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
 
   /* now parse the phone->num lines to read in the remainder of the table */
   for (int j = 0; j < num; ++j) {
     std::string nl;
     if (!af->getline(nl))
-      return 1;
+      return false;
     mychomp(nl);
-    std::string::const_iterator iter = nl.begin();
     i = 0;
     const size_t old_size = phone->rules.size();
-    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    iter = nl.begin();
+    start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       {
         switch (i) {
@@ -4029,7 +4026,7 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
             if (nl.compare(start_piece - nl.begin(), 5, "PHONE", 5) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
-              return 1;
+              return false;
             }
             break;
           }
@@ -4053,13 +4050,13 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       phone->rules.clear();
-      return 1;
+      return false;
     }
   }
   phone->rules.push_back("");
   phone->rules.push_back("");
   init_phonet_hash(*phone);
-  return 0;
+  return true;
 }
 
 /* parse in the checkcompoundpattern table */

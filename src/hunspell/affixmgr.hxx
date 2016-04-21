@@ -359,7 +359,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                       FileMgr* af,
                       RepList** rl,
                       const std::string& keyword);
-  int parse_phonetable(char* line, FileMgr* af);
+  bool parse_phonetable(const std::string& line, FileMgr* af);
   int parse_maptable(char* line, FileMgr* af);
   int parse_breaktable(char* line, FileMgr* af);
   int parse_checkcpdtable(char* line, FileMgr* af);
