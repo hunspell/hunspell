@@ -27,6 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -95,6 +96,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -166,6 +168,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -249,6 +252,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
