@@ -107,10 +107,9 @@ AffixMgr::AffixMgr(const char* affpath,
   numrep = 0;
   iconvtable = NULL;
   oconvtable = NULL;
-  checkcpdtable = NULL;
   // allow simplified compound forms (see 3rd field of CHECKCOMPOUNDPATTERN)
   simplifiedcpd = 0;
-  numcheckcpd = 0;
+  parsedcheckcpd = false;
   parseddefcpd = false;
   phone = NULL;
   compoundflag = FLAG_NULL;        // permits word in compound forms
@@ -255,11 +254,6 @@ AffixMgr::~AffixMgr() {
   }
 
   numrep = 0;
-  if (checkcpdtable) {
-    free(checkcpdtable);
-    checkcpdtable = NULL;
-  }
-  numcheckcpd = 0;
   FREE_FLAG(compoundflag);
   FREE_FLAG(compoundbegin);
   FREE_FLAG(compoundmiddle);
@@ -1401,8 +1395,8 @@ int AffixMgr::cpdpat_check(const char* word,
                            hentry* r1,
                            hentry* r2,
                            const char /*affixed*/) {
-  int len;
-  for (int i = 0; i < numcheckcpd; i++) {
+  size_t len;
+  for (size_t i = 0; i < checkcpdtable.size(); ++i) {
     if (isSubset(checkcpdtable[i].pattern2.c_str(), word + pos) &&
         (!r1 || !checkcpdtable[i].cond ||
          (r1->astr && TESTAFF(r1->astr, checkcpdtable[i].cond, r1->alen))) &&
@@ -1666,7 +1660,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
   int cmin;
   int cmax;
   int striple = 0;
-  int scpd = 0;
+  size_t scpd = 0;
   int soldi = 0;
   int oldcmin = 0;
   int oldcmax = 0;
@@ -1703,14 +1697,14 @@ struct hentry* AffixMgr::compound_check(const char* word,
       do {  // simplified checkcompoundpattern loop
 
         if (scpd > 0) {
-          for (; scpd <= numcheckcpd &&
+          for (; scpd <= checkcpdtable.size() &&
                  (checkcpdtable[scpd - 1].pattern3.empty() ||
                   strncmp(word + i, checkcpdtable[scpd - 1].pattern3.c_str(),
                           checkcpdtable[scpd - 1].pattern3.size()) != 0);
                scpd++)
             ;
 
-          if (scpd > numcheckcpd)
+          if (scpd > checkcpdtable.size())
             break;  // break simplified checkcompoundpattern loop
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern);
           soldi = i;
@@ -1996,7 +1990,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                    cpdmaxsyllable))) &&
                 (
                     // test CHECKCOMPOUNDPATTERN
-                    !numcheckcpd || scpd != 0 ||
+                    checkcpdtable.empty() || scpd != 0 ||
                     !cpdpat_check(word, i, rv_first, rv, 0)) &&
                 ((!checkcompounddup || (rv != rv_first)))
                 // test CHECKCOMPOUNDPATTERN conditions
@@ -2041,7 +2035,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
               rv = NULL;
 
             // test CHECKCOMPOUNDPATTERN conditions (forbidden compounds)
-            if (rv && numcheckcpd && scpd == 0 &&
+            if (rv && !checkcpdtable.empty() && scpd == 0 &&
                 cpdpat_check(word, i, rv_first, rv, affixed))
               rv = NULL;
 
@@ -2143,7 +2137,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                                   numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
 
-              if (rv && numcheckcpd &&
+              if (rv && !checkcpdtable.empty() &&
                   ((scpd == 0 &&
                     cpdpat_check(word, i, rv_first, rv, affixed)) ||
                    (scpd != 0 &&
@@ -2206,7 +2200,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
         scpd++;
 
       } while (!onlycpdrule && simplifiedcpd &&
-               scpd <= numcheckcpd);  // end of simplifiedcpd loop
+               scpd <= checkcpdtable.size());  // end of simplifiedcpd loop
 
       scpd = 0;
       wordnum = oldwordnum;
@@ -2465,7 +2459,7 @@ int AffixMgr::compound_check_morph(const char* word,
                )) ||
              (
                  // test CHECKCOMPOUNDPATTERN
-                 numcheckcpd && !words &&
+                 !checkcpdtable.empty() && !words &&
                  cpdpat_check(word, i, rv, NULL, affixed)) ||
              (checkcompoundcase && !words && cpdcase_check(word, i))))
           // LANG_hu section: spec. Hungarian rule
@@ -4135,13 +4129,15 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
 
 /* parse in the checkcompoundpattern table */
 int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
-  if (numcheckcpd != 0) {
+  if (parsedcheckcpd) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return 1;
   }
+  parsedcheckcpd = true;
   char* tp = line;
   char* piece;
+  int numcheckcpd = -1;
   int i = 0;
   int np = 0;
   piece = mystrsep(&tp, 0);
@@ -4159,10 +4155,7 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          checkcpdtable =
-              (patentry*)malloc(numcheckcpd * sizeof(struct patentry));
-          if (!checkcpdtable)
-            return 1;
+          checkcpdtable.reserve(numcheckcpd);
           np++;
           break;
         }
@@ -4181,14 +4174,13 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
 
   /* now parse the numcheckcpd lines to read in the remainder of the table */
   char* nl;
-  for (int j = 0; j < numcheckcpd; j++) {
+  for (int j = 0; j < numcheckcpd; ++j) {
     if (!(nl = af->getline()))
       return 1;
     mychomp(nl);
     tp = nl;
     i = 0;
-    checkcpdtable[j].cond = FLAG_NULL;
-    checkcpdtable[j].cond2 = FLAG_NULL;
+    checkcpdtable.push_back(patentry());
     piece = mystrsep(&tp, 0);
     while (piece) {
       if (*piece != '\0') {
@@ -4197,33 +4189,32 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
             if (strncmp(piece, "CHECKCOMPOUNDPATTERN", 20) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
-              numcheckcpd = 0;
               return 1;
             }
             break;
           }
           case 1: {
-            checkcpdtable[j].pattern.assign(piece);
-            size_t slash_pos = checkcpdtable[j].pattern.find('/');
+            checkcpdtable.back().pattern.assign(piece);
+            size_t slash_pos = checkcpdtable.back().pattern.find('/');
             if (slash_pos != std::string::npos) {
-              std::string chunk(checkcpdtable[j].pattern, slash_pos + 1);
-              checkcpdtable[j].pattern.resize(slash_pos);
-              checkcpdtable[j].cond = pHMgr->decode_flag(chunk.c_str());
+              std::string chunk(checkcpdtable.back().pattern, slash_pos + 1);
+              checkcpdtable.back().pattern.resize(slash_pos);
+              checkcpdtable.back().cond = pHMgr->decode_flag(chunk.c_str());
             }
             break;
           }
           case 2: {
-            checkcpdtable[j].pattern2.assign(piece);
-            size_t slash_pos = checkcpdtable[j].pattern2.find('/');
+            checkcpdtable.back().pattern2.assign(piece);
+            size_t slash_pos = checkcpdtable.back().pattern2.find('/');
             if (slash_pos != std::string::npos) {
-              std::string chunk(checkcpdtable[j].pattern2, slash_pos + 1);
-              checkcpdtable[j].pattern2.resize(slash_pos);
-              checkcpdtable[j].cond2 = pHMgr->decode_flag(chunk.c_str());
+              std::string chunk(checkcpdtable.back().pattern2, slash_pos + 1);
+              checkcpdtable.back().pattern2.resize(slash_pos);
+              checkcpdtable.back().cond2 = pHMgr->decode_flag(chunk.c_str());
             }
             break;
           }
           case 3: {
-            checkcpdtable[j].pattern3.assign(piece);
+            checkcpdtable.back().pattern3.assign(piece);
             simplifiedcpd = 1;
             break;
           }

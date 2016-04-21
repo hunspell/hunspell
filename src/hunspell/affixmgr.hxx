@@ -133,8 +133,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   std::vector<mapentry> maptable;
   bool parsedbreaktable;
   std::vector<std::string> breaktable;
-  int numcheckcpd;
-  patentry* checkcpdtable;
+  bool parsedcheckcpd;
+  std::vector<patentry> checkcpdtable;
   int simplifiedcpd;
   int numdefcpd;
   bool parseddefcpd;

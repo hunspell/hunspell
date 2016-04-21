@@ -115,6 +115,10 @@ struct patentry {
   std::string pattern3;
   FLAG cond;
   FLAG cond2;
+  patentry()
+    : cond(FLAG_NULL)
+    , cond2(FLAG_NULL) {
+  }
 };
 
 #endif
