@@ -136,7 +136,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
                const char* desc,
                bool onlyupcase);
   int load_config(const char* affpath, const char* key);
-  int parse_aliasf(char* line, FileMgr* af);
+  bool parse_aliasf(const std::string& line, FileMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
                                   int wcl,
                                   unsigned short* flags,
