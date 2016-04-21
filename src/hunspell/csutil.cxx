@@ -2825,45 +2825,6 @@ size_t remove_ignored_chars(std::string& word,
   return word.size();
 }
 
-int parse_string(char* line, char** out, int ln) {
-  char* tp = line;
-  char* piece;
-  int i = 0;
-  int np = 0;
-  if (*out) {
-    HUNSPELL_WARNING(stderr, "error: line %d: multiple definitions\n", ln);
-    return 1;
-  }
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          *out = mystrdup(piece);
-          if (!*out)
-            return 1;
-          np++;
-          break;
-        }
-        default:
-          break;
-      }
-      i++;
-    }
-    // free(piece);
-    piece = mystrsep(&tp, 0);
-  }
-  if (np != 2) {
-    HUNSPELL_WARNING(stderr, "error: line %d: missing data\n", ln);
-    return 1;
-  }
-  return 0;
-}
-
 bool parse_string(const std::string& line, std::string& out, int ln) {
   if (!out.empty()) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple definitions\n", ln);

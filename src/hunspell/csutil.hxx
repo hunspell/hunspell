@@ -260,8 +260,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     std::string& word,
     const std::string& ignored_chars);
 
-LIBHUNSPELL_DLL_EXPORTED int parse_string(char* line, char** out, int ln);
-
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
                                            std::string& out,
                                            int ln);
