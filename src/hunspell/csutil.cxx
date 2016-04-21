@@ -2910,3 +2910,17 @@ bool parse_array(char* line,
   }
   return true;
 }
+
+bool parse_array(const std::string& line,
+                 std::string& out,
+                 std::vector<w_char>& out_utf16,
+                 int utf8,
+                 int ln) {
+  if (!parse_string(line, out, ln))
+    return false;
+  if (utf8) {
+    u8_u16(out_utf16, out);
+    std::sort(out_utf16.begin(), out_utf16.end());
+  }
+  return true;
+}

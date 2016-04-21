@@ -101,9 +101,9 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   HashMgr* pHMgr;
   HashMgr** alldic;
   int* maxdic;
-  char* keystring;
-  char* trystring;
-  char* encoding;
+  std::string keystring;
+  std::string trystring;
+  std::string encoding;
   struct cs_info* csconv;
   int utf8;
   int complexprefixes;
@@ -149,7 +149,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int cpdmaxsyllable;
   std::string cpdvowels; // vowels (for calculating of Hungarian compounding limit,
   std::vector<w_char> cpdvowels_utf16; //vowels for UTF-8 encoding
-  char* cpdsyllablenum;
+  std::string cpdsyllablenum; // syllable count incrementing flag
   const char* pfxappnd;  // BUG: not stateless
   const char* sfxappnd;  // BUG: not stateless
   int sfxextra;          // BUG: not stateless
@@ -158,12 +158,12 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   SfxEntry* sfx;         // BUG: not stateless
   PfxEntry* pfx;         // BUG: not stateless
   int checknum;
-  char* wordchars;
+  std::string wordchars; // letters + spec. word characters
   std::vector<w_char> wordchars_utf16;
-  char* ignorechars;
+  std::string ignorechars; // letters + spec. word characters
   std::vector<w_char> ignorechars_utf16;
-  char* version;
-  char* lang;
+  std::string version;   // affix and dictionary file version string
+  std::string lang;	 // language
   int langnum;
   FLAG lemma_present;
   FLAG circumfix;
@@ -314,7 +314,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   char* get_try_string() const;
   const char* get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
-  char* get_ignore() const;
+  const char* get_ignore() const;
   const std::vector<w_char>& get_ignore_utf16() const;
   int get_compound() const;
   FLAG get_compoundflag() const;

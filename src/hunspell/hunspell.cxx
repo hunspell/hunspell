@@ -645,7 +645,7 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
   std::string w2;
   const char* word;
 
-  char* ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
+  const char* ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
   if (ignoredchars != NULL) {
     w2.assign(w);
     if (utf8) {
@@ -1856,7 +1856,7 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
   int len;
   std::string w2;
   const char* word;
-  char* ignoredchars = pAMgr->get_ignore();
+  const char* ignoredchars = pAMgr->get_ignore();
   if (ignoredchars != NULL) {
     w2.assign(root_word);
     if (utf8) {
