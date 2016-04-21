@@ -480,20 +480,14 @@ struct hentry* HashMgr::walk_hashtable(int& col, struct hentry* hp) const {
 
 // load a munched word list and build a hash table on the fly
 int HashMgr::load_tables(const char* tpath, const char* key) {
-  int al;
-  char* ap;
-  char* dp;
-  char* dp2;
-  unsigned short* flags;
-  char* ts;
-
   // open dictionary file
   FileMgr* dict = new FileMgr(tpath, key);
   if (dict == NULL)
     return 1;
 
   // first read the first line of file to get hash table size */
-  if ((ts = dict->getline()) == NULL) {
+  std::string ts;
+  if (!dict->getline(ts)) {
     HUNSPELL_WARNING(stderr, "error: empty dic file %s\n", tpath);
     delete dict;
     return 2;
@@ -501,13 +495,11 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   mychomp(ts);
 
   /* remove byte order mark */
-  if (strncmp(ts, "\xEF\xBB\xBF", 3) == 0) {
-    memmove(ts, ts + 3, strlen(ts + 3) + 1);
-    // warning: dic file begins with byte order mark: possible incompatibility
-    // with old Hunspell versions
+  if (ts.compare(0, 3, "\xEF\xBB\xBF", 3) == 0) {
+    ts.erase(0, 3);
   }
 
-  tablesize = atoi(ts);
+  tablesize = atoi(ts.c_str());
 
   int nExtra = 5 + USERWORD;
 
@@ -533,60 +525,65 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   // loop through all words on much list and add to hash
   // table and create word and affix strings
 
-  while ((ts = dict->getline()) != NULL) {
+  while (dict->getline(ts)) {
     mychomp(ts);
     // split each line into word and morphological description
-    dp = ts;
-    while ((dp = strchr(dp, ':')) != NULL) {
-      if ((dp > ts + 3) && (*(dp - 3) == ' ' || *(dp - 3) == '\t')) {
-        for (dp -= 4; dp >= ts && (*dp == ' ' || *dp == '\t'); dp--)
+    size_t dp_pos = 0;
+    while ((dp_pos = ts.find(':', dp_pos)) != std::string::npos) {
+      if ((dp_pos > 3) && (ts[dp_pos - 3] == ' ' || ts[dp_pos - 3] == '\t')) {
+        for (dp_pos -= 3; dp_pos > 0 && (ts[dp_pos-1] == ' ' || ts[dp_pos-1] == '\t'); --dp_pos)
           ;
-        if (dp < ts) {  // missing word
-          dp = NULL;
+        if (dp_pos == 0) {  // missing word
+          dp_pos = std::string::npos;
         } else {
-          *(dp + 1) = '\0';
-          dp = dp + 2;
+          ++dp_pos;
         }
         break;
       }
-      dp++;
+      ++dp_pos;
     }
 
     // tabulator is the old morphological field separator
-    dp2 = strchr(ts, '\t');
-    if (dp2 && (!dp || dp2 < dp)) {
-      *dp2 = '\0';
-      dp = dp2 + 1;
+    size_t dp2_pos = ts.find('\t');
+    if (dp2_pos != std::string::npos && (dp_pos == std::string::npos || dp2_pos < dp_pos)) {
+      dp_pos = dp2_pos + 1;
+    }
+
+    std::string dp;
+    if (dp_pos != std::string::npos) {
+      dp.assign(ts.substr(dp_pos));
+      ts.resize(dp_pos - 1);
     }
 
     // split each line into word and affix char strings
     // "\/" signs slash in words (not affix separator)
     // "/" at beginning of the line is word character (not affix separator)
-    ap = strchr(ts, '/');
-    while (ap) {
-      if (ap == ts) {
-        ap++;
+    size_t ap_pos = ts.find('/');
+    while (ap_pos != std::string::npos) {
+      if (ap_pos == 0) {
+        ++ap_pos;
         continue;
-      } else if (*(ap - 1) != '\\')
+      } else if (ts[ap_pos - 1] != '\\')
         break;
       // replace "\/" with "/"
-      for (char *sp = ap - 1; *sp; *sp = *(sp + 1), sp++)
-        ;
-      ap = strchr(ap, '/');
+      ts.erase(ap_pos - 1, 1);
+      ap_pos = ts.find('/', ap_pos);
     }
 
-    if (ap) {
-      *ap = '\0';
+    unsigned short* flags;
+    int al;
+    if (ap_pos != std::string::npos && ap_pos != ts.size()) {
+      std::string ap(ts.substr(ap_pos + 1));
+      ts.resize(ap_pos);
       if (aliasf) {
-        int index = atoi(ap + 1);
+        int index = atoi(ap.c_str());
         al = get_aliasf(index, &flags, dict);
         if (!al) {
           HUNSPELL_WARNING(stderr, "error: line %d: bad flag vector alias\n",
                            dict->getlinenum());
-          *ap = '\0';
         }
       } else {
-        al = decode_flags(&flags, ap + 1, dict);
+        al = decode_flags(&flags, ap.c_str(), dict);
         if (al == -1) {
           HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
           delete dict;
@@ -596,16 +593,15 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
       }
     } else {
       al = 0;
-      ap = NULL;
       flags = NULL;
     }
 
     int captype;
-    int wbl = strlen(ts);
     int wcl = get_clen_and_captype(ts, &captype);
+    const char *dp_str = dp.empty() ? NULL : dp.c_str();
     // add the word and its index plus its capitalized form optionally
-    if (add_word(ts, wbl, wcl, flags, al, dp, false) ||
-        add_hidden_capitalized_word(ts, wcl, flags, al, dp, captype)) {
+    if (add_word(ts.c_str(), ts.size(), wcl, flags, al, dp_str, false) ||
+        add_hidden_capitalized_word(ts.c_str(), wcl, flags, al, dp_str, captype)) {
       delete dict;
       return 5;
     }
