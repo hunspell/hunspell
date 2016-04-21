@@ -4653,7 +4653,6 @@ int AffixMgr::parse_affix(char* line,
   entries_container affentries(at, this);
 
   char* tp = line;
-  char* nl = line;
   char* piece;
   int i = 0;
 
@@ -4745,190 +4744,187 @@ int AffixMgr::parse_affix(char* line,
   // now parse numents affentries for this affix
   AffEntry* entry = affentries.first_entry();
   for (int ent = 0; ent < numents; ++ent) {
-    if ((nl = af->getline()) == NULL)
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+
+    std::string::const_iterator iter = nl.begin();
     i = 0;
     np = 0;
 
     // split line into pieces
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
-        switch (i) {
-          // piece 1 - is type
-          case 0: {
-            np++;
-            if (ent != 0)
-              entry = affentries.add_entry((char)(aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM));
-            break;
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      switch (i) {
+        // piece 1 - is type
+        case 0: {
+          np++;
+          if (ent != 0)
+            entry = affentries.add_entry((char)(aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM));
+          break;
+        }
+
+        // piece 2 - is affix char
+        case 1: {
+          np++;
+          std::string chunk(start_piece, iter);
+          if (pHMgr->decode_flag(chunk.c_str()) != aflag) {
+            char* err = pHMgr->encode_flag(aflag);
+            if (err) {
+              HUNSPELL_WARNING(stderr,
+                               "error: line %d: affix %s is corrupt\n",
+                               af->getlinenum(), err);
+              free(err);
+            }
+            return 1;
           }
 
-          // piece 2 - is affix char
-          case 1: {
-            np++;
-            if (pHMgr->decode_flag(piece) != aflag) {
-              char* err = pHMgr->encode_flag(aflag);
-              if (err) {
-                HUNSPELL_WARNING(stderr,
-                                 "error: line %d: affix %s is corrupt\n",
-                                 af->getlinenum(), err);
-                free(err);
+          if (ent != 0) {
+            AffEntry* start_entry = affentries.first_entry();
+            entry->aflag = start_entry->aflag;
+          }
+          break;
+        }
+
+        // piece 3 - is string to strip or 0 for null
+        case 2: {
+          np++;
+          entry->strip = std::string(start_piece, iter);
+          if (complexprefixes) {
+            if (utf8)
+              reverseword_utf(entry->strip);
+            else
+              reverseword(entry->strip);
+          }
+          if (entry->strip.compare("0") == 0) {
+            entry->strip.clear();
+          }
+          break;
+        }
+
+        // piece 4 - is affix string or 0 for null
+        case 3: {
+          entry->morphcode = NULL;
+          entry->contclass = NULL;
+          entry->contclasslen = 0;
+          np++;
+          std::string::const_iterator dash = std::find(start_piece, iter, '/');
+          if (dash != iter) {
+            entry->appnd = std::string(start_piece, dash);
+            std::string dash_str(dash + 1, iter);
+
+            if (ignorechars) {
+              if (utf8) {
+                remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
+              } else {
+                remove_ignored_chars(entry->appnd, ignorechars);
               }
-              return 1;
             }
 
-            if (ent != 0) {
-              AffEntry* start_entry = affentries.first_entry();
-              entry->aflag = start_entry->aflag;
-            }
-            break;
-          }
-
-          // piece 3 - is string to strip or 0 for null
-          case 2: {
-            np++;
-            entry->strip = piece;
             if (complexprefixes) {
               if (utf8)
-                reverseword_utf(entry->strip);
+                reverseword_utf(entry->appnd);
               else
-                reverseword(entry->strip);
+                reverseword(entry->appnd);
             }
-            if (entry->strip.compare("0") == 0) {
-              entry->strip.clear();
-            }
-            break;
-          }
 
-          // piece 4 - is affix string or 0 for null
-          case 3: {
-            char* dash;
-            entry->morphcode = NULL;
-            entry->contclass = NULL;
-            entry->contclasslen = 0;
-            np++;
-            dash = strchr(piece, '/');
-            if (dash) {
-              *dash = '\0';
-
-              entry->appnd = piece;
-
-              if (ignorechars) {
-                if (utf8) {
-                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
-                } else {
-                  remove_ignored_chars(entry->appnd, ignorechars);
-                }
-              }
-
-              if (complexprefixes) {
-                if (utf8)
-                  reverseword_utf(entry->appnd);
-                else
-                  reverseword(entry->appnd);
-              }
-
-              if (pHMgr->is_aliasf()) {
-                int index = atoi(dash + 1);
-                entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
-                    index, &(entry->contclass), af);
-                if (!entry->contclasslen)
-                  HUNSPELL_WARNING(stderr,
-                                   "error: bad affix flag alias: \"%s\"\n",
-                                   dash + 1);
-              } else {
-                entry->contclasslen = (unsigned short)pHMgr->decode_flags(
-                    &(entry->contclass), dash + 1, af);
-                std::sort(entry->contclass, entry->contclass + entry->contclasslen);
-              }
-              *dash = '/';
-
-              havecontclass = 1;
-              for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
-                contclasses[(entry->contclass)[_i]] = 1;
-              }
+            if (pHMgr->is_aliasf()) {
+              int index = atoi(dash_str.c_str());
+              entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
+                  index, &(entry->contclass), af);
+              if (!entry->contclasslen)
+                HUNSPELL_WARNING(stderr,
+                                 "error: bad affix flag alias: \"%s\"\n",
+                                 dash_str.c_str());
             } else {
-              entry->appnd = piece;
+              entry->contclasslen = (unsigned short)pHMgr->decode_flags(
+                  &(entry->contclass), dash_str.c_str(), af);
+              std::sort(entry->contclass, entry->contclass + entry->contclasslen);
+            }
 
-              if (ignorechars) {
-                if (utf8) {
-                  remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
-                } else {
-                  remove_ignored_chars(entry->appnd, ignorechars);
-                }
-              }
+            havecontclass = 1;
+            for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
+              contclasses[(entry->contclass)[_i]] = 1;
+            }
+          } else {
+            entry->appnd = std::string(start_piece, iter);
 
-              if (complexprefixes) {
-                if (utf8)
-                  reverseword_utf(entry->appnd);
-                else
-                  reverseword(entry->appnd);
+            if (ignorechars) {
+              if (utf8) {
+                remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
+              } else {
+                remove_ignored_chars(entry->appnd, ignorechars);
               }
             }
 
-            if (entry->appnd.compare("0") == 0) {
-              entry->appnd.clear();
+            if (complexprefixes) {
+              if (utf8)
+                reverseword_utf(entry->appnd);
+              else
+                reverseword(entry->appnd);
             }
-            break;
           }
 
-          // piece 5 - is the conditions descriptions
-          case 4: {
-            std::string chunk(piece);
-            np++;
-            if (complexprefixes) {
+          if (entry->appnd.compare("0") == 0) {
+            entry->appnd.clear();
+          }
+          break;
+        }
+
+        // piece 5 - is the conditions descriptions
+        case 4: {
+          std::string chunk(start_piece, iter);
+          np++;
+          if (complexprefixes) {
+            if (utf8)
+              reverseword_utf(chunk);
+            else
+              reverseword(chunk);
+            reverse_condition(chunk);
+          }
+          if (!entry->strip.empty() && chunk != "." &&
+              redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
+                                  af->getlinenum()))
+            chunk = ".";
+          if (at == 'S') {
+            reverseword(chunk);
+            reverse_condition(chunk);
+          }
+          if (encodeit(*entry, chunk.c_str()))
+            return 1;
+          break;
+        }
+
+        case 5: {
+          std::string chunk(start_piece, iter);
+          np++;
+          if (pHMgr->is_aliasm()) {
+            int index = atoi(chunk.c_str());
+            entry->morphcode = pHMgr->get_aliasm(index);
+          } else {
+            if (complexprefixes) {  // XXX - fix me for morph. gen.
               if (utf8)
                 reverseword_utf(chunk);
               else
                 reverseword(chunk);
-              reverse_condition(chunk);
             }
-            if (!entry->strip.empty() && chunk != "." &&
-                redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
-                                    af->getlinenum()))
-              chunk = ".";
-            if (at == 'S') {
-              reverseword(chunk);
-              reverse_condition(chunk);
+            // add the remaining of the line
+            std::string::const_iterator end = nl.end();
+            if (iter != end) {
+              chunk.append(iter, end);
             }
-            if (encodeit(*entry, chunk.c_str()))
+            entry->morphcode = mystrdup(chunk.c_str());
+            if (!entry->morphcode)
               return 1;
-            break;
           }
-
-          case 5: {
-            std::string chunk(piece);
-            np++;
-            if (pHMgr->is_aliasm()) {
-              int index = atoi(chunk.c_str());
-              entry->morphcode = pHMgr->get_aliasm(index);
-            } else {
-              if (complexprefixes) {  // XXX - fix me for morph. gen.
-                if (utf8)
-                  reverseword_utf(chunk);
-                else
-                  reverseword(chunk);
-              }
-              // add the remaining of the line
-              if (*tp) {
-                *(tp - 1) = ' ';
-                chunk.push_back(' ');
-                chunk.append(tp);
-              }
-              entry->morphcode = mystrdup(chunk.c_str());
-              if (!entry->morphcode)
-                return 1;
-            }
-            break;
-          }
-          default:
-            break;
+          break;
         }
-        i++;
+        default:
+          break;
       }
-      piece = mystrsep(&tp, 0);
+      i++;
+      start_piece = mystrsep(nl, iter);
     }
     // check to make sure we parsed enough pieces
     if (np < 4) {
