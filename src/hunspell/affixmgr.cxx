@@ -573,7 +573,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the input conversion table */
     if (strncmp(line, "ICONV", 5) == 0) {
-      if (parse_convtable(line, afflst, &iconvtable, "ICONV")) {
+      if (!parse_convtable(line, afflst, &iconvtable, "ICONV")) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -581,7 +581,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the input conversion table */
     if (strncmp(line, "OCONV", 5) == 0) {
-      if (parse_convtable(line, afflst, &oconvtable, "OCONV")) {
+      if (!parse_convtable(line, afflst, &oconvtable, "OCONV")) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3873,75 +3873,72 @@ bool AffixMgr::parse_reptable(const std::string& line, FileMgr* af) {
 }
 
 /* parse in the typical fault correcting table */
-int AffixMgr::parse_convtable(char* line,
+bool AffixMgr::parse_convtable(const std::string& line,
                               FileMgr* af,
                               RepList** rl,
-                              const char* keyword) {
+                              const std::string& keyword) {
   if (*rl) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
-  char* tp = line;
-  char* piece;
   int i = 0;
   int np = 0;
   int numrl = 0;
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          numrl = atoi(piece);
-          if (numrl < 1) {
-            HUNSPELL_WARNING(stderr, "error: line %d: incorrect entry number\n",
-                             af->getlinenum());
-            return 1;
-          }
-          *rl = new RepList(numrl);
-          if (!*rl)
-            return 1;
-          np++;
-          break;
-        }
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+      case 1: {
+        numrl = atoi(std::string(start_piece, iter).c_str());
+        if (numrl < 1) {
+          HUNSPELL_WARNING(stderr, "error: line %d: incorrect entry number\n",
+                           af->getlinenum());
+          return false;
+        }
+        *rl = new RepList(numrl);
+        if (!*rl)
+          return false;
+        np++;
+        break;
+      }
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
 
   /* now parse the num lines to read in the remainder of the table */
   for (int j = 0; j < numrl; j++) {
     std::string nl;
     if (!af->getline(nl))
-      return 1;
+      return false;
     mychomp(nl);
-    std::string::const_iterator iter = nl.begin();
     i = 0;
     std::string pattern;
     std::string pattern2;
-    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    iter = nl.begin();
+    start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       {
         switch (i) {
           case 0: {
-            if (nl.compare(start_piece - nl.begin(), strlen(keyword), keyword, strlen(keyword)) != 0) {
+            if (nl.compare(start_piece - nl.begin(), keyword.size(), keyword, 0, keyword.size()) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
               delete *rl;
               *rl = NULL;
-              return 1;
+              return false;
             }
             break;
           }
@@ -3963,11 +3960,11 @@ int AffixMgr::parse_convtable(char* line,
     if (pattern.empty() || pattern2.empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
-      return 1;
+      return false;
     }
     (*rl)->add(pattern, pattern2);
   }
-  return 0;
+  return true;
 }
 
 /* parse in the typical fault correcting table */

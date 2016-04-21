@@ -355,10 +355,10 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   bool parse_num(const std::string& line, int* out, FileMgr* af);
   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   bool parse_reptable(const std::string& line, FileMgr* af);
-  int parse_convtable(char* line,
+  bool parse_convtable(const std::string& line,
                       FileMgr* af,
                       RepList** rl,
-                      const char* keyword);
+                      const std::string& keyword);
   int parse_phonetable(char* line, FileMgr* af);
   int parse_maptable(char* line, FileMgr* af);
   int parse_breaktable(char* line, FileMgr* af);
