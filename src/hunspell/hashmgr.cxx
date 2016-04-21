@@ -832,7 +832,6 @@ char* HashMgr::encode_flag(unsigned short f) {
 
 // read in aff file and set flag mode
 int HashMgr::load_config(const char* affpath, const char* key) {
-  char* line;  // io buffers
   int firstline = 1;
 
   // open the affix file
@@ -846,29 +845,31 @@ int HashMgr::load_config(const char* affpath, const char* key) {
   // read in each line ignoring any that do not
   // start with a known line type indicator
 
-  while ((line = afflst->getline()) != NULL) {
+  std::string line;
+  while (afflst->getline(line)) {
     mychomp(line);
 
     /* remove byte order mark */
     if (firstline) {
       firstline = 0;
-      if (strncmp(line, "\xEF\xBB\xBF", 3) == 0)
-        memmove(line, line + 3, strlen(line + 3) + 1);
+      if (line.compare(0, 3, "\xEF\xBB\xBF", 3) == 0) {
+        line.erase(0, 3);
+      }
     }
 
     /* parse in the try string */
-    if ((strncmp(line, "FLAG", 4) == 0) && isspace(line[4])) {
+    if ((line.compare(0, 4, "FLAG", 4) == 0) && line.size() > 4 && isspace(line[4])) {
       if (flag_mode != FLAG_CHAR) {
         HUNSPELL_WARNING(stderr,
                          "error: line %d: multiple definitions of the FLAG "
                          "affix file parameter\n",
                          afflst->getlinenum());
       }
-      if (strstr(line, "long"))
+      if (line.find("long") != std::string::npos)
         flag_mode = FLAG_LONG;
-      if (strstr(line, "num"))
+      if (line.find("num") != std::string::npos)
         flag_mode = FLAG_NUM;
-      if (strstr(line, "UTF-8"))
+      if (line.find("UTF-8") != std::string::npos)
         flag_mode = FLAG_UNI;
       if (flag_mode == FLAG_CHAR) {
         HUNSPELL_WARNING(
@@ -877,7 +878,8 @@ int HashMgr::load_config(const char* affpath, const char* key) {
             afflst->getlinenum());
       }
     }
-    if (strncmp(line, "FORBIDDENWORD", 13) == 0) {
+
+    if (line.compare(0, 13, "FORBIDDENWORD", 13) == 0) {
       std::string st;
       if (!parse_string(line, st, afflst->getlinenum())) {
         delete afflst;
@@ -885,7 +887,8 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       }
       forbiddenword = decode_flag(st.c_str());
     }
-    if (strncmp(line, "SET", 3) == 0) {
+
+    if (line.compare(0, 3, "SET", 3) == 0) {
       if (!parse_string(line, enc, afflst->getlinenum())) {
         delete afflst;
         return 1;
@@ -900,7 +903,8 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       } else
         csconv = get_current_cs(enc.c_str());
     }
-    if (strncmp(line, "LANG", 4) == 0) {
+
+    if (line.compare(0, 4, "LANG", 4) == 0) {
       if (!parse_string(line, lang, afflst->getlinenum())) {
         delete afflst;
         return 1;
@@ -910,7 +914,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 
     /* parse in the ignored characters (for example, Arabic optional diacritics
      * characters */
-    if (strncmp(line, "IGNORE", 6) == 0) {
+    if (line.compare(0, 6, "IGNORE", 6) == 0) {
       if (!parse_array(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
         delete afflst;
@@ -918,26 +922,28 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       }
     }
 
-    if ((strncmp(line, "AF", 2) == 0) && isspace(line[2])) {
+    if ((line.compare(0, 2, "AF", 2) == 0) && line.size() > 2 && isspace(line[2])) {
       if (!parse_aliasf(line, afflst)) {
         delete afflst;
         return 1;
       }
     }
 
-    if ((strncmp(line, "AM", 2) == 0) && isspace(line[2])) {
+    if ((line.compare(0, 2, "AM", 2) == 0) && line.size() > 2 && isspace(line[2])) {
       if (!parse_aliasm(line, afflst)) {
         delete afflst;
         return 1;
       }
     }
 
-    if (strncmp(line, "COMPLEXPREFIXES", 15) == 0)
+    if (line.compare(0, 15, "COMPLEXPREFIXES", 15) == 0)
       complexprefixes = 1;
-    if (((strncmp(line, "SFX", 3) == 0) || (strncmp(line, "PFX", 3) == 0)) &&
-        isspace(line[3]))
+
+    if (((line.compare(0, 3, "SFX", 3) == 0) ||
+         (line.compare(0, 3, "PFX", 3) == 0)) && line.size() > 3 && isspace(line[3]))
       break;
   }
+
   if (csconv == NULL)
     csconv = get_current_cs(SPELL_ENCODING);
   delete afflst;
