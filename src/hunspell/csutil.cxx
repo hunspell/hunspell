@@ -2864,6 +2864,39 @@ int parse_string(char* line, char** out, int ln) {
   return 0;
 }
 
+bool parse_string(const std::string& line, std::string& out, int ln) {
+  if (!out.empty()) {
+    HUNSPELL_WARNING(stderr, "error: line %d: multiple definitions\n", ln);
+    return false;
+  }
+  int i = 0;
+  int np = 0;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
+      }
+      case 1: {
+        out.assign(start_piece, iter);
+        np++;
+        break;
+      }
+      default:
+        break;
+    }
+    ++i;
+     start_piece = mystrsep(line, iter);
+  }
+  if (np != 2) {
+    HUNSPELL_WARNING(stderr, "error: line %d: missing data\n", ln);
+    return false;
+  }
+  return true;
+}
+
 bool parse_array(char* line,
                  char** out,
                  std::vector<w_char>& out_utf16,

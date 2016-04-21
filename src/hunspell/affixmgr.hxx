@@ -352,7 +352,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
 
  private:
   int parse_file(const char* affpath, const char* key);
-  int parse_flag(char* line, unsigned short* out, FileMgr* af);
+  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
   int parse_num(char* line, int* out, FileMgr* af);
   int parse_cpdsyllable(char* line, FileMgr* af);
   int parse_reptable(char* line, FileMgr* af);
@@ -365,7 +365,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int parse_breaktable(char* line, FileMgr* af);
   int parse_checkcpdtable(char* line, FileMgr* af);
   int parse_defcpdtable(char* line, FileMgr* af);
-  int parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
+  bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
   void reverse_condition(std::string&);
   void debugflag(char* result, unsigned short flag);

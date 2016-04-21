@@ -361,7 +361,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by the controlled compound words */
     if (strncmp(line, "COMPOUNDFLAG", 12) == 0) {
-      if (parse_flag(line, &compoundflag, afflst)) {
+      if (!parse_flag(line, &compoundflag, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -370,12 +370,12 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     /* parse in the flag used by compound words */
     if (strncmp(line, "COMPOUNDBEGIN", 13) == 0) {
       if (complexprefixes) {
-        if (parse_flag(line, &compoundend, afflst)) {
+        if (!parse_flag(line, &compoundend, afflst)) {
           finishFileMgr(afflst);
           return 1;
         }
       } else {
-        if (parse_flag(line, &compoundbegin, afflst)) {
+        if (!parse_flag(line, &compoundbegin, afflst)) {
           finishFileMgr(afflst);
           return 1;
         }
@@ -384,7 +384,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by compound words */
     if (strncmp(line, "COMPOUNDMIDDLE", 14) == 0) {
-      if (parse_flag(line, &compoundmiddle, afflst)) {
+      if (!parse_flag(line, &compoundmiddle, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -392,12 +392,12 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     /* parse in the flag used by compound words */
     if (strncmp(line, "COMPOUNDEND", 11) == 0) {
       if (complexprefixes) {
-        if (parse_flag(line, &compoundbegin, afflst)) {
+        if (!parse_flag(line, &compoundbegin, afflst)) {
           finishFileMgr(afflst);
           return 1;
         }
       } else {
-        if (parse_flag(line, &compoundend, afflst)) {
+        if (!parse_flag(line, &compoundend, afflst)) {
           finishFileMgr(afflst);
           return 1;
         }
@@ -414,7 +414,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag sign compounds in dictionary */
     if (strncmp(line, "COMPOUNDROOT", 12) == 0) {
-      if (parse_flag(line, &compoundroot, afflst)) {
+      if (!parse_flag(line, &compoundroot, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -422,7 +422,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by compound_check() method */
     if (strncmp(line, "COMPOUNDPERMITFLAG", 18) == 0) {
-      if (parse_flag(line, &compoundpermitflag, afflst)) {
+      if (!parse_flag(line, &compoundpermitflag, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -430,7 +430,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by compound_check() method */
     if (strncmp(line, "COMPOUNDFORBIDFLAG", 18) == 0) {
-      if (parse_flag(line, &compoundforbidflag, afflst)) {
+      if (!parse_flag(line, &compoundforbidflag, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -461,14 +461,14 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     }
 
     if (strncmp(line, "NOSUGGEST", 9) == 0) {
-      if (parse_flag(line, &nosuggest, afflst)) {
+      if (!parse_flag(line, &nosuggest, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
     }
 
     if (strncmp(line, "NONGRAMSUGGEST", 14) == 0) {
-      if (parse_flag(line, &nongramsuggest, afflst)) {
+      if (!parse_flag(line, &nongramsuggest, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -476,7 +476,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by forbidden words */
     if (strncmp(line, "FORBIDDENWORD", 13) == 0) {
-      if (parse_flag(line, &forbiddenword, afflst)) {
+      if (!parse_flag(line, &forbiddenword, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -484,7 +484,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by forbidden words */
     if (strncmp(line, "LEMMA_PRESENT", 13) == 0) {
-      if (parse_flag(line, &lemma_present, afflst)) {
+      if (!parse_flag(line, &lemma_present, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -492,7 +492,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by circumfixes */
     if (strncmp(line, "CIRCUMFIX", 9) == 0) {
-      if (parse_flag(line, &circumfix, afflst)) {
+      if (!parse_flag(line, &circumfix, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -500,7 +500,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by fogemorphemes */
     if (strncmp(line, "ONLYINCOMPOUND", 14) == 0) {
-      if (parse_flag(line, &onlyincompound, afflst)) {
+      if (!parse_flag(line, &onlyincompound, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -508,7 +508,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by `needaffixs' */
     if (strncmp(line, "PSEUDOROOT", 10) == 0) {
-      if (parse_flag(line, &needaffix, afflst)) {
+      if (!parse_flag(line, &needaffix, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -516,7 +516,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by `needaffixs' */
     if (strncmp(line, "NEEDAFFIX", 9) == 0) {
-      if (parse_flag(line, &needaffix, afflst)) {
+      if (!parse_flag(line, &needaffix, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -689,7 +689,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by forbidden words */
     if (strncmp(line, "KEEPCASE", 8) == 0) {
-      if (parse_flag(line, &keepcase, afflst)) {
+      if (!parse_flag(line, &keepcase, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -697,7 +697,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by `forceucase' */
     if (strncmp(line, "FORCEUCASE", 10) == 0) {
-      if (parse_flag(line, &forceucase, afflst)) {
+      if (!parse_flag(line, &forceucase, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -705,7 +705,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by `warn' */
     if (strncmp(line, "WARN", 4) == 0) {
-      if (parse_flag(line, &warn, afflst)) {
+      if (!parse_flag(line, &warn, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -717,7 +717,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the flag used by the affix generator */
     if (strncmp(line, "SUBSTANDARD", 11) == 0) {
-      if (parse_flag(line, &substandard, afflst)) {
+      if (!parse_flag(line, &substandard, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -738,7 +738,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
         memset(dupflags, 0, sizeof(dupflags));
         dupflags_ini = 0;
       }
-      if (parse_affix(line, ft, afflst, dupflags)) {
+      if (!parse_affix(line, ft, afflst, dupflags)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -3705,20 +3705,19 @@ int AffixMgr::get_sugswithdots(void) const {
 }
 
 /* parse flag */
-int AffixMgr::parse_flag(char* line, unsigned short* out, FileMgr* af) {
-  char* s = NULL;
+bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr* af) {
   if (*out != FLAG_NULL && !(*out >= DEFAULTFLAGS)) {
     HUNSPELL_WARNING(
         stderr,
         "error: line %d: multiple definitions of an affix file parameter\n",
         af->getlinenum());
-    return 1;
+    return false;
   }
-  if (parse_string(line, &s, af->getlinenum()))
-    return 1;
-  *out = pHMgr->decode_flag(s);
-  free(s);
-  return 0;
+  std::string s;
+  if (!parse_string(line, s, af->getlinenum()))
+    return false;
+  *out = pHMgr->decode_flag(s.c_str());
+  return true;
 }
 
 /* parse num */
@@ -4573,7 +4572,7 @@ public:
   std::vector<AffEntry*>::iterator end() { return entries.end(); }
 };
 
-int AffixMgr::parse_affix(const std::string& line,
+bool AffixMgr::parse_affix(const std::string& line,
                           const char at,
                           FileMgr* af,
                           char* dupflags) {
@@ -4614,7 +4613,6 @@ int AffixMgr::parse_affix(const std::string& line,
               stderr,
               "error: line %d: multiple definitions of an affix flag\n",
               af->getlinenum());
-          // return 1; XXX permissive mode for bad dictionaries
         }
         dupflags[aflag] += (char)((at == 'S') ? dupSFX : dupPFX);
         break;
@@ -4639,7 +4637,7 @@ int AffixMgr::parse_affix(const std::string& line,
                              af->getlinenum());
             free(err);
           }
-          return 1;
+          return false;
         }
 
         char opts = ff;
@@ -4666,7 +4664,7 @@ int AffixMgr::parse_affix(const std::string& line,
                        af->getlinenum());
       free(err);
     }
-    return 1;
+    return false;
   }
 
   // now parse numents affentries for this affix
@@ -4674,7 +4672,7 @@ int AffixMgr::parse_affix(const std::string& line,
   for (int ent = 0; ent < numents; ++ent) {
     std::string nl;
     if (!af->getline(nl))
-      return 1;
+      return false;
     mychomp(nl);
 
     iter = nl.begin();
@@ -4705,7 +4703,7 @@ int AffixMgr::parse_affix(const std::string& line,
                                af->getlinenum(), err);
               free(err);
             }
-            return 1;
+            return false;
           }
 
           if (ent != 0) {
@@ -4820,7 +4818,7 @@ int AffixMgr::parse_affix(const std::string& line,
             reverse_condition(chunk);
           }
           if (encodeit(*entry, chunk.c_str()))
-            return 1;
+            return false;
           break;
         }
 
@@ -4844,7 +4842,7 @@ int AffixMgr::parse_affix(const std::string& line,
             }
             entry->morphcode = mystrdup(chunk.c_str());
             if (!entry->morphcode)
-              return 1;
+              return false;
           }
           break;
         }
@@ -4862,7 +4860,7 @@ int AffixMgr::parse_affix(const std::string& line,
                          af->getlinenum(), err);
         free(err);
       }
-      return 1;
+      return false;
     }
 
 #ifdef DEBUG
@@ -4895,7 +4893,7 @@ int AffixMgr::parse_affix(const std::string& line,
   //contents belong to AffixMgr now
   affentries.release();
 
-  return 0;
+  return true;
 }
 
 int AffixMgr::redundant_condition(char ft,
