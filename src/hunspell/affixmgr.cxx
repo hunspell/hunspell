@@ -136,8 +136,6 @@ AffixMgr::AffixMgr(const char* affpath,
   cpdwordmax = -1;        // default: unlimited wordcount in compound words
   cpdmin = -1;            // undefined
   cpdmaxsyllable = 0;     // default: unlimited syllablecount in compound words
-  cpdvowels = NULL;  // vowels (for calculating of Hungarian compounding limit,
-                     // O(n) search! XXX)
   cpdvowels_utf16 =
       NULL;  // vowels for UTF-8 encoding (bsearch instead of O(n) search)
   cpdvowels_utf16_len = 0;  // vowels
@@ -252,8 +250,6 @@ AffixMgr::~AffixMgr() {
   pHMgr = NULL;
   cpdmin = 0;
   cpdmaxsyllable = 0;
-  if (cpdvowels)
-    free(cpdvowels);
   if (cpdvowels_utf16)
     free(cpdvowels_utf16);
   if (cpdsyllablenum)
@@ -534,7 +530,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the max. words and syllables in compounds */
     if (strncmp(line, "COMPOUNDSYLLABLE", 16) == 0) {
-      if (parse_cpdsyllable(line, afflst)) {
+      if (!parse_cpdsyllable(line, afflst)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -1584,20 +1580,23 @@ short AffixMgr::get_syllable(const std::string& word) {
 
   if (!utf8) {
     for (size_t i = 0; i < word.size(); ++i) {
-      if (strchr(cpdvowels, word[i]))
-        num++;
+      if (std::binary_search(cpdvowels.begin(), cpdvowels.end(),
+                             word[i])) {
+        ++num;
+      }
     }
   } else if (cpdvowels_utf16) {
     std::vector<w_char> w;
-    int i = u8_u16(w, word);
-    for (; i > 0; i--) {
+    u8_u16(w, word);
+    for (size_t i = 0; i < w.size(); ++i) {
       if (std::binary_search(cpdvowels_utf16,
                              cpdvowels_utf16 + cpdvowels_utf16_len,
-                             w[i - 1])) {
+                             w[i])) {
         ++num;
       }
     }
   }
+
   return num;
 }
 
@@ -3737,48 +3736,47 @@ bool AffixMgr::parse_num(const std::string& line, int* out, FileMgr* af) {
 }
 
 /* parse in the max syllablecount of compound words and  */
-int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
-  char* tp = line;
-  char* piece;
+bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
   int i = 0;
   int np = 0;
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          cpdmaxsyllable = atoi(piece);
-          np++;
-          break;
-        }
-        case 2: {
-          if (!utf8) {
-            cpdvowels = mystrdup(piece);
-          } else {
-            std::vector<w_char> w;
-            u8_u16(w, piece);
-            if (!w.empty()) {
-              std::sort(w.begin(), w.end());
-              cpdvowels_utf16 = (w_char*)malloc(w.size() * sizeof(w_char));
-              if (!cpdvowels_utf16)
-                return 1;
-              memcpy(cpdvowels_utf16, &w[0], w.size());
-            }
-            cpdvowels_utf16_len = w.size();
-          }
-          np++;
-          break;
-        }
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+      case 1: {
+        cpdmaxsyllable = atoi(std::string(start_piece, iter).c_str());
+        np++;
+        break;
+      }
+      case 2: {
+        if (!utf8) {
+          cpdvowels.assign(start_piece, iter);
+          std::sort(cpdvowels.begin(), cpdvowels.end());
+        } else {
+          std::string piece(start_piece, iter);
+          std::vector<w_char> w;
+          u8_u16(w, piece);
+          if (!w.empty()) {
+            std::sort(w.begin(), w.end());
+            cpdvowels_utf16 = (w_char*)malloc(w.size() * sizeof(w_char));
+            if (!cpdvowels_utf16)
+              return 1;
+            memcpy(cpdvowels_utf16, &w[0], w.size());
+          }
+          cpdvowels_utf16_len = w.size();
+        }
+        np++;
+        break;
+      }
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   if (np < 2) {
     HUNSPELL_WARNING(stderr,
@@ -3787,7 +3785,7 @@ int AffixMgr::parse_cpdsyllable(char* line, FileMgr* af) {
     return 1;
   }
   if (np == 2)
-    cpdvowels = mystrdup("aeiouAEIOU");
+    cpdvowels = "AEIOUaeiou";
   return 0;
 }
 

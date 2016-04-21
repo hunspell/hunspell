@@ -147,7 +147,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int sugswithdots;
   int cpdwordmax;
   int cpdmaxsyllable;
-  char* cpdvowels;
+  std::string cpdvowels; // vowels (for calculating of Hungarian compounding limit,
   w_char* cpdvowels_utf16;
   int cpdvowels_utf16_len;
   char* cpdsyllablenum;
@@ -354,7 +354,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int parse_file(const char* affpath, const char* key);
   bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
-  int parse_cpdsyllable(char* line, FileMgr* af);
+  bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   int parse_reptable(char* line, FileMgr* af);
   int parse_convtable(char* line,
                       FileMgr* af,
