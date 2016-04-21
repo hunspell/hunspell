@@ -110,9 +110,9 @@ typedef std::vector<std::string> mapentry;
 typedef std::vector<FLAG> flagentry;
 
 struct patentry {
-  char* pattern;
-  char* pattern2;
-  char* pattern3;
+  std::string pattern;
+  std::string pattern2;
+  std::string pattern3;
   FLAG cond;
   FLAG cond2;
 };

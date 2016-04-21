@@ -256,14 +256,6 @@ AffixMgr::~AffixMgr() {
 
   numrep = 0;
   if (checkcpdtable) {
-    for (int j = 0; j < numcheckcpd; j++) {
-      free(checkcpdtable[j].pattern);
-      free(checkcpdtable[j].pattern2);
-      free(checkcpdtable[j].pattern3);
-      checkcpdtable[j].pattern = NULL;
-      checkcpdtable[j].pattern2 = NULL;
-      checkcpdtable[j].pattern3 = NULL;
-    }
     free(checkcpdtable);
     checkcpdtable = NULL;
   }
@@ -1411,19 +1403,19 @@ int AffixMgr::cpdpat_check(const char* word,
                            const char /*affixed*/) {
   int len;
   for (int i = 0; i < numcheckcpd; i++) {
-    if (isSubset(checkcpdtable[i].pattern2, word + pos) &&
+    if (isSubset(checkcpdtable[i].pattern2.c_str(), word + pos) &&
         (!r1 || !checkcpdtable[i].cond ||
          (r1->astr && TESTAFF(r1->astr, checkcpdtable[i].cond, r1->alen))) &&
         (!r2 || !checkcpdtable[i].cond2 ||
          (r2->astr && TESTAFF(r2->astr, checkcpdtable[i].cond2, r2->alen))) &&
         // zero length pattern => only TESTAFF
         // zero pattern (0/flag) => unmodified stem (zero affixes allowed)
-        (!*(checkcpdtable[i].pattern) ||
-         ((*(checkcpdtable[i].pattern) == '0' && r1->blen <= pos &&
+        (checkcpdtable[i].pattern.empty() ||
+         ((checkcpdtable[i].pattern[0] == '0' && r1->blen <= pos &&
            strncmp(word + pos - r1->blen, r1->word, r1->blen) == 0) ||
-          (*(checkcpdtable[i].pattern) != '0' &&
-           ((len = strlen(checkcpdtable[i].pattern)) != 0) &&
-           strncmp(word + pos - len, checkcpdtable[i].pattern, len) == 0)))) {
+          (checkcpdtable[i].pattern[0] != '0' &&
+           ((len = checkcpdtable[i].pattern.size()) != 0) &&
+           strncmp(word + pos - len, checkcpdtable[i].pattern.c_str(), len) == 0)))) {
       return 1;
     }
   }
@@ -1712,9 +1704,9 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
         if (scpd > 0) {
           for (; scpd <= numcheckcpd &&
-                 (!checkcpdtable[scpd - 1].pattern3 ||
-                  strncmp(word + i, checkcpdtable[scpd - 1].pattern3,
-                          strlen(checkcpdtable[scpd - 1].pattern3)) != 0);
+                 (checkcpdtable[scpd - 1].pattern3.empty() ||
+                  strncmp(word + i, checkcpdtable[scpd - 1].pattern3.c_str(),
+                          checkcpdtable[scpd - 1].pattern3.size()) != 0);
                scpd++)
             ;
 
@@ -1722,15 +1714,15 @@ struct hentry* AffixMgr::compound_check(const char* word,
             break;  // break simplified checkcompoundpattern loop
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern);
           soldi = i;
-          i += strlen(checkcpdtable[scpd - 1].pattern);
+          i += checkcpdtable[scpd - 1].pattern.size();
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern2);
-          st.replace(i + strlen(checkcpdtable[scpd - 1].pattern2), std::string::npos,
-                 word + soldi + strlen(checkcpdtable[scpd - 1].pattern3));
+          st.replace(i + checkcpdtable[scpd - 1].pattern2.size(), std::string::npos,
+                 word + soldi + checkcpdtable[scpd - 1].pattern3.size());
 
           oldlen = len;
-          len += strlen(checkcpdtable[scpd - 1].pattern) +
-                 strlen(checkcpdtable[scpd - 1].pattern2) -
-                 strlen(checkcpdtable[scpd - 1].pattern3);
+          len += checkcpdtable[scpd - 1].pattern.size() +
+                 checkcpdtable[scpd - 1].pattern2.size() -
+                 checkcpdtable[scpd - 1].pattern3.size();
           oldcmin = cmin;
           oldcmax = cmax;
           setcminmax(&cmin, &cmax, st.c_str(), len);
@@ -4195,9 +4187,6 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
     mychomp(nl);
     tp = nl;
     i = 0;
-    checkcpdtable[j].pattern = NULL;
-    checkcpdtable[j].pattern2 = NULL;
-    checkcpdtable[j].pattern3 = NULL;
     checkcpdtable[j].cond = FLAG_NULL;
     checkcpdtable[j].cond2 = FLAG_NULL;
     piece = mystrsep(&tp, 0);
@@ -4214,25 +4203,27 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
             break;
           }
           case 1: {
-            checkcpdtable[j].pattern = mystrdup(piece);
-            char* p = strchr(checkcpdtable[j].pattern, '/');
-            if (p) {
-              *p = '\0';
-              checkcpdtable[j].cond = pHMgr->decode_flag(p + 1);
+            checkcpdtable[j].pattern.assign(piece);
+            size_t slash_pos = checkcpdtable[j].pattern.find('/');
+            if (slash_pos != std::string::npos) {
+              std::string chunk(checkcpdtable[j].pattern, slash_pos + 1);
+              checkcpdtable[j].pattern.resize(slash_pos);
+              checkcpdtable[j].cond = pHMgr->decode_flag(chunk.c_str());
             }
             break;
           }
           case 2: {
-            checkcpdtable[j].pattern2 = mystrdup(piece);
-            char* p = strchr(checkcpdtable[j].pattern2, '/');
-            if (p) {
-              *p = '\0';
-              checkcpdtable[j].cond2 = pHMgr->decode_flag(p + 1);
+            checkcpdtable[j].pattern2.assign(piece);
+            size_t slash_pos = checkcpdtable[j].pattern2.find('/');
+            if (slash_pos != std::string::npos) {
+              std::string chunk(checkcpdtable[j].pattern2, slash_pos + 1);
+              checkcpdtable[j].pattern2.resize(slash_pos);
+              checkcpdtable[j].cond2 = pHMgr->decode_flag(chunk.c_str());
             }
             break;
           }
           case 3: {
-            checkcpdtable[j].pattern3 = mystrdup(piece);
+            checkcpdtable[j].pattern3.assign(piece);
             simplifiedcpd = 1;
             break;
           }
@@ -4242,12 +4233,6 @@ int AffixMgr::parse_checkcpdtable(char* line, FileMgr* af) {
         i++;
       }
       piece = mystrsep(&tp, 0);
-    }
-    if ((!(checkcpdtable[j].pattern)) || (!(checkcpdtable[j].pattern2))) {
-      HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                       af->getlinenum());
-      numcheckcpd = 0;
-      return 1;
     }
   }
   return 0;
