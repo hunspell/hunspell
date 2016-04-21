@@ -94,8 +94,8 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   int utf8;
   unsigned short forbiddenword;
   int langnum;
-  char* enc;
-  char* lang;
+  std::string enc;
+  std::string lang;
   struct cs_info* csconv;
   std::string ignorechars;
   std::vector<w_char> ignorechars_utf16;

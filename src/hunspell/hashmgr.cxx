@@ -98,8 +98,6 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
       numaliasm(0),
       aliasm(NULL) {
   langnum = 0;
-  lang = NULL;
-  enc = NULL;
   csconv = 0;
   load_config(apath, key);
   int ec = load_tables(tpath, key);
@@ -157,11 +155,6 @@ HashMgr::~HashMgr() {
     free_utf_tbl();
 #endif
 #endif
-
-  if (enc)
-    free(enc);
-  if (lang)
-    free(lang);
 
 #ifdef MOZILLA_CLIENT
   delete[] csconv;
@@ -893,11 +886,11 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       forbiddenword = decode_flag(st.c_str());
     }
     if (strncmp(line, "SET", 3) == 0) {
-      if (parse_string(line, &enc, afflst->getlinenum())) {
+      if (!parse_string(line, enc, afflst->getlinenum())) {
         delete afflst;
         return 1;
       }
-      if (strcmp(enc, "UTF-8") == 0) {
+      if (enc == "UTF-8") {
         utf8 = 1;
 #ifndef OPENOFFICEORG
 #ifndef MOZILLA_CLIENT
@@ -905,14 +898,14 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 #endif
 #endif
       } else
-        csconv = get_current_cs(enc);
+        csconv = get_current_cs(enc.c_str());
     }
     if (strncmp(line, "LANG", 4) == 0) {
-      if (parse_string(line, &lang, afflst->getlinenum())) {
+      if (!parse_string(line, lang, afflst->getlinenum())) {
         delete afflst;
         return 1;
       }
-      langnum = get_lang_num(lang);
+      langnum = get_lang_num(lang.c_str());
     }
 
     /* parse in the ignored characters (for example, Arabic optional diacritics
