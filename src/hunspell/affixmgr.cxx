@@ -4059,20 +4059,20 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
   }
 
   /* now parse the phone->num lines to read in the remainder of the table */
-  char* nl;
   for (int j = 0; j < num; ++j) {
-    if (!(nl = af->getline()))
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+    std::string::const_iterator iter = nl.begin();
     i = 0;
     const size_t old_size = phone->rules.size();
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      {
         switch (i) {
           case 0: {
-            if (strncmp(piece, "PHONE", 5) != 0) {
+            if (nl.compare(start_piece - nl.begin(), 5, "PHONE", 5) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
               return 1;
@@ -4080,21 +4080,20 @@ int AffixMgr::parse_phonetable(char* line, FileMgr* af) {
             break;
           }
           case 1: {
-            std::string chunk(piece);
-            phone->rules.push_back(mystrrep(chunk, "_", ""));
+            phone->rules.push_back(std::string(start_piece, iter));
             break;
           }
           case 2: {
-            std::string chunk(piece);
-            phone->rules.push_back(mystrrep(chunk, "_", ""));
+            phone->rules.push_back(std::string(start_piece, iter));
+            mystrrep(phone->rules.back(), "_", "");
             break;
           }
           default:
             break;
         }
-        i++;
+        ++i;
       }
-      piece = mystrsep(&tp, 0);
+      start_piece = mystrsep(nl, iter);
     }
     if (phone->rules.size() != old_size + 2) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
