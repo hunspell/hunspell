@@ -354,7 +354,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
-  int parse_reptable(char* line, FileMgr* af);
+  bool parse_reptable(const std::string& line, FileMgr* af);
   int parse_convtable(char* line,
                       FileMgr* af,
                       RepList** rl,
