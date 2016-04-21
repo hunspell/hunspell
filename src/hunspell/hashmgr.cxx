@@ -934,7 +934,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     }
 
     if ((strncmp(line, "AM", 2) == 0) && isspace(line[2])) {
-      if (parse_aliasm(line, afflst)) {
+      if (!parse_aliasm(line, afflst)) {
         delete afflst;
         return 1;
       }
@@ -1086,45 +1086,42 @@ int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) {
 }
 
 /* parse morph alias definitions */
-int HashMgr::parse_aliasm(char* line, FileMgr* af) {
+bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   if (numaliasm != 0) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
-  char* tp = line;
-  char* piece;
   int i = 0;
   int np = 0;
-  piece = mystrsep(&tp, 0);
-  while (piece) {
-    if (*piece != '\0') {
-      switch (i) {
-        case 0: {
-          np++;
-          break;
-        }
-        case 1: {
-          numaliasm = atoi(piece);
-          if (numaliasm < 1) {
-            HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                             af->getlinenum());
-            return 1;
-          }
-          aliasm = (char**)malloc(numaliasm * sizeof(char*));
-          if (!aliasm) {
-            numaliasm = 0;
-            return 1;
-          }
-          np++;
-          break;
-        }
-        default:
-          break;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+    switch (i) {
+      case 0: {
+        np++;
+        break;
       }
-      i++;
+      case 1: {
+        numaliasm = atoi(std::string(start_piece, iter).c_str());
+        if (numaliasm < 1) {
+          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+                           af->getlinenum());
+          return false;
+        }
+        aliasm = (char**)malloc(numaliasm * sizeof(char*));
+        if (!aliasm) {
+          numaliasm = 0;
+          return false;
+        }
+        np++;
+        break;
+      }
+      default:
+        break;
     }
-    piece = mystrsep(&tp, 0);
+    ++i;
+    start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
     numaliasm = 0;
@@ -1132,55 +1129,50 @@ int HashMgr::parse_aliasm(char* line, FileMgr* af) {
     aliasm = NULL;
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
 
   /* now parse the numaliasm lines to read in the remainder of the table */
-  char* nl = line;
   for (int j = 0; j < numaliasm; j++) {
-    if ((nl = af->getline()) == NULL)
-      return 1;
+    std::string nl;
+    if (!af->getline(nl))
+      return false;
     mychomp(nl);
-    tp = nl;
-    i = 0;
     aliasm[j] = NULL;
-    piece = mystrsep(&tp, ' ');
-    while (piece) {
-      if (*piece != '\0') {
-        switch (i) {
-          case 0: {
-            if (strncmp(piece, "AM", 2) != 0) {
-              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                               af->getlinenum());
-              numaliasm = 0;
-              free(aliasm);
-              aliasm = NULL;
-              return 1;
-            }
-            break;
+    iter = nl.begin();
+    i = 0;
+    start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      switch (i) {
+        case 0: {
+          if (nl.compare(start_piece - nl.begin(), 2, "AM", 2) != 0) {
+            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                             af->getlinenum());
+            numaliasm = 0;
+            free(aliasm);
+            aliasm = NULL;
+            return false;
           }
-          case 1: {
-            // add the remaining of the line
-            if (*tp) {
-              *(tp - 1) = ' ';
-              tp = tp + strlen(tp);
-            }
-            std::string chunk(piece);
-            if (complexprefixes) {
-              if (utf8)
-                reverseword_utf(chunk);
-              else
-                reverseword(chunk);
-            }
-            aliasm[j] = mystrdup(chunk.c_str());
-            break;
-          }
-          default:
-            break;
+          break;
         }
-        i++;
+        case 1: {
+          // add the remaining of the line
+          std::string::const_iterator end = nl.end();
+          std::string chunk(start_piece, end);
+          if (complexprefixes) {
+            if (utf8)
+              reverseword_utf(chunk);
+            else
+              reverseword(chunk);
+          }
+          aliasm[j] = mystrdup(chunk.c_str());
+          break;
+        }
+        default:
+          break;
       }
-      piece = mystrsep(&tp, ' ');
+      ++i;
+      start_piece = mystrsep(nl, iter);
     }
     if (!aliasm[j]) {
       numaliasm = 0;
@@ -1188,10 +1180,10 @@ int HashMgr::parse_aliasm(char* line, FileMgr* af) {
       aliasm = NULL;
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
-      return 1;
+      return false;
     }
   }
-  return 0;
+  return true;
 }
 
 int HashMgr::is_aliasm() {

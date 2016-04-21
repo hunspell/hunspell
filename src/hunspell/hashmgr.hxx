@@ -143,7 +143,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
                                   int al,
                                   char* dp,
                                   int captype);
-  int parse_aliasm(char* line, FileMgr* af);
+  bool parse_aliasm(const std::string& line, FileMgr* af);
   int remove_forbidden_flag(const std::string& word);
 };
 
