@@ -144,6 +144,25 @@ FILE* myfopen(const char* path, const char* mode) {
   return fopen(path, mode);
 }
 
+void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mode)
+{
+#ifdef _WIN32
+#define WIN32_LONG_PATH_PREFIX "\\\\?\\"
+  if (strncmp(path, WIN32_LONG_PATH_PREFIX, 4) == 0) {
+    int len = MultiByteToWideChar(CP_UTF8, 0, path, -1, NULL, 0);
+    wchar_t* buff = new wchar_t[len];
+    wchar_t* buff2 = new wchar_t[len];
+    MultiByteToWideChar(CP_UTF8, 0, path, -1, buff, len);
+    if (_wfullpath(buff2, buff, len) != NULL) {
+      stream.open(buff2, mode);
+    }
+    delete [] buff;
+    delete [] buff2;
+  }
+#endif
+  stream.open(path, mode);
+}
+
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
   std::vector<w_char>::const_iterator u2 = src.begin();

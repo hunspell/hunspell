@@ -78,6 +78,7 @@
 
 // First some base level utility routines
 
+#include <fstream>
 #include <string>
 #include <vector>
 #include <string.h>
@@ -129,6 +130,8 @@
 
 // fopen or optional _wfopen to fix long pathname problem of WIN32
 LIBHUNSPELL_DLL_EXPORTED FILE* myfopen(const char* path, const char* mode);
+LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
+                                     std::ios_base::openmode mode);
 
 // convert UTF-16 characters to UTF-8
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
