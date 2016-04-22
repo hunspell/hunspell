@@ -795,9 +795,7 @@ char* SfxEntry::check_twosfx_morph(const char* word,
   PfxEntry* ep = ppfx;
   char* st;
 
-  char result[MAXLNLEN];
-
-  *result = '\0';
+  std::string result;
 
   // if this suffix is being cross checked with a prefix
   // but it does not support cross products skip it
@@ -841,10 +839,10 @@ char* SfxEntry::check_twosfx_morph(const char* word,
                                           needflag);
           if (st) {
             if (ppfx->getMorph()) {
-              mystrcat(result, ppfx->getMorph(), MAXLNLEN);
-              mystrcat(result, " ", MAXLNLEN);
+              result.append(ppfx->getMorph());
+              result.append(" ");
             }
-            mystrcat(result, st, MAXLNLEN);
+            result.append(st);
             free(st);
             mychomp(result);
           }
@@ -852,7 +850,7 @@ char* SfxEntry::check_twosfx_morph(const char* word,
           st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, optflags, ppfx, aflag,
                                           needflag);
           if (st) {
-            mystrcat(result, st, MAXLNLEN);
+            result.append(st);
             free(st);
             mychomp(result);
           }
@@ -861,13 +859,13 @@ char* SfxEntry::check_twosfx_morph(const char* word,
         st =
             pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag, needflag);
         if (st) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           free(st);
           mychomp(result);
         }
       }
-      if (*result)
-        return mystrdup(result);
+      if (!result.empty())
+        return mystrdup(result.c_str());
     }
   }
   return NULL;
