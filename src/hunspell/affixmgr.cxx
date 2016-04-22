@@ -2539,10 +2539,10 @@ int AffixMgr::compound_check_morph(const char* word,
             }
             result.append(presult);
             if (m || (*m != '\0')) {
-              char m2[MAXLNLEN];
-              sprintf(m2, "%c%s%s%s", MSEP_FLD, MORPH_PART, word + i,
-                      line_uniq_app(&m, MSEP_REC));
-              result.append(m2);
+              result.push_back(MSEP_FLD);
+              result.append(MORPH_PART);
+              result.append(word + i);
+              result.append(line_uniq_app(&m, MSEP_REC));
             }
             if (m)
               free(m);
@@ -2632,10 +2632,10 @@ int AffixMgr::compound_check_morph(const char* word,
           }
           result.append(presult);
           if (m && (*m != '\0')) {
-            char m2[MAXLNLEN];
-            sprintf(m2, "%c%s%s%s", MSEP_FLD, MORPH_PART, word + i,
-                    line_uniq_app(&m, MSEP_REC));
-            result.append(m2);
+            result.push_back(MSEP_FLD);
+            result.append(MORPH_PART);
+            result.append(word + 1);
+            result.append(line_uniq_app(&m, MSEP_REC));
           }
           if (m)
             free(m);
