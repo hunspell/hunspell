@@ -57,7 +57,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffEntry {
         morphcode(0),
         contclass(NULL),
         contclasslen(0) {}
-  ~AffEntry();
+  virtual ~AffEntry();
   std::string appnd;
   std::string strip;
   unsigned char numconds;
