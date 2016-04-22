@@ -1644,13 +1644,13 @@ int Hunspell::get_langnum() const {
   return langnum;
 }
 
-void Hunspell::input_conv(const char* word, std::string& dest) {
+bool Hunspell::input_conv(const char* word, std::string& dest) {
   RepList* rl = pAMgr ? pAMgr->get_iconvtable() : NULL;
   if (rl) {
-    rl->conv(word, dest);
-  } else {
-    dest.assign(word);
+    return rl->conv(word, dest);
   }
+  dest.assign(word);
+  return false;
 }
 
 // return the beginning of the element (attr == NULL) or the attribute

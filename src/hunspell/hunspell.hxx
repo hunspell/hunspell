@@ -225,7 +225,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int get_langnum() const;
 
   /* need for putdic */
-  void input_conv(const char* word, std::string& dest);
+  bool input_conv(const char* word, std::string& dest);
 
  private:
   void cleanword(std::string& dest, const char*, int* pcaptype, int* pabbrev);
