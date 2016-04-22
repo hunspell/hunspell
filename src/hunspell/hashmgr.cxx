@@ -182,10 +182,10 @@ int HashMgr::add_word(const std::string& in_word,
                       int wcl,
                       unsigned short* aff,
                       int al,
-                      const char* desc,
+                      const std::string* in_desc,
                       bool onlyupcase) {
-  size_t wbl;
-  const char* word;
+  const std::string* word = &in_word;
+  const std::string* desc = in_desc;
 
   std::string *word_copy = NULL;
   std::string *desc_copy = NULL;
@@ -206,8 +206,8 @@ int HashMgr::add_word(const std::string& in_word,
       else
         reverseword(*word_copy);
 
-      if (desc && !aliasm) {
-        desc_copy = new std::string(desc);
+      if (in_desc && !aliasm) {
+        desc_copy = new std::string(*in_desc);
 
         if (complexprefixes) {
           if (utf8)
@@ -215,23 +215,18 @@ int HashMgr::add_word(const std::string& in_word,
           else
             reverseword(*desc_copy);
         }
-        desc = desc_copy->c_str();
+        desc = desc_copy;
       }
     }
 
-    wbl = word_copy->size();
-    word = word_copy->c_str();
-  }
-  else {
-    wbl = in_word.size();
-    word = in_word.c_str();
+    word = word_copy;
   }
 
   bool upcasehomonym = false;
-  int descl = desc ? (aliasm ? sizeof(char*) : strlen(desc) + 1) : 0;
+  int descl = desc ? (aliasm ? sizeof(char*) : desc->size() + 1) : 0;
   // variable-length hash record with word and optional fields
   struct hentry* hp =
-      (struct hentry*)malloc(sizeof(struct hentry) + wbl + descl);
+      (struct hentry*)malloc(sizeof(struct hentry) + word->size() + descl);
   if (!hp) {
     delete desc_copy;
     delete word_copy;
@@ -239,11 +234,11 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   char* hpw = hp->word;
-  strcpy(hpw, word);
+  strcpy(hpw, word->c_str());
 
   int i = hash(hpw);
 
-  hp->blen = (unsigned char)wbl;
+  hp->blen = (unsigned char)word->size();
   hp->clen = (unsigned char)wcl;
   hp->alen = (short)al;
   hp->astr = aff;
@@ -255,9 +250,9 @@ int HashMgr::add_word(const std::string& in_word,
     hp->var = H_OPT;
     if (aliasm) {
       hp->var += H_OPT_ALIASM;
-      store_pointer(hpw + wbl + 1, get_aliasm(atoi(desc)));
+      store_pointer(hpw + word->size() + 1, get_aliasm(atoi(desc->c_str())));
     } else {
-      strcpy(hpw + wbl + 1, desc);
+      strcpy(hpw + word->size() + 1, desc->c_str());
     }
     if (strstr(HENTRY_DATA(hp), MORPH_PHON))
       hp->var += H_OPT_PHON;
@@ -328,7 +323,7 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
                                          int wcl,
                                          unsigned short* flags,
                                          int flagslen,
-                                         const char* dp,
+                                         const std::string* dp,
                                          int captype) {
   if (flags == NULL)
     flagslen = 0;
@@ -601,7 +596,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 
     int captype;
     int wcl = get_clen_and_captype(ts, &captype);
-    const char *dp_str = dp.empty() ? NULL : dp.c_str();
+    const std::string *dp_str = dp.empty() ? NULL : &dp;
     // add the word and its index plus its capitalized form optionally
     if (add_word(ts, wcl, flags, al, dp_str, false) ||
         add_hidden_capitalized_word(ts.c_str(), wcl, flags, al, dp_str, captype)) {
