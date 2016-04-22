@@ -76,6 +76,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <sstream>
 
 #include "csutil.hxx"
 #include "atypes.hxx"
@@ -396,6 +397,21 @@ int line_tok(const char* text, char*** lines, char breakchar) {
   return l;
 }
 
+std::vector<std::string> line_tok(const std::string& text, char breakchar) {
+  std::vector<std::string> ret;
+  if (text.empty()) {
+    return ret;
+  }
+
+  std::stringstream ss(text);
+  std::string tok;
+  while(std::getline(ss, tok, breakchar)) {
+      ret.push_back(tok);
+  }
+
+  return ret;
+}
+
 // uniq line in place
 char* line_uniq(char* text, char breakchar) {
   char** lines;
@@ -422,6 +438,30 @@ char* line_uniq(char* text, char breakchar) {
   }
   free(lines);
   return text;
+}
+
+void line_uniq(std::string& text, char breakchar)
+{
+  std::vector<std::string> lines = line_tok(text, breakchar);
+  text.clear();
+  if (lines.empty()) {
+    return;
+  }
+  text = lines[0];
+  for (size_t i = 1; i < lines.size(); ++i) {
+    bool dup = false;
+    for (size_t j = 0; j < i; ++j) {
+      if (lines[i] == lines[j]) {
+        dup = true;
+        break;
+      }
+    }
+    if (!dup) {
+      if (!text.empty())
+        text.push_back(breakchar);
+      text.append(lines[i]);
+    }
+  }
 }
 
 // uniq and boundary for compound analysis: "1\n\2\n\1" -> " ( \1 | \2 ) "
