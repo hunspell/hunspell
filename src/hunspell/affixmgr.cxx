@@ -1210,8 +1210,7 @@ char* AffixMgr::prefix_check_morph(const char* word,
                                    char in_compound,
                                    const FLAG needflag) {
 
-  char result[MAXLNLEN];
-  result[0] = '\0';
+  std::string result;
 
   pfx = NULL;
   sfxappnd = NULL;
@@ -1222,7 +1221,7 @@ char* AffixMgr::prefix_check_morph(const char* word,
   while (pe) {
     char* st = pe->check_morph(word, len, in_compound, needflag);
     if (st) {
-      mystrcat(result, st, MAXLNLEN);
+      result.append(st);
       free(st);
     }
     // if (rv) return rv;
@@ -1241,7 +1240,7 @@ char* AffixMgr::prefix_check_morph(const char* word,
         if ((in_compound != IN_CPD_NOT) ||
             !((pptr->getCont() && (TESTAFF(pptr->getCont(), onlyincompound,
                                            pptr->getContLen()))))) {
-          mystrcat(result, st, MAXLNLEN);
+          result.append(st);
           pfx = pptr;
         }
         free(st);
@@ -1252,8 +1251,8 @@ char* AffixMgr::prefix_check_morph(const char* word,
     }
   }
 
-  if (*result)
-    return mystrdup(result);
+  if (!result.empty())
+    return mystrdup(result.c_str());
   return NULL;
 }
 
