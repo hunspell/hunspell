@@ -468,11 +468,8 @@ int SuggestMgr::replchars(char** wlst,
   int wl = strlen(word);
   if (wl < 2 || !pAMgr)
     return ns;
-  int numrep = pAMgr->get_numrep();
-  struct replentry* reptable = pAMgr->get_reptable();
-  if (reptable == NULL)
-    return ns;
-  for (int i = 0; i < numrep; i++) {
+  const std::vector<replentry>& reptable = pAMgr->get_reptable();
+  for (size_t i = 0; i < reptable.size(); ++i) {
     const char* r = word;
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern.c_str())) != NULL) {

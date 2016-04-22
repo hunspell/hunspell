@@ -103,7 +103,6 @@ AffixMgr::AffixMgr(const char* affpath,
   complexprefixes = 0;
   parsedmaptable = false;
   parsedbreaktable = false;
-  reptable = NULL;
   numrep = 0;
   iconvtable = NULL;
   oconvtable = NULL;
@@ -230,7 +229,6 @@ AffixMgr::~AffixMgr() {
   if (encoding)
     free(encoding);
   encoding = NULL;
-  delete[] reptable;
   delete iconvtable;
   delete oconvtable;
   delete phone;
@@ -1350,10 +1348,10 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
 // Is word a non compound with a REP substitution (see checkcompoundrep)?
 int AffixMgr::cpdrep_check(const char* word, int wl) {
 
-  if ((wl < 2) || !numrep)
+  if ((wl < 2) || reptable.empty())
     return 0;
 
-  for (int i = 0; i < numrep; i++) {
+  for (size_t i = 0; i < reptable.size(); ++i) {
     const char* r = word;
     const size_t lenp = reptable[i].pattern.size();
     // search every occurence of the pattern in the word
@@ -1365,9 +1363,10 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
       candidate.replace(r - word, lenp, reptable[i].outstrings[type]);
       if (candidate_check(candidate.c_str(), candidate.size()))
         return 1;
-      r++;  // search for the next letter
+      ++r;  // search for the next letter
     }
   }
+
   return 0;
 }
 
@@ -3471,15 +3470,8 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
   return nh;
 }
 
-// return length of replacing table
-int AffixMgr::get_numrep() const {
-  return numrep;
-}
-
 // return replacing table
-struct replentry* AffixMgr::get_reptable() const {
-  if (!reptable)
-    return NULL;
+const std::vector<replentry>& AffixMgr::get_reptable() const {
   return reptable;
 }
 
@@ -3828,7 +3820,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          reptable = new replentry[numrep];
+          reptable.reserve(numrep);
           np++;
           break;
         }
@@ -3851,6 +3843,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
     if ((nl = af->getline()) == NULL)
       return 1;
     mychomp(nl);
+    reptable.push_back(replentry());
     tp = nl;
     i = 0;
     int type = 0;
@@ -3870,17 +3863,17 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
           case 1: {
             if (*piece == '^')
               type = 1;
-            reptable[j].pattern = piece + type;
-            mystrrep(reptable[j].pattern, "_", " ");
-            if (!reptable[j].pattern.empty() && reptable[j].pattern[reptable[j].pattern.size() - 1] == '$') {
+            reptable.back().pattern = piece + type;
+            mystrrep(reptable.back().pattern, "_", " ");
+            if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
               type += 2;
-              reptable[j].pattern.resize(reptable[j].pattern.size() - 1);
+              reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
             }
             break;
           }
           case 2: {
-            reptable[j].outstrings[type] = piece;
-            mystrrep(reptable[j].outstrings[type], "_", " ");
+            reptable.back().outstrings[type] = piece;
+            mystrrep(reptable.back().outstrings[type], "_", " ");
             break;
           }
           default:
@@ -3890,7 +3883,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
       }
       piece = mystrsep(&tp, 0);
     }
-    if (reptable[j].pattern.empty() || reptable[j].outstrings[type].empty()) {
+    if (reptable.back().pattern.empty() || reptable.back().outstrings[type].empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       numrep = 0;
