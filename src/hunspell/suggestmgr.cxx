@@ -1740,8 +1740,7 @@ char* SuggestMgr::suggest_morph(const char* w) {
 
 /* affixation */
 char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
-  char result[MAXLNLEN];
-  *result = '\0';
+  std::string result;
   int sfxcount = get_sfxcount(pattern);
 
   if (get_sfxcount(HENTRY_DATA(rv)) > sfxcount)
@@ -1751,8 +1750,8 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
     char* aff = pAMgr->morphgen(HENTRY_WORD(rv), rv->blen, rv->astr, rv->alen,
                                 HENTRY_DATA(rv), pattern, 0);
     if (aff) {
-      mystrcat(result, aff, MAXLNLEN);
-      mystrcat(result, "\n", MAXLNLEN);
+      result.append(aff);
+      result.append("\n");
       free(aff);
     }
   }
@@ -1779,8 +1778,8 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
           char* aff = pAMgr->morphgen(HENTRY_WORD(rv2), rv2->blen, rv2->astr,
                                       rv2->alen, HENTRY_DATA(rv2), pattern, 0);
           if (aff) {
-            mystrcat(result, aff, MAXLNLEN);
-            mystrcat(result, "\n", MAXLNLEN);
+            result.append(aff);
+            result.append("\n");
             free(aff);
           }
         }
@@ -1790,7 +1789,7 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
     p = strstr(p + plen, MORPH_ALLOMORPH);
   }
 
-  return (*result) ? mystrdup(result) : NULL;
+  return (!result.empty()) ? mystrdup(result.c_str()) : NULL;
 }
 
 char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
