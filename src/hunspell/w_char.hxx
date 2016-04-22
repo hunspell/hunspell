@@ -41,6 +41,8 @@
 #ifndef __WCHARHXX__
 #define __WCHARHXX__
 
+#include <string>
+
 #ifndef GCC
 struct w_char {
 #else
@@ -66,9 +68,8 @@ struct __attribute__((packed)) w_char {
 
 // two character arrays
 struct replentry {
-  char* pattern;
-  char* outstrings[4]; // med, ini, fin, isol
-  size_t plen;
+  std::string pattern;
+  std::string outstrings[4]; // med, ini, fin, isol
 };
 
 #endif

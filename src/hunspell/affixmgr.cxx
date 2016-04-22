@@ -230,15 +230,7 @@ AffixMgr::~AffixMgr() {
   if (encoding)
     free(encoding);
   encoding = NULL;
-  if (reptable) {
-    for (int j = 0; j < numrep; j++) {
-      free(reptable[j].pattern);
-      for (int k = 0; k < 4; ++k)
-        free(reptable[j].outstrings[k]);
-    }
-    free(reptable);
-    reptable = NULL;
-  }
+  delete[] reptable;
   delete iconvtable;
   delete oconvtable;
   delete phone;
@@ -1363,12 +1355,12 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
 
   for (int i = 0; i < numrep; i++) {
     const char* r = word;
-    int lenp = strlen(reptable[i].pattern);
+    const size_t lenp = reptable[i].pattern.size();
     // search every occurence of the pattern in the word
-    while ((r = strstr(r, reptable[i].pattern)) != NULL) {
+    while ((r = strstr(r, reptable[i].pattern.c_str())) != NULL) {
       std::string candidate(word);
-      int type = r == word ? 1 : 0;
-      if (r - word + reptable[i].plen == lenp)
+      size_t type = r == word ? 1 : 0;
+      if (r - word + reptable[i].pattern.size() == lenp)
         type += 2;
       candidate.replace(r - word, lenp, reptable[i].outstrings[type]);
       if (candidate_check(candidate.c_str(), candidate.size()))
@@ -3836,9 +3828,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
                              af->getlinenum());
             return 1;
           }
-          reptable = (replentry*)calloc(numrep, sizeof(struct replentry));
-          if (!reptable)
-            return 1;
+          reptable = new replentry[numrep];
           np++;
           break;
         }
@@ -3880,18 +3870,17 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
           case 1: {
             if (*piece == '^')
               type = 1;
-            reptable[j].pattern =
-                mystrrep(mystrdup(piece + type), "_", " ");
-            int lr = strlen(reptable[j].pattern) - 1;
-            if (reptable[j].pattern[lr] == '$') {
+            reptable[j].pattern = piece + type;
+            mystrrep(reptable[j].pattern, "_", " ");
+            if (!reptable[j].pattern.empty() && reptable[j].pattern[reptable[j].pattern.size() - 1] == '$') {
               type += 2;
-              reptable[j].pattern[lr] = '\0';
+              reptable[j].pattern.resize(reptable[j].pattern.size() - 1);
             }
-            reptable[j].plen = strlen(reptable[j].pattern);
             break;
           }
           case 2: {
-            reptable[j].outstrings[type] = mystrrep(mystrdup(piece), "_", " ");
+            reptable[j].outstrings[type] = piece;
+            mystrrep(reptable[j].outstrings[type], "_", " ");
             break;
           }
           default:
@@ -3901,7 +3890,7 @@ int AffixMgr::parse_reptable(char* line, FileMgr* af) {
       }
       piece = mystrsep(&tp, 0);
     }
-    if ((!(reptable[j].pattern)) || (!(reptable[j].outstrings[type]))) {
+    if (reptable[j].pattern.empty() || reptable[j].outstrings[type].empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       numrep = 0;
@@ -3961,21 +3950,21 @@ int AffixMgr::parse_convtable(char* line,
   }
 
   /* now parse the num lines to read in the remainder of the table */
-  char* nl;
   for (int j = 0; j < numrl; j++) {
-    if (!(nl = af->getline()))
+    std::string nl;
+    if (!af->getline(nl))
       return 1;
     mychomp(nl);
-    tp = nl;
+    std::string::const_iterator iter = nl.begin();
     i = 0;
-    char* pattern = NULL;
-    char* pattern2 = NULL;
-    piece = mystrsep(&tp, 0);
-    while (piece) {
-      if (*piece != '\0') {
+    std::string pattern;
+    std::string pattern2;
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
+    while (start_piece != nl.end()) {
+      {
         switch (i) {
           case 0: {
-            if (strncmp(piece, keyword, strlen(keyword)) != 0) {
+            if (nl.compare(start_piece - nl.begin(), strlen(keyword), keyword, strlen(keyword)) != 0) {
               HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                                af->getlinenum());
               delete *rl;
@@ -3985,25 +3974,21 @@ int AffixMgr::parse_convtable(char* line,
             break;
           }
           case 1: {
-            pattern = mystrdup(piece);
+            pattern.assign(start_piece, iter);
             break;
           }
           case 2: {
-            pattern2 = mystrdup(piece);
+            pattern2.assign(start_piece, iter);
             break;
           }
           default:
             break;
         }
-        i++;
+        ++i;
       }
-      piece = mystrsep(&tp, 0);
+      start_piece = mystrsep(nl, iter);
     }
-    if (!pattern || !pattern2) {
-      if (pattern)
-        free(pattern);
-      if (pattern2)
-        free(pattern2);
+    if (pattern.empty() || pattern2.empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       return 1;

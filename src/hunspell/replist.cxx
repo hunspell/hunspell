@@ -90,10 +90,7 @@ RepList::RepList(int n) {
 
 RepList::~RepList() {
   for (int i = 0; i < pos; i++) {
-    free(dat[i]->pattern);
-    for (int j = 0; j < 4; ++j)
-        free(dat[i]->outstrings[j]);
-    free(dat[i]);
+    delete dat[i];
   }
   free(dat);
 }
@@ -111,16 +108,16 @@ int RepList::find(const char* word) {
   int p2 = pos - 1;
   while (p1 <= p2) {
     int m = (p1 + p2) / 2;
-    int c = strncmp(word, dat[m]->pattern, dat[m]->plen);
+    int c = strncmp(word, dat[m]->pattern.c_str(), dat[m]->pattern.size());
     if (c < 0)
       p2 = m - 1;
     else if (c > 0)
       p1 = m + 1;
     else {      // scan back for a longer match
       for (p1 = m - 1; p1 >= 0; --p1)
-        if (!strncmp(word, dat[p1]->pattern, dat[p1]->plen))
+        if (!strncmp(word, dat[p1]->pattern.c_str(), dat[p1]->pattern.size()))
           m = p1;
-        else if (dat[p1]->plen < dat[m]->plen)
+        else if (dat[p1]->pattern.size() < dat[m]->pattern.size())
           break;
       return m;
     }
@@ -128,61 +125,61 @@ int RepList::find(const char* word) {
   return -1;
 }
 
-char *RepList::replace(const char* word, int ind, bool atstart) {
+std::string RepList::replace(const char* word, int ind, bool atstart) {
   int type = atstart ? 1 : 0;
   if (ind < 0)
-    return NULL;
-  if (strlen(word) == dat[ind]->plen)
+    return std::string();
+  if (strlen(word) == dat[ind]->pattern.size())
     type = atstart ? 3 : 2;
-  while (type && !dat[ind]->outstrings[type])
+  while (type && dat[ind]->outstrings[type].empty())
     type = (type == 2 && !atstart) ? 0 : type - 1;
   return dat[ind]->outstrings[type];
 }
 
-int RepList::add(char* pat1, char* pat2) {
-  if (pos >= size || pat1 == NULL || pat2 == NULL) {
-    if (pat1) free(pat1);
-    if (pat2) free(pat2);
+int RepList::add(const std::string& in_pat1, const std::string& pat2) {
+  if (pos >= size || in_pat1.empty() || pat2.empty()) {
     return 1;
   }
   // analyse word context
   int type = 0;
-  if (*pat1 == '_') {
-    ++pat1;
+  std::string pat1(in_pat1);
+  if (pat1[0] == '_') {
+    pat1.erase(0);
     type = 1;
   }
-  if (pat1[strlen(pat1) - 1] == '_') {
-    pat1[strlen(pat1) - 1] = 0;
+  if (!pat1.empty() && pat1[pat1.size() - 1] == '_') {
     type = type + 2;
+    pat1.erase(pat1.size() - 1);
   }
-  pat1 = mystrrep(pat1, "_", " ");
+  mystrrep(pat1, "_", " ");
 
   // find existing entry
-  int m = find(pat1);
-  if (m >= 0 && !strcmp(dat[m]->pattern, pat1)) {
-    free(pat1);     // since already used
-    dat[m]->outstrings[type] = mystrrep(pat2, "_", " ");
+  int m = find(pat1.c_str());
+  if (m >= 0 && dat[m]->pattern == pat1) {
+    // since already used
+    dat[m]->outstrings[type] = pat2;
+    mystrrep(dat[m]->outstrings[type], "_", " ");
     return 0;
   }
 
   // make a new entry if none exists
-  replentry* r = (replentry*)calloc(1, sizeof(replentry));
+  replentry* r = new replentry;
   if (r == NULL)
     return 1;
   r->pattern = pat1;
-  r->plen = strlen(pat1);
-  r->outstrings[type] = mystrrep(pat2, "_", " ");
+  r->outstrings[type] = pat2;
+  mystrrep(r->outstrings[type], "_", " ");
   dat[pos++] = r;
   // sort to the right place in the list
   int i;
   for (i = pos - 1; i > 0; i--) {
-    int c = strncmp(r->pattern, dat[i-1]->pattern, dat[i-1]->plen);
+    int c = strncmp(r->pattern.c_str(), dat[i-1]->pattern.c_str(), dat[i-1]->pattern.size());
     if (c > 0)
       break;
     else if (c == 0) { // subpatterns match. Patterns can't be identical since would catch earlier
-      for (int j = i - 2; j && !strncmp(dat[i-1]->pattern, dat[j]->pattern, dat[i-1]->plen); --j)
-        if (dat[j]->plen > r->plen ||
-              (dat[j]->plen == r->plen && strncmp(dat[j]->pattern, r->pattern, r->plen) > 0)) {
+      for (int j = i - 2; j && !strncmp(dat[i-1]->pattern.c_str(), dat[j]->pattern.c_str(), dat[i-1]->pattern.size()); --j)
+        if (dat[j]->pattern.size() > r->pattern.size() ||
+              (dat[j]->pattern.size() == r->pattern.size() && strncmp(dat[j]->pattern.c_str(), r->pattern.c_str(), r->pattern.size()) > 0)) {
           i = j;
           break;
         }
@@ -199,14 +196,14 @@ int RepList::conv(const char* word, char* dest, size_t destsize) {
   int change = 0;
   for (size_t i = 0; i < strlen(word); i++) {
     int n = find(word + i);
-    char* l = replace(word + i, n, i == 0);
-    if (l) {
-      size_t replen = strlen(l);
+    std::string l = replace(word + i, n, i == 0);
+    if (!l.empty()) {
+      size_t replen = l.size();
       if (stl + replen >= destsize)
         return -1;
-      strcpy(dest + stl, l);
+      strcpy(dest + stl, l.c_str());
       stl += replen;
-      i += dat[n]->plen - 1;
+      i += dat[n]->pattern.size() - 1;
       change = 1;
     } else {
       if (stl + 1 >= destsize)
@@ -224,10 +221,10 @@ bool RepList::conv(const char* word, std::string& dest) {
   bool change = false;
   for (size_t i = 0; i < strlen(word); i++) {
     int n = find(word + i);
-    char *l = replace(word + i, n, i == 0);
-    if (l) {
+    std::string l = replace(word + i, n, i == 0);
+    if (!l.empty()) {
       dest.append(l);
-      i += dat[n]->plen - 1;
+      i += dat[n]->pattern.size() - 1;
       change = true;
     } else {
       dest.push_back(word[i]);

@@ -97,10 +97,10 @@ class LIBHUNSPELL_DLL_EXPORTED RepList {
   ~RepList();
 
   int get_pos();
-  int add(char* pat1, char* pat2);
+  int add(const std::string& pat1, const std::string& pat2);
   replentry* item(int n);
   int find(const char* word);
-  char* replace(const char* word, int n, bool atstart);
+  std::string replace(const char* word, int n, bool atstart);
   int conv(const char* word, char* dest, size_t destsize);
   bool conv(const char* word, std::string& dest);
 };
