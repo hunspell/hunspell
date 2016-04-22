@@ -2962,11 +2962,9 @@ char* AffixMgr::suffix_check_morph(const char* word,
                                    const FLAG cclass,
                                    const FLAG needflag,
                                    char in_compound) {
-  char result[MAXLNLEN];
+  std::string result;
 
   struct hentry* rv = NULL;
-
-  result[0] = '\0';
 
   PfxEntry* ep = ppfx;
 
@@ -3006,32 +3004,29 @@ char* AffixMgr::suffix_check_morph(const char* word,
       while (rv) {
         if (ppfx) {
           if (ppfx->getMorph()) {
-            mystrcat(result, ppfx->getMorph(), MAXLNLEN);
-            mystrcat(result, " ", MAXLNLEN);
+            result.append(ppfx->getMorph());
+            result.append(" ");
           } else
             debugflag(result, ppfx->getFlag());
         }
         if (complexprefixes && HENTRY_DATA(rv))
-          mystrcat(result, HENTRY_DATA2(rv), MAXLNLEN);
+          result.append(HENTRY_DATA2(rv));
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, MORPH_STEM, MAXLNLEN);
-          mystrcat(result, HENTRY_WORD(rv), MAXLNLEN);
+          result.append(" ");
+          result.append(MORPH_STEM);
+          result.append(HENTRY_WORD(rv));
         }
-        // store the pointer of the hash entry
-        //            sprintf(result + strlen(result), " %s%p", MORPH_HENTRY,
-        //            rv);
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, HENTRY_DATA2(rv), MAXLNLEN);
+          result.append(" ");
+          result.append(HENTRY_DATA2(rv));
         }
         if (se->getMorph()) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, se->getMorph(), MAXLNLEN);
+          result.append(" ");
+          result.append(se->getMorph());
         } else
           debugflag(result, se->getFlag());
-        mystrcat(result, "\n", MAXLNLEN);
+        result.append("\n");
         rv = se->get_next_homonym(rv, sfxopts, ppfx, cclass, needflag);
       }
     }
@@ -3076,33 +3071,30 @@ char* AffixMgr::suffix_check_morph(const char* word,
       while (rv) {
         if (ppfx) {
           if (ppfx->getMorph()) {
-            mystrcat(result, ppfx->getMorph(), MAXLNLEN);
-            mystrcat(result, " ", MAXLNLEN);
+            result.append(ppfx->getMorph());
+            result.append(" ");
           } else
             debugflag(result, ppfx->getFlag());
         }
         if (complexprefixes && HENTRY_DATA(rv))
-          mystrcat(result, HENTRY_DATA2(rv), MAXLNLEN);
+          result.append(HENTRY_DATA2(rv));
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, MORPH_STEM, MAXLNLEN);
-          mystrcat(result, HENTRY_WORD(rv), MAXLNLEN);
+          result.append(" ");
+          result.append(MORPH_STEM);
+          result.append(HENTRY_WORD(rv));
         }
-        // store the pointer of the hash entry
-        //                    sprintf(result + strlen(result), " %s%p",
-        //                    MORPH_HENTRY, rv);
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, HENTRY_DATA2(rv), MAXLNLEN);
+          result.append(" ");
+          result.append(HENTRY_DATA2(rv));
         }
 
         if (sptr->getMorph()) {
-          mystrcat(result, " ", MAXLNLEN);
-          mystrcat(result, sptr->getMorph(), MAXLNLEN);
+          result.append(" ");
+          result.append(sptr->getMorph());
         } else
           debugflag(result, sptr->getFlag());
-        mystrcat(result, "\n", MAXLNLEN);
+        result.append("\n");
         rv = sptr->get_next_homonym(rv, sfxopts, ppfx, cclass, needflag);
       }
       sptr = sptr->getNextEQ();
@@ -3111,8 +3103,8 @@ char* AffixMgr::suffix_check_morph(const char* word,
     }
   }
 
-  if (*result)
-    return mystrdup(result);
+  if (!result.empty())
+    return mystrdup(result.c_str());
   return NULL;
 }
 
