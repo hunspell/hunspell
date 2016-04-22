@@ -1757,7 +1757,6 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
   }
 
   // check all allomorphs
-  char allomorph[MAXLNLEN];
   char* p = NULL;
   if (HENTRY_DATA(rv))
     p = (char*)strstr(HENTRY_DATA2(rv), MORPH_ALLOMORPH);
@@ -1765,9 +1764,8 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
     struct hentry* rv2 = NULL;
     p += MORPH_TAG_LEN;
     int plen = fieldlen(p);
-    strncpy(allomorph, p, plen);
-    allomorph[plen] = '\0';
-    rv2 = pAMgr->lookup(allomorph);
+    std::string allomorph(p, plen);
+    rv2 = pAMgr->lookup(allomorph.c_str());
     while (rv2) {
       //            if (HENTRY_DATA(rv2) && get_sfxcount(HENTRY_DATA(rv2)) <=
       //            sfxcount) {
