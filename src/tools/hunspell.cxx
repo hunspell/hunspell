@@ -1278,8 +1278,9 @@ int dialog(TextParser* parser,
         if (c >= ns)
           break;
         if (checkapos) {
-          strcpy(buf, wlst[c]);
-          parser->change_token(mystrrep(buf, "'", UTF8_APOS));
+          std::string sbuf(wlst[c]);
+          mystrrep(sbuf, "'", UTF8_APOS);
+          parser->change_token(sbuf.c_str());
         } else {
           parser->change_token(wlst[c]);
         }
