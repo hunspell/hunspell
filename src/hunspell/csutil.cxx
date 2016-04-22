@@ -272,36 +272,6 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
   return dest.size();
 }
 
-// strip strings into token based on single char delimiter
-// acts like strsep() but only uses a delim char and not
-// a delim string
-// default delimiter: white space characters
-
-char* mystrsep(char** stringp, const char delim) {
-  char* mp = *stringp;
-  if (*mp != '\0') {
-    char* dp;
-    if (delim) {
-      dp = strchr(mp, delim);
-    } else {
-      // don't use isspace() here, the string can be in some random charset
-      // that's way different than the locale's
-      for (dp = mp; (*dp && *dp != ' ' && *dp != '\t'); dp++)
-        ;
-      if (!*dp)
-        dp = NULL;
-    }
-    if (dp) {
-      *stringp = dp + 1;
-      *dp = '\0';
-    } else {
-      *stringp = mp + strlen(mp);
-    }
-    return mp;
-  }
-  return NULL;
-}
-
 namespace {
 class is_any_of {
  public:
