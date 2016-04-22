@@ -383,14 +383,12 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   std::vector<w_char> sunicw;
 
   // input conversion
-  RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  RepList* rl = pAMgr ? pAMgr->get_iconvtable() : NULL;
   {
     std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace) : 0;
-    if (convstatus < 0)
-      return 0;
-    else if (convstatus > 0)
+    bool convstatus = rl ? rl->conv(word, wspace) : false;
+    if (convstatus)
       wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
@@ -807,10 +805,8 @@ int Hunspell::suggest(char*** slst, const char* word) {
   {
     std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace) : 0;
-    if (convstatus < 0)
-      return 0;
-    else if (convstatus > 0)
+    bool convstatus = rl ? rl->conv(word, wspace) : false;
+    if (convstatus)
       wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
@@ -1146,7 +1142,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
   rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   for (int j = 0; rl && j < ns; j++) {
     std::string wspace;
-    if (rl->conv((*slst)[j], wspace) > 0) {
+    if (rl->conv((*slst)[j], wspace)) {
       free((*slst)[j]);
       (*slst)[j] = mystrdup(wspace.c_str());
     }
@@ -1344,10 +1340,8 @@ int Hunspell::analyze(char*** slst, const char* word) {
   {
     std::string wspace;
 
-    int convstatus = rl ? rl->conv(word, wspace) : 0;
-    if (convstatus < 0)
-      return 0;
-    else if (convstatus > 0)
+    bool convstatus = rl ? rl->conv(word, wspace) : false;
+    if (convstatus)
       wl = cleanword2(scw, sunicw, wspace.c_str(), &nc, &captype, &abbv);
     else
       wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
@@ -1650,9 +1644,13 @@ int Hunspell::get_langnum() const {
   return langnum;
 }
 
-int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
-  RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
-  return (rl && rl->conv(word, dest, destsize) > 0);
+void Hunspell::input_conv(const char* word, std::string& dest) {
+  RepList* rl = pAMgr ? pAMgr->get_iconvtable() : NULL;
+  if (rl) {
+    rl->conv(word, dest);
+  } else {
+    dest.assign(word);
+  }
 }
 
 // return the beginning of the element (attr == NULL) or the attribute

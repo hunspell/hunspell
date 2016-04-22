@@ -541,32 +541,30 @@ void log(char* message) {
 }
 #endif
 
-int putdic(char* word, Hunspell* pMS) {
-  char* w;
-  char buf[MAXLNLEN];
+int putdic(const std::string& in_word, Hunspell* pMS) {
+  std::string word(in_word);
+  chenc(word, ui_enc, dic_enc[0]);
 
-  word = chenc(word, ui_enc, dic_enc[0]);
+  std::string buf;
+  pMS->input_conv(word.c_str(), buf);
+  word = buf;
 
-  if (pMS->input_conv(word, buf, MAXLNLEN))
-    word = buf;
+  if (word.empty())
+    return 0;
 
   int ret(0);
-
-  if ((w = strstr(word + 1, "/")) == NULL) {
-    if (*word == '*')
-      ret = pMS->remove(word + 1);
+  size_t w = word.find('/', 1);
+  if (w == std::string::npos) {
+    if (word[0] == '*')
+      ret = pMS->remove(word.substr(1));
     else
       ret = pMS->add(word);
   } else {
-    char c;
-    c = *w;
-    *w = '\0';
-    if (*(w + 1) == '/') {
-      ret = pMS->add_with_affix(word, w + 2);  // word//pattern (back comp.)
-    } else {
-      ret = pMS->add_with_affix(word, w + 1);  // word/pattern
-    }
-    *w = c;
+    std::string affix = word.substr(w + 1);
+    word.resize(w);
+    if (!affix.empty() && affix[0] == '/') // word//pattern (back comp.)
+        affix.erase(0);
+    ret = pMS->add_with_affix(word, affix);  // word/pattern
   }
   return ret;
 }

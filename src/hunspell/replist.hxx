@@ -101,7 +101,6 @@ class LIBHUNSPELL_DLL_EXPORTED RepList {
   replentry* item(int n);
   int find(const char* word);
   std::string replace(const char* word, int n, bool atstart);
-  int conv(const char* word, char* dest, size_t destsize);
   bool conv(const char* word, std::string& dest);
 };
 #endif

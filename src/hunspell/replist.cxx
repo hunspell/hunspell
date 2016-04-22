@@ -191,35 +191,11 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   return 0;
 }
 
-int RepList::conv(const char* word, char* dest, size_t destsize) {
-  size_t stl = 0;
-  int change = 0;
-  for (size_t i = 0; i < strlen(word); i++) {
-    int n = find(word + i);
-    std::string l = replace(word + i, n, i == 0);
-    if (!l.empty()) {
-      size_t replen = l.size();
-      if (stl + replen >= destsize)
-        return -1;
-      strcpy(dest + stl, l.c_str());
-      stl += replen;
-      i += dat[n]->pattern.size() - 1;
-      change = 1;
-    } else {
-      if (stl + 1 >= destsize)
-        return -1;
-      dest[stl++] = word[i];
-    }
-  }
-  dest[stl] = '\0';
-  return change;
-}
-
 bool RepList::conv(const char* word, std::string& dest) {
   dest.clear();
 
   bool change = false;
-  for (size_t i = 0; i < strlen(word); i++) {
+  for (size_t i = 0; i < strlen(word); ++i) {
     int n = find(word + i);
     std::string l = replace(word + i, n, i == 0);
     if (!l.empty()) {
