@@ -122,28 +122,6 @@ static struct unicode_info2* utf_tbl = NULL;
 static int utf_tbl_count =
     0;  // utf_tbl can be used by multiple Hunspell instances
 
-FILE* myfopen(const char* path, const char* mode) {
-#ifdef _WIN32
-#define WIN32_LONG_PATH_PREFIX "\\\\?\\"
-  if (strncmp(path, WIN32_LONG_PATH_PREFIX, 4) == 0) {
-    int len = MultiByteToWideChar(CP_UTF8, 0, path, -1, NULL, 0);
-    wchar_t* buff = (wchar_t*)malloc(len * sizeof(wchar_t));
-    wchar_t* buff2 = (wchar_t*)malloc(len * sizeof(wchar_t));
-    FILE* f = NULL;
-    if (buff && buff2) {
-      MultiByteToWideChar(CP_UTF8, 0, path, -1, buff, len);
-      if (_wfullpath(buff2, buff, len) != NULL) {
-        f = _wfopen(buff2, (strcmp(mode, "r") == 0) ? L"r" : L"rb");
-      }
-      free(buff);
-      free(buff2);
-    }
-    return f;
-  }
-#endif
-  return fopen(path, mode);
-}
-
 void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mode)
 {
 #ifdef _WIN32

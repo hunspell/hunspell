@@ -128,8 +128,7 @@
 #define FORBIDDENWORD 65510
 #define ONLYUPCASEFLAG 65511
 
-// fopen or optional _wfopen to fix long pathname problem of WIN32
-LIBHUNSPELL_DLL_EXPORTED FILE* myfopen(const char* path, const char* mode);
+// fix long pathname problem of WIN32 by using w_char std::fstream::open override
 LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
 
