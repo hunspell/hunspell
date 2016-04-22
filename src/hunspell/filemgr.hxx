@@ -80,6 +80,7 @@
 #include "hunzip.hxx"
 #include <stdio.h>
 #include <string>
+#include <fstream>
 
 class LIBHUNSPELL_DLL_EXPORTED FileMgr {
  private:
@@ -88,7 +89,7 @@ class LIBHUNSPELL_DLL_EXPORTED FileMgr {
   char* getline();
 
  protected:
-  FILE* fin;
+  std::ifstream fin;
   Hunzip* hin;
   char in[BUFSIZE + 50];  // input buffer
   int fail(const char* err, const char* par);
