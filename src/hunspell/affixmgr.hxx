@@ -294,7 +294,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                            hentry** rwords,
                            char hu_mov_rule,
                            char** result,
-                           const char* partresult);
+                           const std::string* partresult);
 
   int get_suffix_words(short unsigned* suff,
                        int len,
