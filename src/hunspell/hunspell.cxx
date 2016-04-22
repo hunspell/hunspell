@@ -1285,19 +1285,19 @@ int Hunspell::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
   return u8.size();
 }
 
-int Hunspell::add(const char* word) {
+int Hunspell::add(const std::string& word) {
   if (pHMgr[0])
     return (pHMgr[0])->add(word);
   return 0;
 }
 
-int Hunspell::add_with_affix(const char* word, const char* example) {
+int Hunspell::add_with_affix(const std::string& word, const std::string& example) {
   if (pHMgr[0])
     return (pHMgr[0])->add_with_affix(word, example);
   return 0;
 }
 
-int Hunspell::remove(const char* word) {
+int Hunspell::remove(const std::string& word) {
   if (pHMgr[0])
     return (pHMgr[0])->remove(word);
   return 0;

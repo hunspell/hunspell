@@ -442,9 +442,9 @@ int HashMgr::add(const std::string& word) {
   return 0;
 }
 
-int HashMgr::add_with_affix(const std::string& word, const char* example) {
+int HashMgr::add_with_affix(const std::string& word, const std::string& example) {
   // detect captype and modify word length for UTF-8 encoding
-  struct hentry* dp = lookup(example);
+  struct hentry* dp = lookup(example.c_str());
   remove_forbidden_flag(word);
   if (dp && dp->astr) {
     int captype;

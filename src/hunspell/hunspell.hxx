@@ -200,18 +200,18 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* add word to the run-time dictionary */
 
-  int add(const char* word);
+  int add(const std::string& word);
 
   /* add word to the run-time dictionary with affix flags of
    * the example (a dictionary word): Hunspell will recognize
    * affixed forms of the new word, too.
    */
 
-  int add_with_affix(const char* word, const char* example);
+  int add_with_affix(const std::string& word, const std::string& example);
 
   /* remove word from the run-time dictionary */
 
-  int remove(const char* word);
+  int remove(const std::string& word);
 
   /* other */
 

@@ -114,7 +114,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   struct hentry* walk_hashtable(int& col, struct hentry* hp) const;
 
   int add(const std::string& word);
-  int add_with_affix(const std::string& word, const char* pattern);
+  int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af);
   bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af);
