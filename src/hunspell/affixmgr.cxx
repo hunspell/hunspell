@@ -1032,17 +1032,6 @@ int AffixMgr::process_sfx_order() {
 }
 
 // add flags to the result for dictionary debugging
-void AffixMgr::debugflag(char* result, unsigned short flag) {
-  char* st = encode_flag(flag);
-  mystrcat(result, " ", MAXLNLEN);
-  mystrcat(result, MORPH_FLAG, MAXLNLEN);
-  if (st) {
-    mystrcat(result, st, MAXLNLEN);
-    free(st);
-  }
-}
-
-// add flags to the result for dictionary debugging
 std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
   char* st = encode_flag(flag);
   result.append(" ");

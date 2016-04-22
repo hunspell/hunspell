@@ -367,7 +367,6 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
   void reverse_condition(std::string&);
-  void debugflag(char* result, unsigned short flag);
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const char*);
   int encodeit(AffEntry& entry, const char* cs);
