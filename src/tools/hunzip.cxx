@@ -54,12 +54,13 @@ int fail(const char* err, const char* par) {
 }
 
 int main(int argc, char** argv) {
-  Hunzip* h;
-  const char* s;
   if (argc == 1 || strcmp(argv[1], "-h") == 0)
     return fail(DESC, NULL);
-  h = new Hunzip(argv[1], (argc > 2) ? argv[2] : NULL);
-  while (h && (s = h->getline()))
-    printf("%s", s);
+  Hunzip h(argv[1], (argc > 2) ? argv[2] : NULL);
+  if (!h.is_open())
+    return 0;
+  std::string s;
+  while (h.getline(s))
+    printf("%s", s.c_str());
   return 0;
 }

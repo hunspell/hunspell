@@ -86,7 +86,6 @@ class LIBHUNSPELL_DLL_EXPORTED FileMgr {
  private:
   FileMgr(const FileMgr&);
   FileMgr& operator=(const FileMgr&);
-  char* getline();
 
  protected:
   std::ifstream fin;

@@ -59,7 +59,7 @@ int Hunzip::fail(const char* err, const char* par) {
 }
 
 Hunzip::Hunzip(const char* file, const char* key)
-    : fin(NULL), bufsiz(0), lastbit(0), inc(0), inbits(0), outc(0), dec(NULL) {
+    : bufsiz(0), lastbit(0), inc(0), inbits(0), outc(0), dec(NULL) {
   in[0] = out[0] = line[0] = '\0';
   filename = mystrdup(file);
   if (getcode(key) == -1)
@@ -77,12 +77,12 @@ int Hunzip::getcode(const char* key) {
   if (!filename)
     return -1;
 
-  fin = myfopen(filename, "rb");
-  if (!fin)
+  myopen(fin, filename, std::ios_base::in | std::ios_base::binary);
+  if (!fin.is_open())
     return -1;
 
   // read magic number
-  if ((fread(in, 1, 3, fin) < MAGICLEN) ||
+  if (!fin.read(in, 3) ||
       !(strncmp(MAGIC, in, MAGICLEN) == 0 ||
         strncmp(MAGIC_ENCRYPT, in, MAGICLEN) == 0)) {
     return fail(MSG_FORMAT, filename);
@@ -93,7 +93,7 @@ int Hunzip::getcode(const char* key) {
     unsigned char cs;
     if (!key)
       return fail(MSG_KEY, filename);
-    if (fread(&c, 1, 1, fin) < 1)
+    if (!fin.read(reinterpret_cast<char*>(c), 1))
       return fail(MSG_FORMAT, filename);
     for (cs = 0; *enc; enc++)
       cs ^= *enc;
@@ -104,7 +104,7 @@ int Hunzip::getcode(const char* key) {
     key = NULL;
 
   // read record count
-  if (fread(&c, 1, 2, fin) < 2)
+  if (!fin.read(reinterpret_cast<char*>(c), 2))
     return fail(MSG_FORMAT, filename);
 
   if (key) {
@@ -124,7 +124,7 @@ int Hunzip::getcode(const char* key) {
   // read codes
   for (i = 0; i < n; i++) {
     unsigned char l;
-    if (fread(c, 1, 2, fin) < 2)
+    if (!fin.read(reinterpret_cast<char*>(c), 2))
       return fail(MSG_FORMAT, filename);
     if (key) {
       if (*(++enc) == '\0')
@@ -134,14 +134,14 @@ int Hunzip::getcode(const char* key) {
         enc = key;
       c[1] ^= *enc;
     }
-    if (fread(&l, 1, 1, fin) < 1)
+    if (!fin.read(reinterpret_cast<char*>(&l), 1))
       return fail(MSG_FORMAT, filename);
     if (key) {
       if (*(++enc) == '\0')
         enc = key;
       l ^= *enc;
     }
-    if (fread(in, 1, l / 8 + 1, fin) < (size_t)l / 8 + 1)
+    if (!fin.read(in, l / 8 + 1))
       return fail(MSG_FORMAT, filename);
     if (key)
       for (j = 0; j <= l / 8; j++) {
@@ -175,8 +175,6 @@ int Hunzip::getcode(const char* key) {
 Hunzip::~Hunzip() {
   if (dec)
     free(dec);
-  if (fin)
-    fclose(fin);
   if (filename)
     free(filename);
 }
@@ -185,16 +183,17 @@ int Hunzip::getbuf() {
   int p = 0;
   int o = 0;
   do {
-    if (inc == 0)
-      inbits = fread(in, 1, BUFSIZE, fin) * 8;
+    if (inc == 0) {
+      fin.read(in, BUFSIZE);
+      inbits = fin.gcount() * 8;
+    }
     for (; inc < inbits; inc++) {
       int b = (in[inc / 8] & (1 << (7 - (inc % 8)))) ? 1 : 0;
       int oldp = p;
       p = dec[p].v[b];
       if (p == 0) {
         if (oldp == lastbit) {
-          fclose(fin);
-          fin = NULL;
+          fin.close();
           // add last odd byte
           if (dec[lastbit].c[0])
             out[o++] = dec[lastbit].c[1];
@@ -212,11 +211,11 @@ int Hunzip::getbuf() {
   return fail(MSG_FORMAT, filename);
 }
 
-const char* Hunzip::getline() {
+bool Hunzip::getline(std::string& dest) {
   char linebuf[BUFSIZE];
   int l = 0, eol = 0, left = 0, right = 0;
   if (bufsiz == -1)
-    return NULL;
+    return false;
   while (l < bufsiz && !eol) {
     linebuf[l++] = out[outc];
     switch (out[outc]) {
@@ -251,7 +250,7 @@ const char* Hunzip::getline() {
     }
     if (++outc == bufsiz) {
       outc = 0;
-      bufsiz = fin ? getbuf() : -1;
+      bufsiz = fin.is_open() ? getbuf() : -1;
     }
   }
   if (right)
@@ -259,5 +258,5 @@ const char* Hunzip::getline() {
   else
     linebuf[l] = '\0';
   strcpy(line + left, linebuf);
-  return line;
+  dest.assign(line);
 }

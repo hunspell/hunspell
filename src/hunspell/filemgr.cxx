@@ -93,7 +93,7 @@ FileMgr::FileMgr(const char* file, const char* key) : hin(NULL), linenum(0) {
     st.append(HZIP_EXTENSION);
     hin = new Hunzip(st.c_str(), key);
   }
-  if (!fin.is_open() && !hin)
+  if (!fin.is_open() && !hin->is_open())
     fail(MSG_OPEN, file);
 }
 
@@ -101,33 +101,17 @@ FileMgr::~FileMgr() {
   delete hin;
 }
 
-char* FileMgr::getline() {
-  const char* l;
-  if (hin && ((l = hin->getline()) != NULL))
-    return strcpy(in, l);
-  return NULL;
-}
-
 bool FileMgr::getline(std::string& dest) {
   bool ret = false;
-
   ++linenum;
-
   if (fin.is_open()) {
     ret = static_cast<bool>(std::getline(fin, dest));
-  } else {
-    char* line = getline();
-    if (!line) {
-      ret = false;
-    } else {
-      dest.assign(line);
-    }
+  } else if (hin->is_open()) {
+    ret = hin->getline(dest);
   }
-
   if (!ret) {
     --linenum;
   }
-
   return ret;
 }
 
