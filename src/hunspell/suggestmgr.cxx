@@ -1678,13 +1678,10 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
 }
 
 char* SuggestMgr::suggest_morph(const char* w) {
-  char result[MAXLNLEN];
-  char* r = (char*)result;
+  std::string result;
   char* st;
 
   struct hentry* rv = NULL;
-
-  *result = '\0';
 
   if (!pAMgr)
     return NULL;
@@ -1710,32 +1707,37 @@ char* SuggestMgr::suggest_morph(const char* w) {
           TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
           TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen))) {
       if (!HENTRY_FIND(rv, MORPH_STEM)) {
-        mystrcat(result, " ", MAXLNLEN);
-        mystrcat(result, MORPH_STEM, MAXLNLEN);
-        mystrcat(result, word, MAXLNLEN);
+        result.append(" ");
+        result.append(MORPH_STEM);
+        result.append(word);
       }
       if (HENTRY_DATA(rv)) {
-        mystrcat(result, " ", MAXLNLEN);
-        mystrcat(result, HENTRY_DATA2(rv), MAXLNLEN);
+        result.append(" ");
+        result.append(HENTRY_DATA2(rv));
       }
-      mystrcat(result, "\n", MAXLNLEN);
+      result.append("\n");
     }
     rv = rv->next_homonym;
   }
 
   st = pAMgr->affix_check_morph(word, strlen(word));
   if (st) {
-    mystrcat(result, st, MAXLNLEN);
+    result.append(st);
     free(st);
   }
 
-  if (pAMgr->get_compound() && (*result == '\0')) {
+  if (pAMgr->get_compound() && result.empty()) {
     struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-    pAMgr->compound_check_morph(word, strlen(word), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, &r,
+    pAMgr->compound_check_morph(word, strlen(word), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, result,
                                 NULL);
   }
 
-  return (*result) ? mystrdup(line_uniq(result, MSEP_REC)) : NULL;
+  if (result.empty())
+    return NULL;
+
+  line_uniq(result, MSEP_REC);
+
+  return mystrdup(result.c_str());
 }
 
 /* affixation */

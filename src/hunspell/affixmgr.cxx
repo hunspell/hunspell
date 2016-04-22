@@ -2160,7 +2160,7 @@ int AffixMgr::compound_check_morph(const char* word,
                                    hentry** words,
                                    hentry** rwords,
                                    char hu_mov_rule,
-                                   char** result,
+                                   std::string& result,
                                    const std::string* partresult) {
   int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
@@ -2253,8 +2253,6 @@ int AffixMgr::compound_check_morph(const char* word,
       }
 
       if (!rv) {
-        if (onlycpdrule && strlen(*result) > MAXLNLEN / 10)
-          break;
         if (compoundflag &&
             !(rv =
                   prefix_check(st.c_str(), i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
@@ -2430,25 +2428,23 @@ int AffixMgr::compound_check_morph(const char* word,
         }
 
         if (rv && words && words[wnum + 1]) {
-          mystrcat(*result, presult.c_str(), MAXLNLEN);
-          mystrcat(*result, " ", MAXLNLEN);
-          mystrcat(*result, MORPH_PART, MAXLNLEN);
-          mystrcat(*result, word + i, MAXLNLEN);
+          result.append(presult);
+          result.append(" ");
+          result.append(MORPH_PART);
+          result.append(word + i);
           if (complexprefixes && HENTRY_DATA(rv))
-            mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
+            result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
-            mystrcat(*result, " ", MAXLNLEN);
-            mystrcat(*result, MORPH_STEM, MAXLNLEN);
-            mystrcat(*result, HENTRY_WORD(rv), MAXLNLEN);
+            result.append(" ");
+            result.append(MORPH_STEM);
+            result.append(HENTRY_WORD(rv));
           }
           // store the pointer of the hash entry
-          //                  sprintf(*result + strlen(*result), " %s%p",
-          //                  MORPH_HENTRY, rv);
           if (!complexprefixes && HENTRY_DATA(rv)) {
-            mystrcat(*result, " ", MAXLNLEN);
-            mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
+            result.append(" ");
+            result.append(HENTRY_DATA2(rv));
           }
-          mystrcat(*result, "\n", MAXLNLEN);
+          result.append("\n");
           return 0;
         }
 
@@ -2489,28 +2485,26 @@ int AffixMgr::compound_check_morph(const char* word,
                cpdmaxsyllable))) &&
             ((!checkcompounddup || (rv != rv_first)))) {
           // bad compound word
-          mystrcat(*result, presult.c_str(), MAXLNLEN);
-          mystrcat(*result, " ", MAXLNLEN);
-          mystrcat(*result, MORPH_PART, MAXLNLEN);
-          mystrcat(*result, word + i, MAXLNLEN);
+          result.append(presult);
+          result.append(" ");
+          result.append(MORPH_PART);
+          result.append(word + i);
 
           if (HENTRY_DATA(rv)) {
             if (complexprefixes)
-              mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
+              result.append(HENTRY_DATA2(rv));
             if (!HENTRY_FIND(rv, MORPH_STEM)) {
-              mystrcat(*result, " ", MAXLNLEN);
-              mystrcat(*result, MORPH_STEM, MAXLNLEN);
-              mystrcat(*result, HENTRY_WORD(rv), MAXLNLEN);
+              result.append(" ");
+              result.append(MORPH_STEM);
+              result.append(HENTRY_WORD(rv));
             }
             // store the pointer of the hash entry
-            //                        sprintf(*result + strlen(*result), "
-            //                        %s%p", MORPH_HENTRY, rv);
             if (!complexprefixes) {
-              mystrcat(*result, " ", MAXLNLEN);
-              mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
+              result.append(" ");
+              result.append(HENTRY_DATA2(rv));
             }
           }
-          mystrcat(*result, "\n", MAXLNLEN);
+          result.append("\n");
           ok = 1;
         }
 
@@ -2543,16 +2537,16 @@ int AffixMgr::compound_check_morph(const char* word,
                 free(m);
               m = affix_check_morph((word + i), strlen(word + i), compoundend);
             }
-            mystrcat(*result, presult.c_str(), MAXLNLEN);
+            result.append(presult);
             if (m || (*m != '\0')) {
               char m2[MAXLNLEN];
               sprintf(m2, "%c%s%s%s", MSEP_FLD, MORPH_PART, word + i,
                       line_uniq_app(&m, MSEP_REC));
-              mystrcat(*result, m2, MAXLNLEN);
+              result.append(m2);
             }
             if (m)
               free(m);
-            mystrcat(*result, "\n", MAXLNLEN);
+            result.append("\n");
             ok = 1;
           }
         }
@@ -2636,17 +2630,16 @@ int AffixMgr::compound_check_morph(const char* word,
               free(m);
             m = affix_check_morph((word + i), strlen(word + i), compoundend);
           }
-          mystrcat(*result, presult.c_str(), MAXLNLEN);
+          result.append(presult);
           if (m && (*m != '\0')) {
             char m2[MAXLNLEN];
             sprintf(m2, "%c%s%s%s", MSEP_FLD, MORPH_PART, word + i,
                     line_uniq_app(&m, MSEP_REC));
-            mystrcat(*result, m2, MAXLNLEN);
+            result.append(m2);
           }
           if (m)
             free(m);
-          if (strlen(*result) + 1 < MAXLNLEN)
-            sprintf(*result + strlen(*result), "%c", MSEP_REC);
+          result.push_back(MSEP_REC);
           ok = 1;
         }
 
