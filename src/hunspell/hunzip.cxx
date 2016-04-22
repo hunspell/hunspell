@@ -259,4 +259,5 @@ bool Hunzip::getline(std::string& dest) {
     linebuf[l] = '\0';
   strcpy(line + left, linebuf);
   dest.assign(line);
+  return true;
 }
