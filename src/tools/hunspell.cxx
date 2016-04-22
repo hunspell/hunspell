@@ -188,11 +188,6 @@ extern char* mystrrep(const char* s);
 
 enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
 
-struct wordlist {
-  char* word;
-  wordlist* next;
-};
-
 // global variables
 
 char* wordchars = NULL;
@@ -590,8 +585,7 @@ int exist(const char* filename) {
   return 0;
 }
 
-int save_privdic(char* filename, char* filename2, wordlist* w) {
-  wordlist* r;
+int save_privdic(char* filename, char* filename2, std::vector<std::string>& w) {
   FILE* dic = fopen(filename, "r");
   if (dic) {
     fclose(dic);
@@ -601,17 +595,9 @@ int save_privdic(char* filename, char* filename2, wordlist* w) {
   }
   if (!dic)
     return 0;
-  while (w != NULL) {
-    char* word = chenc(w->word, io_enc, ui_enc);
-    fprintf(dic, "%s\n", word);
-#ifdef LOG
-    log(word);
-    log("\n");
-#endif
-    r = w;
-    free(w->word);
-    w = w->next;
-    free(r);
+  for (size_t i = 0; i < w.size(); ++i) {
+    chenc(w[i], io_enc, ui_enc);
+    fprintf(dic, "%s\n", w[i].c_str());
   }
   fclose(dic);
   return 1;
@@ -678,19 +664,10 @@ static bool secure_filename(const char* filename) {
   return true;
 }
 
-static void freewordlist(wordlist* w) {
-  while (w != NULL) {
-    wordlist* r = w;
-    free(w->word);
-    w = w->next;
-    free(r);
-  }
-}
-
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   char buf[MAXLNLEN];
   char* buf2;
-  wordlist* dicwords = NULL;
+  std::vector<std::string> dicwords;
   char* token;
   int pos;
   int bad;
@@ -781,12 +758,9 @@ nextline:
           break;
         }
         case '*': {
-          struct wordlist* i =
-              (struct wordlist*)malloc(sizeof(struct wordlist));
-          i->word = mystrdup(buf + 1);
-          i->next = dicwords;
-          dicwords = i;
-          putdic(buf + 1, pMS[d]);
+          std::string word(buf + 1);
+          dicwords.push_back(word);
+          putdic(word, pMS[d]);
           break;
         }
         case '#': {
@@ -808,7 +782,7 @@ nextline:
             strcat(buf, privdicname);
           }
           if (save_privdic(buf2, buf, dicwords)) {
-            dicwords = NULL;
+            dicwords.clear();
           }
           break;
         }
@@ -1074,9 +1048,7 @@ nextline:
       perror("write failed");
   }
 
-  delete (parser);
-  freewordlist(dicwords);
-
+  delete parser;
 }  // pipe_interface
 
 #ifdef HAVE_READLINE
@@ -1250,7 +1222,7 @@ void dialogscreen(TextParser* parser,
                                      "S)tem Q)uit e(X)it or ? for help\n"));
 }
 
-char* lower_first_char(const std::string& token, const char* io_enc, int langnum) {
+std::string lower_first_char(const std::string& token, const char* io_enc, int langnum) {
   std::string utf8str(token);
   chenc(utf8str, io_enc, "UTF-8");
   std::vector<w_char> u;
@@ -1264,7 +1236,7 @@ char* lower_first_char(const std::string& token, const char* io_enc, int langnum
   std::string scratch;
   u16_u8(scratch, u);
   chenc(scratch, "UTF-8", io_enc);
-  return mystrdup(scratch.c_str());
+  return scratch;
 }
 
 // for terminal interface
@@ -1277,7 +1249,7 @@ int dialog(TextParser* parser,
            int forbidden) {
   char buf[MAXLNLEN];
   char* buf2;
-  wordlist* dicwords = NULL;
+  std::vector<std::string> dicwords;
   int c;
 
   dialogscreen(parser, token, filename, forbidden, wlst, ns);
@@ -1313,10 +1285,8 @@ int dialog(TextParser* parser,
         } else {
           parser->change_token(wlst[c]);
         }
-        freewordlist(dicwords);
         return 0;
       case ' ':
-        freewordlist(dicwords);
         return 0;
       case '?':
         clear();
@@ -1391,7 +1361,6 @@ int dialog(TextParser* parser,
           free(temp);
           parser->change_token(checkapos ? mystrrep(i, "'", UTF8_APOS) : i);
 
-          freewordlist(dicwords);
           return 2;  // replace
         }
         /* TRANSLATORS: translate these letters according to the shortcut letter
@@ -1401,13 +1370,10 @@ int dialog(TextParser* parser,
         int i_key = gettext("i")[0];
 
         if (c == u_key || c == i_key) {
-          struct wordlist* i =
-              (struct wordlist*)malloc(sizeof(struct wordlist));
-          i->word = (c == i_key)
-                        ? mystrdup(token)
-                        : lower_first_char(token, io_enc, pMS->get_langnum());
-          i->next = dicwords;
-          dicwords = i;
+          std::string word = (c == i_key)
+                      ? token
+                      : lower_first_char(token, io_enc, pMS->get_langnum());
+          dicwords.push_back(word);
           // save
           if (HOME) {
             strncpy(buf, HOME, MAXLNLEN - 1);
@@ -1427,7 +1393,7 @@ int dialog(TextParser* parser,
             strcat(buf, privdicname);
           }
           if (save_privdic(buf2, buf, dicwords)) {
-            dicwords = NULL;
+            dicwords.clear();
           } else {
             fprintf(stderr, gettext("Cannot update personal dictionary."));
             break;
@@ -1440,7 +1406,6 @@ int dialog(TextParser* parser,
             (c == (gettext("a"))[0])) {
           modified = 1;
           putdic(token, pMS);
-          freewordlist(dicwords);
           return 0;
         }
         /* TRANSLATORS: translate this letter according to the shortcut letter
@@ -1517,20 +1482,12 @@ int dialog(TextParser* parser,
             break;
 
           if (!putdic(w3, pMS)) {
-            struct wordlist* i =
-                (struct wordlist*)malloc(sizeof(struct wordlist));
-            i->word = mystrdup(w3);
-            i->next = dicwords;
-            dicwords = i;
+            dicwords.push_back(w3);
 
             if (strlen(w) + strlen(w2) + 4 < MAXLNLEN) {
               sprintf(w3, "%s-/%s-", w, w2);
               if (putdic(w3, pMS)) {
-                struct wordlist* i =
-                    (struct wordlist*)malloc(sizeof(struct wordlist));
-                i->word = mystrdup(w3);
-                i->next = dicwords;
-                dicwords = i;
+                dicwords.push_back(w3);
               }
             }
             // save
@@ -1553,7 +1510,7 @@ int dialog(TextParser* parser,
               strcat(buf, privdicname);
             }
             if (save_privdic(buf2, buf, dicwords)) {
-              dicwords = NULL;
+              dicwords.clear();
             } else {
               fprintf(stderr, gettext("Cannot update personal dictionary."));
               break;
@@ -1567,14 +1524,12 @@ int dialog(TextParser* parser,
             dialogscreen(parser, token, filename, forbidden, wlst, ns);
             break;
           }
-          freewordlist(dicwords);
           return 0;
         }
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "e(X)it" before */
         if (c == (gettext("x"))[0]) {
-          freewordlist(dicwords);
           return 1;
         }
         /* TRANSLATORS: translate this letter according to the shortcut letter
@@ -1587,20 +1542,17 @@ int dialog(TextParser* parser,
             /* TRANSLATORS: translate this letter according to the shortcut
              * letter y)es */
             if (getch() == (gettext("y"))[0]) {
-              freewordlist(dicwords);
               return -1;
             }
             dialogscreen(parser, token, filename, forbidden, wlst, ns);
             break;
           } else {
-            freewordlist(dicwords);
             return -1;
           }
         }
       }
     }
   }
-  freewordlist(dicwords);
   return 0;
 }
 
