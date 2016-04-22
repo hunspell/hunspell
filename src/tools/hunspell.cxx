@@ -763,24 +763,24 @@ nextline:
           break;
         }
         case '#': {
+          std::string sbuf;
           if (HOME) {
-            strncpy(buf, HOME, MAXLNLEN - 1);
-            buf[MAXLNLEN - 1] = '\0';
+            sbuf.append(HOME);
           } else {
             fprintf(stderr, gettext("error - missing HOME variable\n"));
             continue;
           }
 #ifndef WIN32
-          strcat(buf, "/");
+          sbuf.append("/");
 #endif
-          size_t offset = strlen(buf);
+          size_t offset = sbuf.size();
           if (!privdicname) {
-            strcat(buf, DICBASENAME);
-            strcat(buf, basename(dicname, DIRSEPCH));
+            sbuf.append(DICBASENAME);
+            sbuf.append(basename(dicname, DIRSEPCH));
           } else {
-            strcat(buf, privdicname);
+            sbuf.append(privdicname);
           }
-          if (save_privdic(buf + offset, buf, dicwords)) {
+          if (save_privdic(sbuf.substr(offset), sbuf, dicwords)) {
             dicwords.clear();
           }
           break;
@@ -1372,25 +1372,25 @@ int dialog(TextParser* parser,
                       ? token
                       : lower_first_char(token, io_enc, pMS->get_langnum());
           dicwords.push_back(word);
+          std::string sbuf;
           // save
           if (HOME) {
-            strncpy(buf, HOME, MAXLNLEN - 1);
-            buf[MAXLNLEN - 1] = '\0';
+            sbuf.append(HOME);
           } else {
             fprintf(stderr, gettext("error - missing HOME variable\n"));
             break;
           }
 #ifndef WIN32
-          strcat(buf, "/");
+          sbuf.append("/");
 #endif
-          size_t offset = strlen(buf);
+          size_t offset = sbuf.size();
           if (!privdicname) {
-            strcat(buf, DICBASENAME);
-            strcat(buf, basename(dicname, DIRSEPCH));
+            sbuf.append(DICBASENAME);
+            sbuf.append(basename(dicname, DIRSEPCH));
           } else {
-            strcat(buf, privdicname);
+            sbuf.append(privdicname);
           }
-          if (save_privdic(buf + offset, buf, dicwords)) {
+          if (save_privdic(sbuf.substr(offset), sbuf, dicwords)) {
             dicwords.clear();
           } else {
             fprintf(stderr, gettext("Cannot update personal dictionary."));
@@ -1489,25 +1489,24 @@ int dialog(TextParser* parser,
               }
             }
             // save
-
+            std::string sbuf;
             if (HOME) {
-              strncpy(buf, HOME, MAXLNLEN - 1);
-              buf[MAXLNLEN - 1] = '\0';
+              sbuf.append(HOME);
             } else {
               fprintf(stderr, gettext("error - missing HOME variable\n"));
               continue;
             }
 #ifndef WIN32
-            strcat(buf, "/");
+            sbuf.append("/");
 #endif
-            size_t offset = strlen(buf);
+            size_t offset = sbuf.size();
             if (!privdicname) {
-              strcat(buf, DICBASENAME);
-              strcat(buf, basename(dicname, DIRSEPCH));
+              sbuf.append(DICBASENAME);
+              sbuf.append(basename(dicname, DIRSEPCH));
             } else {
-              strcat(buf, privdicname);
+              sbuf.append(privdicname);
             }
-            if (save_privdic(buf + offset, buf, dicwords)) {
+            if (save_privdic(sbuf.substr(offset), sbuf, dicwords)) {
               dicwords.clear();
             } else {
               fprintf(stderr, gettext("Cannot update personal dictionary."));
