@@ -4,23 +4,23 @@ INCLUDES=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_src
 
 hzip_SOURCES=hzip.cxx
 hunzip_SOURCES=hunzip.cxx
-hunzip_LDADD = ../hunspell/libhunspell-1.4.la
+hunzip_LDADD = ../hunspell/libhunspell-1.5.la
 
 munch_SOURCES=munch.cxx munch.h
 unmunch_SOURCES=unmunch.cxx unmunch.h
 
 example_SOURCES=example.cxx
-example_LDADD = ../hunspell/libhunspell-1.4.la
+example_LDADD = ../hunspell/libhunspell-1.5.la
 
 hunspell_SOURCES=hunspell.cxx
 hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
-	../hunspell/libhunspell-1.4.la @CURSESLIB@ @READLINELIB@
+	../hunspell/libhunspell-1.5.la @CURSESLIB@ @READLINELIB@
 
 analyze_SOURCES=analyze.cxx
-analyze_LDADD = ../hunspell/libhunspell-1.4.la
+analyze_LDADD = ../hunspell/libhunspell-1.5.la
 
 chmorph_SOURCES=chmorph.cxx
-chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.4.la
+chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.5.la
 
 noinst_PROGRAMS=example
 
