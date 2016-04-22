@@ -2161,7 +2161,7 @@ int AffixMgr::compound_check_morph(const char* word,
                                    hentry** rwords,
                                    char hu_mov_rule = 0,
                                    char** result = NULL,
-                                   char* partresult = NULL) {
+                                   const char* partresult = NULL) {
   int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   int ok = 0;
