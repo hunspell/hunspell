@@ -585,13 +585,13 @@ int exist(const char* filename) {
   return 0;
 }
 
-int save_privdic(char* filename, char* filename2, std::vector<std::string>& w) {
-  FILE* dic = fopen(filename, "r");
+int save_privdic(const std::string& filename, const std::string& filename2, std::vector<std::string>& w) {
+  FILE* dic = fopen(filename.c_str(), "r");
   if (dic) {
     fclose(dic);
-    dic = fopen(filename, "a");
+    dic = fopen(filename.c_str(), "a");
   } else {
-    dic = fopen(filename2, "a");
+    dic = fopen(filename2.c_str(), "a");
   }
   if (!dic)
     return 0;
@@ -666,7 +666,6 @@ static bool secure_filename(const char* filename) {
 
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   char buf[MAXLNLEN];
-  char* buf2;
   std::vector<std::string> dicwords;
   char* token;
   int pos;
@@ -774,14 +773,14 @@ nextline:
 #ifndef WIN32
           strcat(buf, "/");
 #endif
-          buf2 = buf + strlen(buf);
+          size_t offset = strlen(buf);
           if (!privdicname) {
             strcat(buf, DICBASENAME);
             strcat(buf, basename(dicname, DIRSEPCH));
           } else {
             strcat(buf, privdicname);
           }
-          if (save_privdic(buf2, buf, dicwords)) {
+          if (save_privdic(buf + offset, buf, dicwords)) {
             dicwords.clear();
           }
           break;
@@ -1248,7 +1247,6 @@ int dialog(TextParser* parser,
            int ns,
            int forbidden) {
   char buf[MAXLNLEN];
-  char* buf2;
   std::vector<std::string> dicwords;
   int c;
 
@@ -1385,14 +1383,14 @@ int dialog(TextParser* parser,
 #ifndef WIN32
           strcat(buf, "/");
 #endif
-          buf2 = buf + strlen(buf);
+          size_t offset = strlen(buf);
           if (!privdicname) {
             strcat(buf, DICBASENAME);
             strcat(buf, basename(dicname, DIRSEPCH));
           } else {
             strcat(buf, privdicname);
           }
-          if (save_privdic(buf2, buf, dicwords)) {
+          if (save_privdic(buf + offset, buf, dicwords)) {
             dicwords.clear();
           } else {
             fprintf(stderr, gettext("Cannot update personal dictionary."));
@@ -1502,14 +1500,14 @@ int dialog(TextParser* parser,
 #ifndef WIN32
             strcat(buf, "/");
 #endif
-            buf2 = buf + strlen(buf);
+            size_t offset = strlen(buf);
             if (!privdicname) {
               strcat(buf, DICBASENAME);
               strcat(buf, basename(dicname, DIRSEPCH));
             } else {
               strcat(buf, privdicname);
             }
-            if (save_privdic(buf2, buf, dicwords)) {
+            if (save_privdic(buf + offset, buf, dicwords)) {
               dicwords.clear();
             } else {
               fprintf(stderr, gettext("Cannot update personal dictionary."));
