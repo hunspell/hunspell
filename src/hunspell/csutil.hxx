@@ -175,7 +175,6 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<std::string> line_tok(const std::string& te
                                                            char breakchar);
 
 // tokenize into lines with new line and uniq in place
-LIBHUNSPELL_DLL_EXPORTED char* line_uniq(char* text, char breakchar);
 LIBHUNSPELL_DLL_EXPORTED void line_uniq(std::string& text, char breakchar);
 
 LIBHUNSPELL_DLL_EXPORTED char* line_uniq_app(char** text, char breakchar);
