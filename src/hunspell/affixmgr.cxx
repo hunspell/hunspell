@@ -3157,22 +3157,20 @@ char* AffixMgr::affix_check_morph(const char* word,
                                   int len,
                                   const FLAG needflag,
                                   char in_compound) {
-  char result[MAXLNLEN];
+  std::string result;
   char* st = NULL;
-
-  *result = '\0';
 
   // check all prefixes (also crossed with suffixes if allowed)
   st = prefix_check_morph(word, len, in_compound);
   if (st) {
-    mystrcat(result, st, MAXLNLEN);
+    result.append(st);
     free(st);
   }
 
   // if still not found check all suffixes
   st = suffix_check_morph(word, len, 0, NULL, '\0', needflag, in_compound);
   if (st) {
-    mystrcat(result, st, MAXLNLEN);
+    result.append(st);
     free(st);
   }
 
@@ -3182,19 +3180,19 @@ char* AffixMgr::affix_check_morph(const char* word,
     // if still not found check all two-level suffixes
     st = suffix_check_twosfx_morph(word, len, 0, NULL, needflag);
     if (st) {
-      mystrcat(result, st, MAXLNLEN);
+      result.append(st);
       free(st);
     }
 
     // if still not found check all two-level suffixes
     st = prefix_check_twosfx_morph(word, len, IN_CPD_NOT, needflag);
     if (st) {
-      mystrcat(result, st, MAXLNLEN);
+      result.append(st);
       free(st);
     }
   }
 
-  return mystrdup(result);
+  return mystrdup(result.c_str());
 }
 
 char* AffixMgr::morphgen(const char* ts,
