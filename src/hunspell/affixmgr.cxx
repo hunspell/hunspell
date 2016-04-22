@@ -1261,8 +1261,7 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
                                           int len,
                                           char in_compound,
                                           const FLAG needflag) {
-  char result[MAXLNLEN];
-  result[0] = '\0';
+  std::string result;
 
   pfx = NULL;
   sfxappnd = NULL;
@@ -1273,7 +1272,7 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
   while (pe) {
     char* st = pe->check_twosfx_morph(word, len, in_compound, needflag);
     if (st) {
-      mystrcat(result, st, MAXLNLEN);
+      result.append(st);
       free(st);
     }
     pe = pe->getNext();
@@ -1287,7 +1286,7 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
     if (isSubset(pptr->getKey(), word)) {
       char* st = pptr->check_twosfx_morph(word, len, in_compound, needflag);
       if (st) {
-        mystrcat(result, st, MAXLNLEN);
+        result.append(st);
         free(st);
         pfx = pptr;
       }
@@ -1297,8 +1296,8 @@ char* AffixMgr::prefix_check_twosfx_morph(const char* word,
     }
   }
 
-  if (*result)
-    return mystrdup(result);
+  if (!result.empty())
+    return mystrdup(result.c_str());
   return NULL;
 }
 
