@@ -380,8 +380,8 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
 }
 
 // remove word (personal dictionary function for standalone applications)
-int HashMgr::remove(const char* word) {
-  struct hentry* dp = lookup(word);
+int HashMgr::remove(const std::string& word) {
+  struct hentry* dp = lookup(word.c_str());
   while (dp) {
     if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
       unsigned short* flags =

@@ -115,7 +115,7 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
 
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const char* pattern);
-  int remove(const char* word);
+  int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af);
   bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af);
   unsigned short decode_flag(const char* flag);
