@@ -86,7 +86,7 @@ class TextParser {
   void init(const w_char* wordchars, int len);
   virtual ~TextParser();
 
-  void put_line(char* line);
+  void put_line(const char* line);
   char* get_line();
   char* get_prevline(int n);
   virtual char* next_token();

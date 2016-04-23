@@ -163,7 +163,7 @@ int TextParser::next_char(char* ln, int* pos) {
   return 0;
 }
 
-void TextParser::put_line(char* word) {
+void TextParser::put_line(const char* word) {
   actual = (actual + 1) % MAXPREVLINE;
   strcpy(line[actual], word);
   token = 0;
