@@ -1214,9 +1214,9 @@ void dialogscreen(TextParser* parser,
                                      "S)tem Q)uit e(X)it or ? for help\n"));
 }
 
-std::string lower_first_char(const std::string& token, const char* io_enc, int langnum) {
+std::string lower_first_char(const std::string& token, const char* ioenc, int langnum) {
   std::string utf8str(token);
-  chenc(utf8str, io_enc, "UTF-8");
+  chenc(utf8str, ioenc, "UTF-8");
   std::vector<w_char> u;
   u8_u16(u, utf8str);
   if (!u.empty()) {
@@ -1227,7 +1227,7 @@ std::string lower_first_char(const std::string& token, const char* io_enc, int l
   }
   std::string scratch;
   u16_u8(scratch, u);
-  chenc(scratch, "UTF-8", io_enc);
+  chenc(scratch, "UTF-8", ioenc);
   return scratch;
 }
 
