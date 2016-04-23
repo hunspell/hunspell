@@ -2586,21 +2586,18 @@ struct cs_info* get_current_cs(const char* es) {
 #endif
 
 // primitive isalpha() replacement for tokenization
-char* get_casechars(const char* enc) {
+std::string get_casechars(const char* enc) {
   struct cs_info* csconv = get_current_cs(enc);
-  char expw[MAXLNLEN];
-  char* p = expw;
-  for (int i = 0; i <= 255; i++) {
+  std::string expw;
+  for (int i = 0; i <= 255; ++i) {
     if (cupper(csconv, i) != clower(csconv, i)) {
-      *p = static_cast<char>(i);
-      p++;
+      expw.push_back(static_cast<char>(i));
     }
   }
-  *p = '\0';
 #ifdef MOZILLA_CLIENT
   delete[] csconv;
 #endif
-  return mystrdup(expw);
+  return expw;
 }
 
 // language to encoding default map

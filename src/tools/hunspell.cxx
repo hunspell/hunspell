@@ -190,9 +190,8 @@ enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
 
 // global variables
 
-char* wordchars = NULL;
+std::string wordchars;
 char* dicpath = NULL;
-int wordchars_len;
 const w_char* wordchars_utf16 = NULL;
 std::vector<w_char> new_wordchars_utf16;
 int wordchars_utf16_len;
@@ -413,7 +412,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       }
     }
     if (*letters)
-      wordchars = mystrdup(letters);
+      wordchars.assign(letters);
   }
 #else
   if (strcmp(denc, "UTF-8") == 0) {
@@ -422,14 +421,9 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     wordchars_utf16_len = vec_wordchars_utf16.size();
     io_utf8 = 1;
   } else {
-    char* casechars = get_casechars(denc);
-    wordchars = (char*)pMS->get_wordchars();
-    if (casechars && wordchars) {
-      casechars =
-          (char*)realloc(casechars, strlen(casechars) + strlen(wordchars) + 1);
-      strcat(casechars, wordchars);
-    }
-    wordchars = casechars;
+    std::string casechars = get_casechars(denc);
+    std::string wchars = pMS->get_wordchars();
+    wordchars = casechars + wchars;
   }
   io_enc = denc;
 #endif
@@ -452,27 +446,27 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         p = new ODFParser(wordchars_utf16, wordchars_utf16_len);
         break;
       case FMT_FIRST:
-        p = new FirstParser(wordchars);
+        p = new FirstParser(wordchars.c_str());
     }
   } else {
     switch (format) {
       case FMT_LATEX:
-        p = new LaTeXParser(wordchars);
+        p = new LaTeXParser(wordchars.c_str());
         break;
       case FMT_HTML:
-        p = new HTMLParser(wordchars);
+        p = new HTMLParser(wordchars.c_str());
         break;
       case FMT_MAN:
-        p = new ManParser(wordchars);
+        p = new ManParser(wordchars.c_str());
         break;
       case FMT_XML:
-        p = new XMLParser(wordchars);
+        p = new XMLParser(wordchars.c_str());
         break;
       case FMT_ODF:
-        p = new ODFParser(wordchars);
+        p = new ODFParser(wordchars.c_str());
         break;
       case FMT_FIRST:
-        p = new FirstParser(wordchars);
+        p = new FirstParser(wordchars.c_str());
     }
   }
 
@@ -482,13 +476,13 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       if (io_utf8) {
         p = new HTMLParser(wordchars_utf16, wordchars_utf16_len);
       } else {
-        p = new HTMLParser(wordchars);
+        p = new HTMLParser(wordchars.c_str());
       }
     } else if ((strcmp(extension, "xml") == 0)) {
       if (io_utf8) {
         p = new XMLParser(wordchars_utf16, wordchars_utf16_len);
       } else {
-        p = new XMLParser(wordchars);
+        p = new XMLParser(wordchars.c_str());
       }
     } else if (((strlen(extension) == 3) &&
                 (strstr(ODF_EXT, extension) != NULL)) ||
@@ -497,19 +491,19 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       if (io_utf8) {
         p = new ODFParser(wordchars_utf16, wordchars_utf16_len);
       } else {
-        p = new ODFParser(wordchars);
+        p = new ODFParser(wordchars.c_str());
       }
     } else if (((extension[0] > '0') && (extension[0] <= '9'))) {
       if (io_utf8) {
         p = new ManParser(wordchars_utf16, wordchars_utf16_len);
       } else {
-        p = new ManParser(wordchars);
+        p = new ManParser(wordchars.c_str());
       }
     } else if ((strcmp(extension, "tex") == 0)) {
       if (io_utf8) {
         p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len);
       } else {
-        p = new LaTeXParser(wordchars);
+        p = new LaTeXParser(wordchars.c_str());
       }
     }
   }
@@ -517,7 +511,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     if (io_utf8) {
       p = new TextParser(wordchars_utf16, wordchars_utf16_len);
     } else {
-      p = new TextParser(wordchars);
+      p = new TextParser(wordchars.c_str());
     }
   }
   p->set_url_checking(checkurl);
@@ -2238,8 +2232,6 @@ int main(int argc, char** argv) {
     free(aff);
   if (dic)
     free(dic);
-  if (wordchars)
-    free(wordchars);
 #ifdef HAVE_ICONV
   free_utf_tbl();
 #endif
