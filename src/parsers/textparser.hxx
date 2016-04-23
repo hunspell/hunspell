@@ -67,9 +67,9 @@
 
 class TextParser {
  protected:
-  int wordcharacters[256];           // for detection of the word boundaries
-  char line[MAXPREVLINE][MAXLNLEN];  // parsed and previous lines
-  std::vector<bool> urlline;         // mask for url detection
+  int wordcharacters[256];        // for detection of the word boundaries
+  std::string line[MAXPREVLINE];  // parsed and previous lines
+  std::vector<bool> urlline;      // mask for url detection
   int checkurl;
   int actual;  // actual line
   int head;    // head position
@@ -98,7 +98,7 @@ class TextParser {
   int get_tokenpos();
   int is_wordchar(const char* w);
   inline int is_utf8() { return utf8; }
-  const char* get_latin1(char* s);
+  const char* get_latin1(const char* s);
   char* next_char();
   int tokenize_urls();
   void check_urls();

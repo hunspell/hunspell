@@ -78,7 +78,7 @@ char* ManParser::next_token() {
         }
       // no break
       case 2:  // non word chars
-        if (is_wordchar(line[actual] + head)) {
+        if (is_wordchar(line[actual].c_str() + head)) {
           state = 3;
           token = head;
         } else if ((line[actual][head] == '\\') &&
@@ -88,7 +88,7 @@ char* ManParser::next_token() {
         }
         break;
       case 3:  // wordchar
-        if (!is_wordchar(line[actual] + head)) {
+        if (!is_wordchar(line[actual].c_str() + head)) {
           state = 2;
           char* t = alloc_token(token, &head);
           if (t)
@@ -96,7 +96,7 @@ char* ManParser::next_token() {
         }
         break;
     }
-    if (next_char(line[actual], &head)) {
+    if (next_char(line[actual].c_str(), &head)) {
       state = 0;
       return NULL;
     }

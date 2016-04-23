@@ -57,16 +57,16 @@ FirstParser::FirstParser(const char* wordchars) {
 FirstParser::~FirstParser() {}
 
 char* FirstParser::next_token() {
-  char* tabpos = strchr(line[actual], '\t');
-  if ((tabpos) && (tabpos - line[actual] > token)) {
-    char* t = (char*)malloc(tabpos - line[actual] + 1);
+  const char* tabpos = strchr(line[actual].c_str(), '\t');
+  if ((tabpos) && (tabpos - line[actual].c_str() > token)) {
+    char* t = (char*)malloc(tabpos - line[actual].c_str() + 1);
     if (!t) {
       fprintf(stderr, "Error - Insufficient Memory\n");
       return NULL;
     }
-    t[tabpos - line[actual]] = '\0';
-    token = tabpos - line[actual] + 1;
-    return strncpy(t, line[actual], tabpos - line[actual]);
+    t[tabpos - line[actual].c_str()] = '\0';
+    token = tabpos - line[actual].c_str() + 1;
+    return strncpy(t, line[actual].c_str(), tabpos - line[actual].c_str());
   }
   return NULL;
 }

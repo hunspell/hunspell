@@ -99,7 +99,7 @@ int TextParser::is_wordchar(const char* w) {
   }
 }
 
-const char* TextParser::get_latin1(char* s) {
+const char* TextParser::get_latin1(const char* s) {
   if (s[0] == '&') {
     unsigned int i = 0;
     while ((i < LATIN1_LEN) && strncmp(LATIN1[i], s, strlen(LATIN1[i])))
@@ -111,9 +111,6 @@ const char* TextParser::get_latin1(char* s) {
 }
 
 void TextParser::init(const char* wordchars) {
-  for (int i = 0; i < MAXPREVLINE; i++) {
-    line[i][0] = '\0';
-  }
   actual = 0;
   head = 0;
   token = 0;
@@ -134,9 +131,6 @@ void TextParser::init(const char* wordchars) {
 }
 
 void TextParser::init(const w_char* wc, int len) {
-  for (int i = 0; i < MAXPREVLINE; i++) {
-    line[i][0] = '\0';
-  }
   actual = 0;
   head = 0;
   token = 0;
@@ -165,14 +159,14 @@ int TextParser::next_char(const char* ln, int* pos) {
 
 void TextParser::put_line(const char* word) {
   actual = (actual + 1) % MAXPREVLINE;
-  strcpy(line[actual], word);
+  line[actual].assign(word);
   token = 0;
   head = 0;
   check_urls();
 }
 
 char* TextParser::get_prevline(int n) {
-  return mystrdup(line[(actual + MAXPREVLINE - n) % MAXPREVLINE]);
+  return mystrdup(line[(actual + MAXPREVLINE - n) % MAXPREVLINE].c_str());
 }
 
 char* TextParser::get_line() {
@@ -185,32 +179,32 @@ char* TextParser::next_token() {
   for (;;) {
     switch (state) {
       case 0:  // non word chars
-        if (is_wordchar(line[actual] + head)) {
+        if (is_wordchar(line[actual].c_str() + head)) {
           state = 1;
           token = head;
-        } else if ((latin1 = get_latin1(line[actual] + head))) {
+        } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           state = 1;
           token = head;
           head += strlen(latin1);
         }
         break;
       case 1:  // wordchar
-        if ((latin1 = get_latin1(line[actual] + head))) {
+        if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           head += strlen(latin1);
         } else if ((is_wordchar((char*)APOSTROPHE) ||
                     (is_utf8() && is_wordchar((char*)UTF8_APOS))) &&
-                   line[actual][head] == '\'' &&
-                   is_wordchar(line[actual] + head + 1)) {
+                   !line[actual].empty() && line[actual][head] == '\'' &&
+                   is_wordchar(line[actual].c_str() + head + 1)) {
           head++;
         } else if (is_utf8() &&
                    is_wordchar((char*)APOSTROPHE) &&  // add Unicode apostrophe
                                                       // to the WORDCHARS, if
                                                       // needed
-                   strncmp(line[actual] + head, UTF8_APOS, strlen(UTF8_APOS)) ==
+                   strncmp(line[actual].c_str() + head, UTF8_APOS, strlen(UTF8_APOS)) ==
                        0 &&
-                   is_wordchar(line[actual] + head + strlen(UTF8_APOS))) {
+                   is_wordchar(line[actual].c_str() + head + strlen(UTF8_APOS))) {
           head += strlen(UTF8_APOS) - 1;
-        } else if (!is_wordchar(line[actual] + head)) {
+        } else if (!is_wordchar(line[actual].c_str() + head)) {
           state = 0;
           char* t = alloc_token(token, &head);
           if (t)
@@ -218,7 +212,7 @@ char* TextParser::next_token() {
         }
         break;
     }
-    if (next_char(line[actual], &head))
+    if (next_char(line[actual].c_str(), &head))
       return NULL;
   }
 }
@@ -229,18 +223,18 @@ int TextParser::get_tokenpos() {
 
 int TextParser::change_token(const char* word) {
   if (word) {
-    char* r = mystrdup(line[actual] + head);
-    strcpy(line[actual] + token, word);
-    strcat(line[actual], r);
+    std::string remainder(line[actual].substr(head));
+    line[actual].resize(token);
+    line[actual].append(word);
+    line[actual].append(remainder);
     head = token;
-    free(r);
     return 1;
   }
   return 0;
 }
 
 void TextParser::check_urls() {
-  urlline.resize(strlen(line[actual]) + 1);
+  urlline.resize(line[actual].size() + 1);
   int url_state = 0;
   int url_head = 0;
   int url_token = 0;
@@ -248,26 +242,26 @@ void TextParser::check_urls() {
   for (;;) {
     switch (url_state) {
       case 0:  // non word chars
-        if (is_wordchar(line[actual] + url_head)) {
+        if (is_wordchar(line[actual].c_str() + url_head)) {
           url_state = 1;
           url_token = url_head;
           // Unix path
-        } else if (*(line[actual] + url_head) == '/') {
+        } else if (line[actual][url_head] == '/') {
           url_state = 1;
           url_token = url_head;
           url = 1;
         }
         break;
       case 1:  // wordchar
-        char ch = *(line[actual] + url_head);
+        char ch = line[actual][url_head];
         // e-mail address
         if ((ch == '@') ||
             // MS-DOS, Windows path
-            (strncmp(line[actual] + url_head, ":\\", 2) == 0) ||
+            (strncmp(line[actual].c_str() + url_head, ":\\", 2) == 0) ||
             // URL
-            (strncmp(line[actual] + url_head, "://", 3) == 0)) {
+            (strncmp(line[actual].c_str() + url_head, "://", 3) == 0)) {
           url = 1;
-        } else if (!(is_wordchar(line[actual] + url_head) || (ch == '-') ||
+        } else if (!(is_wordchar(line[actual].c_str() + url_head) || (ch == '-') ||
                      (ch == '_') || (ch == '\\') || (ch == '.') ||
                      (ch == ':') || (ch == '/') || (ch == '~') || (ch == '%') ||
                      (ch == '*') || (ch == '$') || (ch == '[') || (ch == ']') ||
@@ -284,13 +278,13 @@ void TextParser::check_urls() {
         break;
     }
     urlline[url_head] = false;
-    if (next_char(line[actual], &url_head))
+    if (next_char(line[actual].c_str(), &url_head))
       return;
   }
 }
 
 int TextParser::get_url(int token_pos, int* hd) {
-  for (int i = *hd; urlline[i] && *(line[actual] + i); i++, (*hd)++)
+  for (size_t i = *hd; urlline[i] && i < line[actual].size(); i++, (*hd)++)
     ;
   return checkurl ? 0 : urlline[token_pos];
 }
@@ -306,7 +300,7 @@ char* TextParser::alloc_token(int tokn, int* hd) {
   char* t = (char*)malloc(*hd - tokn + 1);
   if (t) {
     t[*hd - tokn] = '\0';
-    strncpy(t, line[actual] + tokn, *hd - tokn);
+    strncpy(t, line[actual].c_str() + tokn, *hd - tokn);
     // remove colon for Finnish and Swedish language
     if (t[*hd - tokn - 1] == ':') {
       t[*hd - tokn - 1] = '\0';
