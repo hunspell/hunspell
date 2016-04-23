@@ -1239,7 +1239,6 @@ int dialog(TextParser* parser,
            char** wlst,
            int ns,
            int forbidden) {
-  char buf[MAXLNLEN];
   std::vector<std::string> dicwords;
   int c;
 
