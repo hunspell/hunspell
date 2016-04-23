@@ -58,6 +58,8 @@
 
 #include "../hunspell/w_char.hxx"
 
+#include <vector>
+
 /*
  * Base Text Parser
  *
@@ -67,7 +69,7 @@ class TextParser {
  protected:
   int wordcharacters[256];           // for detection of the word boundaries
   char line[MAXPREVLINE][MAXLNLEN];  // parsed and previous lines
-  char urlline[MAXLNLEN];            // mask for url detection
+  std::vector<bool> urlline;         // mask for url detection
   int checkurl;
   int actual;  // actual line
   int head;    // head position

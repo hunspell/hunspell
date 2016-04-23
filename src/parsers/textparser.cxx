@@ -240,6 +240,7 @@ int TextParser::change_token(const char* word) {
 }
 
 void TextParser::check_urls() {
+  urlline.resize(strlen(line[actual]) + 1);
   int url_state = 0;
   int url_head = 0;
   int url_token = 0;
@@ -275,14 +276,14 @@ void TextParser::check_urls() {
           url_state = 0;
           if (url == 1) {
             for (int i = url_token; i < url_head; i++) {
-              *(urlline + i) = 1;
+              urlline[i] = true;
             }
           }
           url = 0;
         }
         break;
     }
-    *(urlline + url_head) = 0;
+    urlline[url_head] = false;
     if (next_char(line[actual], &url_head))
       return;
   }
