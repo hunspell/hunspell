@@ -1324,9 +1324,6 @@ int dialog(TextParser* parser,
            used
            previously in the  translation of "R)epl" before */
         if (c == (gettext("r"))[0]) {
-          char i[MAXLNLEN];
-          char* temp;
-
           modified = 1;
 
 #ifdef HAVE_READLINE
@@ -1335,7 +1332,7 @@ int dialog(TextParser* parser,
           if (rltext && *rltext)
             rl_startup_hook = set_rltext;
 #endif
-          temp = readline(gettext("Replace with: "));
+          char* temp = readline(gettext("Replace with: "));
 #ifdef HAVE_READLINE
           initscr();
           cbreak();
@@ -1347,10 +1344,12 @@ int dialog(TextParser* parser,
             break;
           }
 
-          strncpy(i, temp, MAXLNLEN - 1);
-          i[MAXLNLEN - 1] = '\0';
+          std::string i(temp);
           free(temp);
-          parser->change_token(checkapos ? mystrrep(i, "'", UTF8_APOS) : i);
+          if (checkapos) {
+            mystrrep(i, "'", UTF8_APOS);
+          }
+          parser->change_token(i.c_str());
 
           return 2;  // replace
         }
