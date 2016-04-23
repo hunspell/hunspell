@@ -1568,11 +1568,11 @@ int interactive_line(TextParser* parser,
       if (ns == 0) {
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
       } else {
-        for (int j = 0; j < ns; j++) {
-          char d2io[MAXLNLEN];
-          strcpy(d2io, chenc(wlst[j], dic_enc[d], io_enc));
-          wlst[j] = (char*)realloc(wlst[j], strlen(d2io) + 1);
-          strcpy(wlst[j], d2io);
+        for (int j = 0; j < ns; ++j) {
+          std::string d2io(wlst[j]);
+          chenc(d2io, dic_enc[d], io_enc);
+          wlst[j] = (char*)realloc(wlst[j], d2io.size() + 1);
+          strcpy(wlst[j], d2io.c_str());
         }
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
       }
