@@ -559,24 +559,23 @@ int putdic(const std::string& in_word, Hunspell* pMS) {
 }
 
 void load_privdic(const char* filename, Hunspell* pMS) {
-  char buf[MAXLNLEN];
-  FILE* dic = fopen(filename, "r");
-  if (dic) {
-    while (fgets(buf, MAXLNLEN, dic)) {
-      buf[strcspn(buf, "\n")] = 0;
+  std::ifstream dic;
+  dic.open(filename, std::ios_base::in);
+  if (dic.is_open()) {
+    std::string buf;
+    while (std::getline(dic, buf)) {
       putdic(buf, pMS);
     }
-    fclose(dic);
   }
 }
 
-int exist(const char* filename) {
-  FILE* f = fopen(filename, "r");
-  if (f) {
-    fclose(f);
-    return 1;
+bool exist(const char* filename) {
+  std::ifstream f;
+  f.open(filename, std::ios_base::in);
+  if (f.is_open()) {
+    return true;
   }
-  return 0;
+  return false;
 }
 
 int save_privdic(const std::string& filename, const std::string& filename2, std::vector<std::string>& w) {
