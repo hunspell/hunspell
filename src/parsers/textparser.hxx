@@ -76,7 +76,7 @@ class TextParser {
   int token;   // begin of token
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
-  int next_char(char* line, int* pos);
+  int next_char(const char* line, int* pos);
   const w_char* wordchars_utf16;
   int wclen;
 

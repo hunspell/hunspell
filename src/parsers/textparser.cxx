@@ -147,7 +147,7 @@ void TextParser::init(const w_char* wc, int len) {
   wclen = len;
 }
 
-int TextParser::next_char(char* ln, int* pos) {
+int TextParser::next_char(const char* ln, int* pos) {
   if (*(ln + *pos) == '\0')
     return 1;
   if (utf8) {
