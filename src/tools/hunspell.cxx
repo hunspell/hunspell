@@ -552,7 +552,7 @@ int putdic(const std::string& in_word, Hunspell* pMS) {
     std::string affix = word.substr(w + 1);
     word.resize(w);
     if (!affix.empty() && affix[0] == '/') // word//pattern (back comp.)
-        affix.erase(0);
+        affix.erase(0, 1);
     ret = pMS->add_with_affix(word, affix);  // word/pattern
   }
   return ret;

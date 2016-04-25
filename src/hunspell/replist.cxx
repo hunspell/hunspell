@@ -144,7 +144,7 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   int type = 0;
   std::string pat1(in_pat1);
   if (pat1[0] == '_') {
-    pat1.erase(0);
+    pat1.erase(0, 1);
     type = 1;
   }
   if (!pat1.empty() && pat1[pat1.size() - 1] == '_') {
