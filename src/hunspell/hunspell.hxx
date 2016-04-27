@@ -74,9 +74,6 @@
 #include "hunvisapi.h"
 
 #include "hashmgr.hxx"
-#include "affixmgr.hxx"
-#include "suggestmgr.hxx"
-#include "langnum.hxx"
 #include <vector>
 
 #define SPELL_XML "<?xml?>"
@@ -90,6 +87,9 @@
 
 #ifndef _MYSPELLMGR_HXX_
 #define _MYSPELLMGR_HXX_
+
+class AffixMgr;
+class SuggestMgr;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
  private:

@@ -50,6 +50,7 @@
 #include <string>
 #include <string.h>
 #include "config.h"
+#include "atypes.hxx"
 #include "hunspell.hxx"
 #include "csutil.hxx"
 
