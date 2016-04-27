@@ -58,9 +58,9 @@ static const char* __PATTERN__[][2] = {{"<!--", "-->"},
 
 #define __PATTERN_LEN__ (sizeof(__PATTERN__) / (sizeof(char*) * 2))
 
-static const char* __PATTERN2__[][2] = {};
+static const char* (*__PATTERN2__)[2] = NULL;
 
-#define __PATTERN_LEN2__ (sizeof(__PATTERN2__) / (sizeof(char*) * 2))
+#define __PATTERN_LEN2__ 0
 
 #define ENTITY_APOS "&apos;"
 #define UTF8_APOS "\xe2\x80\x99"

@@ -27,6 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -95,6 +96,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -115,7 +117,7 @@
 				AdditionalIncludeDirectories="..\hunspell;."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;HUNSPELL_STATIC;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
@@ -166,6 +168,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -186,7 +189,7 @@
 				AdditionalIncludeDirectories="..\hunspell;."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BUILDING_LIBHUNSPELL;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
@@ -249,6 +252,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="echo N | copy /-Y ..\hunspell\hunvisapi.h.in ..\hunspell\hunvisapi.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

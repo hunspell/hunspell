@@ -218,11 +218,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\parsers\odfparser.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\odfparser.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\parsers\textparser.cxx"
 				>
 			</File>
 			<File
 				RelativePath="..\parsers\textparser.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\xmlparser.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\xmlparser.hxx"
 				>
 			</File>
 		</Filter>
