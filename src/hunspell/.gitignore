@@ -1,5 +1,4 @@
 Makefile
-hunvisapi.h
 *.lo
 *.la
 .deps
