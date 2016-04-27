@@ -703,8 +703,9 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   if (filter_mode == NORMAL) {
     fprintf(stdout, gettext(HUNSPELL_HEADING));
     fprintf(stdout, HUNSPELL_VERSION);
-    if (pMS[0]->get_version())
-      fprintf(stdout, " - %s", pMS[0]->get_version());
+    const std::string& version = pMS[0]->get_version();
+    if (!version.empty())
+      fprintf(stdout, " - %s", version.c_str());
     fprintf(stdout, "\n");
     fflush(stdout);
   }

@@ -3582,8 +3582,8 @@ const char* AffixMgr::get_suffix() const {
 }
 
 // return the value of suffix
-const char* AffixMgr::get_version() const {
-  return version.c_str();
+const std::string& AffixMgr::get_version() const {
+  return version;
 }
 
 // return lemma_present flag

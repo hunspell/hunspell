@@ -330,7 +330,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   const char* get_prefix() const;
   const char* get_suffix() const;
   const char* get_derived() const;
-  const char* get_version() const;
+  const std::string& get_version() const;
   int have_contclass() const;
   int get_utf8() const;
   int get_complexprefixes() const;

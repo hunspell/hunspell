@@ -1293,7 +1293,7 @@ int Hunspell::remove(const std::string& word) {
   return 0;
 }
 
-const char* Hunspell::get_version() {
+const std::string& Hunspell::get_version() const {
   return pAMgr->get_version();
 }
 
