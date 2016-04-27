@@ -88,13 +88,12 @@
 #include "csutil.hxx"
 
 AffixMgr::AffixMgr(const char* affpath,
-                   HashMgr** ptr,
-                   int* md,
-                   const char* key) {
+                   const std::vector<HashMgr*>& ptr,
+                   const char* key)
+  : alldic(ptr)
+  , pHMgr(ptr[0]) {
+
   // register hash manager and load affix data from aff file
-  pHMgr = ptr[0];
-  alldic = ptr;
-  maxdic = md;
   csconv = NULL;
   utf8 = 0;
   complexprefixes = 0;
@@ -3594,10 +3593,9 @@ FLAG AffixMgr::get_lemma_present() const {
 
 // utility method to look up root words in hash table
 struct hentry* AffixMgr::lookup(const char* word) {
-  int i;
   struct hentry* he = NULL;
-  for (i = 0; i < *maxdic && !he; i++) {
-    he = (alldic[i])->lookup(word);
+  for (size_t i = 0; i < alldic.size() && !he; ++i) {
+    he = alldic[i]->lookup(word);
   }
   return he;
 }

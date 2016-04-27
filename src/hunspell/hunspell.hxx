@@ -72,13 +72,12 @@
  */
 
 #include "hunvisapi.h"
-
-#include "hashmgr.hxx"
+#include "w_char.hxx"
+#include <string>
 #include <vector>
 
 #define SPELL_XML "<?xml?>"
 
-#define MAXDIC 20
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
 
@@ -89,6 +88,7 @@
 #define _MYSPELLMGR_HXX_
 
 class AffixMgr;
+class HashMgr;
 class SuggestMgr;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
@@ -98,8 +98,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
  private:
   AffixMgr* pAMgr;
-  HashMgr* pHMgr[MAXDIC];
-  int maxdic;
+  std::vector<HashMgr*> m_HMgrs;
   SuggestMgr* pSMgr;
   char* affixpath;
   char* encoding;

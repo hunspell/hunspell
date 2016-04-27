@@ -1153,9 +1153,8 @@ int SuggestMgr::movechar_utf(char** wlst,
 int SuggestMgr::ngsuggest(char** wlst,
                           const char* w,
                           int ns,
-                          HashMgr** pHMgr,
-                          int md) {
-  int i, j;
+                          const std::vector<HashMgr*>& rHMgr) {
+  int j;
   int lval;
   int sc;
   int lp, lpphon;
@@ -1167,7 +1166,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   char* rootsphon[MAX_ROOTS];
   int scores[MAX_ROOTS];
   int scoresphon[MAX_ROOTS];
-  for (i = 0; i < MAX_ROOTS; i++) {
+  for (int i = 0; i < MAX_ROOTS; i++) {
     roots[i] = NULL;
     scores[i] = -100 * i;
     rootsphon[i] = NULL;
@@ -1227,8 +1226,8 @@ int SuggestMgr::ngsuggest(char** wlst,
   FLAG nongramsuggest = pAMgr ? pAMgr->get_nongramsuggest() : FLAG_NULL;
   FLAG onlyincompound = pAMgr ? pAMgr->get_onlyincompound() : FLAG_NULL;
 
-  for (i = 0; i < md; i++) {
-    while (0 != (hp = (pHMgr[i])->walk_hashtable(col, hp))) {
+  for (size_t i = 0; i < rHMgr.size(); ++i) {
+    while (0 != (hp = rHMgr[i]->walk_hashtable(col, hp))) {
       if ((hp->astr) && (pAMgr) &&
           (TESTAFF(hp->astr, forbiddenword, hp->alen) ||
            TESTAFF(hp->astr, ONLYUPCASEFLAG, hp->alen) ||
@@ -1318,7 +1317,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   char* guess[MAX_GUESS];
   char* guessorig[MAX_GUESS];
   int gscore[MAX_GUESS];
-  for (i = 0; i < MAX_GUESS; i++) {
+  for (int i = 0; i < MAX_GUESS; i++) {
     guess[i] = NULL;
     guessorig[i] = NULL;
     gscore[i] = -100 * i;
@@ -1334,7 +1333,7 @@ int SuggestMgr::ngsuggest(char** wlst,
     return ns;
   }
 
-  for (i = 0; i < MAX_ROOTS; i++) {
+  for (int i = 0; i < MAX_ROOTS; i++) {
     if (roots[i]) {
       struct hentry* rp = roots[i];
 
@@ -1402,7 +1401,7 @@ int SuggestMgr::ngsuggest(char** wlst,
       fact = (10.0 - maxd) / 5.0;
   }
 
-  for (i = 0; i < MAX_GUESS; i++) {
+  for (int i = 0; i < MAX_GUESS; i++) {
     if (guess[i]) {
       // lowering guess[i]
       std::string gl;
@@ -1456,7 +1455,7 @@ int SuggestMgr::ngsuggest(char** wlst,
 
   // phonetic version
   if (ph)
-    for (i = 0; i < MAX_ROOTS; i++) {
+    for (int i = 0; i < MAX_ROOTS; i++) {
       if (rootsphon[i]) {
         // lowering rootphon[i]
         std::string gl;
@@ -1487,7 +1486,7 @@ int SuggestMgr::ngsuggest(char** wlst,
   int oldns = ns;
 
   int same = 0;
-  for (i = 0; i < MAX_GUESS; i++) {
+  for (int i = 0; i < MAX_GUESS; i++) {
     if (guess[i]) {
       if ((ns < oldns + maxngramsugs) && (ns < maxSug) &&
           (!same || (gscore[i] > 1000))) {
@@ -1537,7 +1536,7 @@ int SuggestMgr::ngsuggest(char** wlst,
 
   oldns = ns;
   if (ph)
-    for (i = 0; i < MAX_ROOTS; i++) {
+    for (int i = 0; i < MAX_ROOTS; i++) {
       if (rootsphon[i]) {
         if ((ns < oldns + MAXPHONSUGS) && (ns < maxSug)) {
           int unique = 1;

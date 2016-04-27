@@ -96,16 +96,13 @@ Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key) {
   utf8 = 0;
   complexprefixes = 0;
   affixpath = mystrdup(affpath);
-  maxdic = 0;
 
   /* first set up the hash manager */
-  pHMgr[0] = new HashMgr(dpath, affpath, key);
-  if (pHMgr[0])
-    maxdic = 1;
+  m_HMgrs.push_back(new HashMgr(dpath, affpath, key));
 
   /* next set up the affix manager */
   /* it needs access to the hash manager lookup methods */
-  pAMgr = new AffixMgr(affpath, pHMgr, &maxdic, key);
+  pAMgr = new AffixMgr(affpath, m_HMgrs, key);
 
   /* get the preferred try string and the dictionary */
   /* encoding from the Affix Manager for that dictionary */
@@ -127,9 +124,8 @@ Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key) {
 Hunspell::~Hunspell() {
   delete pSMgr;
   delete pAMgr;
-  for (int i = 0; i < maxdic; i++)
-    delete pHMgr[i];
-  maxdic = 0;
+  for (size_t i = 0; i < m_HMgrs.size(); ++i)
+    delete m_HMgrs[i];
   pSMgr = NULL;
   pAMgr = NULL;
 #ifdef MOZILLA_CLIENT
@@ -146,13 +142,9 @@ Hunspell::~Hunspell() {
 
 // load extra dictionaries
 int Hunspell::add_dic(const char* dpath, const char* key) {
-  if (maxdic == MAXDIC || !affixpath)
+  if (!affixpath)
     return 1;
-  pHMgr[maxdic] = new HashMgr(dpath, affixpath, key);
-  if (pHMgr[maxdic])
-    maxdic++;
-  else
-    return 1;
+  m_HMgrs.push_back(new HashMgr(dpath, affixpath, key));
   return 0;
 }
 
@@ -402,7 +394,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
   abbv = 1;
 #endif
 
-  if (wl == 0 || maxdic == 0)
+  if (wl == 0 || m_HMgrs.empty())
     return 1;
   if (root)
     *root = NULL;
@@ -641,7 +633,7 @@ int Hunspell::spell(const char* word, int* info, char** root) {
 struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
   struct hentry* he = NULL;
   bool usebuffer = false;
-  int len, i;
+  int len;
   std::string w2;
   const char* word;
 
@@ -682,8 +674,8 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
   }
 
   // look word in hash table
-  for (i = 0; (i < maxdic) && !he; i++) {
-    he = (pHMgr[i])->lookup(word);
+  for (size_t i = 0; (i < m_HMgrs.size()) && !he; ++i) {
+    he = m_HMgrs[i]->lookup(word);
 
     // check forbidden and onlyincompound words
     if ((he) && (he->astr) && (pAMgr) &&
@@ -780,7 +772,7 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
 
 int Hunspell::suggest(char*** slst, const char* word) {
   int onlycmpdsug = 0;
-  if (!pSMgr || maxdic == 0)
+  if (!pSMgr || m_HMgrs.empty())
     return 0;
   *slst = NULL;
   // process XML input of the simplified API (see manual)
@@ -980,7 +972,7 @@ int Hunspell::suggest(char*** slst, const char* word) {
       (*slst)) {
     switch (captype) {
       case NOCAP: {
-        ns = pSMgr->ngsuggest(*slst, scw.c_str(), ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, scw.c_str(), ns, m_HMgrs);
         break;
       }
       case HUHINITCAP:
@@ -988,21 +980,21 @@ int Hunspell::suggest(char*** slst, const char* word) {
       case HUHCAP: {
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
-        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, m_HMgrs);
         break;
       }
       case INITCAP: {
         capwords = 1;
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
-        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, m_HMgrs);
         break;
       }
       case ALLCAP: {
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
         int oldns = ns;
-        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, pHMgr, maxdic);
+        ns = pSMgr->ngsuggest(*slst, wspace.c_str(), ns, m_HMgrs);
         for (int j = oldns; j < ns; j++) {
           std::string form((*slst)[j]);
           mkallcap(form);
@@ -1284,20 +1276,20 @@ int Hunspell::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
 }
 
 int Hunspell::add(const std::string& word) {
-  if (pHMgr[0])
-    return (pHMgr[0])->add(word);
+  if (!m_HMgrs.empty())
+    return m_HMgrs[0]->add(word);
   return 0;
 }
 
 int Hunspell::add_with_affix(const std::string& word, const std::string& example) {
-  if (pHMgr[0])
-    return (pHMgr[0])->add_with_affix(word, example);
+  if (!m_HMgrs.empty())
+    return m_HMgrs[0]->add_with_affix(word, example);
   return 0;
 }
 
 int Hunspell::remove(const std::string& word) {
-  if (pHMgr[0])
-    return (pHMgr[0])->remove(word);
+  if (!m_HMgrs.empty())
+    return m_HMgrs[0]->remove(word);
   return 0;
 }
 
@@ -1320,7 +1312,7 @@ void Hunspell::cat_result(std::string& result, char* st) {
 
 int Hunspell::analyze(char*** slst, const char* word) {
   *slst = NULL;
-  if (!pSMgr || maxdic == 0)
+  if (!pSMgr || m_HMgrs.empty())
     return 0;
   int nc = strlen(word);
   if (utf8) {
@@ -1883,8 +1875,8 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
     wlst[i] = NULL;
   }
 
-  for (int i = 0; (i < maxdic) && !he; i++) {
-    he = (pHMgr[i])->lookup(word);
+  for (size_t i = 0; (i < m_HMgrs.size()) && !he; ++i) {
+    he = m_HMgrs[i]->lookup(word);
   }
   if (he) {
     return pAMgr->get_suffix_words(he->astr, he->alen, root_word, *slst);

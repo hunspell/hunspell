@@ -116,14 +116,14 @@ class LIBHUNSPELL_DLL_EXPORTED HashMgr {
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
-  int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af);
-  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af);
-  unsigned short decode_flag(const char* flag);
-  char* encode_flag(unsigned short flag);
-  int is_aliasf();
-  int get_aliasf(int index, unsigned short** fvec, FileMgr* af);
-  int is_aliasm();
-  char* get_aliasm(int index);
+  int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
+  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
+  unsigned short decode_flag(const char* flag) const;
+  char* encode_flag(unsigned short flag) const;
+  int is_aliasf() const;
+  int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
+  int is_aliasm() const;
+  char* get_aliasm(int index) const;
 
  private:
   int get_clen_and_captype(const std::string& word, int* captype);

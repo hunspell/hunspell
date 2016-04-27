@@ -622,7 +622,7 @@ int HashMgr::hash(const char* word) const {
   return (unsigned long)hv % tablesize;
 }
 
-int HashMgr::decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) {
+int HashMgr::decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const {
   int len;
   if (flags.empty()) {
     *result = NULL;
@@ -709,7 +709,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return len;
 }
 
-bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) {
+bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const {
   if (flags.empty()) {
     return false;
   }
@@ -774,7 +774,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
   return true;
 }
 
-unsigned short HashMgr::decode_flag(const char* f) {
+unsigned short HashMgr::decode_flag(const char* f) const {
   unsigned short s = 0;
   int i;
   switch (flag_mode) {
@@ -803,7 +803,7 @@ unsigned short HashMgr::decode_flag(const char* f) {
   return s;
 }
 
-char* HashMgr::encode_flag(unsigned short f) {
+char* HashMgr::encode_flag(unsigned short f) const {
   if (f == 0)
     return mystrdup("(NULL)");
   std::string ch;
@@ -1058,11 +1058,11 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   return true;
 }
 
-int HashMgr::is_aliasf() {
+int HashMgr::is_aliasf() const {
   return (aliasf != NULL);
 }
 
-int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) {
+int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) const {
   if ((index > 0) && (index <= numaliasf)) {
     *fvec = aliasf[index - 1];
     return aliasflen[index - 1];
@@ -1174,11 +1174,11 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   return true;
 }
 
-int HashMgr::is_aliasm() {
+int HashMgr::is_aliasm() const {
   return (aliasm != NULL);
 }
 
-char* HashMgr::get_aliasm(int index) {
+char* HashMgr::get_aliasm(int index) const {
   if ((index > 0) && (index <= numaliasm))
     return aliasm[index - 1];
   HUNSPELL_WARNING(stderr, "error: bad morph. alias index: %d\n", index);

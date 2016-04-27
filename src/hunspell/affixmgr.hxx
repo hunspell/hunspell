@@ -79,6 +79,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <vector>
 
 #include "atypes.hxx"
 #include "baseaffix.hxx"
@@ -98,9 +99,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   SfxEntry* sStart[SETSIZE];
   PfxEntry* pFlag[SETSIZE];
   SfxEntry* sFlag[SETSIZE];
-  HashMgr* pHMgr;
-  HashMgr** alldic;
-  int* maxdic;
+  const std::vector<HashMgr*>& alldic;
+  const HashMgr* pHMgr;
   std::string keystring;
   std::string trystring;
   std::string encoding;
@@ -181,7 +181,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                                // affix)
 
  public:
-  AffixMgr(const char* affpath, HashMgr** ptr, int* md, const char* key = NULL);
+  AffixMgr(const char* affpath, const std::vector<HashMgr*>& ptr, const char* key = NULL);
   ~AffixMgr();
   struct hentry* affix_check(const char* word,
                              int len,
