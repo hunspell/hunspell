@@ -70,6 +70,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+#ifndef _MYSPELLMGR_HXX_
+#define _MYSPELLMGR_HXX_
 
 #include "hunvisapi.h"
 #include "w_char.hxx"
@@ -84,12 +86,7 @@
 #define HUNSPELL_OK (1 << 0)
 #define HUNSPELL_OK_WARN (1 << 1)
 
-#ifndef _MYSPELLMGR_HXX_
-#define _MYSPELLMGR_HXX_
-
-class AffixMgr;
-class HashMgr;
-class SuggestMgr;
+class HunspellImpl;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
  private:
@@ -97,16 +94,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   Hunspell& operator=(const Hunspell&);
 
  private:
-  AffixMgr* pAMgr;
-  std::vector<HashMgr*> m_HMgrs;
-  SuggestMgr* pSMgr;
-  char* affixpath;
-  char* encoding;
-  struct cs_info* csconv;
-  int langnum;
-  int utf8;
-  int complexprefixes;
-  std::vector<std::string> wordbreak;	//To-Do ref
+  HunspellImpl* m_Impl;
 
  public:
   /* Hunspell(aff, dic) - constructor of Hunspell class
@@ -215,8 +203,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* other */
 
   /* get extra word characters definied in affix file for tokenization */
-  const char* get_wordchars();
-  const std::vector<w_char>& get_wordchars_utf16();
+  const char* get_wordchars() const;
+  const std::vector<w_char>& get_wordchars_utf16() const;
 
   struct cs_info* get_csconv();
   const std::string& get_version() const;
@@ -225,33 +213,6 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* need for putdic */
   bool input_conv(const char* word, std::string& dest);
-
- private:
-  void cleanword(std::string& dest, const char*, int* pcaptype, int* pabbrev);
-  size_t cleanword2(std::string& dest,
-                    std::vector<w_char>& dest_u,
-                    const char*,
-                    int* w_len,
-                    int* pcaptype,
-                    size_t* pabbrev);
-  void mkinitcap(std::string& u8);
-  int mkinitcap2(std::string& u8, std::vector<w_char>& u16);
-  int mkinitsmall2(std::string& u8, std::vector<w_char>& u16);
-  void mkallcap(std::string& u8);
-  int mkallsmall2(std::string& u8, std::vector<w_char>& u16);
-  struct hentry* checkword(const char*, int* info, char** root);
-  std::string sharps_u8_l1(const std::string& source);
-  hentry*
-  spellsharps(std::string& base, size_t start_pos, int, int, int* info, char** root);
-  int is_keepcase(const hentry* rv);
-  int insert_sug(char*** slst, const char* word, int ns);
-  void cat_result(std::string& result, char* st);
-  char* stem_description(const char* desc);
-  int spellml(char*** slst, const char* word);
-  std::string get_xml_par(const char* par);
-  const char* get_xml_pos(const char* s, const char* attr);
-  int get_xml_list(char*** slst, const char* list, const char* tag);
-  int check_xml_par(const char* q, const char* attr, const char* value);
 };
 
 #endif
