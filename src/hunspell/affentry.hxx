@@ -74,15 +74,13 @@
 #ifndef _AFFIX_HXX_
 #define _AFFIX_HXX_
 
-#include "hunvisapi.h"
-
 #include "atypes.hxx"
 #include "baseaffix.hxx"
 #include "affixmgr.hxx"
 
 /* A Prefix Entry  */
 
-class LIBHUNSPELL_DLL_EXPORTED PfxEntry : public AffEntry {
+class PfxEntry : public AffEntry {
  private:
   PfxEntry(const PfxEntry&);
   PfxEntry& operator=(const PfxEntry&);
@@ -146,7 +144,7 @@ class LIBHUNSPELL_DLL_EXPORTED PfxEntry : public AffEntry {
 
 /* A Suffix Entry */
 
-class LIBHUNSPELL_DLL_EXPORTED SfxEntry : public AffEntry {
+class SfxEntry : public AffEntry {
  private:
   SfxEntry(const SfxEntry&);
   SfxEntry& operator=(const SfxEntry&);
