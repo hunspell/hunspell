@@ -40,7 +40,7 @@
 
 #include <cstring>
 #include <cstdlib>
-#include <cstdio>
+#include <fstream>
 
 #include "hunspell.hxx"
 
@@ -49,7 +49,6 @@ extern char* mystrdup(const char* s);
 using namespace std;
 
 int main(int argc, char** argv) {
-  FILE* wtclst;
 
   /* first parse the command line options */
 
@@ -61,8 +60,8 @@ int main(int argc, char** argv) {
   }
 
   /* open the words to check list */
-  wtclst = fopen(argv[argc - 1], "r");
-  if (!wtclst) {
+  std::ifstream wtclst(argv[argc - 1], std::ios_base::in);
+  if (!wtclst.is_open()) {
     fprintf(stderr, "Error - could not open file of words to check\n");
     exit(1);
   }
@@ -74,18 +73,17 @@ int main(int argc, char** argv) {
     for (int k = 3; k < argc - 1; ++k)
       pMS->add_dic(argv[k]);
 
-  char buf[100];
-  while (fgets(buf, sizeof(buf), wtclst)) {
-    buf[strcspn(buf, "\n")] = 0;
-    int dp = pMS->spell(std::string(buf));
+  std::string buf;
+  while (std::getline(wtclst, buf)) {
+    int dp = pMS->spell(buf);
     if (dp) {
-      fprintf(stdout, "\"%s\" is okay\n", buf);
+      fprintf(stdout, "\"%s\" is okay\n", buf.c_str());
       fprintf(stdout, "\n");
     } else {
-      fprintf(stdout, "\"%s\" is incorrect!\n", buf);
+      fprintf(stdout, "\"%s\" is incorrect!\n", buf.c_str());
       fprintf(stdout, "   suggestions:\n");
       char** wlst;
-      int ns = pMS->suggest(&wlst, buf);
+      int ns = pMS->suggest(&wlst, buf.c_str());
       for (int i = 0; i < ns; i++) {
         fprintf(stdout, "    ...\"%s\"\n", wlst[i]);
       }
@@ -95,11 +93,10 @@ int main(int argc, char** argv) {
     // for the same of testing this code path
     // do an analysis here and throw away the results
     char** wlst;
-    int ns = pMS->analyze(&wlst, buf);
+    int ns = pMS->analyze(&wlst, buf.c_str());
     pMS->free_list(&wlst, ns);
   }
 
   delete pMS;
-  fclose(wtclst);
   return 0;
 }
