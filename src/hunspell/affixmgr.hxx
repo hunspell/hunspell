@@ -294,10 +294,9 @@ class AffixMgr {
                            std::string& result,
                            const std::string* partresult);
 
-  int get_suffix_words(short unsigned* suff,
+  std::vector<std::string> get_suffix_words(short unsigned* suff,
                        int len,
-                       const char* root_word,
-                       char** slst);
+                       const char* root_word);
 
   struct hentry* lookup(const char* word);
   const std::vector<replentry>& get_reptable() const;

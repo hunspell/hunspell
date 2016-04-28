@@ -4890,11 +4890,10 @@ int AffixMgr::redundant_condition(char ft,
   return 0;
 }
 
-int AffixMgr::get_suffix_words(short unsigned* suff,
+std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
                                int len,
-                               const char* root_word,
-                               char** slst) {
-  int suff_words_cnt = 0;
+                               const char* root_word) {
+  std::vector<std::string> slst;
   short unsigned* start_ptr = suff;
   for (int j = 0; j < SETSIZE; j++) {
     SfxEntry* ptr = sStart[j];
@@ -4907,7 +4906,7 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
           hentry* ht = ptr->checkword(nw.c_str(), nw.size(), 0, NULL, NULL, 0,
                                       NULL, 0, 0, 0);
           if (ht) {
-            slst[suff_words_cnt++] = mystrdup(nw.c_str());
+            slst.push_back(nw);
           }
         }
         suff++;
@@ -4915,5 +4914,5 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
       ptr = ptr->getNext();
     }
   }
-  return suff_words_cnt;
+  return slst;
 }

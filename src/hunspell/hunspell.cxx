@@ -96,7 +96,7 @@ public:
   HunspellImpl(const char* affpath, const char* dpath, const char* key);
   ~HunspellImpl();
   int add_dic(const char* dpath, const char* key);
-  int suffix_suggest(char*** slst, const char* root_word);
+  std::vector<std::string> suffix_suggest(const std::string& root_word);
   std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
   std::vector<std::string> generate(const std::string& word, const std::string& pattern);
   std::vector<std::string> stem(const std::string& word);
@@ -2071,10 +2071,27 @@ void Hunspell_free_list(Hunhandle*, char*** slst, int n) {
 }
 
 int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
-  return m_Impl->suffix_suggest(slst, root_word);
+  std::vector<std::string> stems = m_Impl->suffix_suggest(root_word);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
-int HunspellImpl::suffix_suggest(char*** slst, const char* root_word) {
+std::vector<std::string> Hunspell::suffix_suggest(const std::string& root_word) {
+  return m_Impl->suffix_suggest(root_word);
+}
+
+std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_word) {
+  std::vector<std::string> slst;
   struct hentry* he = NULL;
   int len;
   std::string w2;
@@ -2091,26 +2108,18 @@ int HunspellImpl::suffix_suggest(char*** slst, const char* root_word) {
     }
     word = w2.c_str();
   } else
-    word = root_word;
+    word = root_word.c_str();
 
   len = strlen(word);
 
   if (!len)
-    return 0;
-
-  char** wlst = (char**)malloc(MAXSUGGESTION * sizeof(char*));
-  if (wlst == NULL)
-    return -1;
-  *slst = wlst;
-  for (int i = 0; i < MAXSUGGESTION; i++) {
-    wlst[i] = NULL;
-  }
+    return slst;
 
   for (size_t i = 0; (i < m_HMgrs.size()) && !he; ++i) {
     he = m_HMgrs[i]->lookup(word);
   }
   if (he) {
-    return pAMgr->get_suffix_words(he->astr, he->alen, root_word, *slst);
+    slst = pAMgr->get_suffix_words(he->astr, he->alen, root_word.c_str());
   }
-  return 0;
+  return slst;
 }

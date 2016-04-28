@@ -887,14 +887,12 @@ nextline:
           }
 
           case SUFFIX: {
-            char** wlst = NULL;
-            int ns = pMS[d]->suffix_suggest(&wlst, token);
-            for (int j = 0; j < ns; j++) {
+            std::vector<std::string> wlst = pMS[d]->suffix_suggest(token);
+            for (size_t j = 0; j < wlst.size(); ++j) {
               fprintf(stdout, "Suffix Suggestions are %s \n",
-                      chenc(wlst[j], dic_enc[d], io_enc));
+                      chenc(wlst[j], dic_enc[d], io_enc).c_str());
             }
             fflush(stdout);
-            pMS[d]->free_list(&wlst, ns);
             free(token);
             continue;
           }
