@@ -147,7 +147,6 @@ private:
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(std::string& result, const std::string& st);
-  char* stem_description(const char* desc);
   std::vector<std::string> spellml(const char* word);
   std::string get_xml_par(const char* par);
   const char* get_xml_pos(const char* s, const char* attr);
