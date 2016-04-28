@@ -1615,10 +1615,10 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
-  char tmptemplate[] = "/tmp/hunspellXXXXXX";
+  char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = mkdtemp(tmptemplate);
+    odftmpdir = mkdtemp(tmpdirtemplate);
     if (!odftmpdir) {
       perror(gettext("Can't create tmp dir"));
       endwin();
@@ -1651,13 +1651,24 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     }
   }
 
-  FILE* tempfile = tmpfile();
+  char tmpfiletemplate[] = "/tmp/hunspellXXXXXX";
+  int tempfileno = mkstemp(tmpfiletemplate);
+  if (tempfileno == -1) {
+    perror(gettext("Can't create tempfile"));
+    delete parser;
+    fclose(text);
+    endwin();
+    exit(1);
+  }
 
+  FILE* tempfile = fdopen(tempfileno, "rw");
   if (!tempfile) {
     perror(gettext("Can't create tempfile"));
     delete parser;
     fclose(text);
     endwin();
+    close(tempfileno);
+    unlink(tmpfiletemplate);
     exit(1);
   }
 
@@ -1679,6 +1690,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
             free(filename);
           }
           endwin();
+          unlink(tmpfiletemplate);
           exit(0);
         }
         case 1: {
@@ -1721,7 +1733,8 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   }
 
   delete parser;
-  fclose(tempfile);  // automatically deleted when closed
+  fclose(tempfile);
+  unlink(tmpfiletemplate);
 }
 
 #endif
