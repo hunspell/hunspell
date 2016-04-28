@@ -108,7 +108,7 @@ public:
   int suggest(char*** slst, const char* word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
-  char* get_dic_encoding();
+  const char* get_dic_encoding();
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
@@ -1254,11 +1254,11 @@ void Hunspell::free_list(char*** slst, int n) {
   freelist(slst, n);
 }
 
-char* Hunspell::get_dic_encoding() {
+const char* Hunspell::get_dic_encoding() {
   return m_Impl->get_dic_encoding();
 }
 
-char* HunspellImpl::get_dic_encoding() {
+const char* HunspellImpl::get_dic_encoding() {
   return encoding;
 }
 
@@ -1935,7 +1935,7 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
   return ((Hunspell*)pHunspell)->spell(std::string(word));
 }
 
-char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
+const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
   return ((Hunspell*)pHunspell)->get_dic_encoding();
 }
 

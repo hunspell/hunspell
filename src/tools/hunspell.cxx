@@ -312,7 +312,7 @@ char* chenc(char* st, const char* enc1, const char* enc2) {
 TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   TextParser* p = NULL;
   int io_utf8 = 0;
-  char* denc = pMS->get_dic_encoding();
+  const char* denc = pMS->get_dic_encoding();
 #ifdef HAVE_ICONV
   initialize_utf_tbl();  // also need for 8-bit tokenization
   if (io_enc) {
