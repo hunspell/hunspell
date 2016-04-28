@@ -146,7 +146,6 @@ private:
   spellsharps(std::string& base, size_t start_pos, int, int, int* info, std::string* root);
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
-  void cat_result(std::string& result, char* st);
   void cat_result(std::string& result, const std::string& st);
   char* stem_description(const char* desc);
   std::vector<std::string> spellml(const char* word);
@@ -1440,15 +1439,6 @@ const std::string& Hunspell::get_version() const {
 
 const std::string& HunspellImpl::get_version() const {
   return pAMgr->get_version();
-}
-
-void HunspellImpl::cat_result(std::string& result, char* st) {
-  if (st) {
-    if (!result.empty())
-      result.append("\n");
-    result.append(st);
-    free(st);
-  }
 }
 
 void HunspellImpl::cat_result(std::string& result, const std::string& st) {
