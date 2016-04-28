@@ -103,6 +103,7 @@
 
 // Not Windows
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
 #include "textparser.hxx"
@@ -1641,7 +1642,9 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   }
 
   char tmpfiletemplate[] = "/tmp/hunspellXXXXXX";
+  mode_t mask = umask(S_IXUSR | S_IRWXG | S_IRWXO);
   int tempfileno = mkstemp(tmpfiletemplate);
+  umask(mask);
   if (tempfileno == -1) {
     perror(gettext("Can't create tempfile"));
     delete parser;

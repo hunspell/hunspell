@@ -46,6 +46,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <string>
+#include <sys/stat.h>
 
 #define CODELEN 65536
 #define BUFSIZE 65536
@@ -346,7 +347,9 @@ int hzip(const char* filename, char* key) {
     return fail("hzip: %s: Permission denied\n", filename);
 
   char tmpfiletemplate[] = "/tmp/hunspellXXXXXX";
+  mode_t mask = umask(S_IXUSR | S_IRWXG | S_IRWXO);
   int tempfileno = mkstemp(tmpfiletemplate);
+  umask(mask);
   if (tempfileno == -1) {
     fclose(f);
     return fail("hzip: cannot create temporary file\n", NULL);
