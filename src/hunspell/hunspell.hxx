@@ -159,7 +159,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* analyze(result, word) - morphological analysis of the word */
   std::vector<std::string> analyze(const std::string& word);
-  int analyze(char*** slst, const char* word);
+  H_DEPRECATED int analyze(char*** slst, const char* word);
 
   /* stem(word) - stemmer function */
   std::vector<std::string> stem(const std::string& word);

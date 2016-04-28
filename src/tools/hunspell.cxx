@@ -899,23 +899,21 @@ nextline:
             continue;
           }
           case ANALYZE: {
-            char** result;
-            int n = pMS[d]->analyze(&result, chenc(token, io_enc, dic_enc[d]));
-            for (int i = 0; i < n; i++) {
+            std::vector<std::string> result =
+              pMS[d]->analyze(chenc(token, io_enc, dic_enc[d]));
+            for (size_t i = 0; i < result.size(); ++i) {
               fprintf(stdout, "%s %s\n", token,
-                      chenc(result[i], dic_enc[d], ui_enc));
+                      chenc(result[i], dic_enc[d], ui_enc).c_str());
             }
-            pMS[d]->free_list(&result, n);
-            if (n == 0 && token[strlen(token) - 1] == '.') {
+            if (result.empty() && token[strlen(token) - 1] == '.') {
               token[strlen(token) - 1] = '\0';
-              n = pMS[d]->analyze(&result, token);
-              for (int i = 0; i < n; i++) {
+              result = pMS[d]->analyze(token);
+              for (size_t i = 0; i < result.size(); ++i) {
                 fprintf(stdout, "%s %s\n", token,
-                        chenc(result[i], dic_enc[d], ui_enc));
+                        chenc(result[i], dic_enc[d], ui_enc).c_str());
               }
-              pMS[d]->free_list(&result, n);
             }
-            if (n == 0)
+            if (result.empty())
               fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc));
             fprintf(stdout, "\n");
             free(token);
