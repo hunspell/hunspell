@@ -406,7 +406,9 @@ std::vector<std::string> line_tok(const std::string& text, char breakchar) {
   std::stringstream ss(text);
   std::string tok;
   while(std::getline(ss, tok, breakchar)) {
+    if (!tok.empty()) {
       ret.push_back(tok);
+    }
   }
 
   return ret;
@@ -698,6 +700,21 @@ int uniqlist(char** list, int n) {
       m++;
     }
   return m;
+}
+
+void uniqlist(std::vector<std::string>& list) {
+  if (list.size() < 2)
+    return;
+
+  std::vector<std::string> ret;
+  ret.push_back(list[0]);
+
+  for (size_t i = 1; i < list.size(); ++i) {
+    if (std::find(ret.begin(), ret.end(), list[i]) == ret.end())
+        ret.push_back(list[i]);
+  }
+
+  list.swap(ret);
 }
 
 void freelist(char*** list, int n) {

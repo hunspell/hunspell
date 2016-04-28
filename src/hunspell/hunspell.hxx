@@ -161,17 +161,17 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   int analyze(char*** slst, const char* word);
 
-  /* stem(result, word) - stemmer function */
-
+  /* stem(word) - stemmer function */
+  std::vector<std::string> stem(const std::string& word);
   int stem(char*** slst, const char* word);
 
-  /* stem(result, analysis, n) - get stems from a morph. analysis
+  /* stem(analysis, n) - get stems from a morph. analysis
    * example:
    * char ** result, result2;
    * int n1 = analyze(&result, "words");
    * int n2 = stem(&result2, result, n1);
    */
-
+  std::vector<std::string> stem(char** morph, int n);
   int stem(char*** slst, char** morph, int n);
 
   /* generate(result, word, word2) - morphological generation by example(s) */
