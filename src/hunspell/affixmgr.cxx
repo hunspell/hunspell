@@ -744,7 +744,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
   /* get encoding for CHECKCOMPOUNDCASE */
   if (!utf8) {
-    csconv = get_current_cs(get_encoding().c_str());
+    csconv = get_current_cs(get_encoding());
     for (int i = 0; i <= 255; i++) {
       if ((csconv[i].cupper != csconv[i].clower) &&
           (wordchars.find((char)i) == std::string::npos)) {

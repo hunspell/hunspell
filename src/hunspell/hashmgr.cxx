@@ -895,7 +895,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 #endif
 #endif
       } else
-        csconv = get_current_cs(enc.c_str());
+        csconv = get_current_cs(enc);
     }
 
     if (line.compare(0, 4, "LANG", 4) == 0) {

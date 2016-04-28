@@ -181,7 +181,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   langnum = pAMgr->get_langnum();
   utf8 = pAMgr->get_utf8();
   if (!utf8)
-    csconv = get_current_cs(encoding.c_str());
+    csconv = get_current_cs(encoding);
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
 

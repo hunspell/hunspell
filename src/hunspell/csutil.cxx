@@ -2478,9 +2478,9 @@ static void toAsciiLowerAndRemoveNonAlphanumeric(const char* pName,
   *pBuf = '\0';
 }
 
-struct cs_info* get_current_cs(const char* es) {
-  char* normalized_encoding = new char[strlen(es) + 1];
-  toAsciiLowerAndRemoveNonAlphanumeric(es, normalized_encoding);
+struct cs_info* get_current_cs(const std::string& es) {
+  char* normalized_encoding = new char[es.size() + 1];
+  toAsciiLowerAndRemoveNonAlphanumeric(es.c_str(), normalized_encoding);
 
   struct cs_info* ccs = NULL;
   int n = sizeof(encds) / sizeof(encds[0]);
@@ -2506,7 +2506,7 @@ struct cs_info* get_current_cs(const char* es) {
 // XXX This function was rewritten for mozilla. Instead of storing the
 // conversion tables static in this file, create them when needed
 // with help the mozilla backend.
-struct cs_info* get_current_cs(const char* es) {
+struct cs_info* get_current_cs(const std::string& es) {
   struct cs_info* ccs = new cs_info[256];
   // Initialze the array with dummy data so that we wouldn't need
   // to return null in case of failures.
@@ -2521,7 +2521,7 @@ struct cs_info* get_current_cs(const char* es) {
 
   nsresult rv;
 
-  nsAutoCString label(es);
+  nsAutoCString label(es.c_str());
   nsAutoCString encoding;
   if (!EncodingUtils::FindEncodingForLabelNoReplacement(label, encoding)) {
     return ccs;

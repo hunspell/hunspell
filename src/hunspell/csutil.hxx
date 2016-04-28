@@ -208,7 +208,7 @@ LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
                                                        int langnum);
 LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 
-LIBHUNSPELL_DLL_EXPORTED struct cs_info* get_current_cs(const char* es);
+LIBHUNSPELL_DLL_EXPORTED struct cs_info* get_current_cs(const std::string& es);
 
 // get language identifiers of language codes
 LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const char* lang);
