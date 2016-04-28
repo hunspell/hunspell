@@ -312,7 +312,7 @@ char* chenc(char* st, const char* enc1, const char* enc2) {
 TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   TextParser* p = NULL;
   int io_utf8 = 0;
-  const char* denc = pMS->get_dic_encoding();
+  const char* denc = pMS->get_dic_encoding().c_str();
 #ifdef HAVE_ICONV
   initialize_utf_tbl();  // also need for 8-bit tokenization
   if (io_enc) {
@@ -2129,7 +2129,7 @@ int main(int argc, char** argv) {
       fprintf(stderr, gettext("LOADED DICTIONARY:\n%s\n%s\n"), aff, dic);
     }
     pMS[0] = new Hunspell(aff, dic, key);
-    dic_enc[0] = pMS[0]->get_dic_encoding();
+    dic_enc[0] = pMS[0]->get_dic_encoding().c_str();
     dmax = 1;
     while (dicplus) {
       char* dicname2 = dicplus + 1;
@@ -2143,7 +2143,7 @@ int main(int argc, char** argv) {
       if (aff && dic) {
         if (dmax < DMAX) {
           pMS[dmax] = new Hunspell(aff, dic, key);
-          dic_enc[dmax] = pMS[dmax]->get_dic_encoding();
+          dic_enc[dmax] = pMS[dmax]->get_dic_encoding().c_str();
           dmax++;
         } else
           fprintf(stderr, gettext("error - %s exceeds dictionary limit.\n"),

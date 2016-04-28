@@ -116,9 +116,7 @@ SuggestMgr::SuggestMgr(const char* tryme, int maxn, AffixMgr* aptr) {
     if (pAMgr->get_maxcpdsugs() >= 0)
       maxcpdsugs = pAMgr->get_maxcpdsugs();
     if (!utf8) {
-      char* enc = pAMgr->get_encoding();
-      csconv = get_current_cs(enc);
-      free(enc);
+      csconv = get_current_cs(pAMgr->get_encoding().c_str());
     }
     complexprefixes = pAMgr->get_complexprefixes();
   }

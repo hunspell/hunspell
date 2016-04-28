@@ -744,11 +744,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
   /* get encoding for CHECKCOMPOUNDCASE */
   if (!utf8) {
-    char* enc = get_encoding();
-    csconv = get_current_cs(enc);
-    free(enc);
-    enc = NULL;
-
+    csconv = get_current_cs(get_encoding().c_str());
     for (int i = 0; i <= 255; i++) {
       if ((csconv[i].cupper != csconv[i].clower) &&
           (wordchars.find((char)i) == std::string::npos)) {
@@ -3444,10 +3440,10 @@ const std::vector<std::string>& AffixMgr::get_breaktable() const {
 }
 
 // return text encoding of dictionary
-char* AffixMgr::get_encoding() {
+const std::string& AffixMgr::get_encoding() {
   if (encoding.empty())
     encoding = SPELL_ENCODING;
-  return mystrdup(encoding.c_str());
+  return encoding;
 }
 
 // return text encoding of dictionary

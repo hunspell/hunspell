@@ -108,7 +108,7 @@ public:
   int suggest(char*** slst, const char* word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
-  const char* get_dic_encoding();
+  const std::string& get_dic_encoding() const;
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
@@ -121,7 +121,7 @@ private:
   std::vector<HashMgr*> m_HMgrs;
   SuggestMgr* pSMgr;
   char* affixpath;
-  char* encoding;
+  std::string encoding;
   struct cs_info* csconv;
   int langnum;
   int utf8;
@@ -162,7 +162,6 @@ Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key)
 }
 
 HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key) {
-  encoding = NULL;
   csconv = NULL;
   utf8 = 0;
   complexprefixes = 0;
@@ -182,7 +181,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   langnum = pAMgr->get_langnum();
   utf8 = pAMgr->get_utf8();
   if (!utf8)
-    csconv = get_current_cs(encoding);
+    csconv = get_current_cs(encoding.c_str());
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
 
@@ -207,9 +206,6 @@ HunspellImpl::~HunspellImpl() {
   delete[] csconv;
 #endif
   csconv = NULL;
-  if (encoding)
-    free(encoding);
-  encoding = NULL;
   if (affixpath)
     free(affixpath);
   affixpath = NULL;
@@ -1254,11 +1250,11 @@ void Hunspell::free_list(char*** slst, int n) {
   freelist(slst, n);
 }
 
-const char* Hunspell::get_dic_encoding() {
+const std::string& Hunspell::get_dic_encoding() const {
   return m_Impl->get_dic_encoding();
 }
 
-const char* HunspellImpl::get_dic_encoding() {
+const std::string& HunspellImpl::get_dic_encoding() const {
   return encoding;
 }
 
@@ -1936,7 +1932,7 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
 }
 
 const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
-  return ((Hunspell*)pHunspell)->get_dic_encoding();
+  return (((Hunspell*)pHunspell)->get_dic_encoding()).c_str();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {

@@ -153,7 +153,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   void free_list(char*** slst, int n);
 
-  const char* get_dic_encoding();
+  const std::string& get_dic_encoding() const;
 
   /* morphological functions */
 

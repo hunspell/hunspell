@@ -306,7 +306,7 @@ class AffixMgr {
   struct phonetable* get_phonetable() const;
   const std::vector<mapentry>& get_maptable() const;
   const std::vector<std::string>& get_breaktable() const;
-  char* get_encoding();
+  const std::string& get_encoding();
   int get_langnum() const;
   char* get_key_string();
   char* get_try_string() const;
