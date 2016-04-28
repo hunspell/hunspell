@@ -97,7 +97,6 @@ public:
   ~HunspellImpl();
   int add_dic(const char* dpath, const char* key);
   int suffix_suggest(char*** slst, const char* root_word);
-  int generate(char*** slst, const char* word, char** pl, int pln);
   std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
   std::vector<std::string> generate(const std::string& word, const std::string& pattern);
   std::vector<std::string> stem(const std::string& word);
@@ -1744,26 +1743,6 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
 
 int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
   return Hunspell_generate2((Hunhandle*)(this), slst, word, pl, pln);
-}
-
-int HunspellImpl::generate(char*** slst, const char* word, char** pl, int pln) {
-  std::vector<std::string> morph;
-  for (int i = 0; i < pln; ++i)
-    morph.push_back(pl[i]);
-
-  std::vector<std::string> stems = generate(word, morph);
-
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
 }
 
 std::vector<std::string> Hunspell::generate(const std::string& word, const std::vector<std::string>& pl) {
