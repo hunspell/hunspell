@@ -97,7 +97,6 @@ public:
   ~HunspellImpl();
   int add_dic(const char* dpath, const char* key);
   int suffix_suggest(char*** slst, const char* root_word);
-  int generate(char*** slst, const char* word, const char* pattern);
   int generate(char*** slst, const char* word, char** pl, int pln);
   std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
   std::vector<std::string> generate(const std::string& word, const std::string& pattern);
@@ -154,10 +153,10 @@ private:
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(std::string& result, char* st);
   char* stem_description(const char* desc);
-  int spellml(char*** slst, const char* word);
+  std::vector<std::string> spellml(const char* word);
   std::string get_xml_par(const char* par);
   const char* get_xml_pos(const char* s, const char* attr);
-  int get_xml_list(char*** slst, const char* list, const char* tag);
+  std::vector<std::string> get_xml_list(const char* list, const char* tag);
   int check_xml_par(const char* q, const char* attr, const char* value);
 
 };
@@ -878,7 +877,18 @@ int HunspellImpl::suggest(char*** slst, const char* word) {
   *slst = NULL;
   // process XML input of the simplified API (see manual)
   if (strncmp(word, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
-    return spellml(slst, word);
+    std::vector<std::string> ret = spellml(word);
+    if (ret.empty()) {
+      *slst = NULL;
+      return 0;
+    } else {
+      *slst = (char**)malloc(sizeof(char*) * ret.size());
+      if (!*slst)
+        return 0;
+      for (size_t i = 0; i < ret.size(); ++i)
+        (*slst)[i] = mystrdup(ret[i].c_str());
+    }
+    return ret.size();
   }
   int nc = strlen(word);
   if (utf8) {
@@ -1810,22 +1820,6 @@ int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
   return Hunspell_generate((Hunhandle*)(this), slst, word, pattern);
 }
 
-int HunspellImpl::generate(char*** slst, const char* word, const char* pattern) {
-  std::vector<std::string> stems = generate(word, pattern);
-
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
-}
-
 std::vector<std::string> Hunspell::generate(const std::string& word, const std::string& pattern) {
   return m_Impl->generate(word, pattern);
 }
@@ -1899,53 +1893,46 @@ int HunspellImpl::check_xml_par(const char* q,
   return 0;
 }
 
-int HunspellImpl::get_xml_list(char*** slst, const char* list, const char* tag) {
+std::vector<std::string> HunspellImpl::get_xml_list(const char* list, const char* tag) {
+  std::vector<std::string> slst;
   if (!list)
-    return 0;
-  int n = 0;
-  const char* p;
-  for (p = list; ((p = strstr(p, tag)) != NULL); p++)
-    n++;
-  if (n == 0)
-    return 0;
-  *slst = (char**)malloc(sizeof(char*) * n);
-  if (!*slst)
-    return 0;
-  for (p = list, n = 0; ((p = strstr(p, tag)) != NULL); p++, n++) {
+    return slst;
+  const char* p = list;
+  for (size_t n = 0; ((p = strstr(p, tag)) != NULL); ++p, ++n) {
     std::string cw = get_xml_par(p + strlen(tag) - 1);
     if (cw.empty()) {
       break;
     }
-    (*slst)[n] = mystrdup(cw.c_str());
+    slst.push_back(cw);
   }
-  return n;
+  return slst;
 }
 
-int HunspellImpl::spellml(char*** slst, const char* word) {
+std::vector<std::string> HunspellImpl::spellml(const char* word) {
+  std::vector<std::string> slst;
+
   const char* q = strstr(word, "<query");
   if (!q)
-    return 0;  // bad XML input
+    return slst;  // bad XML input
   const char* q2 = strchr(q, '>');
   if (!q2)
-    return 0;  // bad XML input
+    return slst;  // bad XML input
   q2 = strstr(q2, "<word");
   if (!q2)
-    return 0;  // bad XML input
+    return slst;  // bad XML input
   if (check_xml_par(q, "type=", "analyze")) {
-    int n = 0;
     std::string cw = get_xml_par(strchr(q2, '>'));
     if (!cw.empty())
-      n = analyze(slst, cw.c_str());
-    if (n == 0)
-      return 0;
+      slst = analyze(cw);
+    if (slst.empty())
+      return slst;
     // convert the result to <code><a>ana1</a><a>ana2</a></code> format
     std::string r;
     r.append("<code>");
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < slst.size(); ++i) {
       r.append("<a>");
 
-      std::string entry((*slst)[i]);
-      free((*slst)[i]);
+      std::string entry(slst[i]);
       mystrrep(entry, "\t", " ");
       mystrrep(entry, "&", "&amp;");
       mystrrep(entry, "<", "&lt;");
@@ -1954,36 +1941,35 @@ int HunspellImpl::spellml(char*** slst, const char* word) {
       r.append("</a>");
     }
     r.append("</code>");
-    (*slst)[0] = mystrdup(r.c_str());
-    return 1;
+    slst.clear();
+    slst.push_back(r);
+    return slst;
   } else if (check_xml_par(q, "type=", "stem")) {
     std::string cw = get_xml_par(strchr(q2, '>'));
     if (!cw.empty())
-      return stem(slst, cw.c_str());
+      return stem(cw);
   } else if (check_xml_par(q, "type=", "generate")) {
     std::string cw = get_xml_par(strchr(q2, '>'));
     if (cw.empty())
-      return 0;
+      return slst;
     const char* q3 = strstr(q2 + 1, "<word");
     if (q3) {
       std::string cw2 = get_xml_par(strchr(q3, '>'));
       if (!cw2.empty()) {
-        return generate(slst, cw.c_str(), cw2.c_str());
+        return generate(cw, cw2);
       }
     } else {
       if ((q2 = strstr(q2 + 1, "<code")) != NULL) {
-        char** slst2;
-        int n = get_xml_list(&slst2, strchr(q2, '>'), "<a>");
-        if (n != 0) {
-          int n2 = generate(slst, cw.c_str(), slst2, n);
-          freelist(&slst2, n);
-          return uniqlist(*slst, n2);
+        std::vector<std::string> slst2 = get_xml_list(strchr(q2, '>'), "<a>");
+        if (!slst2.empty()) {
+          slst = generate(cw, slst2);
+          uniqlist(slst);
+          return slst;
         }
-        freelist(&slst2, n);
       }
     }
   }
-  return 0;
+  return slst;
 }
 
 Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {
