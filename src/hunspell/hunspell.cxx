@@ -106,7 +106,7 @@ public:
   bool input_conv(const char* word, std::string& dest);
   int spell(const char* word, int* info = NULL, char** root = NULL);
   int suggest(char*** slst, const char* word);
-  const char* get_wordchars() const;
+  const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   char* get_dic_encoding();
   int add(const std::string& word);
@@ -1336,11 +1336,11 @@ int HunspellImpl::stem(char*** slst, const char* word) {
   return pln2;
 }
 
-const char* Hunspell::get_wordchars() const {
+const std::string& Hunspell::get_wordchars() const {
   return m_Impl->get_wordchars();
 }
 
-const char* HunspellImpl::get_wordchars() const {
+const std::string& HunspellImpl::get_wordchars() const {
   return pAMgr->get_wordchars();
 }
 

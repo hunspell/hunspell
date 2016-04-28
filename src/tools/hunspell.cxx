@@ -333,12 +333,12 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
 
   if (io_utf8) {
     const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+    const std::string& vec_wordchars = pMS->get_wordchars();
     wordchars_utf16_len = vec_wordchars_utf16.size();
     wordchars_utf16 = wordchars_utf16_len ? &vec_wordchars_utf16[0] : NULL;
-    if ((strcmp(denc, "UTF-8") != 0) && pMS->get_wordchars()) {
-      const char* wchars = pMS->get_wordchars();
-      int wlen = strlen(wchars);
-      size_t c1 = wlen;
+    if ((strcmp(denc, "UTF-8") != 0) && !vec_wordchars.empty()) {
+      const char* wchars = vec_wordchars.c_str();
+      size_t c1 = vec_wordchars.size();
       size_t c2 = MAXLNLEN;
       char* dest = text_conv;
       iconv_t conv = iconv_open("UTF-8", fix_encoding_name(denc));
@@ -391,13 +391,11 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     *pletters = '\0';
 
     // UTF-8 wordchars -> 8 bit wordchars
-    int len = 0;
-    const char* wchars = pMS->get_wordchars();
-    if (wchars) {
+    const std::string& vec_wordchars = pMS->get_wordchars();
+    size_t len = vec_wordchars.size();
+    if (len) {
       if ((strcmp(denc, "UTF-8") == 0)) {
         len = pMS->get_wordchars_utf16().size();
-      } else {
-        len = strlen(wchars);
       }
       char* dest = letters + strlen(letters);  // append wordchars
       size_t c1 = len + 1;
@@ -407,6 +405,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), io_enc,
                 denc);
       } else {
+        const char* wchars = vec_wordchars.c_str();
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
         *dest = '\0';

@@ -3516,8 +3516,8 @@ char* AffixMgr::get_try_string() const {
 }
 
 // return the preferred try string for suggestions
-const char* AffixMgr::get_wordchars() const {
-  return wordchars.c_str();
+const std::string& AffixMgr::get_wordchars() const {
+  return wordchars;
 }
 
 const std::vector<w_char>& AffixMgr::get_wordchars_utf16() const {
