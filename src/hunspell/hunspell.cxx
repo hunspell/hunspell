@@ -1354,8 +1354,7 @@ std::vector<std::string> Hunspell::stem(const std::string& word) {
 }
 
 std::vector<std::string> HunspellImpl::stem(const std::string& word) {
-  std::vector<std::string> pl = analyze(word);
-  return stem(pl);
+  return stem(analyze(word));
 }
 
 const std::string& Hunspell::get_wordchars() const {
