@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
   char buf[100];
   while (fgets(buf, sizeof(buf), wtclst)) {
     buf[strcspn(buf, "\n")] = 0;
-    int dp = pMS->spell(buf);
+    int dp = pMS->spell(std::string(buf));
     if (dp) {
       fprintf(stdout, "\"%s\" is okay\n", buf);
       fprintf(stdout, "\n");

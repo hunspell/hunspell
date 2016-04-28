@@ -1932,7 +1932,7 @@ int Hunspell_add_dic(Hunhandle* pHunspell, const char* dpath) {
 }
 
 int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
-  return ((Hunspell*)pHunspell)->spell(word);
+  return ((Hunspell*)pHunspell)->spell(std::string(word));
 }
 
 char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {

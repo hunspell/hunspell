@@ -83,6 +83,14 @@
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
 
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
+#  define H_DEPRECATED __attribute__((__deprecated__))
+#elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define H_DEPRECATED __declspec(deprecated)
+#else
+#  define H_DEPRECATED
+#endif
+
 class HunspellImpl;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
@@ -119,7 +127,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    *   root: root (stem), when input is a word with affix(es)
    */
   bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
-  int spell(const char* word, int* info = NULL, char** root = NULL);
+  H_DEPRECATED int spell(const char* word, int* info = NULL, char** root = NULL);
 
   /* suggest(suggestions, word) - search suggestions
    * input: pointer to an array of strings pointer and the (bad) word

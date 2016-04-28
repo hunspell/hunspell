@@ -86,7 +86,7 @@ int main(int, char** argv) {
       if (n == 0)
         fprintf(stdout, "generate(%s, %s) = NO DATA\n", buf, s + 1);
     } else {
-      int dp = pMS->spell(buf);
+      int dp = pMS->spell(std::string(buf));
       fprintf(stdout, "> %s\n", buf);
       if (dp) {
         char** result;
