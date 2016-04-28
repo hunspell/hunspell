@@ -100,9 +100,7 @@ public:
   std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
   std::vector<std::string> generate(const std::string& word, const std::string& pattern);
   std::vector<std::string> stem(const std::string& word);
-  int stem(char*** slst, const char* word);
   std::vector<std::string> stem(const std::vector<std::string>& morph);
-  int stem(char*** slst, char** morph, int n);
   std::vector<std::string> analyze(const std::string& word);
   int get_langnum() const;
   bool input_conv(const std::string& word, std::string& dest);
@@ -1353,21 +1351,6 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
 
 int Hunspell::stem(char*** slst, const char* word) {
   return Hunspell_stem((Hunhandle*)(this), slst, word);
-}
-
-int HunspellImpl::stem(char*** slst, const char* word) {
-  std::vector<std::string> stems = stem(word);
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
 }
 
 std::vector<std::string> Hunspell::stem(const std::string& word) {
