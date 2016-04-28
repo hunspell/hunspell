@@ -113,7 +113,6 @@ public:
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
   const std::string& get_version() const;
-  struct cs_info* get_csconv();
 
 
 private:
@@ -1442,10 +1441,6 @@ const std::string& Hunspell::get_version() const {
 
 const std::string& HunspellImpl::get_version() const {
   return pAMgr->get_version();
-}
-
-struct cs_info* HunspellImpl::get_csconv() {
-  return csconv;
 }
 
 void HunspellImpl::cat_result(std::string& result, char* st) {

@@ -49,8 +49,6 @@
 .sp
 .BI "unsigned short * get_wordchars_utf16(int *" len);
 .sp
-.BI "struct cs_info * get_csconv(" );
-.sp
 .BI "const char * get_version(" );
 .SH DESCRIPTION
 The \fBHunspell\fR library routines give the user word-level
@@ -138,9 +136,6 @@ as a model of the enabled affixation of the new word.
 .PP
 The get_dic_encoding() function returns "ISO8859-1" or the character
 encoding defined in the affix file with the "SET" keyword.
-.PP
-The get_csconv() function returns the 8-bit character case table of the
-encoding of the dictionary.
 .PP
 The get_wordchars() and get_wordchars_utf16() return the 
 extra word characters definied in affix file for tokenization by

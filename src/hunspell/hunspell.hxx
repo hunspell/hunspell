@@ -212,7 +212,6 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
 
-  struct cs_info* get_csconv();
   const std::string& get_version() const;
 
   int get_langnum() const;
