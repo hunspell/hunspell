@@ -678,13 +678,17 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   // access content.xml of ODF
   if (bZippedOdf) {
     odftmpdir = mkdtemp(tmptemplate);
+    if (!odftmpdir) {
+      perror(gettext("Can't create tmp dir"));
+      exit(1);
+    }
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
     sbuf << "unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
             ">" << odftmpdir << "/content.xml";
-    if (!secure_filename(filename) || !odftmpdir || system(sbuf.str().c_str()) != 0) {
+    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
@@ -1615,6 +1619,11 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   // access content.xml of ODF
   if (bZippedOdf) {
     odftmpdir = mkdtemp(tmptemplate);
+    if (!odftmpdir) {
+      perror(gettext("Can't create tmp dir"));
+      endwin();
+      exit(1);
+    }
     fclose(text);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
@@ -1622,7 +1631,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     sbuf << "unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
             ">" << odftmpdir << "/content.xml";
-    if (!secure_filename(filename) || !odftmpdir || system(sbuf.str().c_str()) != 0) {
+    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
