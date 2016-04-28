@@ -1876,7 +1876,97 @@ char* SuggestMgr::suggest_gen(char** desc, int n, const char* pattern) {
     mystrrep(newpattern, MORPH_DERI_SFX, MORPH_TERM_SFX);
     pattern = newpattern.c_str();
   }
-  return (!result2.empty() ? mystrdup(result2.c_str()) : NULL);
+  return (!result2.empty()) ? mystrdup(result2.c_str()) : NULL;
+}
+
+std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const char* pattern) {
+  if (desc.empty() || !pAMgr)
+    return std::string();
+
+  std::string result2;
+  std::string newpattern;
+  struct hentry* rv = NULL;
+
+  // search affixed forms with and without derivational suffixes
+  while (1) {
+    for (size_t k = 0; k < desc.size(); ++k) {
+      std::string result;
+
+      // add compound word parts (except the last one)
+      const char* s = desc[k].c_str();
+      const char* part = strstr(s, MORPH_PART);
+      if (part) {
+        const char* nextpart = strstr(part + 1, MORPH_PART);
+        while (nextpart) {
+          std::string field;
+          copy_field(field, part, MORPH_PART);
+          result.append(field);
+          part = nextpart;
+          nextpart = strstr(part + 1, MORPH_PART);
+        }
+        s = part;
+      }
+
+      char** pl;
+      std::string tok(s);
+      size_t pos = tok.find(" | ");
+      while (pos != std::string::npos) {
+        tok[pos + 1] = MSEP_ALT;
+        pos = tok.find(" | ", pos);
+      }
+      int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
+      for (int i = 0; i < pln; i++) {
+        // remove inflectional and terminal suffixes
+        char* is = strstr(pl[i], MORPH_INFL_SFX);
+        if (is)
+          *is = '\0';
+        char* ts = strstr(pl[i], MORPH_TERM_SFX);
+        while (ts) {
+          *ts = '_';
+          ts = strstr(pl[i], MORPH_TERM_SFX);
+        }
+        const char* st = strstr(s, MORPH_STEM);
+        if (st) {
+          copy_field(tok, st, MORPH_STEM);
+          rv = pAMgr->lookup(tok.c_str());
+          while (rv) {
+            std::string newpat(pl[i]);
+            newpat.append(pattern);
+            char* sg = suggest_hentry_gen(rv, newpat.c_str());
+            if (!sg)
+              sg = suggest_hentry_gen(rv, pattern);
+            if (sg) {
+              char** gen;
+              int genl = line_tok(sg, &gen, MSEP_REC);
+              free(sg);
+              sg = NULL;
+              for (int j = 0; j < genl; j++) {
+                result2.push_back(MSEP_REC);
+                result2.append(result);
+                if (strstr(pl[i], MORPH_SURF_PFX)) {
+                  std::string field;
+                  copy_field(field, pl[i], MORPH_SURF_PFX);
+                  result2.append(field);
+                }
+                result2.append(gen[j]);
+              }
+              freelist(&gen, genl);
+            }
+            rv = rv->next_homonym;
+          }
+        }
+      }
+      freelist(&pl, pln);
+    }
+
+    if (!result2.empty() || !strstr(pattern, MORPH_DERI_SFX))
+      break;
+
+    newpattern.assign(pattern);
+    mystrrep(newpattern, MORPH_DERI_SFX, MORPH_TERM_SFX);
+    pattern = newpattern.c_str();
+  }
+  return result2;
 }
 
 // generate an n-gram score comparing s1 and s2

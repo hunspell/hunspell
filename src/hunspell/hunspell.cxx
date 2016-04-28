@@ -151,6 +151,7 @@ private:
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(std::string& result, char* st);
+  void cat_result(std::string& result, const std::string& st);
   char* stem_description(const char* desc);
   std::vector<std::string> spellml(const char* word);
   std::string get_xml_par(const char* par);
@@ -1477,6 +1478,14 @@ void HunspellImpl::cat_result(std::string& result, char* st) {
   }
 }
 
+void HunspellImpl::cat_result(std::string& result, const std::string& st) {
+  if (!st.empty()) {
+    if (!result.empty())
+      result.append("\n");
+    result.append(st);
+  }
+}
+
 int Hunspell::analyze(char*** slst, const char* word) {
   return m_Impl->analyze(slst, word);
 }
@@ -1753,8 +1762,7 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   std::vector<std::string> slst;
   if (!pSMgr || pl.empty())
     return slst;
-  char** pl2;
-  int pl2n = analyze(&pl2, word.c_str());
+  std::vector<std::string> pl2 = analyze(word);
   int captype = NOCAP;
   int abbv = 0;
   std::string cw;
@@ -1762,9 +1770,8 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   std::string result;
 
   for (size_t i = 0; i < pl.size(); ++i) {
-    cat_result(result, pSMgr->suggest_gen(pl2, pl2n, pl[i].c_str()));
+    cat_result(result, pSMgr->suggest_gen(pl2, pl[i].c_str()));
   }
-  freelist(&pl2, pl2n);
 
   if (!result.empty()) {
     // allcap

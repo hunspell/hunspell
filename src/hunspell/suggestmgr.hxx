@@ -135,6 +135,7 @@ class SuggestMgr {
 
   char* suggest_morph(const char* word);
   char* suggest_gen(char** pl, int pln, const char* pattern);
+  std::string suggest_gen(const std::vector<std::string>& pl, const char* pattern);
   char* suggest_morph_for_spelling_error(const char* word);
 
  private:
