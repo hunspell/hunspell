@@ -1061,10 +1061,15 @@ int AffixMgr::condlen(const char* st) {
 int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
   if (strcmp(cs, ".") != 0) {
     entry.numconds = (char)condlen(cs);
-    // coverity[buffer_size_warning] - deliberate use of lack of end of conds
-    // padded by strncpy as long condition flag
-    strncpy(entry.c.conds, cs, MAXCONDLEN);
-    if (entry.c.conds[MAXCONDLEN - 1] && cs[MAXCONDLEN]) {
+    const size_t cslen = strlen(cs);
+    const size_t short_part = std::min<size_t>(MAXCONDLEN, cslen);
+    memcpy(entry.c.conds, cs, short_part);
+    if (short_part < MAXCONDLEN) {
+      //blank out the remaining space
+      memset(entry.c.conds + short_part, 0, MAXCONDLEN - short_part);
+    } else if (cs[MAXCONDLEN]) {
+      //there is more conditions than fit in fixed space, so its
+      //a long condition
       entry.opts += aeLONGCOND;
       entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
       if (!entry.c.l.conds2)
