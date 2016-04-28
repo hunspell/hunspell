@@ -1560,11 +1560,11 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
     case HUHCAP:
     case HUHINITCAP:
     case NOCAP: {
-      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
+      cat_result(result, pSMgr->suggest_morph(scw));
       if (abbv) {
         std::string u8buffer(scw);
         u8buffer.push_back('.');
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
       }
       break;
     }
@@ -1572,40 +1572,40 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       wl = mkallsmall2(scw, sunicw);
       std::string u8buffer(scw);
       mkinitcap2(scw, sunicw);
-      cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
-      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
+      cat_result(result, pSMgr->suggest_morph(u8buffer));
+      cat_result(result, pSMgr->suggest_morph(scw));
       if (abbv) {
         u8buffer.push_back('.');
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
 
         u8buffer = scw;
         u8buffer.push_back('.');
 
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
       }
       break;
     }
     case ALLCAP: {
-      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
+      cat_result(result, pSMgr->suggest_morph(scw));
       if (abbv) {
         std::string u8buffer(scw);
         u8buffer.push_back('.');
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
       }
       mkallsmall2(scw, sunicw);
       std::string u8buffer(scw);
       mkinitcap2(scw, sunicw);
 
-      cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
-      cat_result(result, pSMgr->suggest_morph(scw.c_str()));
+      cat_result(result, pSMgr->suggest_morph(u8buffer));
+      cat_result(result, pSMgr->suggest_morph(scw));
       if (abbv) {
         u8buffer.push_back('.');
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
 
         u8buffer = scw;
         u8buffer.push_back('.');
 
-        cat_result(result, pSMgr->suggest_morph(u8buffer.c_str()));
+        cat_result(result, pSMgr->suggest_morph(u8buffer));
       }
       break;
     }
@@ -1634,7 +1634,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
     // examine 2 sides of the dash
     if (part2.empty()) {  // base word ending with dash
       if (spell(part1.c_str())) {
-        std::string p = pSMgr->suggest_morph(part1.c_str());
+        std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
           return slst;
@@ -1642,7 +1642,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
       if (spell(part1.c_str()) && (spell("-e"))) {
-        std::string st = pSMgr->suggest_morph(part1.c_str());
+        std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
           result.append(st);
         }
@@ -1660,12 +1660,12 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       part1.erase(part1.size() - 1);
       if (nresult && spell(part2.c_str()) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
-        std::string st = pSMgr->suggest_morph(part1.c_str());
+        std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
           result.append(st);
           result.push_back('+');  // XXX spec. separator in MORPHCODE
         }
-        st = pSMgr->suggest_morph(part2.c_str());
+        st = pSMgr->suggest_morph(part2);
         if (!st.empty()) {
           result.append(st);
         }
@@ -1696,7 +1696,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         std::string chunk = scw.substr(dash_pos - n);
         if (checkword(chunk, NULL, NULL)) {
           result.append(chunk);
-          std::string st = pSMgr->suggest_morph(chunk.c_str());
+          std::string st = pSMgr->suggest_morph(chunk);
           if (!st.empty()) {
             result.append(st);
           }

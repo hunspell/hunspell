@@ -133,7 +133,7 @@ class SuggestMgr {
   int suggest_stems(char*** slst, const char* word, int nsug);
   int suggest_pos_stems(char*** slst, const char* word, int nsug);
 
-  std::string suggest_morph(const char* word);
+  std::string suggest_morph(const std::string& word);
   std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);
 
  private:

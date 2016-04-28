@@ -1674,7 +1674,7 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
   return 0;
 }
 
-std::string SuggestMgr::suggest_morph(const char* w) {
+std::string SuggestMgr::suggest_morph(const std::string& in_w) {
   std::string result;
   char* st;
 
@@ -1683,20 +1683,17 @@ std::string SuggestMgr::suggest_morph(const char* w) {
   if (!pAMgr)
     return std::string();
 
-  std::string w2;
-  const char* word = w;
+  std::string w(in_w);
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
-    w2.assign(w);
     if (utf8)
-      reverseword_utf(w2);
+      reverseword_utf(w);
     else
-      reverseword(w2);
-    word = w2.c_str();
+      reverseword(w);
   }
 
-  rv = pAMgr->lookup(word);
+  rv = pAMgr->lookup(w.c_str());
 
   while (rv) {
     if ((!rv->astr) ||
@@ -1706,7 +1703,7 @@ std::string SuggestMgr::suggest_morph(const char* w) {
       if (!HENTRY_FIND(rv, MORPH_STEM)) {
         result.append(" ");
         result.append(MORPH_STEM);
-        result.append(word);
+        result.append(w);
       }
       if (HENTRY_DATA(rv)) {
         result.append(" ");
@@ -1717,7 +1714,7 @@ std::string SuggestMgr::suggest_morph(const char* w) {
     rv = rv->next_homonym;
   }
 
-  st = pAMgr->affix_check_morph(word, strlen(word));
+  st = pAMgr->affix_check_morph(w.c_str(), w.size());
   if (st) {
     result.append(st);
     free(st);
@@ -1725,7 +1722,7 @@ std::string SuggestMgr::suggest_morph(const char* w) {
 
   if (pAMgr->get_compound() && result.empty()) {
     struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-    pAMgr->compound_check_morph(word, strlen(word), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, result,
+    pAMgr->compound_check_morph(w.c_str(), w.size(), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, result,
                                 NULL);
   }
 
