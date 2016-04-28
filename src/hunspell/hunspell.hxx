@@ -175,8 +175,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   H_DEPRECATED int stem(char*** slst, char** morph, int n);
 
   /* generate(result, word, word2) - morphological generation by example(s) */
-
-  int generate(char*** slst, const char* word, const char* word2);
+  std::vector<std::string> generate(const std::string& word, const std::string& word2);
+  H_DEPRECATED int generate(char*** slst, const char* word, const char* word2);
 
   /* generate(result, word, desc, n) - generation by morph. description(s)
    * example:
@@ -185,8 +185,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * int n = generate(&result, "word", &affix, 1);
    * for (int i = 0; i < n; i++) printf("%s\n", result[i]);
    */
-
-  int generate(char*** slst, const char* word, char** desc, int n);
+  std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
+  H_DEPRECATED int generate(char*** slst, const char* word, char** desc, int n);
 
   /* functions for run-time modification of the dictionary */
 

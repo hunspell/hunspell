@@ -99,6 +99,8 @@ public:
   int suffix_suggest(char*** slst, const char* root_word);
   int generate(char*** slst, const char* word, const char* pattern);
   int generate(char*** slst, const char* word, char** pl, int pln);
+  std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
+  std::vector<std::string> generate(const std::string& word, const std::string& pattern);
   std::vector<std::string> stem(const std::string& word);
   int stem(char*** slst, const char* word);
   std::vector<std::string> stem(const std::vector<std::string>& morph);
@@ -1730,25 +1732,48 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   return slst;
 }
 
-
 int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
-  return m_Impl->generate(slst, word, pl, pln);
+  return Hunspell_generate2((Hunhandle*)(this), slst, word, pl, pln);
 }
 
 int HunspellImpl::generate(char*** slst, const char* word, char** pl, int pln) {
-  *slst = NULL;
-  if (!pSMgr || !pln)
+  std::vector<std::string> morph;
+  for (int i = 0; i < pln; ++i)
+    morph.push_back(pl[i]);
+
+  std::vector<std::string> stems = generate(word, morph);
+
+  if (stems.empty()) {
+    *slst = NULL;
     return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
+}
+
+std::vector<std::string> Hunspell::generate(const std::string& word, const std::vector<std::string>& pl) {
+  return m_Impl->generate(word, pl);
+}
+
+std::vector<std::string> HunspellImpl::generate(const std::string& word, const std::vector<std::string>& pl) {
+  std::vector<std::string> slst;
+  if (!pSMgr || pl.empty())
+    return slst;
   char** pl2;
-  int pl2n = analyze(&pl2, word);
+  int pl2n = analyze(&pl2, word.c_str());
   int captype = NOCAP;
   int abbv = 0;
   std::string cw;
-  cleanword(cw, word, &captype, &abbv);
+  cleanword(cw, word.c_str(), &captype, &abbv);
   std::string result;
 
-  for (int i = 0; i < pln; i++) {
-    cat_result(result, pSMgr->suggest_gen(pl2, pl2n, pl[i]));
+  for (size_t i = 0; i < pl.size(); ++i) {
+    cat_result(result, pSMgr->suggest_gen(pl2, pl2n, pl[i].c_str()));
   }
   freelist(&pl2, pl2n);
 
@@ -1758,50 +1783,58 @@ int HunspellImpl::generate(char*** slst, const char* word, char** pl, int pln) {
       mkallcap(result);
 
     // line split
-    int linenum = line_tok(result.c_str(), slst, MSEP_REC);
+    slst = line_tok(result, MSEP_REC);
 
     // capitalize
     if (captype == INITCAP || captype == HUHINITCAP) {
-      for (int j = 0; j < linenum; j++) {
-        std::string form((*slst)[j]);
-        free((*slst)[j]);
-        mkinitcap(form);
-        (*slst)[j] = mystrdup(form.c_str());
+      for (size_t j = 0; j < slst.size(); ++j) {
+        mkinitcap(slst[j]);
       }
     }
 
     // temporary filtering of prefix related errors (eg.
     // generate("undrinkable", "eats") --> "undrinkables" and "*undrinks")
-
-    int r = 0;
-    for (int j = 0; j < linenum; j++) {
-      if (!spell((*slst)[j])) {
-        free((*slst)[j]);
-        (*slst)[j] = NULL;
-      } else {
-        if (r < j)
-          (*slst)[r] = (*slst)[j];
-        r++;
+    std::vector<std::string>::iterator it = slst.begin();
+    while (it != slst.end()) {
+      if (!spell(*it)) {
+        it = slst.erase(it);
+      } else  {
+        ++it;
       }
     }
-    if (r > 0)
-      return r;
-    free(*slst);
-    *slst = NULL;
   }
-  return 0;
+  return slst;
 }
 
 int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
-  return m_Impl->generate(slst, word, pattern);
+  return Hunspell_generate((Hunhandle*)(this), slst, word, pattern);
 }
 
 int HunspellImpl::generate(char*** slst, const char* word, const char* pattern) {
-  char** pl;
-  int pln = analyze(&pl, pattern);
-  int n = generate(slst, word, pl, pln);
-  freelist(&pl, pln);
-  return uniqlist(*slst, n);
+  std::vector<std::string> stems = generate(word, pattern);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
+}
+
+std::vector<std::string> Hunspell::generate(const std::string& word, const std::string& pattern) {
+  return m_Impl->generate(word, pattern);
+}
+
+std::vector<std::string> HunspellImpl::generate(const std::string& word, const std::string& pattern) {
+  std::vector<std::string> pl = analyze(pattern);
+  std::vector<std::string> slst = generate(word, pl);
+  uniqlist(slst);
+  return slst;
 }
 
 // minimal XML parser functions
@@ -2027,8 +2060,20 @@ int Hunspell_stem2(Hunhandle* pHunspell, char*** slst, char** desc, int n) {
 int Hunspell_generate(Hunhandle* pHunspell,
                       char*** slst,
                       const char* word,
-                      const char* word2) {
-  return ((Hunspell*)pHunspell)->generate(slst, word, word2);
+                      const char* pattern) {
+  std::vector<std::string> stems = ((Hunspell*)pHunspell)->generate(word, pattern);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
 int Hunspell_generate2(Hunhandle* pHunspell,
@@ -2036,7 +2081,23 @@ int Hunspell_generate2(Hunhandle* pHunspell,
                        const char* word,
                        char** desc,
                        int n) {
-  return ((Hunspell*)pHunspell)->generate(slst, word, desc, n);
+  std::vector<std::string> morph;
+  for (int i = 0; i < n; ++i)
+    morph.push_back(desc[i]);
+
+  std::vector<std::string> stems = ((Hunspell*)pHunspell)->generate(word, morph);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
 /* functions for run-time modification of the dictionary */

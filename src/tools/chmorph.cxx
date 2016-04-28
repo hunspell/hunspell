@@ -86,35 +86,28 @@ int main(int, char** argv) {
   while (fgets(buf, MAXLNLEN, f)) {
     p->put_line(buf);
     while ((next = p->next_token())) {
-      char** pl;
-      int pln = pMS->analyze(&pl, next);
-      if (pln) {
+      std::vector<std::string> pl = pMS->analyze(next);
+      if (!pl.empty()) {
         int gen = 0;
-        for (int i = 0; i < pln; i++) {
-          char* pos = strstr(pl[i], argv[4]);
+        for (size_t i = 0; i < pl.size(); ++i) {
+          const char* pos = strstr(pl[i].c_str(), argv[4]);
           if (pos) {
-            char* r = (char*)malloc(strlen(pl[i]) - strlen(argv[4]) +
-                                    strlen(argv[5]) + 1);
-            strncpy(r, pl[i], pos - pl[i]);
-            strcpy(r + (pos - pl[i]), argv[5]);
-            strcat(r, pos + strlen(argv[4]));
-            free(pl[i]);
+            std::string r(pl[i], pos - pl[i].c_str());
+            r.append(argv[5]);
+            r.append(pos + strlen(argv[4]));
             pl[i] = r;
             gen = 1;
           }
         }
         if (gen) {
-          char** pl2;
-          int pl2n = pMS->generate(&pl2, next, pl, pln);
-          if (pl2n) {
-            p->change_token(pl2[0]);
-            pMS->free_list(&pl2, pl2n);
+          std::vector<std::string> pl2 = pMS->generate(next, pl);
+          if (!pl2.empty()) {
+            p->change_token(pl2[0].c_str());
             // jump over the (possibly un)modified word
             free(next);
             next = p->next_token();
           }
         }
-        pMS->free_list(&pl, pln);
       }
       free(next);
     }

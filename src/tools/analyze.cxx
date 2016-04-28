@@ -77,13 +77,11 @@ int main(int, char** argv) {
     char* s = strchr(buf, ' ');
     if (s) {
       *s = '\0';
-      char** result;
-      int n = pMS->generate(&result, buf, s + 1);
-      for (int i = 0; i < n; i++) {
-        fprintf(stdout, "generate(%s, %s) = %s\n", buf, s + 1, result[i]);
+      std::vector<std::string> result = pMS->generate(buf, s + 1);
+      for (size_t i = 0; i < result.size(); ++i) {
+        fprintf(stdout, "generate(%s, %s) = %s\n", buf, s + 1, result[i].c_str());
       }
-      pMS->free_list(&result, n);
-      if (n == 0)
+      if (result.empty())
         fprintf(stdout, "generate(%s, %s) = NO DATA\n", buf, s + 1);
     } else {
       int dp = pMS->spell(std::string(buf));
