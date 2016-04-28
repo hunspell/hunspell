@@ -1634,25 +1634,22 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
     // examine 2 sides of the dash
     if (part2.empty()) {  // base word ending with dash
       if (spell(part1.c_str())) {
-        char* p = pSMgr->suggest_morph(part1.c_str());
-        if (p) {
+        std::string p = pSMgr->suggest_morph(part1.c_str());
+        if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
-          free(p);
           return slst;
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
       if (spell(part1.c_str()) && (spell("-e"))) {
-        char* st = pSMgr->suggest_morph(part1.c_str());
-        if (st) {
+        std::string st = pSMgr->suggest_morph(part1.c_str());
+        if (!st.empty()) {
           result.append(st);
-          free(st);
         }
         result.push_back('+');  // XXX spec. separator in MORPHCODE
         st = pSMgr->suggest_morph("-e");
-        if (st) {
+        if (!st.empty()) {
           result.append(st);
-          free(st);
         }
         return line_tok(result, MSEP_REC);
       }
@@ -1663,16 +1660,14 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       part1.erase(part1.size() - 1);
       if (nresult && spell(part2.c_str()) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
-        char* st = pSMgr->suggest_morph(part1.c_str());
-        if (st) {
+        std::string st = pSMgr->suggest_morph(part1.c_str());
+        if (!st.empty()) {
           result.append(st);
-          free(st);
           result.push_back('+');  // XXX spec. separator in MORPHCODE
         }
         st = pSMgr->suggest_morph(part2.c_str());
-        if (st) {
+        if (!st.empty()) {
           result.append(st);
-          free(st);
         }
         return line_tok(result, MSEP_REC);
       }
@@ -1701,10 +1696,9 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         std::string chunk = scw.substr(dash_pos - n);
         if (checkword(chunk, NULL, NULL)) {
           result.append(chunk);
-          char* st = pSMgr->suggest_morph(chunk.c_str());
-          if (st) {
+          std::string st = pSMgr->suggest_morph(chunk.c_str());
+          if (!st.empty()) {
             result.append(st);
-            free(st);
           }
           return line_tok(result, MSEP_REC);
         }

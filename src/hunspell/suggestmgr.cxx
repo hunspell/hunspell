@@ -1674,14 +1674,14 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
   return 0;
 }
 
-char* SuggestMgr::suggest_morph(const char* w) {
+std::string SuggestMgr::suggest_morph(const char* w) {
   std::string result;
   char* st;
 
   struct hentry* rv = NULL;
 
   if (!pAMgr)
-    return NULL;
+    return std::string();
 
   std::string w2;
   const char* word = w;
@@ -1729,12 +1729,9 @@ char* SuggestMgr::suggest_morph(const char* w) {
                                 NULL);
   }
 
-  if (result.empty())
-    return NULL;
-
   line_uniq(result, MSEP_REC);
 
-  return mystrdup(result.c_str());
+  return result;
 }
 
 /* affixation */
