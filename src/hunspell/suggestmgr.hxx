@@ -134,8 +134,7 @@ class SuggestMgr {
   int suggest_pos_stems(char*** slst, const char* word, int nsug);
 
   char* suggest_morph(const char* word);
-  char* suggest_gen(char** pl, int pln, const char* pattern);
-  std::string suggest_gen(const std::vector<std::string>& pl, const char* pattern);
+  std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);
   char* suggest_morph_for_spelling_error(const char* word);
 
  private:

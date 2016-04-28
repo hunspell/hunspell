@@ -1303,36 +1303,34 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
       s = part;
     }
 
-    char** pl;
     std::string tok(s);
     size_t alt = 0;
     while ((alt = tok.find(" | ", alt)) != std::string::npos) {
       tok[alt + 1] = MSEP_ALT;
     }
-    int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
-    for (int k = 0; k < pln; k++) {
+    std::vector<std::string> pl = line_tok(tok, MSEP_ALT);
+    for (size_t k = 0; k < pl.size(); ++k) {
       // add derivational suffixes
-      if (strstr(pl[k], MORPH_DERI_SFX)) {
+      if (pl[k].find(MORPH_DERI_SFX) != std::string::npos) {
         // remove inflectional suffixes
-        char* is = strstr(pl[k], MORPH_INFL_SFX);
-        if (is)
-          *is = '\0';
-        char* sg = pSMgr->suggest_gen(&(pl[k]), 1, pl[k]);
-        if (sg) {
-          char** gen;
-          int genl = line_tok(sg, &gen, MSEP_REC);
-          free(sg);
-          for (int j = 0; j < genl; j++) {
+        const size_t is = pl[k].find(MORPH_INFL_SFX);
+        if (is != std::string::npos)
+          pl[k].resize(is);
+        std::vector<std::string> singlepl;
+        singlepl.push_back(pl[k]);
+        std::string sg = pSMgr->suggest_gen(singlepl, pl[k]);
+        if (!sg.empty()) {
+          std::vector<std::string> gen = line_tok(sg, MSEP_REC);
+          for (size_t j = 0; j < gen.size(); ++j) {
             result2.push_back(MSEP_REC);
             result2.append(result);
             result2.append(gen[j]);
           }
-          freelist(&gen, genl);
         }
       } else {
         result2.push_back(MSEP_REC);
         result2.append(result);
-        if (strstr(pl[k], MORPH_SURF_PFX)) {
+        if (pl[k].find(MORPH_SURF_PFX) != std::string::npos) {
           std::string field;
           copy_field(field, pl[k], MORPH_SURF_PFX);
           result2.append(field);
@@ -1342,7 +1340,6 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
         result2.append(field);
       }
     }
-    freelist(&pl, pln);
   }
   slst = line_tok(result2, MSEP_REC);
   uniqlist(slst);
