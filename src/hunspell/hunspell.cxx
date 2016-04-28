@@ -103,7 +103,6 @@ public:
   int stem(char*** slst, const char* word);
   std::vector<std::string> stem(const std::vector<std::string>& morph);
   int stem(char*** slst, char** morph, int n);
-  int analyze(char*** slst, const char* word);
   std::vector<std::string> analyze(const std::string& word);
   int get_langnum() const;
   bool input_conv(const std::string& word, std::string& dest);
@@ -1487,11 +1486,7 @@ void HunspellImpl::cat_result(std::string& result, const std::string& st) {
 }
 
 int Hunspell::analyze(char*** slst, const char* word) {
-  return m_Impl->analyze(slst, word);
-}
-
-int HunspellImpl::analyze(char*** slst, const char* word) {
-  std::vector<std::string> stems = analyze(word);
+  std::vector<std::string> stems = m_Impl->analyze(word);
   if (stems.empty()) {
     *slst = NULL;
     return 0;
