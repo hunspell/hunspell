@@ -1607,7 +1607,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   int dialogexit;
   int check = 1;
 
-  char* extension = (filename) ? basename(filename, '.') : NULL;
+  char* extension = basename(filename, '.');
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
