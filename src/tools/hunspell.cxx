@@ -674,17 +674,17 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
-
+  char tmptemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = tmpnam(NULL);
+    odftmpdir = mkdtemp(tmptemplate);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "mkdir " << odftmpdir << " && unzip -p '" << filename << "' content.xml | sed "
+    sbuf << "unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
             ">" << odftmpdir << "/content.xml";
-    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
+    if (!secure_filename(filename) || !odftmpdir || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
@@ -1594,7 +1594,7 @@ ki2:
 void interactive_interface(Hunspell** pMS, char* filename, int format) {
   char buf[MAXLNLEN];
   char* odffilename = NULL;
-  char* odftempdir = NULL;  // external zip works only with temporary directories
+  char* odftmpdir = NULL;  // external zip works only with temporary directories
                             // (option -j)
 
   FILE* text = fopen(filename, "r");
@@ -1607,21 +1607,22 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   int dialogexit;
   int check = 1;
 
-  char* extension = basename(filename, '.');
+  char* extension = (filename) ? basename(filename, '.') : NULL;
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
+  char tmptemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftempdir = tmpnam(NULL);
+    odftmpdir = mkdtemp(tmptemplate);
     fclose(text);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "mkdir " << odftempdir << " && unzip -p '" << filename << "' content.xml | sed "
+    sbuf << "unzip -p '" << filename << "' content.xml | sed "
             "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
-            ">" << odftempdir << "/content.xml";
-    if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
+            ">" << odftmpdir << "/content.xml";
+    if (!secure_filename(filename) || !odftmpdir || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
@@ -1630,7 +1631,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       exit(1);
     }
     odffilename = filename;
-    std::string file(odftempdir);
+    std::string file(odftmpdir);
     file.append("/content.xml");
     filename = mystrdup(file.c_str());
     text = fopen(filename, "r");
@@ -1663,7 +1664,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           fclose(tempfile);  // automatically deleted when closed
           if (bZippedOdf) {
             std::ostringstream sbuf;
-            sbuf << "rm " << filename << "; rmdir " << odftempdir;
+            sbuf << "rm " << filename << "; rmdir " << odftmpdir;
             if (system(sbuf.str().c_str()) != 0)
               perror("write failed");
             free(filename);
@@ -1704,7 +1705,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
 
   if (bZippedOdf) {
     std::ostringstream sbuf;
-    sbuf << "rm " << filename << "; rmdir " << odftempdir;
+    sbuf << "rm " << filename << "; rmdir " << odftmpdir;
     if (system(sbuf.str().c_str()) != 0)
       perror("write failed");
     free(filename);
