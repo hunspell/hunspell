@@ -191,11 +191,14 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   return 0;
 }
 
-bool RepList::conv(const char* word, std::string& dest) {
+bool RepList::conv(const std::string& in_word, std::string& dest) {
   dest.clear();
 
+  size_t wordlen = in_word.size();
+  const char* word = in_word.c_str();
+
   bool change = false;
-  for (size_t i = 0; i < strlen(word); ++i) {
+  for (size_t i = 0; i < wordlen; ++i) {
     int n = find(word + i);
     std::string l = replace(word + i, n, i == 0);
     if (!l.empty()) {
@@ -206,6 +209,7 @@ bool RepList::conv(const char* word, std::string& dest) {
       dest.push_back(word[i]);
     }
   }
+
   return change;
 }
 

@@ -103,7 +103,7 @@ public:
   int stem(char*** slst, char** desc, int n);
   int analyze(char*** slst, const char* word);
   int get_langnum() const;
-  bool input_conv(const char* word, std::string& dest);
+  bool input_conv(const std::string& word, std::string& dest);
   int spell(const char* word, int* info = NULL, char** root = NULL);
   int suggest(char*** slst, const char* word);
   const std::string& get_wordchars() const;
@@ -1778,11 +1778,11 @@ int HunspellImpl::get_langnum() const {
   return langnum;
 }
 
-bool Hunspell::input_conv(const char* word, std::string& dest) {
+bool Hunspell::input_conv(const std::string& word, std::string& dest) {
   return m_Impl->input_conv(word, dest);
 }
 
-bool HunspellImpl::input_conv(const char* word, std::string& dest) {
+bool HunspellImpl::input_conv(const std::string& word, std::string& dest) {
   RepList* rl = pAMgr ? pAMgr->get_iconvtable() : NULL;
   if (rl) {
     return rl->conv(word, dest);

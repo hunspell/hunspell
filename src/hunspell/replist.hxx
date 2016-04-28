@@ -99,6 +99,6 @@ class RepList {
   replentry* item(int n);
   int find(const char* word);
   std::string replace(const char* word, int n, bool atstart);
-  bool conv(const char* word, std::string& dest);
+  bool conv(const std::string& word, std::string& dest);
 };
 #endif
