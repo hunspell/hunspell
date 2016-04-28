@@ -1294,10 +1294,10 @@ std::vector<std::string> HunspellImpl::stem(char** desc, int n) {
     std::string result;
 
     // add compound word parts (except the last one)
-    char* s = (char*)desc[i];
-    char* part = strstr(s, MORPH_PART);
+    const char* s = desc[i];
+    const char* part = strstr(s, MORPH_PART);
     if (part) {
-      char* nextpart = strstr(part + 1, MORPH_PART);
+      const char* nextpart = strstr(part + 1, MORPH_PART);
       while (nextpart) {
         std::string field;
         copy_field(field, part, MORPH_PART);
