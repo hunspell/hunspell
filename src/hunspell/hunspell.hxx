@@ -158,7 +158,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* morphological functions */
 
   /* analyze(result, word) - morphological analysis of the word */
-
+  std::vector<std::string> analyze(const std::string& word);
   int analyze(char*** slst, const char* word);
 
   /* stem(word) - stemmer function */

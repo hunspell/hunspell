@@ -104,6 +104,7 @@ public:
   std::vector<std::string> stem(char** desc, int n);
   int stem(char*** slst, char** morph, int n);
   int analyze(char*** slst, const char* word);
+  std::vector<std::string> analyze(const std::string& word);
   int get_langnum() const;
   bool input_conv(const std::string& word, std::string& dest);
   bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
@@ -1488,16 +1489,35 @@ int Hunspell::analyze(char*** slst, const char* word) {
 }
 
 int HunspellImpl::analyze(char*** slst, const char* word) {
-  *slst = NULL;
-  if (!pSMgr || m_HMgrs.empty())
+  std::vector<std::string> stems = analyze(word);
+  if (stems.empty()) {
+    *slst = NULL;
     return 0;
-  int nc = strlen(word);
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
+}
+
+std::vector<std::string> Hunspell::analyze(const std::string& word) {
+  return m_Impl->analyze(word);
+}
+
+std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
+  std::vector<std::string> slst;
+  if (!pSMgr || m_HMgrs.empty())
+    return slst;
+  int nc = word.size();
   if (utf8) {
     if (nc >= MAXWORDUTF8LEN)
-      return 0;
+      return slst;
   } else {
     if (nc >= MAXWORDLEN)
-      return 0;
+      return slst;
   }
   int captype = NOCAP;
   size_t abbv = 0;
@@ -1525,7 +1545,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
         scw.push_back('.');
       abbv = 0;
     } else
-      return 0;
+      return slst;
   }
 
   std::string result;
@@ -1550,7 +1570,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
     }
 
     if ((n == wl) && (n3 > 0) && (n - n3 > 3))
-      return 0;
+      return slst;
     if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) &&
                       checkword(scw.c_str() + n, NULL, NULL))) {
       result.append(scw);
@@ -1565,7 +1585,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
         scw[n] = sign;
         cat_result(result, pSMgr->suggest_morph(scw.c_str() + n));
       }
-      return line_tok(result.c_str(), slst, MSEP_REC);
+      return line_tok(result, MSEP_REC);
     }
   }
   // END OF LANG_hu section
@@ -1633,7 +1653,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
       else
         reverseword(result);
     }
-    return line_tok(result.c_str(), slst, MSEP_REC);
+    return line_tok(result, MSEP_REC);
   }
 
   // compound word with dash (HU) I18n
@@ -1650,9 +1670,9 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
       if (spell(part1.c_str())) {
         char* p = pSMgr->suggest_morph(part1.c_str());
         if (p) {
-          int ret = line_tok(p, slst, MSEP_REC);
+          slst = line_tok(p, MSEP_REC);
           free(p);
-          return ret;
+          return slst;
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
@@ -1668,7 +1688,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
           result.append(st);
           free(st);
         }
-        return line_tok(result.c_str(), slst, MSEP_REC);
+        return line_tok(result, MSEP_REC);
       }
     } else {
       // first word ending with dash: word- XXX ???
@@ -1688,7 +1708,7 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
           result.append(st);
           free(st);
         }
-        return line_tok(result.c_str(), slst, MSEP_REC);
+        return line_tok(result, MSEP_REC);
       }
     }
     // affixed number in correct word
@@ -1720,13 +1740,14 @@ int HunspellImpl::analyze(char*** slst, const char* word) {
             result.append(st);
             free(st);
           }
-          return line_tok(result.c_str(), slst, MSEP_REC);
+          return line_tok(result, MSEP_REC);
         }
       }
     }
   }
-  return 0;
+  return slst;
 }
+
 
 int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
   return m_Impl->generate(slst, word, pl, pln);
