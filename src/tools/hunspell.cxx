@@ -617,32 +617,32 @@ char* scanline(char* message) {
 #endif
 
 // check words in the dictionaries (and set first checked dictionary)
-int check(Hunspell** pMS, int* d, char* token, int* info, char** root) {
+bool check(Hunspell** pMS, int* d, char* token, int* info, std::string* root) {
   for (int i = 0; i < dmax; ++i) {
     std::string buf(token);
     chenc(buf, io_enc, dic_enc[*d]);
     mystrrep(buf, ENTITY_APOS, "'");
     if (checkapos && buf.find('\'') != std::string::npos)
-      return 0;
+      return false;
     // 8-bit encoded dictionaries need ASCII apostrophes (eg. English
     // dictionaries)
     if (strcmp(dic_enc[*d], "UTF-8") != 0)
       mystrrep(buf, UTF8_APOS, "'");
-    if ((pMS[*d]->spell(buf.c_str(), info, root) &&
+    if ((pMS[*d]->spell(buf, info, root) &&
          !(warn && (*info & SPELL_WARN))) ||
         // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV
         // support,
         // need also ASCII apostrophes (eg. French dictionaries)
         ((strcmp(dic_enc[*d], "UTF-8") == 0) &&
          buf.find(UTF8_APOS) != std::string::npos &&
-         pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'").c_str(), info, root) &&
+         pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'"), info, root) &&
          !(warn && (*info & SPELL_WARN)))) {
-      return 1;
+      return true;
     }
     if (++(*d) == dmax)
       *d = 0;
   }
-  return 0;
+  return false;
 }
 
 static int is_zipped_odf(TextParser* parser, const char* extension) {
@@ -926,7 +926,7 @@ nextline:
 
           case PIPE: {
             int info;
-            char* root = NULL;
+            std::string root;
             if (check(pMS, &d, token, &info, &root)) {
               if (!terse_mode) {
                 if (verbose_mode)
@@ -961,25 +961,21 @@ nextline:
               fprintf(stdout, "\n");
               fflush(stdout);
             }
-            if (root)
-              free(root);
             free(token);
             continue;
           }
           case NORMAL: {
             int info;
-            char* root = NULL;
+            std::string root;
             if (check(pMS, &d, token, &info, &root)) {
               if (info & SPELL_COMPOUND) {
                 fprintf(stdout, "-\n");
-              } else if (root) {
-                fprintf(stdout, "+ %s\n", chenc(root, dic_enc[d], ui_enc));
+              } else if (!root.empty()) {
+                fprintf(stdout, "+ %s\n", chenc(root, dic_enc[d], ui_enc).c_str());
               } else {
                 fprintf(stdout, "*\n");
               }
               fflush(stdout);
-              if (root)
-                free(root);
             } else {
               char** wlst = NULL;
               int byte_offset = parser->get_tokenpos() + pos;

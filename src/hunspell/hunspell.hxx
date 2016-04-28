@@ -83,9 +83,6 @@
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
 
-#define HUNSPELL_OK (1 << 0)
-#define HUNSPELL_OK_WARN (1 << 1)
-
 class HunspellImpl;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
@@ -113,7 +110,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int add_dic(const char* dpath, const char* key = NULL);
 
   /* spell(word) - spellcheck word
-   * output: 0 = bad word, not 0 = good word
+   * output: false = bad word, true = good word
    *
    * plus output:
    *   info: information bit array, fields:
@@ -121,7 +118,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    *     SPELL_FORBIDDEN = an explicit forbidden word
    *   root: root (stem), when input is a word with affix(es)
    */
-
+  bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
   int spell(const char* word, int* info = NULL, char** root = NULL);
 
   /* suggest(suggestions, word) - search suggestions
