@@ -1261,28 +1261,8 @@ const std::string& HunspellImpl::get_dic_encoding() const {
   return encoding;
 }
 
-int Hunspell::stem(char*** slst, char** morph, int n) {
-  return m_Impl->stem(slst, morph, n);
-}
-
-int HunspellImpl::stem(char*** slst, char** in_morph, int n) {
-  std::vector<std::string> morph;
-  for (int i = 0; i < n; ++i)
-    morph.push_back(in_morph[i]);
-
-  std::vector<std::string> stems = stem(morph);
-
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
+int Hunspell::stem(char*** slst, char** desc, int n) {
+  return Hunspell_stem2((Hunhandle*)(this), slst, desc, n);
 }
 
 std::vector<std::string> Hunspell::stem(const std::vector<std::string>& desc) {
@@ -1361,7 +1341,7 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
 }
 
 int Hunspell::stem(char*** slst, const char* word) {
-  return m_Impl->stem(slst, word);
+  return Hunspell_stem((Hunhandle*)(this), slst, word);
 }
 
 int HunspellImpl::stem(char*** slst, const char* word) {
@@ -2008,11 +1988,40 @@ int Hunspell_analyze(Hunhandle* pHunspell, char*** slst, const char* word) {
 }
 
 int Hunspell_stem(Hunhandle* pHunspell, char*** slst, const char* word) {
-  return ((Hunspell*)pHunspell)->stem(slst, word);
+
+  std::vector<std::string> stems = ((Hunspell*)pHunspell)->stem(word);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
 int Hunspell_stem2(Hunhandle* pHunspell, char*** slst, char** desc, int n) {
-  return ((Hunspell*)pHunspell)->stem(slst, desc, n);
+  std::vector<std::string> morph;
+  for (int i = 0; i < n; ++i)
+    morph.push_back(desc[i]);
+
+  std::vector<std::string> stems = ((Hunspell*)pHunspell)->stem(morph);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
 int Hunspell_generate(Hunhandle* pHunspell,

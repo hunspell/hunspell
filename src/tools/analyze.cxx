@@ -89,17 +89,14 @@ int main(int, char** argv) {
       int dp = pMS->spell(std::string(buf));
       fprintf(stdout, "> %s\n", buf);
       if (dp) {
-        char** result;
-        int n = pMS->analyze(&result, buf);
-        for (int i = 0; i < n; i++) {
-          fprintf(stdout, "analyze(%s) = %s\n", buf, result[i]);
+        std::vector<std::string> result = pMS->analyze(buf);
+        for (size_t i = 0; i < result.size(); ++i) {
+          fprintf(stdout, "analyze(%s) = %s\n", buf, result[i].c_str());
         }
-        pMS->free_list(&result, n);
-        n = pMS->stem(&result, buf);
-        for (int i = 0; i < n; i++) {
-          fprintf(stdout, "stem(%s) = %s\n", buf, result[i]);
+        result = pMS->stem(buf);
+        for (size_t i = 0; i < result.size(); ++i) {
+          fprintf(stdout, "stem(%s) = %s\n", buf, result[i].c_str());
         }
-        pMS->free_list(&result, n);
       } else {
         fprintf(stdout, "Unknown word.\n");
       }

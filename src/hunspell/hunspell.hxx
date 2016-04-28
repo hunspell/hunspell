@@ -163,7 +163,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* stem(word) - stemmer function */
   std::vector<std::string> stem(const std::string& word);
-  int stem(char*** slst, const char* word);
+  H_DEPRECATED int stem(char*** slst, const char* word);
 
   /* stem(analysis, n) - get stems from a morph. analysis
    * example:
@@ -172,7 +172,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * int n2 = stem(&result2, result, n1);
    */
   std::vector<std::string> stem(const std::vector<std::string>& morph);
-  int stem(char*** slst, char** morph, int n);
+  H_DEPRECATED int stem(char*** slst, char** morph, int n);
 
   /* generate(result, word, word2) - morphological generation by example(s) */
 
