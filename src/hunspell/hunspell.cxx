@@ -1486,18 +1486,7 @@ void HunspellImpl::cat_result(std::string& result, const std::string& st) {
 }
 
 int Hunspell::analyze(char*** slst, const char* word) {
-  std::vector<std::string> stems = m_Impl->analyze(word);
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
+  return Hunspell_analyze((Hunhandle*)(this), slst, word);
 }
 
 std::vector<std::string> Hunspell::analyze(const std::string& word) {
@@ -1984,7 +1973,18 @@ int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
 }
 
 int Hunspell_analyze(Hunhandle* pHunspell, char*** slst, const char* word) {
-  return ((Hunspell*)pHunspell)->analyze(slst, word);
+  std::vector<std::string> stems = ((Hunspell*)pHunspell)->analyze(word);
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
 }
 
 int Hunspell_stem(Hunhandle* pHunspell, char*** slst, const char* word) {
