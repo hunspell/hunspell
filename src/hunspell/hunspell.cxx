@@ -101,7 +101,7 @@ public:
   int generate(char*** slst, const char* word, char** pl, int pln);
   std::vector<std::string> stem(const std::string& word);
   int stem(char*** slst, const char* word);
-  std::vector<std::string> stem(char** desc, int n);
+  std::vector<std::string> stem(const std::vector<std::string>& morph);
   int stem(char*** slst, char** morph, int n);
   int analyze(char*** slst, const char* word);
   std::vector<std::string> analyze(const std::string& word);
@@ -1265,8 +1265,13 @@ int Hunspell::stem(char*** slst, char** morph, int n) {
   return m_Impl->stem(slst, morph, n);
 }
 
-int HunspellImpl::stem(char*** slst, char** morph, int n) {
-  std::vector<std::string> stems = stem(morph, n);
+int HunspellImpl::stem(char*** slst, char** in_morph, int n) {
+  std::vector<std::string> morph;
+  for (int i = 0; i < n; ++i)
+    morph.push_back(in_morph[i]);
+
+  std::vector<std::string> stems = stem(morph);
+
   if (stems.empty()) {
     *slst = NULL;
     return 0;
@@ -1280,22 +1285,22 @@ int HunspellImpl::stem(char*** slst, char** morph, int n) {
   return stems.size();
 }
 
-std::vector<std::string> Hunspell::stem(char** desc, int n) {
-  return m_Impl->stem(desc, n);
+std::vector<std::string> Hunspell::stem(const std::vector<std::string>& desc) {
+  return m_Impl->stem(desc);
 }
 
-std::vector<std::string> HunspellImpl::stem(char** desc, int n) {
+std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc) {
   std::vector<std::string> slst;
 
   std::string result2;
-  if (n == 0)
+  if (desc.empty())
     return slst;
-  for (int i = 0; i < n; i++) {
+  for (size_t i = 0; i < desc.size(); ++i) {
 
     std::string result;
 
     // add compound word parts (except the last one)
-    const char* s = desc[i];
+    const char* s = desc[i].c_str();
     const char* part = strstr(s, MORPH_PART);
     if (part) {
       const char* nextpart = strstr(part + 1, MORPH_PART);
@@ -1379,11 +1384,8 @@ std::vector<std::string> Hunspell::stem(const std::string& word) {
 }
 
 std::vector<std::string> HunspellImpl::stem(const std::string& word) {
-  char** pl;
-  int pln = analyze(&pl, word.c_str());
-  std::vector<std::string> result = stem(pl, pln);
-  freelist(&pl, pln);
-  return result;
+  std::vector<std::string> pl = analyze(word);
+  return stem(pl);
 }
 
 const std::string& Hunspell::get_wordchars() const {
