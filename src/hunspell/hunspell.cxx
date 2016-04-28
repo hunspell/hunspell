@@ -1722,7 +1722,7 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   std::string result;
 
   for (size_t i = 0; i < pl.size(); ++i) {
-    cat_result(result, pSMgr->suggest_gen(pl2, pl[i].c_str()));
+    cat_result(result, pSMgr->suggest_gen(pl2, pl[i]));
   }
 
   if (!result.empty()) {
