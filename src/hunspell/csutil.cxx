@@ -2624,10 +2624,10 @@ static struct lang_map lang2enc[] =
      {"tr_TR", LANG_tr},  // for back-compatibility
      {"ru", LANG_ru},    {"uk", LANG_uk}};
 
-int get_lang_num(const char* lang) {
+int get_lang_num(const std::string& lang) {
   int n = sizeof(lang2enc) / sizeof(lang2enc[0]);
   for (int i = 0; i < n; i++) {
-    if (strcmp(lang, lang2enc[i].lang) == 0) {
+    if (strcmp(lang.c_str(), lang2enc[i].lang) == 0) {
       return lang2enc[i].num;
     }
   }

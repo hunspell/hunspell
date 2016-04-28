@@ -903,7 +903,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
         delete afflst;
         return 1;
       }
-      langnum = get_lang_num(lang.c_str());
+      langnum = get_lang_num(lang);
     }
 
     /* parse in the ignored characters (for example, Arabic optional diacritics

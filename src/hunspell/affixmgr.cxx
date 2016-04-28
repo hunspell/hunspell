@@ -606,7 +606,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
         finishFileMgr(afflst);
         return 1;
       }
-      langnum = get_lang_num(lang.c_str());
+      langnum = get_lang_num(lang);
     }
 
     if (line.compare(0, 7, "VERSION", 7) == 0) {

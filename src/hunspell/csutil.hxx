@@ -211,7 +211,6 @@ LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 LIBHUNSPELL_DLL_EXPORTED struct cs_info* get_current_cs(const std::string& es);
 
 // get language identifiers of language codes
-LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const char* lang);
 LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const std::string& lang);
 
 // get characters of the given 8bit encoding with lower- and uppercase forms
