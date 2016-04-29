@@ -200,8 +200,8 @@ class AffixMgr {
                               int sfxopts,
                               PfxEntry* ppfx,
                               char** wlst,
-                              int maxSug,
-                              int* ns,
+                              unsigned int maxSug,
+                              unsigned int* ns,
                               const FLAG cclass = FLAG_NULL,
                               const FLAG needflag = FLAG_NULL,
                               char in_compound = IN_CPD_NOT);

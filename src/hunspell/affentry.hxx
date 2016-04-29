@@ -171,8 +171,8 @@ class SfxEntry : public AffEntry {
                            int optflags,
                            PfxEntry* ppfx,
                            char** wlst,
-                           int maxSug,
-                           int* ns,
+                           unsigned int maxSug,
+                           unsigned int* ns,
                            const FLAG cclass = FLAG_NULL,
                            const FLAG needflag = FLAG_NULL,
                            const FLAG badflag = FLAG_NULL);

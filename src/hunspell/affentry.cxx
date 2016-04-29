@@ -624,8 +624,8 @@ struct hentry* SfxEntry::checkword(const char* word,
                                    int optflags,
                                    PfxEntry* ppfx,
                                    char** wlst,
-                                   int maxSug,
-                                   int* ns,
+                                   unsigned int maxSug,
+                                   unsigned int* ns,
                                    const FLAG cclass,
                                    const FLAG needflag,
                                    const FLAG badflag) {
@@ -702,7 +702,7 @@ struct hentry* SfxEntry::checkword(const char* word,
         // store resulting root in wlst
       } else if (wlst && (*ns < maxSug)) {
         int cwrd = 1;
-        for (int k = 0; k < *ns; k++)
+        for (unsigned int k = 0; k < *ns; k++)
           if (strcmp(tmpword, wlst[k]) == 0) {
             cwrd = 0;
             break;
@@ -710,7 +710,7 @@ struct hentry* SfxEntry::checkword(const char* word,
         if (cwrd) {
           wlst[*ns] = mystrdup(tmpword);
           if (wlst[*ns] == NULL) {
-            for (int j = 0; j < *ns; j++)
+            for (unsigned int j = 0; j < *ns; j++)
               free(wlst[j]);
             *ns = -1;
             return NULL;

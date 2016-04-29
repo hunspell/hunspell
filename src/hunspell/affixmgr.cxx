@@ -2666,19 +2666,6 @@ int AffixMgr::compound_check_morph(const char* word,
 }
 
 
-// return 1 if s1 (reversed) is a leading subset of end of s2
-/* inline int AffixMgr::isRevSubset(const char * s1, const char * end_of_s2, int
- len)
- {
-    while ((len > 0) && *s1 && (*s1 == *end_of_s2)) {
-        s1++;
-        end_of_s2--;
-        len--;
-    }
-    return (*s1 == '\0');
- }
- */
-
 inline int AffixMgr::isRevSubset(const char* s1,
                                  const char* end_of_s2,
                                  int len) {
@@ -2691,14 +2678,13 @@ inline int AffixMgr::isRevSubset(const char* s1,
 }
 
 // check word for suffixes
-
 struct hentry* AffixMgr::suffix_check(const char* word,
                                       int len,
                                       int sfxopts,
                                       PfxEntry* ppfx,
                                       char** wlst,
-                                      int maxSug,
-                                      int* ns,
+                                      unsigned int maxSug,
+                                      unsigned int* ns,
                                       const FLAG cclass,
                                       const FLAG needflag,
                                       char in_compound) {

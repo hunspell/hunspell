@@ -114,7 +114,7 @@ class SuggestMgr {
   w_char* ctry_utf;
 
   AffixMgr* pAMgr;
-  int maxSug;
+  unsigned int maxSug;
   struct cs_info* csconv;
   int utf8;
   int langnum;
@@ -124,12 +124,11 @@ class SuggestMgr {
   int complexprefixes;
 
  public:
-  SuggestMgr(const char* tryme, int maxn, AffixMgr* aptr);
+  SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr);
   ~SuggestMgr();
 
-  int suggest(std::vector<std::string>& slst, const char* word, int nsug, int* onlycmpdsug);
-  int ngsuggest(char** wlst, const char* word, int ns, const std::vector<HashMgr*>& rHMgr);
-  int ngsuggest(std::vector<std::string>& slst, const char* word, int ns, const std::vector<HashMgr*>& rHMgr);
+  void suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
+  void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr);
 
   std::string suggest_morph(const std::string& word);
   std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);

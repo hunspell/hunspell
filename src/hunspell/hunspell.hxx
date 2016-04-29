@@ -110,7 +110,6 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * long path names (without the long path prefix Hunspell will use fopen()
    * with system-dependent character encoding instead of _wfopen()).
    */
-
   Hunspell(const char* affpath, const char* dpath, const char* key = NULL);
   ~Hunspell();
 
