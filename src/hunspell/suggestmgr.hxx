@@ -134,15 +134,15 @@ class SuggestMgr {
   std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);
 
  private:
-  int testsug(std::vector<std::string>& wlst,
-              const std::string& candidate,
-              int cpdsuggest,
-              int* timer,
-              clock_t* timelimit);
+  void testsug(std::vector<std::string>& wlst,
+               const std::string& candidate,
+               int cpdsuggest,
+               int* timer,
+               clock_t* timelimit);
   int checkword(const std::string& word, int, int*, clock_t*);
   int check_forbidden(const char*, int);
 
-  int capchars(std::vector<std::string>&, const char*, int);
+  void capchars(std::vector<std::string>&, const char*, int);
   int replchars(std::vector<std::string>&, const char*, int);
   int doubletwochars(std::vector<std::string>&, const char*, int);
   int forgotchar(std::vector<std::string>&, const char*, int);
@@ -154,7 +154,7 @@ class SuggestMgr {
   int badchar(std::vector<std::string>&, const char*, int);
   int twowords(std::vector<std::string>&, const char*, int);
 
-  int capchars_utf(std::vector<std::string>&, const w_char*, int wl, int);
+  void capchars_utf(std::vector<std::string>&, const w_char*, int wl, int);
   int doubletwochars_utf(std::vector<std::string>&, const w_char*, int wl, int);
   int forgotchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
   int extrachar_utf(std::vector<std::string>&, const w_char*, int wl, int);

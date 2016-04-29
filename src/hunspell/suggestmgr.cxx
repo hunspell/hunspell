@@ -173,14 +173,14 @@ SuggestMgr::~SuggestMgr() {
 #endif
 }
 
-int SuggestMgr::testsug(std::vector<std::string>& wlst,
+void SuggestMgr::testsug(std::vector<std::string>& wlst,
                         const std::string& candidate,
                         int cpdsuggest,
                         int* timer,
                         clock_t* timelimit) {
   int cwrd = 1;
   if (wlst.size() == maxSug)
-    return maxSug;
+    return;
   for (size_t k = 0; k < wlst.size(); ++k) {
     if (wlst[k] == candidate) {
       cwrd = 0;
@@ -190,7 +190,6 @@ int SuggestMgr::testsug(std::vector<std::string>& wlst,
   if ((cwrd) && checkword(candidate, cpdsuggest, timer, timelimit)) {
     wlst.push_back(candidate);
   }
-  return wlst.size();
 }
 
 // generate suggestions for a misspelled word
@@ -330,24 +329,24 @@ void SuggestMgr::suggest(std::vector<std::string>& slst,
 }
 
 // suggestions for an uppercase word (html -> HTML)
-int SuggestMgr::capchars_utf(std::vector<std::string>& wlst,
-                             const w_char* word,
-                             int wl,
-                             int cpdsuggest) {
+void SuggestMgr::capchars_utf(std::vector<std::string>& wlst,
+                              const w_char* word,
+                              int wl,
+                              int cpdsuggest) {
   std::vector<w_char> candidate_utf(word, word + wl);
   mkallcap_utf(candidate_utf, langnum);
   std::string candidate;
   u16_u8(candidate, candidate_utf);
-  return testsug(wlst, candidate, cpdsuggest, NULL, NULL);
+  testsug(wlst, candidate, cpdsuggest, NULL, NULL);
 }
 
 // suggestions for an uppercase word (html -> HTML)
-int SuggestMgr::capchars(std::vector<std::string>& wlst,
-                         const char* word,
-                         int cpdsuggest) {
+void SuggestMgr::capchars(std::vector<std::string>& wlst,
+                          const char* word,
+                          int cpdsuggest) {
   std::string candidate(word);
   mkallcap(candidate, csconv);
-  return testsug(wlst, candidate, cpdsuggest, NULL, NULL);
+  testsug(wlst, candidate, cpdsuggest, NULL, NULL);
 }
 
 // suggestions for when chose the wrong char out of a related set
