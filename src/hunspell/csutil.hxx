@@ -167,10 +167,6 @@ LIBHUNSPELL_DLL_EXPORTED std::string& strlinecat(std::string& str,
                                                  const std::string& apd);
 
 // tokenize into lines with new line
-LIBHUNSPELL_DLL_EXPORTED int line_tok(const char* text,
-                                      char*** lines,
-                                      char breakchar);
-
 LIBHUNSPELL_DLL_EXPORTED std::vector<std::string> line_tok(const std::string& text,
                                                            char breakchar);
 

@@ -353,50 +353,6 @@ void mychomp(std::string& s) {
 }
 
 // break text to lines
-// return number of lines
-int line_tok(const char* text, char*** lines, char breakchar) {
-  int linenum = 0;
-  if (!text) {
-    return linenum;
-  }
-  char* dup = mystrdup(text);
-  char* p = strchr(dup, breakchar);
-  while (p) {
-    linenum++;
-    *p = '\0';
-    p++;
-    p = strchr(p, breakchar);
-  }
-  linenum++;
-  *lines = (char**)malloc(linenum * sizeof(char*));
-  if (!(*lines)) {
-    free(dup);
-    return 0;
-  }
-
-  p = dup;
-  int l = 0;
-  for (int i = 0; i < linenum; i++) {
-    if (*p != '\0') {
-      (*lines)[l] = mystrdup(p);
-      if (!(*lines)[l]) {
-        for (i = 0; i < l; i++)
-          free((*lines)[i]);
-        free(dup);
-        return 0;
-      }
-      l++;
-    }
-    p += strlen(p) + 1;
-  }
-  free(dup);
-  if (!l) {
-    free(*lines);
-    *lines = NULL;
-  }
-  return l;
-}
-
 std::vector<std::string> line_tok(const std::string& text, char breakchar) {
   std::vector<std::string> ret;
   if (text.empty()) {
