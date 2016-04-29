@@ -199,12 +199,9 @@ class AffixMgr {
                               int len,
                               int sfxopts,
                               PfxEntry* ppfx,
-                              char** wlst,
-                              unsigned int maxSug,
-                              unsigned int* ns,
-                              const FLAG cclass,
-                              const FLAG needflag,
-                              char in_compound);
+                              const FLAG cclass = FLAG_NULL,
+                              const FLAG needflag = FLAG_NULL,
+                              char in_compound = IN_CPD_NOT);
   struct hentry* suffix_check_twosfx(const char* word,
                                      int len,
                                      int sfxopts,

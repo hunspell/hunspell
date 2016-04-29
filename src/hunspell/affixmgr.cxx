@@ -1694,7 +1694,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundflag))) {
             if (((rv = suffix_check(
-                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundflag,
+                      st.c_str(), i, 0, NULL, FLAG_NULL, compoundflag,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(st.c_str(), i, 0, NULL, compoundflag)))) &&
@@ -1711,7 +1711,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           if (rv ||
               (((wordnum == 0) && compoundbegin &&
                 ((rv = suffix_check(
-                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundbegin,
+                      st.c_str(), i, 0, NULL, FLAG_NULL, compoundbegin,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
@@ -1722,7 +1722,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                     compoundbegin)))) ||
                ((wordnum > 0) && compoundmiddle &&
                 ((rv = suffix_check(
-                      st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL, compoundmiddle,
+                      st.c_str(), i, 0, NULL, FLAG_NULL, compoundmiddle,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
@@ -2257,7 +2257,7 @@ int AffixMgr::compound_check_morph(const char* word,
             !(rv =
                   prefix_check(st.c_str(), i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                compoundflag))) {
-          if (((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+          if (((rv = suffix_check(st.c_str(), i, 0, NULL, FLAG_NULL,
                                   compoundflag,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2274,7 +2274,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (rv ||
             (((wordnum == 0) && compoundbegin &&
-              ((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st.c_str(), i, 0, NULL, FLAG_NULL,
                                   compoundbegin,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2285,7 +2285,7 @@ int AffixMgr::compound_check_morph(const char* word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundbegin)))) ||
              ((wordnum > 0) && compoundmiddle &&
-              ((rv = suffix_check(st.c_str(), i, 0, NULL, NULL, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st.c_str(), i, 0, NULL, FLAG_NULL,
                                   compoundmiddle,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2682,9 +2682,6 @@ struct hentry* AffixMgr::suffix_check(const char* word,
                                       int len,
                                       int sfxopts,
                                       PfxEntry* ppfx,
-                                      char** wlst,
-                                      unsigned int maxSug,
-                                      unsigned int* ns,
                                       const FLAG cclass,
                                       const FLAG needflag,
                                       char in_compound) {
@@ -2723,7 +2720,7 @@ struct hentry* AffixMgr::suffix_check(const char* word,
            (ppfx &&
             !((ep->getCont()) &&
               TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))) {
-        rv = se->checkword(word, len, sfxopts, ppfx, wlst, maxSug, ns,
+        rv = se->checkword(word, len, sfxopts, ppfx,
                            (FLAG)cclass, needflag,
                            (in_compound ? 0 : onlyincompound));
         if (rv) {
@@ -2774,7 +2771,7 @@ struct hentry* AffixMgr::suffix_check(const char* word,
         if (in_compound != IN_CPD_END || ppfx ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
-          rv = sptr->checkword(word, len, sfxopts, ppfx, wlst, maxSug, ns,
+          rv = sptr->checkword(word, len, sfxopts, ppfx,
                                cclass, needflag,
                                (in_compound ? 0 : onlyincompound));
           if (rv) {
@@ -2969,8 +2966,8 @@ char* AffixMgr::suffix_check_morph(const char* word,
             (ppfx &&
              !((ep->getCont()) &&
                TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
-        rv = se->checkword(word, len, sfxopts, ppfx, NULL, 0, 0, cclass,
-                           needflag);
+        rv = se->checkword(word, len, sfxopts, ppfx, cclass,
+                           needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
           if (ppfx->getMorph()) {
@@ -3036,8 +3033,8 @@ char* AffixMgr::suffix_check_morph(const char* word,
            (cclass ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())))))
-        rv = sptr->checkword(word, len, sfxopts, ppfx, NULL, 0, 0, cclass,
-                             needflag);
+        rv = sptr->checkword(word, len, sfxopts, ppfx, cclass,
+                             needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
           if (ppfx->getMorph()) {
@@ -3091,8 +3088,7 @@ struct hentry* AffixMgr::affix_check(const char* word,
     return rv;
 
   // if still not found check all suffixes
-  rv = suffix_check(word, len, 0, NULL, NULL, 0, NULL, FLAG_NULL, needflag,
-                    in_compound);
+  rv = suffix_check(word, len, 0, NULL, FLAG_NULL, needflag, in_compound);
 
   if (havecontclass) {
     sfx = NULL;
@@ -4889,8 +4885,7 @@ std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
         if ((*suff) == ptr->getFlag()) {
           std::string nw(root_word);
           nw.append(ptr->getAffix());
-          hentry* ht = ptr->checkword(nw.c_str(), nw.size(), 0, NULL, NULL, 0,
-                                      NULL, 0, 0, 0);
+          hentry* ht = ptr->checkword(nw.c_str(), nw.size(), 0, NULL, 0, 0, 0);
           if (ht) {
             slst.push_back(nw);
           }

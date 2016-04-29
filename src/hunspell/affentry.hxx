@@ -170,12 +170,9 @@ class SfxEntry : public AffEntry {
                            int len,
                            int optflags,
                            PfxEntry* ppfx,
-                           char** wlst,
-                           unsigned int maxSug,
-                           unsigned int* ns,
-                           const FLAG cclass = FLAG_NULL,
-                           const FLAG needflag = FLAG_NULL,
-                           const FLAG badflag = FLAG_NULL);
+                           const FLAG cclass,
+                           const FLAG needflag,
+                           const FLAG badflag);
 
   struct hentry* check_twosfx(const char* word,
                               int len,

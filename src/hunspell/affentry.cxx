@@ -259,8 +259,7 @@ struct hentry* PfxEntry::checkword(const char* word,
       // if ((opts & aeXPRODUCT) && in_compound) {
       if ((opts & aeXPRODUCT)) {
         he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, aeXPRODUCT, this,
-                                  NULL, 0, NULL, FLAG_NULL, needflag,
-                                  in_compound);
+                                  FLAG_NULL, needflag, in_compound);
         if (he)
           return he;
       }
@@ -623,9 +622,6 @@ struct hentry* SfxEntry::checkword(const char* word,
                                    int len,
                                    int optflags,
                                    PfxEntry* ppfx,
-                                   char** wlst,
-                                   unsigned int maxSug,
-                                   unsigned int* ns,
                                    const FLAG cclass,
                                    const FLAG needflag,
                                    const FLAG badflag) {
@@ -696,27 +692,6 @@ struct hentry* SfxEntry::checkword(const char* word,
             return he;
           he = he->next_homonym;  // check homonyms
         } while (he);
-
-        // obsolote stemming code (used only by the
-        // removed SuffixMgr:suggest_pos_stems)
-        // store resulting root in wlst
-      } else if (wlst && (*ns < maxSug)) {
-        int cwrd = 1;
-        for (unsigned int k = 0; k < *ns; k++)
-          if (strcmp(tmpword, wlst[k]) == 0) {
-            cwrd = 0;
-            break;
-          }
-        if (cwrd) {
-          wlst[*ns] = mystrdup(tmpword);
-          if (wlst[*ns] == NULL) {
-            for (unsigned int j = 0; j < *ns; j++)
-              free(wlst[j]);
-            *ns = -1;
-            return NULL;
-          }
-          (*ns)++;
-        }
       }
     }
   }
@@ -770,13 +745,13 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
-          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
+          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL,
                                     (FLAG)aflag, needflag, IN_CPD_NOT);
         else
-          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, optflags, ppfx, NULL, 0,
-                                    NULL, (FLAG)aflag, needflag, IN_CPD_NOT);
+          he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, optflags, ppfx,
+                                    (FLAG)aflag, needflag, IN_CPD_NOT);
       } else {
-        he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
+        he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL,
                                   (FLAG)aflag, needflag, IN_CPD_NOT);
       }
       if (he)
