@@ -3117,20 +3117,20 @@ std::string AffixMgr::affix_check_morph(const char* word,
   return result;
 }
 
-char* AffixMgr::morphgen(const char* ts,
-                         int wl,
-                         const unsigned short* ap,
-                         unsigned short al,
-                         const char* morph,
-                         const char* targetmorph,
+std::string AffixMgr::morphgen(const char* ts,
+                               int wl,
+                               const unsigned short* ap,
+                               unsigned short al,
+                               const char* morph,
+                               const char* targetmorph,
                          int level) {
   // handle suffixes
   if (!morph)
-    return NULL;
+    return std::string();
 
   // check substandard flag
   if (TESTAFF(ap, substandard, al))
-    return NULL;
+    return std::string();
 
   if (morphcmp(morph, targetmorph) == 0)
     return mystrdup(ts);
@@ -3166,15 +3166,14 @@ char* AffixMgr::morphgen(const char* ts,
         int cmp = morphcmp(stemmorph, targetmorph);
 
         if (cmp == 0) {
-          char* newword = sptr->add(ts, wl);
-          if (newword) {
-            hentry* check = pHMgr->lookup(newword);  // XXX extra dic
+          std::string newword = sptr->add(ts, wl);
+          if (!newword.empty()) {
+            hentry* check = pHMgr->lookup(newword.c_str());  // XXX extra dic
             if (!check || !check->astr ||
                 !(TESTAFF(check->astr, forbiddenword, check->alen) ||
                   TESTAFF(check->astr, ONLYUPCASEFLAG, check->alen))) {
               return newword;
             }
-            free(newword);
           }
         }
 
@@ -3182,25 +3181,22 @@ char* AffixMgr::morphgen(const char* ts,
         if ((level == 0) && (cmp == 1) && (sptr->getContLen() > 0) &&
             //                    (get_sfxcount(stemmorph) < targetcount) &&
             !TESTAFF(sptr->getCont(), substandard, sptr->getContLen())) {
-          char* newword = sptr->add(ts, wl);
-          if (newword) {
-            char* newword2 =
-                morphgen(newword, strlen(newword), sptr->getCont(),
+          std::string newword = sptr->add(ts, wl);
+          if (!newword.empty()) {
+            std::string newword2 =
+                morphgen(newword.c_str(), newword.size(), sptr->getCont(),
                          sptr->getContLen(), stemmorph, targetmorph, 1);
 
-            if (newword2) {
-              free(newword);
+            if (!newword2.empty()) {
               return newword2;
             }
-            free(newword);
-            newword = NULL;
           }
         }
       }
       sptr = sptr->getFlgNxt();
     }
   }
-  return NULL;
+  return std::string();
 }
 
 int AffixMgr::expand_rootword(struct guessword* wlst,
@@ -3253,10 +3249,10 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               TESTAFF(sptr->getCont(), circumfix, sptr->getContLen())) ||
              (onlyincompound &&
               TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))))) {
-        char* newword = sptr->add(ts, wl);
-        if (newword) {
+        std::string newword = sptr->add(ts, wl);
+        if (!newword.empty()) {
           if (nh < maxn) {
-            wlst[nh].word = newword;
+            wlst[nh].word = mystrdup(newword.c_str());
             wlst[nh].allow = sptr->allowCross();
             wlst[nh].orig = NULL;
             nh++;
@@ -3270,13 +3266,11 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               if (!wlst[nh].word)
                 return nh - 1;
               wlst[nh].allow = (1 == 0);
-              wlst[nh].orig = mystrdup(newword);
+              wlst[nh].orig = mystrdup(newword.c_str());
               if (!wlst[nh].orig)
                 return nh - 1;
               nh++;
             }
-          } else {
-            free(newword);
           }
         }
       }
@@ -3298,15 +3292,13 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
                ((badl > cptr->getKeyLen()) &&
                 (strncmp(cptr->getKey(), bad, cptr->getKeyLen()) == 0)))) {
             int l1 = strlen(wlst[j].word);
-            char* newword = cptr->add(wlst[j].word, l1);
-            if (newword) {
+            std::string newword = cptr->add(wlst[j].word, l1);
+            if (!newword.empty()) {
               if (nh < maxn) {
-                wlst[nh].word = newword;
+                wlst[nh].word = mystrdup(newword.c_str());
                 wlst[nh].allow = cptr->allowCross();
                 wlst[nh].orig = NULL;
                 nh++;
-              } else {
-                free(newword);
               }
             }
           }
@@ -3332,15 +3324,13 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               TESTAFF(ptr->getCont(), circumfix, ptr->getContLen())) ||
              (onlyincompound &&
               TESTAFF(ptr->getCont(), onlyincompound, ptr->getContLen()))))) {
-        char* newword = ptr->add(ts, wl);
-        if (newword) {
+        std::string newword = ptr->add(ts, wl);
+        if (!newword.empty()) {
           if (nh < maxn) {
-            wlst[nh].word = newword;
+            wlst[nh].word = mystrdup(newword.c_str());
             wlst[nh].allow = ptr->allowCross();
             wlst[nh].orig = NULL;
             nh++;
-          } else {
-            free(newword);
           }
         }
       }

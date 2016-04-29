@@ -234,13 +234,13 @@ class AffixMgr {
                                         PfxEntry* ppfx,
                                         const FLAG needflag = FLAG_NULL);
 
-  char* morphgen(const char* ts,
-                 int wl,
-                 const unsigned short* ap,
-                 unsigned short al,
-                 const char* morph,
-                 const char* targetmorph,
-                 int level);
+  std::string morphgen(const char* ts,
+                       int wl,
+                       const unsigned short* ap,
+                       unsigned short al,
+                       const char* morph,
+                       const char* targetmorph,
+                       int level);
 
   int expand_rootword(struct guessword* wlst,
                       int maxn,

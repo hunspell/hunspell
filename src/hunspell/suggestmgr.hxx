@@ -181,7 +181,7 @@ class SuggestMgr {
   void lcs(const char* s, const char* s2, int* l1, int* l2, char** result);
   int lcslen(const char* s, const char* s2);
   int lcslen(const std::string& s, const std::string& s2);
-  char* suggest_hentry_gen(hentry* rv, const char* pattern);
+  std::string suggest_hentry_gen(hentry* rv, const char* pattern);
 };
 
 #endif

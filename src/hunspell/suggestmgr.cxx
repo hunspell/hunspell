@@ -1589,20 +1589,19 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
 }
 
 /* affixation */
-char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
+std::string SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
   std::string result;
   int sfxcount = get_sfxcount(pattern);
 
   if (get_sfxcount(HENTRY_DATA(rv)) > sfxcount)
-    return NULL;
+    return result;
 
   if (HENTRY_DATA(rv)) {
-    char* aff = pAMgr->morphgen(HENTRY_WORD(rv), rv->blen, rv->astr, rv->alen,
-                                HENTRY_DATA(rv), pattern, 0);
-    if (aff) {
+    std::string aff = pAMgr->morphgen(HENTRY_WORD(rv), rv->blen, rv->astr, rv->alen,
+                                      HENTRY_DATA(rv), pattern, 0);
+    if (!aff.empty()) {
       result.append(aff);
       result.append("\n");
-      free(aff);
     }
   }
 
@@ -1623,12 +1622,11 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
         char* st = (char*)strstr(HENTRY_DATA2(rv2), MORPH_STEM);
         if (st && (strncmp(st + MORPH_TAG_LEN, HENTRY_WORD(rv),
                            fieldlen(st + MORPH_TAG_LEN)) == 0)) {
-          char* aff = pAMgr->morphgen(HENTRY_WORD(rv2), rv2->blen, rv2->astr,
-                                      rv2->alen, HENTRY_DATA(rv2), pattern, 0);
-          if (aff) {
+          std::string aff = pAMgr->morphgen(HENTRY_WORD(rv2), rv2->blen, rv2->astr,
+                                            rv2->alen, HENTRY_DATA(rv2), pattern, 0);
+          if (!aff.empty()) {
             result.append(aff);
             result.append("\n");
-            free(aff);
           }
         }
       }
@@ -1637,7 +1635,7 @@ char* SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
     p = strstr(p + plen, MORPH_ALLOMORPH);
   }
 
-  return (!result.empty()) ? mystrdup(result.c_str()) : NULL;
+  return result;
 }
 
 std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const std::string& in_pattern) {
@@ -1693,15 +1691,12 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
           while (rv) {
             std::string newpat(pl[i]);
             newpat.append(pattern);
-            char* sg = suggest_hentry_gen(rv, newpat.c_str());
-            if (!sg)
+            std::string sg = suggest_hentry_gen(rv, newpat.c_str());
+            if (sg.empty())
               sg = suggest_hentry_gen(rv, pattern);
-            if (sg) {
-              char** gen;
-              int genl = line_tok(sg, &gen, MSEP_REC);
-              free(sg);
-              sg = NULL;
-              for (int j = 0; j < genl; j++) {
+            if (!sg.empty()) {
+              std::vector<std::string> gen = line_tok(sg, MSEP_REC);
+              for (size_t j = 0; j < gen.size(); ++j) {
                 result2.push_back(MSEP_REC);
                 result2.append(result);
                 if (pl[i].find(MORPH_SURF_PFX) != std::string::npos) {
@@ -1711,7 +1706,6 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
                 }
                 result2.append(gen[j]);
               }
-              freelist(&gen, genl);
             }
             rv = rv->next_homonym;
           }

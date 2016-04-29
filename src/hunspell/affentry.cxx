@@ -98,16 +98,16 @@ PfxEntry::PfxEntry(AffixMgr* pmgr)
 }
 
 // add prefix to this word assuming conditions hold
-char* PfxEntry::add(const char* word, size_t len) {
+std::string PfxEntry::add(const char* word, size_t len) {
+  std::string result;
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word) &&
       (!strip.size() || (strncmp(word, strip.c_str(), strip.size()) == 0))) {
     /* we have a match so add prefix */
-    std::string tword(appnd);
-    tword.append(word + strip.size());
-    return mystrdup(tword.c_str());
+    result.assign(appnd);
+    result.append(word + strip.size());
   }
-  return NULL;
+  return result;
 }
 
 inline char* PfxEntry::nextchar(char* p) {
@@ -460,18 +460,18 @@ SfxEntry::SfxEntry(AffixMgr* pmgr)
 }
 
 // add suffix to this word assuming conditions hold
-char* SfxEntry::add(const char* word, size_t len) {
+std::string SfxEntry::add(const char* word, size_t len) {
+  std::string result;
   /* make sure all conditions match */
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
       (len >= numconds) && test_condition(word + len, word) &&
       (!strip.size() ||
        (strcmp(word + len - strip.size(), strip.c_str()) == 0))) {
-    std::string tword(word);
+    result.assign(word);
     /* we have a match so add suffix */
-    tword.replace(len - strip.size(), std::string::npos, appnd);
-    return mystrdup(tword.c_str());
+    result.replace(len - strip.size(), std::string::npos, appnd);
   }
-  return NULL;
+  return result;
 }
 
 inline char* SfxEntry::nextchar(char* p) {

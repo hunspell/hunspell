@@ -117,9 +117,9 @@ class PfxEntry : public AffEntry {
                                  char in_compound,
                                  const FLAG needflag = FLAG_NULL);
 
-  inline FLAG getFlag() { return aflag; }
-  inline const char* getKey() { return appnd.c_str(); }
-  char* add(const char* word, size_t len);
+  FLAG getFlag() { return aflag; }
+  const char* getKey() { return appnd.c_str(); }
+  std::string add(const char* word, size_t len);
 
   inline short getKeyLen() { return appnd.size(); }
 
@@ -192,9 +192,9 @@ class SfxEntry : public AffEntry {
                                   const FLAG cclass,
                                   const FLAG needflag);
 
-  inline FLAG getFlag() { return aflag; }
-  inline const char* getKey() { return rappnd.c_str(); }
-  char* add(const char* word, size_t len);
+  FLAG getFlag() { return aflag; }
+  const char* getKey() { return rappnd.c_str(); }
+  std::string add(const char* word, size_t len);
 
   inline const char* getMorph() { return morphcode; }
 
