@@ -2512,7 +2512,7 @@ struct cs_info* get_current_cs(const std::string& es) {
 
   if (!ccs) {
     HUNSPELL_WARNING(stderr,
-                     "error: unknown encoding %s: using %s as fallback\n", es,
+                     "error: unknown encoding %s: using %s as fallback\n", es.c_str(),
                      encds[0].enc_name);
     ccs = encds[0].cs_table;
   }
