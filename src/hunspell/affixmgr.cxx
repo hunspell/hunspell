@@ -1569,8 +1569,7 @@ void AffixMgr::setcminmax(int* cmin, int* cmax, const char* word, int len) {
 
 // check if compound word is correctly spelled
 // hu_mov_rule = spec. Hungarian rule (XXX)
-struct hentry* AffixMgr::compound_check(const char* word,
-                                        int len,
+struct hentry* AffixMgr::compound_check(const std::string& word,
                                         short wordnum,
                                         short numsyllable,
                                         short maxwordnum,
@@ -1598,10 +1597,11 @@ struct hentry* AffixMgr::compound_check(const char* word,
   int onlycpdrule;
   char affixed = 0;
   hentry** oldwords = words;
+  size_t len = word.size();
 
   int checked_prefix;
 
-  setcminmax(&cmin, &cmax, word, len);
+  setcminmax(&cmin, &cmax, word.c_str(), len);
 
   st.assign(word);
 
@@ -1628,7 +1628,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
         if (scpd > 0) {
           for (; scpd <= checkcpdtable.size() &&
                  (checkcpdtable[scpd - 1].pattern3.empty() ||
-                  strncmp(word + i, checkcpdtable[scpd - 1].pattern3.c_str(),
+                  strncmp(word.c_str() + i, checkcpdtable[scpd - 1].pattern3.c_str(),
                           checkcpdtable[scpd - 1].pattern3.size()) != 0);
                scpd++)
             ;
@@ -1640,7 +1640,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
           i += checkcpdtable[scpd - 1].pattern.size();
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern2);
           st.replace(i + checkcpdtable[scpd - 1].pattern2.size(), std::string::npos,
-                 word + soldi + checkcpdtable[scpd - 1].pattern3.size());
+                 word.substr(soldi + checkcpdtable[scpd - 1].pattern3.size()));
 
           oldlen = len;
           len += checkcpdtable[scpd - 1].pattern.size() +
@@ -1815,7 +1815,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                  ((word[i - 1] == word[i + 1]))  // may be word[i+1] == '\0'
                  )) ||
                (checkcompoundcase && scpd == 0 && !words &&
-                cpdcase_check(word, i))))
+                cpdcase_check(word.c_str(), i))))
             // LANG_hu section: spec. Hungarian rule
             || ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
                 (rv = affix_check(st.c_str(), i)) &&
@@ -1849,7 +1849,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
               if (striple) {
                 checkedstriple = 1;
                 i--;  // check "fahrt" instead of "ahrt" in "Schiffahrt"
-              } else if (i > 2 && *(word + i - 1) == *(word + i - 2))
+              } else if (i > 2 && word[i - 1] == word[i - 2])
                 striple = 1;
             }
 
@@ -1920,7 +1920,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                 (
                     // test CHECKCOMPOUNDPATTERN
                     checkcpdtable.empty() || scpd != 0 ||
-                    !cpdpat_check(word, i, rv_first, rv, 0)) &&
+                    !cpdpat_check(word.c_str(), i, rv_first, rv, 0)) &&
                 ((!checkcompounddup || (rv != rv_first)))
                 // test CHECKCOMPOUNDPATTERN conditions
                 &&
@@ -1928,7 +1928,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2, rv->alen))) {
               // forbid compound word, if it is a non compound word with typical
               // fault
-              if (checkcompoundrep && cpdrep_check(word, len))
+              if (checkcompoundrep && cpdrep_check(word.c_str(), len))
                 return NULL;
               return rv_first;
             }
@@ -1940,18 +1940,18 @@ struct hentry* AffixMgr::compound_check(const char* word,
             sfx = NULL;
             sfxflag = FLAG_NULL;
             rv = (compoundflag && !onlycpdrule)
-                     ? affix_check((word + i), strlen(word + i), compoundflag,
+                     ? affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundflag,
                                    IN_CPD_END)
                      : NULL;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = NULL;
               pfx = NULL;
-              rv = affix_check((word + i), strlen(word + i), compoundend,
+              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend,
                                IN_CPD_END);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
-              rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
+              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
@@ -1965,7 +1965,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
             // test CHECKCOMPOUNDPATTERN conditions (forbidden compounds)
             if (rv && !checkcpdtable.empty() && scpd == 0 &&
-                cpdpat_check(word, i, rv_first, rv, affixed))
+                cpdpat_check(word.c_str(), i, rv_first, rv, affixed))
               rv = NULL;
 
             // check non_compound flag in suffix and prefix
@@ -1999,7 +1999,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
             if (langnum == LANG_hu) {
               // calculate syllable number of the word
-              numsyllable += get_syllable(word + i);
+              numsyllable += get_syllable(word.c_str() + i);
 
               // - affix syllable num.
               // XXX only second suffix (inflections, not derivations)
@@ -2052,7 +2052,7 @@ struct hentry* AffixMgr::compound_check(const char* word,
                 ((!checkcompounddup || (rv != rv_first)))) {
               // forbid compound word, if it is a non compound word with typical
               // fault
-              if (checkcompoundrep && cpdrep_check(word, len))
+              if (checkcompoundrep && cpdrep_check(word.c_str(), len))
                 return NULL;
               return rv_first;
             }
@@ -2062,15 +2062,15 @@ struct hentry* AffixMgr::compound_check(const char* word,
 
             // perhaps second word is a compound word (recursive call)
             if (wordnum < maxwordnum) {
-              rv = compound_check(st.c_str() + i, strlen(st.c_str() + i), wordnum + 1,
+              rv = compound_check(st.substr(i), wordnum + 1,
                                   numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
 
               if (rv && !checkcpdtable.empty() &&
                   ((scpd == 0 &&
-                    cpdpat_check(word, i, rv_first, rv, affixed)) ||
+                    cpdpat_check(word.c_str(), i, rv_first, rv, affixed)) ||
                    (scpd != 0 &&
-                    !cpdpat_check(word, i, rv_first, rv, affixed))))
+                    !cpdpat_check(word.c_str(), i, rv_first, rv, affixed))))
                 rv = NULL;
             } else {
               rv = NULL;
@@ -2081,11 +2081,11 @@ struct hentry* AffixMgr::compound_check(const char* word,
               if (checkcompoundrep || forbiddenword) {
                 struct hentry* rv2 = NULL;
 
-                if (checkcompoundrep && cpdrep_check(word, len))
+                if (checkcompoundrep && cpdrep_check(word.c_str(), len))
                   return NULL;
 
                 // check first part
-                if (strncmp(rv->word, word + i, rv->blen) == 0) {
+                if (strncmp(rv->word, word.c_str() + i, rv->blen) == 0) {
                   char r = st[i + rv->blen];
                   st[i + rv->blen] = '\0';
 
@@ -2095,9 +2095,9 @@ struct hentry* AffixMgr::compound_check(const char* word,
                   }
 
                   if (forbiddenword) {
-                    rv2 = lookup(word);
+                    rv2 = lookup(word.c_str());
                     if (!rv2)
-                      rv2 = affix_check(word, len);
+                      rv2 = affix_check(word.c_str(), len);
                     if (rv2 && rv2->astr &&
                         TESTAFF(rv2->astr, forbiddenword, rv2->alen) &&
                         (strncmp(rv2->word, st.c_str(), i + rv->blen) == 0)) {

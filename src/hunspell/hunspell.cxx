@@ -828,12 +828,11 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       // try check compound word
     } else if (pAMgr->get_compound()) {
       struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-      he = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
+      he = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
       // LANG_hu section: `moving rule' with last dash
       if ((!he) && (langnum == LANG_hu) && (word[len - 1] == '-')) {
         std::string dup(word, len - 1);
-        he = pAMgr->compound_check(dup.c_str(), dup.size(), -5, 0, 100, 0, NULL, (hentry**)&rwords, 1, 0,
-                                   info);
+        he = pAMgr->compound_check(dup, -5, 0, 100, 0, NULL, (hentry**)&rwords, 1, 0, info);
       }
       // end of LANG specific region
       if (he) {

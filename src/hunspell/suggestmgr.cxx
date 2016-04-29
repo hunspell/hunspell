@@ -1577,8 +1577,7 @@ int SuggestMgr::checkword(const std::string& word,
     if (cpdsuggest == 1) {
       if (pAMgr->get_compound()) {
         struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-        rv = pAMgr->compound_check(word.c_str(), word.size(), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1,
-                                   0);  // EXT
+        rv = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1, 0);  // EXT
         if (rv &&
             (!(rv2 = pAMgr->lookup(word.c_str())) || !rv2->astr ||
              !(TESTAFF(rv2->astr, pAMgr->get_forbiddenword(), rv2->alen) ||
