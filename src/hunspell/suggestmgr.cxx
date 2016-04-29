@@ -2728,17 +2728,16 @@ int SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
           }
         }
         if (unique) {
-          wlst.push_back(guess[i]);
-          ++ns;
           if (guessorig[i]) {
-            free(guess[i]);
-            wlst[ns - 1] = guessorig[i];
+            wlst.push_back(guessorig[i]);
+          } else {
+            wlst.push_back(guess[i]);
           }
-        } else {
-          free(guess[i]);
-          if (guessorig[i])
-            free(guessorig[i]);
+          ++ns;
         }
+        free(guess[i]);
+        if (guessorig[i])
+          free(guessorig[i]);
       } else {
         free(guess[i]);
         if (guessorig[i])
