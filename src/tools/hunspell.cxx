@@ -841,25 +841,23 @@ nextline:
           case AUTO3: {
             FILE* f = (filter_mode == AUTO) ? stderr : stdout;
             if (!check(pMS, &d, token, NULL, NULL)) {
-              char** wlst = NULL;
               bad = 1;
-              int ns =
-                  pMS[d]->suggest_auto(&wlst, chenc(token, io_enc, dic_enc[d]));
-              if (ns > 0) {
-                parser->change_token(chenc(wlst[0], dic_enc[d], io_enc));
+              std::vector<std::string> wlst =
+                  pMS[d]->suggest_auto(chenc(token, io_enc, dic_enc[d]));
+              if (!wlst.empty()) {
+                parser->change_token(chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
-                          lineno, token, chenc(wlst[0], dic_enc[d], io_enc));
+                          lineno, token, chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 } else if (filter_mode == AUTO2) {
                   fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, token,
-                          chenc(wlst[0], dic_enc[d], io_enc), buf);
+                          chenc(wlst[0], dic_enc[d], io_enc).c_str(), buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
                           chenc(token, io_enc, ui_enc));
-                  fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc));
+                  fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 }
               }
-              pMS[d]->free_list(&wlst, ns);
             }
             free(token);
             continue;
@@ -931,7 +929,6 @@ nextline:
               }
               fflush(stdout);
             } else {
-              char** wlst = NULL;
               int byte_offset = parser->get_tokenpos() + pos;
               int char_offset = 0;
               if (strcmp(io_enc, "UTF-8") == 0) {
@@ -942,17 +939,17 @@ nextline:
               } else {
                 char_offset = byte_offset;
               }
-              int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
-              if (ns == 0) {
+              std::vector<std::string> wlst =
+                pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
+              if (wlst.empty()) {
                 fprintf(stdout, "# %s %d", token, char_offset);
               } else {
-                fprintf(stdout, "& %s %d %d: ", token, ns, char_offset);
-                fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], io_enc));
+                fprintf(stdout, "& %s %ld %d: ", token, wlst.size(), char_offset);
+                fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], io_enc).c_str());
               }
-              for (int j = 1; j < ns; j++) {
-                fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], io_enc));
+              for (size_t j = 1; j < wlst.size(); ++j) {
+                fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], io_enc).c_str());
               }
-              pMS[d]->free_list(&wlst, ns);
               fprintf(stdout, "\n");
               fflush(stdout);
             }
@@ -972,7 +969,6 @@ nextline:
               }
               fflush(stdout);
             } else {
-              char** wlst = NULL;
               int byte_offset = parser->get_tokenpos() + pos;
               int char_offset = 0;
               if (strcmp(io_enc, "UTF-8") == 0) {
@@ -983,19 +979,19 @@ nextline:
               } else {
                 char_offset = byte_offset;
               }
-              int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
-              if (ns == 0) {
+              std::vector<std::string> wlst =
+                pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
+              if (wlst.empty()) {
                 fprintf(stdout, "# %s %d", chenc(token, io_enc, ui_enc),
                         char_offset);
               } else {
-                fprintf(stdout, "& %s %d %d: ", chenc(token, io_enc, ui_enc),
-                        ns, char_offset);
-                fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], ui_enc));
+                fprintf(stdout, "& %s %ld %d: ", chenc(token, io_enc, ui_enc),
+                        wlst.size(), char_offset);
+                fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
               }
-              for (int j = 1; j < ns; j++) {
-                fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], ui_enc));
+              for (size_t j = 1; j < wlst.size(); ++j) {
+                fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], ui_enc).c_str());
               }
-              pMS[d]->free_list(&wlst, ns);
               fprintf(stdout, "\n");
               fflush(stdout);
             }
@@ -1132,8 +1128,7 @@ void dialogscreen(TextParser* parser,
                   char* token,
                   char* filename,
                   int forbidden,
-                  char** wlst,
-                  int ns) {
+                  std::vector<std::string>& wlst) {
   int x, y;
   char line[MAXLNLEN];
   char line2[MAXLNLEN];
@@ -1195,11 +1190,11 @@ void dialogscreen(TextParser* parser,
   attroff(A_REVERSE);
 
   mvprintw(MAXPREVLINE + 2, 0, "\n");
-  for (int i = 0; i < ns; i++) {
-    if ((ns > 10) && (i < 10)) {
-      printw(" 0%d: %s\n", i, chenc(wlst[i], io_enc, ui_enc));
+  for (size_t i = 0; i < wlst.size(); ++i) {
+    if ((wlst.size() > 10) && (i < 10)) {
+      printw(" 0%d: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     } else {
-      printw(" %d: %s\n", i, chenc(wlst[i], io_enc, ui_enc));
+      printw(" %d: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     }
   }
 
@@ -1232,13 +1227,12 @@ int dialog(TextParser* parser,
            Hunspell* pMS,
            char* token,
            char* filename,
-           char** wlst,
-           int ns,
+           std::vector<std::string>& wlst,
            int forbidden) {
   std::vector<std::string> dicwords;
   int c;
 
-  dialogscreen(parser, token, filename, forbidden, wlst, ns);
+  dialogscreen(parser, token, filename, forbidden, wlst);
 
   char firstletter = '\0';
 
@@ -1246,7 +1240,7 @@ int dialog(TextParser* parser,
     switch (c) {
       case '0':
       case '1':
-        if ((firstletter == '\0') && (ns > 10)) {
+        if ((firstletter == '\0') && (wlst.size() > 10)) {
           firstletter = c;
           break;
         }
@@ -1263,14 +1257,14 @@ int dialog(TextParser* parser,
           c += 10;
         }
         c -= '0';
-        if (c >= ns)
+        if (c >= static_cast<int>(wlst.size()))
           break;
         if (checkapos) {
           std::string sbuf(wlst[c]);
           mystrrep(sbuf, "'", UTF8_APOS);
           parser->change_token(sbuf.c_str());
         } else {
-          parser->change_token(wlst[c]);
+          parser->change_token(wlst[c].c_str());
         }
         return 0;
       case ' ':
@@ -1312,7 +1306,7 @@ int dialog(TextParser* parser,
           ;
       // fall-through
       case 12: {
-        dialogscreen(parser, token, filename, forbidden, wlst, ns);
+        dialogscreen(parser, token, filename, forbidden, wlst);
         break;
       }
       default: {
@@ -1336,7 +1330,7 @@ int dialog(TextParser* parser,
 
           if ((!temp) || (temp[0] == '\0')) {
             free(temp);
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             break;
           }
 
@@ -1424,7 +1418,7 @@ int dialog(TextParser* parser,
             initscr();
             cbreak();
 #endif
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             break;
           }
 
@@ -1436,7 +1430,7 @@ int dialog(TextParser* parser,
           initscr();
           cbreak();
 #endif
-          dialogscreen(parser, token, filename, forbidden, wlst, ns);
+          dialogscreen(parser, token, filename, forbidden, wlst);
           refresh();
 
 #ifdef HAVE_READLINE
@@ -1454,7 +1448,7 @@ int dialog(TextParser* parser,
 
           if ((!temp) || (temp[0] == '\0')) {
             free(temp);
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             break;
           }
 
@@ -1502,11 +1496,11 @@ int dialog(TextParser* parser,
             }
 
           } else {
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             printw(gettext(
                 "Model word must be in the dictionary. Press any key!"));
             getch();
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             break;
           }
           return 0;
@@ -1529,7 +1523,7 @@ int dialog(TextParser* parser,
             if (getch() == (gettext("y"))[0]) {
               return -1;
             }
-            dialogscreen(parser, token, filename, forbidden, wlst, ns);
+            dialogscreen(parser, token, filename, forbidden, wlst);
             break;
           } else {
             return -1;
@@ -1551,28 +1545,19 @@ int interactive_line(TextParser* parser,
   int d = 0;
   while ((token = parser->next_token())) {
     if (!check(pMS, &d, token, &info, NULL)) {
-      dialogscreen(parser, token, filename, info, NULL, 0);  // preview
+      std::vector<std::string> wlst;
+      dialogscreen(parser, token, filename, info, wlst);  // preview
       refresh();
-      char** wlst = NULL;
       std::string buf(token);
-      int ns = pMS[d]->suggest(
-          &wlst,
-          mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'").c_str());
-      if (ns == 0) {
-        dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
+      wlst = pMS[d]->suggest(mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'").c_str());
+      if (wlst.empty()) {
+        dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
       } else {
-        for (int j = 0; j < ns; ++j) {
-          std::string d2io(wlst[j]);
-          chenc(d2io, dic_enc[d], io_enc);
-          wlst[j] = (char*)realloc(wlst[j], d2io.size() + 1);
-          strcpy(wlst[j], d2io.c_str());
+        for (size_t j = 0; j < wlst.size(); ++j) {
+          chenc(wlst[j], dic_enc[d], io_enc);
         }
-        dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
+        dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
       }
-      for (int j = 0; j < ns; j++) {
-        free(wlst[j]);
-      }
-      free(wlst);
     }
     free(token);
     if ((dialogexit == -1) || (dialogexit == 1))

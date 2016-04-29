@@ -862,7 +862,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 }
 
 int Hunspell::suggest(char*** slst, const char* word) {
-  return m_Impl->suggest(slst, word);
+  return Hunspell_suggest((Hunhandle*)(this), slst, word);
 }
 
 int HunspellImpl::suggest(char*** slst, const char* word) {
@@ -2280,7 +2280,18 @@ const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
-  return ((Hunspell*)pHunspell)->suggest(slst, word);
+  std::vector<std::string> suggests = ((Hunspell*)pHunspell)->suggest(word);
+  if (suggests.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * suggests.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < suggests.size(); ++i)
+      (*slst)[i] = mystrdup(suggests[i].c_str());
+  }
+  return suggests.size();
 }
 
 int Hunspell_analyze(Hunhandle* pHunspell, char*** slst, const char* word) {

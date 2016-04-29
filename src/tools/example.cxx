@@ -82,12 +82,10 @@ int main(int argc, char** argv) {
     } else {
       fprintf(stdout, "\"%s\" is incorrect!\n", buf.c_str());
       fprintf(stdout, "   suggestions:\n");
-      char** wlst;
-      int ns = pMS->suggest(&wlst, buf.c_str());
-      for (int i = 0; i < ns; i++) {
-        fprintf(stdout, "    ...\"%s\"\n", wlst[i]);
+      std::vector<std::string> wlst = pMS->suggest(buf.c_str());
+      for (size_t i = 0; i < wlst.size(); ++i) {
+        fprintf(stdout, "    ...\"%s\"\n", wlst[i].c_str());
       }
-      pMS->free_list(&wlst, ns);
       fprintf(stdout, "\n");
     }
     // for the same of testing this code path
