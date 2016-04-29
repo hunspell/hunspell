@@ -108,7 +108,7 @@ public:
   std::vector<std::string> suggest(const std::string& word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
-  const std::string& get_dic_encoding() const;
+  const std::string& get_dict_encoding() const;
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
@@ -405,19 +405,6 @@ int HunspellImpl::is_keepcase(const hentry* rv) {
 /* insert a word to the beginning of the suggestion array */
 void HunspellImpl::insert_sug(std::vector<std::string>& slst, const std::string& word) {
   slst.insert(slst.begin(), word);
-}
-
-int Hunspell::spell(const char* word, int* info, char** root) {
-  std::string sroot;
-  bool ret = m_Impl->spell(word, info, root ? &sroot : NULL);
-  if (root) {
-    if (sroot.empty()) {
-      *root = NULL;
-    } else {
-      *root = mystrdup(sroot.c_str());
-    }
-  }
-  return ret;
 }
 
 bool Hunspell::spell(const std::string& word, int* info, std::string* root) {
@@ -838,10 +825,6 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   return he;
 }
 
-int Hunspell::suggest(char*** slst, const char* word) {
-  return Hunspell_suggest((Hunhandle*)(this), slst, word);
-}
-
 std::vector<std::string> Hunspell::suggest(const std::string& word) {
   return m_Impl->suggest(word);
 }
@@ -1176,20 +1159,12 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   return slst;
 }
 
-void Hunspell::free_list(char*** slst, int n) {
-  freelist(slst, n);
+const std::string& Hunspell::get_dict_encoding() const {
+  return m_Impl->get_dict_encoding();
 }
 
-const std::string& Hunspell::get_dic_encoding() const {
-  return m_Impl->get_dic_encoding();
-}
-
-const std::string& HunspellImpl::get_dic_encoding() const {
+const std::string& HunspellImpl::get_dict_encoding() const {
   return encoding;
-}
-
-int Hunspell::stem(char*** slst, char** desc, int n) {
-  return Hunspell_stem2((Hunhandle*)(this), slst, desc, n);
 }
 
 std::vector<std::string> Hunspell::stem(const std::vector<std::string>& desc) {
@@ -1262,10 +1237,6 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
   slst = line_tok(result2, MSEP_REC);
   uniqlist(slst);
   return slst;
-}
-
-int Hunspell::stem(char*** slst, const char* word) {
-  return Hunspell_stem((Hunhandle*)(this), slst, word);
 }
 
 std::vector<std::string> Hunspell::stem(const std::string& word) {
@@ -1367,10 +1338,6 @@ void HunspellImpl::cat_result(std::string& result, const std::string& st) {
       result.append("\n");
     result.append(st);
   }
-}
-
-int Hunspell::analyze(char*** slst, const char* word) {
-  return Hunspell_analyze((Hunhandle*)(this), slst, word);
 }
 
 std::vector<std::string> Hunspell::analyze(const std::string& word) {
@@ -1609,10 +1576,6 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   return slst;
 }
 
-int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
-  return Hunspell_generate2((Hunhandle*)(this), slst, word, pl, pln);
-}
-
 std::vector<std::string> Hunspell::generate(const std::string& word, const std::vector<std::string>& pl) {
   return m_Impl->generate(word, pl);
 }
@@ -1659,10 +1622,6 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
     }
   }
   return slst;
-}
-
-int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
-  return Hunspell_generate((Hunhandle*)(this), slst, word, pattern);
 }
 
 std::vector<std::string> Hunspell::generate(const std::string& word, const std::string& pattern) {
@@ -1819,6 +1778,67 @@ std::vector<std::string> HunspellImpl::spellml(const std::string& in_word) {
   return slst;
 }
 
+void Hunspell::free_list(char*** slst, int n) {
+  freelist(slst, n);
+}
+
+int Hunspell::spell(const char* word, int* info, char** root) {
+  std::string sroot;
+  bool ret = m_Impl->spell(word, info, root ? &sroot : NULL);
+  if (root) {
+    if (sroot.empty()) {
+      *root = NULL;
+    } else {
+      *root = mystrdup(sroot.c_str());
+    }
+  }
+  return ret;
+}
+
+int Hunspell::suggest(char*** slst, const char* word) {
+  return Hunspell_suggest((Hunhandle*)(this), slst, word);
+}
+
+int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
+  std::vector<std::string> stems = m_Impl->suffix_suggest(root_word);
+
+  if (stems.empty()) {
+    *slst = NULL;
+    return 0;
+  } else {
+    *slst = (char**)malloc(sizeof(char*) * stems.size());
+    if (!*slst)
+      return 0;
+    for (size_t i = 0; i < stems.size(); ++i)
+      (*slst)[i] = mystrdup(stems[i].c_str());
+  }
+  return stems.size();
+}
+
+const char* Hunspell::get_dic_encoding() const {
+  return Hunspell_get_dic_encoding((Hunhandle*)(this));
+}
+
+int Hunspell::stem(char*** slst, char** desc, int n) {
+  return Hunspell_stem2((Hunhandle*)(this), slst, desc, n);
+}
+
+int Hunspell::stem(char*** slst, const char* word) {
+  return Hunspell_stem((Hunhandle*)(this), slst, word);
+}
+
+int Hunspell::analyze(char*** slst, const char* word) {
+  return Hunspell_analyze((Hunhandle*)(this), slst, word);
+}
+
+int Hunspell::generate(char*** slst, const char* word, char** pl, int pln) {
+  return Hunspell_generate2((Hunhandle*)(this), slst, word, pl, pln);
+}
+
+int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
+  return Hunspell_generate((Hunhandle*)(this), slst, word, pattern);
+}
+
 Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {
   return (Hunhandle*)(new Hunspell(affpath, dpath));
 }
@@ -1842,7 +1862,7 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
 }
 
 const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
-  return (((Hunspell*)pHunspell)->get_dic_encoding()).c_str();
+  return (((Hunspell*)pHunspell)->get_dict_encoding()).c_str();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
@@ -1982,22 +2002,6 @@ int Hunspell_remove(Hunhandle* pHunspell, const char* word) {
 
 void Hunspell_free_list(Hunhandle*, char*** slst, int n) {
   freelist(slst, n);
-}
-
-int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
-  std::vector<std::string> stems = m_Impl->suffix_suggest(root_word);
-
-  if (stems.empty()) {
-    *slst = NULL;
-    return 0;
-  } else {
-    *slst = (char**)malloc(sizeof(char*) * stems.size());
-    if (!*slst)
-      return 0;
-    for (size_t i = 0; i < stems.size(); ++i)
-      (*slst)[i] = mystrdup(stems[i].c_str());
-  }
-  return stems.size();
 }
 
 std::vector<std::string> Hunspell::suffix_suggest(const std::string& root_word) {

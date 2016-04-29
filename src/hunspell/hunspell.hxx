@@ -152,7 +152,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* deallocate suggestion lists */
   H_DEPRECATED void free_list(char*** slst, int n);
 
-  const std::string& get_dic_encoding() const;
+  const std::string& get_dict_encoding() const;
+  H_DEPRECATED const char* get_dic_encoding() const;
 
   /* morphological functions */
 
