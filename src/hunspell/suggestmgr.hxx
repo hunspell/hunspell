@@ -138,8 +138,7 @@ class SuggestMgr {
 
  private:
   int testsug(char** wlst,
-              const char* candidate,
-              int wl,
+              const std::string& candidate,
               int ns,
               int cpdsuggest,
               int* timer,
