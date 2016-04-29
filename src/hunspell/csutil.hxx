@@ -147,9 +147,6 @@ LIBHUNSPELL_DLL_EXPORTED void mychomp(std::string& s);
 // duplicate string
 LIBHUNSPELL_DLL_EXPORTED char* mystrdup(const char* s);
 
-// strcat for limited length destination string
-LIBHUNSPELL_DLL_EXPORTED char* mystrcat(char* dest, const char* st, int max);
-
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED std::string::const_iterator mystrsep(const std::string &str,
                                                               std::string::const_iterator& start);

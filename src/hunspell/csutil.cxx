@@ -319,20 +319,6 @@ char* mystrdup(const char* s) {
   return d;
 }
 
-// strcat for limited length destination string
-char* mystrcat(char* dest, const char* st, int max) {
-  int len;
-  int len2;
-  if (dest == NULL || st == NULL)
-    return dest;
-  len = strlen(dest);
-  len2 = strlen(st);
-  if (len + len2 + 1 > max)
-    return dest;
-  strcpy(dest + len, st);
-  return dest;
-}
-
 // remove cross-platform text line end characters
 void mychomp(char* s) {
   size_t k = strlen(s);
