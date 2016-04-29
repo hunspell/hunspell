@@ -3,7 +3,7 @@ libhunspell_1_5_includedir = $(includedir)/hunspell
 libhunspell_1_5_la_SOURCES=affentry.cxx affixmgr.cxx csutil.cxx \
 		     hashmgr.cxx hunspell.cxx \
 	             suggestmgr.cxx license.myspell license.hunspell \
-	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx
+	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx \
 	             affentry.hxx htypes.hxx affixmgr.hxx \
 	             csutil.hxx atypes.hxx suggestmgr.hxx \
 	             baseaffix.hxx hashmgr.hxx langnum.hxx \

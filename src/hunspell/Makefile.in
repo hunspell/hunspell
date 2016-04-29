@@ -195,6 +195,24 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC      " $@;
+am__v_CC_1 = 
+CCLD = $(CC)
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD    " $@;
+am__v_CCLD_1 = 
 SOURCES = $(libhunspell_1_5_la_SOURCES)
 DIST_SOURCES = $(libhunspell_1_5_la_SOURCES)
 am__can_run_installinfo = \
@@ -406,7 +424,11 @@ libhunspell_1_5_includedir = $(includedir)/hunspell
 libhunspell_1_5_la_SOURCES = affentry.cxx affixmgr.cxx csutil.cxx \
 		     hashmgr.cxx hunspell.cxx \
 	             suggestmgr.cxx license.myspell license.hunspell \
-	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx
+	             phonet.cxx filemgr.cxx hunzip.cxx replist.cxx \
+	             affentry.hxx htypes.hxx affixmgr.hxx \
+	             csutil.hxx atypes.hxx suggestmgr.hxx \
+	             baseaffix.hxx hashmgr.hxx langnum.hxx \
+	             phonet.hxx filemgr.hxx hunzip.hxx replist.hxx
 
 libhunspell_1_5_include_HEADERS = hunspell.hxx hunspell.h hunvisapi.h \
 		                w_char.hxx
@@ -765,10 +787,6 @@ uninstall-am: uninstall-libLTLIBRARIES \
 
 .PRECIOUS: Makefile
 
-	             affentry.hxx htypes.hxx affixmgr.hxx \
-	             csutil.hxx atypes.hxx suggestmgr.hxx \
-	             baseaffix.hxx hashmgr.hxx langnum.hxx \
-	             phonet.hxx filemgr.hxx hunzip.hxx replist.hxx
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
