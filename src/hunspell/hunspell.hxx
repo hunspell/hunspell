@@ -151,8 +151,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   H_DEPRECATED int suffix_suggest(char*** slst, const char* root_word);
 
   /* deallocate suggestion lists */
-
-  void free_list(char*** slst, int n);
+  H_DEPRECATED void free_list(char*** slst, int n);
 
   const std::string& get_dic_encoding() const;
 
