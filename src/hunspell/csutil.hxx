@@ -182,7 +182,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t reverseword(std::string& word);
 LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string&);
 
 // remove duplicates
-LIBHUNSPELL_DLL_EXPORTED int uniqlist(char** list, int n);
 LIBHUNSPELL_DLL_EXPORTED void uniqlist(std::vector<std::string>& list);
 
 // free character array list

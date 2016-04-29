@@ -634,28 +634,6 @@ size_t reverseword_utf(std::string& word) {
   return w.size();
 }
 
-int uniqlist(char** list, int n) {
-  int i;
-  if (n < 2)
-    return n;
-  for (i = 0; i < n; i++) {
-    for (int j = 0; j < i; j++) {
-      if (list[j] && list[i] && (strcmp(list[j], list[i]) == 0)) {
-        free(list[i]);
-        list[i] = NULL;
-        break;
-      }
-    }
-  }
-  int m = 1;
-  for (i = 1; i < n; i++)
-    if (list[i]) {
-      list[m] = list[i];
-      m++;
-    }
-  return m;
-}
-
 void uniqlist(std::vector<std::string>& list) {
   if (list.size() < 2)
     return;
