@@ -1486,7 +1486,7 @@ int SuggestMgr::checkword(const std::string& word,
       nosuffix = 1;
     } else {
       rv = pAMgr->suffix_check(word.c_str(), word.size(), 0, NULL, NULL, 0,
-                               NULL);  // only suffix
+                               NULL, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // only suffix
     }
 
     if (!rv && pAMgr->have_contclass()) {
@@ -1524,7 +1524,7 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
       rv = NULL;
     if (!(pAMgr->prefix_check(word, len, 1)))
       rv = pAMgr->suffix_check(word, len, 0, NULL, NULL, 0,
-                               NULL);  // prefix+suffix, suffix
+                               NULL, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
     // check forbidden words
     if ((rv) && (rv->astr) &&
         TESTAFF(rv->astr, pAMgr->get_forbiddenword(), rv->alen))

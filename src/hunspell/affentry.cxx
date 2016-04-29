@@ -771,13 +771,13 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
           he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
-                                    (FLAG)aflag, needflag);
+                                    (FLAG)aflag, needflag, IN_CPD_NOT);
         else
           he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, optflags, ppfx, NULL, 0,
-                                    NULL, (FLAG)aflag, needflag);
+                                    NULL, (FLAG)aflag, needflag, IN_CPD_NOT);
       } else {
         he = pmyMgr->suffix_check(tmpword.c_str(), tmpl, 0, NULL, NULL, 0, NULL,
-                                  (FLAG)aflag, needflag);
+                                  (FLAG)aflag, needflag, IN_CPD_NOT);
       }
       if (he)
         return he;
