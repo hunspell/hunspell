@@ -147,12 +147,11 @@ private:
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
   void cat_result(std::string& result, const std::string& st);
-  std::vector<std::string> spellml(const char* word);
+  std::vector<std::string> spellml(const std::string& word);
   std::string get_xml_par(const char* par);
   const char* get_xml_pos(const char* s, const char* attr);
   std::vector<std::string> get_xml_list(const char* list, const char* tag);
   int check_xml_par(const char* q, const char* attr, const char* value);
-
 };
 
 Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key)
@@ -1833,8 +1832,10 @@ std::vector<std::string> HunspellImpl::get_xml_list(const char* list, const char
   return slst;
 }
 
-std::vector<std::string> HunspellImpl::spellml(const char* word) {
+std::vector<std::string> HunspellImpl::spellml(const std::string& in_word) {
   std::vector<std::string> slst;
+
+  const char* word = in_word.c_str();
 
   const char* q = strstr(word, "<query");
   if (!q)
