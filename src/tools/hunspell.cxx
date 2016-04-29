@@ -54,10 +54,6 @@
 #include "hunspell.hxx"
 #include "csutil.hxx"
 
-#ifndef HUNSPELL_EXTRA
-#define suggest_auto suggest
-#endif
-
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
 
@@ -210,7 +206,7 @@ enum {
   STEM,        // stem input words
   ANALYZE,     // analyze input words
   PIPE,        // print only stars for LyX compatibility
-  AUTO0,       // search typical error (based on SuggestMgr::suggest_auto())
+  AUTO0,       // search typical error (based on SuggestMgr::suggest())
   AUTO,        // automatic spelling to standard output
   AUTO2,       // automatic spelling to standard output with sed log
   AUTO3,
@@ -843,7 +839,7 @@ nextline:
             if (!check(pMS, &d, token, NULL, NULL)) {
               bad = 1;
               std::vector<std::string> wlst =
-                  pMS[d]->suggest_auto(chenc(token, io_enc, dic_enc[d]));
+                  pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
               if (!wlst.empty()) {
                 parser->change_token(chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 if (filter_mode == AUTO3) {

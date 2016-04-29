@@ -698,7 +698,7 @@ struct hentry* SfxEntry::checkword(const char* word,
         } while (he);
 
         // obsolote stemming code (used only by the
-        // experimental SuffixMgr:suggest_pos_stems)
+        // removed SuffixMgr:suggest_pos_stems)
         // store resulting root in wlst
       } else if (wlst && (*ns < maxSug)) {
         int cwrd = 1;

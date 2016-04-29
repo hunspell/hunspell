@@ -45,24 +45,25 @@ LIBHUNSPELL_DLL_EXPORTED void* hunspell_initialize(char* aff_file,
                                                    char* dict_file);
 // frees spell object
 LIBHUNSPELL_DLL_EXPORTED void hunspell_uninitialize(Hunspell* pMS);
+
 // spellcheck word, returns 1 if word ok otherwise 0
 LIBHUNSPELL_DLL_EXPORTED int hunspell_spell(Hunspell* pMS, char* word);
+
 // suggest words for word, returns number of words in slst
 // YOU NEED TO CALL hunspell_free_list after you've done with words
 LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest(Hunspell* pMS,
                                               char* word,
                                               char*** slst);
-LIBHUNSPELL_DLL_EXPORTED int hunspell_suggest_auto(Hunspell* pMS,
-                                                   char* word,
-                                                   char*** slst);
 // free slst array
 LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell* pMS,
                                                  char*** slst,
                                                  int len);
 // make local copy of returned string!!
 LIBHUNSPELL_DLL_EXPORTED char* hunspell_get_dic_encoding(Hunspell* pMS);
+
 // add word to dict (word is valid until spell object is not destroyed)
 LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell* pMS, char* word);
+
 // add word to dict with affixes of the modelword (word is valid until spell
 // object is not destroyed)
 LIBHUNSPELL_DLL_EXPORTED int hunspell_add_with_affix(Hunspell* pMS,
