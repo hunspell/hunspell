@@ -670,11 +670,14 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
-  char tmptemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = mkdtemp(tmptemplate);
+    odftmpdir = tmpnam(NULL);
     if (!odftmpdir) {
+      perror(gettext("Can't create tmp dir"));
+      exit(1);
+    }
+    if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
       perror(gettext("Can't create tmp dir"));
       exit(1);
     }
@@ -689,6 +692,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
         perror(gettext("Can't open inputfile"));
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
     std::string file(odftmpdir);
@@ -696,6 +700,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     fileid = fopen(file.c_str(), "r");
     if (fileid == NULL) {
       perror(gettext("Can't open inputfile"));
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
   }
