@@ -317,15 +317,15 @@ struct hentry* PfxEntry::check_twosfx(const char* word,
 }
 
 // check if this prefix entry matches
-char* PfxEntry::check_twosfx_morph(const char* word,
-                                   int len,
-                                   char in_compound,
-                                   const FLAG needflag) {
+std::string PfxEntry::check_twosfx_morph(const char* word,
+                                         int len,
+                                         char in_compound,
+                                         const FLAG needflag) {
+  std::string result;
   // on entry prefix is 0 length or already matches the beginning of the word.
   // So if the remaining root word has positive length
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
-
   int tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
@@ -352,22 +352,21 @@ char* PfxEntry::check_twosfx_morph(const char* word,
       // ross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        return pmyMgr->suffix_check_twosfx_morph(tmpword.c_str(), tmpl,
-                                                 aeXPRODUCT,
-                                                 this, needflag);
+        result = pmyMgr->suffix_check_twosfx_morph(tmpword.c_str(), tmpl,
+                                                   aeXPRODUCT,
+                                                   this, needflag);
       }
     }
   }
-  return NULL;
+  return result;
 }
 
 // check if this prefix entry matches
-char* PfxEntry::check_morph(const char* word,
-                            int len,
-                            char in_compound,
-                            const FLAG needflag) {
-  struct hentry* he;  // hash entry of root word or NULL
-  char* st;
+std::string PfxEntry::check_morph(const char* word,
+                                  int len,
+                                  char in_compound,
+                                  const FLAG needflag) {
+  std::string result;
 
   // on entry prefix is 0 length or already matches the beginning of the word.
   // So if the remaining root word has positive length
@@ -393,9 +392,8 @@ char* PfxEntry::check_morph(const char* word,
     // root word in the dictionary
 
     if (test_condition(tmpword.c_str())) {
-      std::string result;
-
       tmpl += strip.size();
+      struct hentry* he;  // hash entry of root word or NULL
       if ((he = pmyMgr->lookup(tmpword.c_str())) != NULL) {
         do {
           if (TESTAFF(he->astr, aflag, he->alen) &&
@@ -437,20 +435,16 @@ char* PfxEntry::check_morph(const char* word,
       // ross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, aeXPRODUCT, this,
-                                        FLAG_NULL, needflag);
-        if (st) {
+        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, aeXPRODUCT, this,
+                                                    FLAG_NULL, needflag);
+        if (!st.empty()) {
           result.append(st);
-          free(st);
         }
       }
-
-      if (!result.empty())
-        return mystrdup(result.c_str());
     }
   }
 
-  return NULL;
+  return result;
 }
 
 SfxEntry::SfxEntry(AffixMgr* pmgr)
@@ -762,13 +756,12 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
 }
 
 // see if two-level suffix is present in the word
-char* SfxEntry::check_twosfx_morph(const char* word,
-                                   int len,
-                                   int optflags,
-                                   PfxEntry* ppfx,
-                                   const FLAG needflag) {
+std::string SfxEntry::check_twosfx_morph(const char* word,
+                                         int len,
+                                         int optflags,
+                                         PfxEntry* ppfx,
+                                         const FLAG needflag) {
   PfxEntry* ep = ppfx;
-  char* st;
 
   std::string result;
 
@@ -776,7 +769,7 @@ char* SfxEntry::check_twosfx_morph(const char* word,
   // but it does not support cross products skip it
 
   if ((optflags & aeXPRODUCT) != 0 && (opts & aeXPRODUCT) == 0)
-    return NULL;
+    return result;
 
   // upon entry suffix is 0 length or already matches the end of the word.
   // So if the remaining root word has positive length
@@ -810,40 +803,34 @@ char* SfxEntry::check_twosfx_morph(const char* word,
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen)) {
-          st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag,
-                                          needflag);
-          if (st) {
+          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag,
+                                                      needflag);
+          if (!st.empty()) {
             if (ppfx->getMorph()) {
               result.append(ppfx->getMorph());
               result.append(" ");
             }
             result.append(st);
-            free(st);
             mychomp(result);
           }
         } else {
-          st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, optflags, ppfx, aflag,
-                                          needflag);
-          if (st) {
+          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, optflags, ppfx, aflag,
+                                                      needflag);
+          if (!st.empty()) {
             result.append(st);
-            free(st);
             mychomp(result);
           }
         }
       } else {
-        st =
-            pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag, needflag);
-        if (st) {
+        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag, needflag);
+        if (!st.empty()) {
           result.append(st);
-          free(st);
           mychomp(result);
         }
       }
-      if (!result.empty())
-        return mystrdup(result.c_str());
     }
   }
-  return NULL;
+  return result;
 }
 
 // get next homonym with same affix

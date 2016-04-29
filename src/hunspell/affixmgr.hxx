@@ -212,27 +212,27 @@ class AffixMgr {
                                 int len,
                                 const FLAG needflag = FLAG_NULL,
                                 char in_compound = IN_CPD_NOT);
-  char* prefix_check_morph(const char* word,
-                           int len,
-                           char in_compound,
-                           const FLAG needflag = FLAG_NULL);
-  char* suffix_check_morph(const char* word,
-                           int len,
-                           int sfxopts,
-                           PfxEntry* ppfx,
-                           const FLAG cclass = FLAG_NULL,
-                           const FLAG needflag = FLAG_NULL,
-                           char in_compound = IN_CPD_NOT);
+  std::string prefix_check_morph(const char* word,
+                                 int len,
+                                 char in_compound,
+                                 const FLAG needflag = FLAG_NULL);
+  std::string suffix_check_morph(const char* word,
+                                 int len,
+                                 int sfxopts,
+                                 PfxEntry* ppfx,
+                                 const FLAG cclass = FLAG_NULL,
+                                 const FLAG needflag = FLAG_NULL,
+                                 char in_compound = IN_CPD_NOT);
 
-  char* prefix_check_twosfx_morph(const char* word,
-                                  int len,
-                                  char in_compound,
-                                  const FLAG needflag = FLAG_NULL);
-  char* suffix_check_twosfx_morph(const char* word,
-                                  int len,
-                                  int sfxopts,
-                                  PfxEntry* ppfx,
-                                  const FLAG needflag = FLAG_NULL);
+  std::string prefix_check_twosfx_morph(const char* word,
+                                        int len,
+                                        char in_compound,
+                                        const FLAG needflag = FLAG_NULL);
+  std::string suffix_check_twosfx_morph(const char* word,
+                                        int len,
+                                        int sfxopts,
+                                        PfxEntry* ppfx,
+                                        const FLAG needflag = FLAG_NULL);
 
   char* morphgen(const char* ts,
                  int wl,

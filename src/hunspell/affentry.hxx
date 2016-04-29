@@ -107,15 +107,15 @@ class PfxEntry : public AffEntry {
                               char in_compound,
                               const FLAG needflag = FLAG_NULL);
 
-  char* check_morph(const char* word,
-                    int len,
-                    char in_compound,
-                    const FLAG needflag = FLAG_NULL);
+  std::string check_morph(const char* word,
+                          int len,
+                          char in_compound,
+                          const FLAG needflag = FLAG_NULL);
 
-  char* check_twosfx_morph(const char* word,
-                           int len,
-                           char in_compound,
-                           const FLAG needflag = FLAG_NULL);
+  std::string check_twosfx_morph(const char* word,
+                                 int len,
+                                 char in_compound,
+                                 const FLAG needflag = FLAG_NULL);
 
   inline FLAG getFlag() { return aflag; }
   inline const char* getKey() { return appnd.c_str(); }
@@ -180,11 +180,11 @@ class SfxEntry : public AffEntry {
                               PfxEntry* ppfx,
                               const FLAG needflag = FLAG_NULL);
 
-  char* check_twosfx_morph(const char* word,
-                           int len,
-                           int optflags,
-                           PfxEntry* ppfx,
-                           const FLAG needflag = FLAG_NULL);
+  std::string check_twosfx_morph(const char* word,
+                                 int len,
+                                 int optflags,
+                                 PfxEntry* ppfx,
+                                 const FLAG needflag = FLAG_NULL);
   struct hentry* get_next_homonym(struct hentry* he);
   struct hentry* get_next_homonym(struct hentry* word,
                                   int optflags,
