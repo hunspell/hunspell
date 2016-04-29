@@ -136,7 +136,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    *   a newly allocated array of strings (*slts will be NULL when number
    *   of suggestion equals 0.)
    */
-  std::vector<std::string> suggest(const char* word);
+  std::vector<std::string> suggest(const std::string& word);
   H_DEPRECATED int suggest(char*** slst, const char* word);
 
   /* Suggest words from suffix rules

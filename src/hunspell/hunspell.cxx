@@ -105,7 +105,7 @@ public:
   int get_langnum() const;
   bool input_conv(const std::string& word, std::string& dest);
   bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
-  std::vector<std::string> suggest(const char* word);
+  std::vector<std::string> suggest(const std::string& word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const std::string& get_dic_encoding() const;
@@ -864,11 +864,11 @@ int Hunspell::suggest(char*** slst, const char* word) {
   return Hunspell_suggest((Hunhandle*)(this), slst, word);
 }
 
-std::vector<std::string> Hunspell::suggest(const char* word) {
+std::vector<std::string> Hunspell::suggest(const std::string& word) {
   return m_Impl->suggest(word);
 }
 
-std::vector<std::string> HunspellImpl::suggest(const char* word) {
+std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   std::vector<std::string> slst;
 
   int onlycmpdsug = 0;
@@ -876,10 +876,10 @@ std::vector<std::string> HunspellImpl::suggest(const char* word) {
     return slst;
 
   // process XML input of the simplified API (see manual)
-  if (strncmp(word, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
+  if (word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
     return spellml(word);
   }
-  int nc = strlen(word);
+  int nc = word.size();
   if (utf8) {
     if (nc >= MAXWORDUTF8LEN)
       return slst;
@@ -1141,7 +1141,7 @@ std::vector<std::string> HunspellImpl::suggest(const char* word) {
   // expand suggestions with dot(s)
   if (abbv && pAMgr && pAMgr->get_sugswithdots()) {
     for (int j = 0; j < ns; j++) {
-      slst[j].append(word + strlen(word) - abbv);
+      slst[j].append(word.substr(word.size() - abbv));
     }
   }
 
