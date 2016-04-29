@@ -106,6 +106,7 @@ public:
   bool input_conv(const std::string& word, std::string& dest);
   bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
   int suggest(char*** slst, const char* word);
+  std::vector<std::string> suggest(const char* word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const std::string& get_dic_encoding() const;
@@ -146,6 +147,7 @@ private:
   spellsharps(std::string& base, size_t start_pos, int, int, int* info, std::string* root);
   int is_keepcase(const hentry* rv);
   int insert_sug(char*** slst, const char* word, int ns);
+  int insert_sug(std::vector<std::string>& slst, const std::string& word);
   void cat_result(std::string& result, const std::string& st);
   std::vector<std::string> spellml(const std::string& word);
   std::string get_xml_par(const char* par);
@@ -420,6 +422,11 @@ int HunspellImpl::insert_sug(char*** slst, const char* word, int ns) {
     (*slst)[k] = (*slst)[k - 1];
   (*slst)[0] = dup;
   return ns + 1;
+}
+
+int HunspellImpl::insert_sug(std::vector<std::string>& slst, const std::string& word) {
+  slst.insert(slst.begin(), word);
+  return slst.size();
 }
 
 int Hunspell::spell(const char* word, int* info, char** root) {
@@ -1247,6 +1254,359 @@ int HunspellImpl::suggest(char*** slst, const char* word) {
     *slst = NULL;
   }
   return l;
+}
+
+std::vector<std::string> Hunspell::suggest(const char* word) {
+  return m_Impl->suggest(word);
+}
+
+std::vector<std::string> HunspellImpl::suggest(const char* word) {
+  std::vector<std::string> slst;
+
+  int onlycmpdsug = 0;
+  if (!pSMgr || m_HMgrs.empty())
+    return slst;
+
+  // process XML input of the simplified API (see manual)
+  if (strncmp(word, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
+    return spellml(word);
+  }
+  int nc = strlen(word);
+  if (utf8) {
+    if (nc >= MAXWORDUTF8LEN)
+      return slst;
+  } else {
+    if (nc >= MAXWORDLEN)
+      return slst;
+  }
+  int captype = NOCAP;
+  size_t abbv = 0;
+  size_t wl = 0;
+
+  std::string scw;
+  std::vector<w_char> sunicw;
+
+  // input conversion
+  RepList* rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
+  {
+    std::string wspace;
+
+    bool convstatus = rl ? rl->conv(word, wspace) : false;
+    if (convstatus)
+      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+    else
+      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
+
+    if (wl == 0)
+      return slst;
+  }
+
+  int ns = 0;
+  int capwords = 0;
+
+  // check capitalized form for FORCEUCASE
+  if (pAMgr && captype == NOCAP && pAMgr->get_forceucase()) {
+    int info = SPELL_ORIGCAP;
+    if (checkword(scw, &info, NULL)) {
+      std::string form(scw);
+      mkinitcap(form);
+      slst.push_back(form);
+      return slst;
+    }
+  }
+
+  switch (captype) {
+    case NOCAP: {
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
+      break;
+    }
+
+    case INITCAP: {
+      capwords = 1;
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
+      if (ns == -1)
+        break;
+      std::string wspace(scw);
+      mkallsmall2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+      break;
+    }
+    case HUHINITCAP:
+      capwords = 1;
+    case HUHCAP: {
+      ns = pSMgr->suggest(slst, scw.c_str(), ns, &onlycmpdsug);
+      if (ns != -1) {
+        // something.The -> something. The
+        size_t dot_pos = scw.find('.');
+        if (dot_pos != std::string::npos) {
+          std::string postdot = scw.substr(dot_pos + 1);
+          int captype_;
+          if (utf8) {
+            std::vector<w_char> postdotu;
+            u8_u16(postdotu, postdot);
+            captype_ = get_captype_utf8(postdotu, langnum);
+          } else {
+            captype_ = get_captype(postdot, csconv);
+          }
+          if (captype_ == INITCAP) {
+            std::string str(scw);
+            str.insert(dot_pos + 1, 1, ' ');
+            ns = insert_sug(slst, str);
+          }
+        }
+
+        std::string wspace;
+
+        if (captype == HUHINITCAP) {
+          // TheOpenOffice.org -> The OpenOffice.org
+          wspace = scw;
+          mkinitsmall2(wspace, sunicw);
+          ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+        }
+        wspace = scw;
+        mkallsmall2(wspace, sunicw);
+        if (spell(wspace.c_str()))
+          ns = insert_sug(slst, wspace);
+        int prevns = ns;
+        ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+        if (captype == HUHINITCAP) {
+          mkinitcap2(wspace, sunicw);
+          if (spell(wspace.c_str()))
+            ns = insert_sug(slst, wspace);
+          ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+        }
+        // aNew -> "a New" (instead of "a new")
+        for (int j = prevns; j < ns; j++) {
+          const char* space = strchr(slst[j].c_str(), ' ');
+          if (space) {
+            size_t slen = strlen(space + 1);
+            // different case after space (need capitalisation)
+            if ((slen < wl) && strcmp(scw.c_str() + wl - slen, space + 1)) {
+              std::string first(slst[j].c_str(), space + 1);
+              std::string second(space + 1);
+              std::vector<w_char> w;
+              if (utf8)
+                u8_u16(w, second);
+              mkinitcap2(second, w);
+              // set as first suggestion
+              slst.erase(slst.begin() + j);
+              slst.insert(slst.begin(), first + second);
+            }
+          }
+        }
+      }
+      break;
+    }
+
+    case ALLCAP: {
+      std::string wspace(scw);
+      mkallsmall2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+      if (ns == -1)
+        break;
+      if (pAMgr && pAMgr->get_keepcase() && spell(wspace.c_str()))
+        ns = insert_sug(slst, wspace);
+      mkinitcap2(wspace, sunicw);
+      ns = pSMgr->suggest(slst, wspace.c_str(), ns, &onlycmpdsug);
+      for (int j = 0; j < ns; j++) {
+        mkallcap(slst[j]);
+
+        if (pAMgr && pAMgr->get_checksharps()) {
+          if (utf8) {
+            mystrrep(slst[j], "\xC3\x9F", "SS");
+          } else {
+            mystrrep(slst[j], "\xDF", "SS");
+          }
+        }
+      }
+      break;
+    }
+  }
+
+  // LANG_hu section: replace '-' with ' ' in Hungarian
+  if (langnum == LANG_hu) {
+    for (int j = 0; j < ns; j++) {
+      size_t pos = slst[j].find('-');
+      if (pos != std::string::npos) {
+        int info;
+        std::string w(slst[j].substr(0, pos));
+        w.append(slst[j].substr(pos + 1));
+        (void)spell(w, &info, NULL);
+        if ((info & SPELL_COMPOUND) && (info & SPELL_FORBIDDEN)) {
+          slst[pos] = ' ';
+        } else
+          slst[pos] = '-';
+      }
+    }
+  }
+  // END OF LANG_hu section
+
+  // try ngram approach since found nothing or only compound words
+  if (pAMgr && (ns == 0 || onlycmpdsug) && (pAMgr->get_maxngramsugs() != 0)) {
+    switch (captype) {
+      case NOCAP: {
+        ns = pSMgr->ngsuggest(slst, scw.c_str(), ns, m_HMgrs);
+        break;
+      }
+      case HUHINITCAP:
+        capwords = 1;
+      case HUHCAP: {
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
+        ns = pSMgr->ngsuggest(slst, wspace.c_str(), ns, m_HMgrs);
+        break;
+      }
+      case INITCAP: {
+        capwords = 1;
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
+        ns = pSMgr->ngsuggest(slst, wspace.c_str(), ns, m_HMgrs);
+        break;
+      }
+      case ALLCAP: {
+        std::string wspace(scw);
+        mkallsmall2(wspace, sunicw);
+        int oldns = ns;
+        ns = pSMgr->ngsuggest(slst, wspace.c_str(), ns, m_HMgrs);
+        for (int j = oldns; j < ns; j++) {
+          mkallcap(slst[j]);
+        }
+        break;
+      }
+    }
+  }
+
+  // try dash suggestion (Afo-American -> Afro-American)
+  size_t dash_pos = scw.find('-');
+  if (dash_pos != std::string::npos) {
+    int nodashsug = 1;
+    for (int j = 0; j < ns && nodashsug == 1; j++) {
+      if (slst[j].find('-') != std::string::npos)
+        nodashsug = 0;
+    }
+
+    size_t prev_pos = 0;
+    bool last = false;
+
+    while (nodashsug && !last) {
+      if (dash_pos == scw.size())
+        last = 1;
+      std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
+      if (!spell(chunk.c_str())) {
+        char** nlst = NULL;
+        int nn = suggest(&nlst, chunk.c_str());
+        for (int j = nn - 1; j >= 0; j--) {
+          std::string wspace = scw.substr(0, prev_pos);
+          wspace.append(nlst[j]);
+          if (!last) {
+            wspace.append("-");
+            wspace.append(scw.substr(dash_pos + 1));
+          }
+          ns = insert_sug(slst, wspace);
+          free(nlst[j]);
+        }
+        if (nlst != NULL)
+          free(nlst);
+        nodashsug = 0;
+      }
+      if (!last) {
+        prev_pos = dash_pos + 1;
+        dash_pos = scw.find('-', prev_pos);
+      }
+      if (dash_pos == std::string::npos)
+        dash_pos = scw.size();
+    }
+  }
+
+  // word reversing wrapper for complex prefixes
+  if (complexprefixes) {
+    for (int j = 0; j < ns; j++) {
+      if (utf8)
+        reverseword_utf(slst[j]);
+      else
+        reverseword(slst[j]);
+    }
+  }
+
+  // capitalize
+  if (capwords)
+    for (int j = 0; j < ns; j++) {
+      mkinitcap(slst[j]);
+    }
+
+  // expand suggestions with dot(s)
+  if (abbv && pAMgr && pAMgr->get_sugswithdots()) {
+    for (int j = 0; j < ns; j++) {
+      slst[j].append(word + strlen(word) - abbv);
+    }
+  }
+
+  // remove bad capitalized and forbidden forms
+  if (pAMgr && (pAMgr->get_keepcase() || pAMgr->get_forbiddenword())) {
+    switch (captype) {
+      case INITCAP:
+      case ALLCAP: {
+        size_t l = 0;
+        for (int j = 0; j < ns; ++j) {
+          if (slst[j].find(' ') == std::string::npos && !spell(slst[j])) {
+            std::string s;
+            std::vector<w_char> w;
+            if (utf8) {
+              u8_u16(w, slst[j]);
+            } else {
+              s = slst[j];
+            }
+            mkallsmall2(s, w);
+            if (spell(s)) {
+              slst[l] = s;
+              l++;
+            } else {
+              mkinitcap2(s, w);
+              if (spell(s)) {
+                slst[l] = s;
+                l++;
+              }
+            }
+          } else {
+            slst[l] = slst[j];
+            l++;
+          }
+        }
+        ns = l;
+        slst.resize(l);
+      }
+    }
+  }
+
+  // remove duplications
+  int l = 0;
+  for (int j = 0; j < ns; ++j) {
+    slst[l] = slst[j];
+    for (int k = 0; k < l; ++k) {
+      if (slst[k] == slst[j]) {
+        l--;
+        break;
+      }
+    }
+    l++;
+  }
+  ns = l;
+  slst.resize(l);
+
+  // output conversion
+  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  for (int j = 0; rl && j < ns; j++) {
+    std::string wspace;
+    if (rl->conv(slst[j], wspace)) {
+      slst[j] = wspace;
+    }
+  }
+
+  // if suggestions removed by nosuggest, onlyincompound parameters
+  if (l == 0) {
+    slst.clear();
+  }
+  return slst;
 }
 
 void Hunspell::free_list(char*** slst, int n) {

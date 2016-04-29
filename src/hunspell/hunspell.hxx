@@ -138,6 +138,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    */
 
   int suggest(char*** slst, const char* word);
+  std::vector<std::string> suggest(const char* word);
 
   /* Suggest words from suffix rules
    * suffix_suggest(suggestions, root_word)
