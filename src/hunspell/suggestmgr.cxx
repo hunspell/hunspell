@@ -374,59 +374,6 @@ int SuggestMgr::mapchars(std::vector<std::string>& wlst,
 int SuggestMgr::map_related(const char* word,
                             std::string& candidate,
                             int wn,
-                            char** wlst,
-                            int cpdsuggest,
-                            int ns,
-                            const std::vector<mapentry>& maptable,
-                            int* timer,
-                            clock_t* timelimit) {
-  if (*(word + wn) == '\0') {
-    int cwrd = 1;
-    for (int m = 0; m < ns; m++) {
-      if (candidate == wlst[m]) {
-        cwrd = 0;
-        break;
-      }
-    }
-    if ((cwrd) && checkword(candidate, cpdsuggest, timer, timelimit)) {
-      if (ns < maxSug) {
-        wlst[ns] = mystrdup(candidate.c_str());
-        if (wlst[ns] == NULL)
-          return -1;
-        ns++;
-      }
-    }
-    return ns;
-  }
-  int in_map = 0;
-  for (size_t j = 0; j < maptable.size(); ++j) {
-    for (size_t k = 0; k < maptable[j].size(); ++k) {
-      size_t len = maptable[j][k].size();
-      if (strncmp(maptable[j][k].c_str(), word + wn, len) == 0) {
-        in_map = 1;
-        size_t cn = candidate.size();
-        for (size_t l = 0; l < maptable[j].size(); ++l) {
-          candidate.resize(cn);
-          candidate.append(maptable[j][l]);
-          ns = map_related(word, candidate, wn + len, wlst,
-                           cpdsuggest, ns, maptable, timer, timelimit);
-          if (!(*timer))
-            return ns;
-        }
-      }
-    }
-  }
-  if (!in_map) {
-    candidate.push_back(*(word + wn));
-    ns = map_related(word, candidate, wn + 1, wlst, cpdsuggest, ns,
-                     maptable, timer, timelimit);
-  }
-  return ns;
-}
-
-int SuggestMgr::map_related(const char* word,
-                            std::string& candidate,
-                            int wn,
                             std::vector<std::string>& wlst,
                             int cpdsuggest,
                             const std::vector<mapentry>& maptable,
