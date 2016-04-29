@@ -157,7 +157,6 @@ class SuggestMgr {
   int badcharkey(std::vector<std::string>&, const char*, int);
   int badchar(std::vector<std::string>&, const char*, int);
   int twowords(std::vector<std::string>&, const char*, int);
-  int fixstems(char**, const char*, int);
 
   int capchars_utf(std::vector<std::string>&, const w_char*, int wl, int);
   int doubletwochars_utf(std::vector<std::string>&, const w_char*, int wl, int);
