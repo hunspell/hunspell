@@ -1,3 +1,10 @@
+2016-04-29 Caolán McNamara <caolanm at LibO>:
+	* deprecate old api and add new one
+	  old one remains implemented in terms of new one
+	  and will eventually be removed
+	* shrink exposed api down to just hunspell.hxx
+	* next major release is likely to require C++11
+
 2016-04-15 Caolán McNamara <caolanm at LibO>:
 	* generally using std::string and std::vector internally
 
