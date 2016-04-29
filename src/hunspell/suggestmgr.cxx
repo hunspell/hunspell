@@ -188,7 +188,7 @@ int SuggestMgr::testsug(char** wlst,
       break;
     }
   }
-  if ((cwrd) && checkword(candidate.c_str(), candidate.size(), cpdsuggest, timer, timelimit)) {
+  if ((cwrd) && checkword(candidate, cpdsuggest, timer, timelimit)) {
     wlst[ns] = mystrdup(candidate.c_str());
     if (wlst[ns] == NULL) {
       for (int j = 0; j < ns; j++)
@@ -417,7 +417,7 @@ int SuggestMgr::map_related(const char* word,
         break;
       }
     }
-    if ((cwrd) && checkword(candidate.c_str(), candidate.size(), cpdsuggest, timer, timelimit)) {
+    if ((cwrd) && checkword(candidate, cpdsuggest, timer, timelimit)) {
       if (ns < maxSug) {
         wlst[ns] = mystrdup(candidate.c_str());
         if (wlst[ns] == NULL)
@@ -491,7 +491,7 @@ int SuggestMgr::replchars(char** wlst,
         size_t prev = 0;
         while (sp != std::string::npos) {
           std::string prev_chunk = candidate.substr(prev, sp - prev);
-          if (checkword(prev_chunk.c_str(), prev_chunk.size(), 0, NULL, NULL)) {
+          if (checkword(prev_chunk, 0, NULL, NULL)) {
             int oldns = ns;
             std::string post_chunk = candidate.substr(sp + 1);
             ns = testsug(wlst, post_chunk, ns, cpdsuggest, NULL, NULL);
@@ -853,9 +853,9 @@ int SuggestMgr::twowords(char** wlst,
     if (utf8 && p[1] == '\0')
       break;  // last UTF-8 character
     *p = '\0';
-    c1 = checkword(candidate, strlen(candidate), cpdsuggest, NULL, NULL);
+    c1 = checkword(candidate, cpdsuggest, NULL, NULL);
     if (c1) {
-      c2 = checkword((p + 1), strlen(p + 1), cpdsuggest, NULL, NULL);
+      c2 = checkword((p + 1), cpdsuggest, NULL, NULL);
       if (c2) {
         *p = ' ';
 
@@ -1495,7 +1495,7 @@ int SuggestMgr::ngsuggest(char** wlst,
           if ((!guessorig[i] && strstr(guess[i], wlst[j])) ||
               (guessorig[i] && strstr(guessorig[i], wlst[j])) ||
               // check forbidden words
-              !checkword(guess[i], strlen(guess[i]), 0, NULL, NULL)) {
+              !checkword(guess[i], 0, NULL, NULL)) {
             unique = 0;
             break;
           }
@@ -1530,7 +1530,7 @@ int SuggestMgr::ngsuggest(char** wlst,
             // prefixes or affixes
             if (strstr(rootsphon[i], wlst[j]) ||
                 // check forbidden words
-                !checkword(rootsphon[i], strlen(rootsphon[i]), 0, NULL, NULL)) {
+                !checkword(rootsphon[i], 0, NULL, NULL)) {
               unique = 0;
               break;
             }
@@ -1555,8 +1555,7 @@ int SuggestMgr::ngsuggest(char** wlst,
 // obsolote MySpell-HU modifications:
 // return value 2 and 3 marks compounding with hyphen (-)
 // `3' marks roots without suffix
-int SuggestMgr::checkword(const char* word,
-                          int len,
+int SuggestMgr::checkword(const std::string& word,
                           int cpdsuggest,
                           int* timer,
                           clock_t* timelimit) {
@@ -1578,10 +1577,10 @@ int SuggestMgr::checkword(const char* word,
     if (cpdsuggest == 1) {
       if (pAMgr->get_compound()) {
         struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-        rv = pAMgr->compound_check(word, len, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1,
+        rv = pAMgr->compound_check(word.c_str(), word.size(), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1,
                                    0);  // EXT
         if (rv &&
-            (!(rv2 = pAMgr->lookup(word)) || !rv2->astr ||
+            (!(rv2 = pAMgr->lookup(word.c_str())) || !rv2->astr ||
              !(TESTAFF(rv2->astr, pAMgr->get_forbiddenword(), rv2->alen) ||
                TESTAFF(rv2->astr, pAMgr->get_nosuggest(), rv2->alen))))
           return 3;  // XXX obsolote categorisation + only ICONV needs affix
@@ -1590,7 +1589,7 @@ int SuggestMgr::checkword(const char* word,
       return 0;
     }
 
-    rv = pAMgr->lookup(word);
+    rv = pAMgr->lookup(word.c_str());
 
     if (rv) {
       if ((rv->astr) &&
@@ -1607,20 +1606,20 @@ int SuggestMgr::checkword(const char* word,
           break;
       }
     } else
-      rv = pAMgr->prefix_check(word, len,
+      rv = pAMgr->prefix_check(word.c_str(), word.size(),
                                0);  // only prefix, and prefix + suffix XXX
 
     if (rv) {
       nosuffix = 1;
     } else {
-      rv = pAMgr->suffix_check(word, len, 0, NULL, NULL, 0,
+      rv = pAMgr->suffix_check(word.c_str(), word.size(), 0, NULL, NULL, 0,
                                NULL);  // only suffix
     }
 
     if (!rv && pAMgr->have_contclass()) {
-      rv = pAMgr->suffix_check_twosfx(word, len, 0, NULL, FLAG_NULL);
+      rv = pAMgr->suffix_check_twosfx(word.c_str(), word.size(), 0, NULL, FLAG_NULL);
       if (!rv)
-        rv = pAMgr->prefix_check_twosfx(word, len, 1, FLAG_NULL);
+        rv = pAMgr->prefix_check_twosfx(word.c_str(), word.size(), 1, FLAG_NULL);
     }
 
     // check forbidden words

@@ -143,7 +143,7 @@ class SuggestMgr {
               int cpdsuggest,
               int* timer,
               clock_t* timelimit);
-  int checkword(const char*, int, int, int*, clock_t*);
+  int checkword(const std::string& word, int, int*, clock_t*);
   int check_forbidden(const char*, int);
 
   int capchars(char**, const char*, int, int);
