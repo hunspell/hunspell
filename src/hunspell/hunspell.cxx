@@ -132,7 +132,6 @@ private:
   size_t cleanword2(std::string& dest,
                     std::vector<w_char>& dest_u,
                     const std::string& src,
-                    int* w_len,
                     int* pcaptype,
                     size_t* pabbrev);
   void mkinitcap(std::string& u8);
@@ -232,7 +231,6 @@ int HunspellImpl::add_dic(const char* dpath, const char* key) {
 size_t HunspellImpl::cleanword2(std::string& dest,
                          std::vector<w_char>& dest_utf,
                          const std::string& src,
-                         int* nc,
                          int* pcaptype,
                          size_t* pabbrev) {
   dest.clear();
@@ -261,11 +259,10 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   dest.append(q, nl);
   nl = dest.size();
   if (utf8) {
-    *nc = u8_u16(dest_utf, dest);
+    u8_u16(dest_utf, dest);
     *pcaptype = get_captype_utf8(dest_utf, langnum);
   } else {
     *pcaptype = get_captype(dest, csconv);
-    *nc = nl;
   }
   return nl;
 }
@@ -457,12 +454,11 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
   // Hunspell supports XML input of the simplified API (see manual)
   if (word == SPELL_XML)
     return true;
-  int nc = word.size();
   if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
+    if (word.size() >= MAXWORDUTF8LEN)
       return false;
   } else {
-    if (nc >= MAXWORDLEN)
+    if (word.size() >= MAXWORDLEN)
       return false;
   }
   int captype = NOCAP;
@@ -479,9 +475,9 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
     if (convstatus)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
     else
-      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, word, &captype, &abbv);
   }
 
 #ifdef MOZILLA_CLIENT
@@ -879,12 +875,11 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   if (word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
     return spellml(word);
   }
-  int nc = word.size();
   if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
+    if (word.size() >= MAXWORDUTF8LEN)
       return slst;
   } else {
-    if (nc >= MAXWORDLEN)
+    if (word.size() >= MAXWORDLEN)
       return slst;
   }
   int captype = NOCAP;
@@ -901,9 +896,9 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
     if (convstatus)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
     else
-      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, word, &captype, &abbv);
 
     if (wl == 0)
       return slst;
@@ -1418,12 +1413,11 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   std::vector<std::string> slst;
   if (!pSMgr || m_HMgrs.empty())
     return slst;
-  int nc = word.size();
   if (utf8) {
-    if (nc >= MAXWORDUTF8LEN)
+    if (word.size() >= MAXWORDUTF8LEN)
       return slst;
   } else {
-    if (nc >= MAXWORDLEN)
+    if (word.size() >= MAXWORDLEN)
       return slst;
   }
   int captype = NOCAP;
@@ -1440,9 +1434,9 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
     if (convstatus)
-      wl = cleanword2(scw, sunicw, wspace, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
     else
-      wl = cleanword2(scw, sunicw, word, &nc, &captype, &abbv);
+      wl = cleanword2(scw, sunicw, word, &captype, &abbv);
   }
 
   if (wl == 0) {
