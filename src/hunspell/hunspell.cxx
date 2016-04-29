@@ -1778,10 +1778,6 @@ std::vector<std::string> HunspellImpl::spellml(const std::string& in_word) {
   return slst;
 }
 
-void Hunspell::free_list(char*** slst, int n) {
-  freelist(slst, n);
-}
-
 int Hunspell::spell(const char* word, int* info, char** root) {
   std::string sroot;
   bool ret = m_Impl->spell(word, info, root ? &sroot : NULL);
@@ -1809,6 +1805,10 @@ namespace {
     }
     return items.size();
   }
+}
+
+void Hunspell::free_list(char*** slst, int n) {
+  Hunspell_free_list((Hunhandle*)(this), slst, n);
 }
 
 int Hunspell::suggest(char*** slst, const char* word) {
@@ -1941,8 +1941,13 @@ int Hunspell_remove(Hunhandle* pHunspell, const char* word) {
   return ((Hunspell*)pHunspell)->remove(word);
 }
 
-void Hunspell_free_list(Hunhandle*, char*** slst, int n) {
-  freelist(slst, n);
+void Hunspell_free_list(Hunhandle*, char*** list, int n) {
+  if (list && *list) {
+    for (int i = 0; i < n; i++)
+      free((*list)[i]);
+    free(*list);
+    *list = NULL;
+  }
 }
 
 std::vector<std::string> Hunspell::suffix_suggest(const std::string& root_word) {

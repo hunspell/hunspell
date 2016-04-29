@@ -181,9 +181,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string&);
 // remove duplicates
 LIBHUNSPELL_DLL_EXPORTED void uniqlist(std::vector<std::string>& list);
 
-// free character array list
-LIBHUNSPELL_DLL_EXPORTED void freelist(char*** list, int n);
-
 // character encoding information
 struct cs_info {
   unsigned char ccase;

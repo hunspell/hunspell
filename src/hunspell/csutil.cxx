@@ -635,15 +635,6 @@ void uniqlist(std::vector<std::string>& list) {
   list.swap(ret);
 }
 
-void freelist(char*** list, int n) {
-  if (list && *list) {
-    for (int i = 0; i < n; i++)
-      free((*list)[i]);
-    free(*list);
-    *list = NULL;
-  }
-}
-
 namespace {
 unsigned char cupper(const struct cs_info* csconv, int nIndex) {
   if (nIndex < 0 || nIndex > 255)
