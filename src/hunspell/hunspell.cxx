@@ -144,8 +144,7 @@ private:
   hentry*
   spellsharps(std::string& base, size_t start_pos, int, int, int* info, std::string* root);
   int is_keepcase(const hentry* rv);
-  int insert_sug(char*** slst, const char* word, int ns);
-  int insert_sug(std::vector<std::string>& slst, const std::string& word);
+  void insert_sug(std::vector<std::string>& slst, const std::string& word);
   void cat_result(std::string& result, const std::string& st);
   std::vector<std::string> spellml(const std::string& word);
   std::string get_xml_par(const char* par);
@@ -403,26 +402,9 @@ int HunspellImpl::is_keepcase(const hentry* rv) {
          TESTAFF(rv->astr, pAMgr->get_keepcase(), rv->alen);
 }
 
-/* insert a word to the beginning of the suggestion array and return ns */
-int HunspellImpl::insert_sug(char*** slst, const char* word, int ns) {
-  if (!*slst)
-    return ns;
-  char* dup = mystrdup(word);
-  if (!dup)
-    return ns;
-  if (ns == MAXSUGGESTION) {
-    ns--;
-    free((*slst)[ns]);
-  }
-  for (int k = ns; k > 0; k--)
-    (*slst)[k] = (*slst)[k - 1];
-  (*slst)[0] = dup;
-  return ns + 1;
-}
-
-int HunspellImpl::insert_sug(std::vector<std::string>& slst, const std::string& word) {
+/* insert a word to the beginning of the suggestion array */
+void HunspellImpl::insert_sug(std::vector<std::string>& slst, const std::string& word) {
   slst.insert(slst.begin(), word);
-  return slst.size();
 }
 
 int Hunspell::spell(const char* word, int* info, char** root) {
