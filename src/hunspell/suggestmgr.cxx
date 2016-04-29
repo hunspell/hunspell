@@ -1812,23 +1812,22 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
         s = part;
       }
 
-      char** pl;
       std::string tok(s);
       size_t pos = tok.find(" | ");
       while (pos != std::string::npos) {
         tok[pos + 1] = MSEP_ALT;
         pos = tok.find(" | ", pos);
       }
-      int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
-      for (int i = 0; i < pln; i++) {
+      std::vector<std::string> pl = line_tok(tok, MSEP_ALT);
+      for (size_t i = 0; i < pl.size(); ++i) {
         // remove inflectional and terminal suffixes
-        char* is = strstr(pl[i], MORPH_INFL_SFX);
-        if (is)
-          *is = '\0';
-        char* ts = strstr(pl[i], MORPH_TERM_SFX);
-        while (ts) {
-          *ts = '_';
-          ts = strstr(pl[i], MORPH_TERM_SFX);
+        size_t is = pl[i].find(MORPH_INFL_SFX);
+        if (is != std::string::npos)
+          pl[i].resize(is);
+        size_t ts = pl[i].find(MORPH_TERM_SFX);
+        while (ts != std::string::npos) {
+          pl[i][ts] = '_';
+          ts = pl[i].find(MORPH_TERM_SFX);
         }
         const char* st = strstr(s, MORPH_STEM);
         if (st) {
@@ -1848,7 +1847,7 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
               for (int j = 0; j < genl; j++) {
                 result2.push_back(MSEP_REC);
                 result2.append(result);
-                if (strstr(pl[i], MORPH_SURF_PFX)) {
+                if (pl[i].find(MORPH_SURF_PFX) != std::string::npos) {
                   std::string field;
                   copy_field(field, pl[i], MORPH_SURF_PFX);
                   result2.append(field);
@@ -1861,7 +1860,6 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
           }
         }
       }
-      freelist(&pl, pln);
     }
 
     if (!result2.empty() || !strstr(pattern, MORPH_DERI_SFX))
