@@ -3133,7 +3133,7 @@ std::string AffixMgr::morphgen(const char* ts,
     return std::string();
 
   if (morphcmp(morph, targetmorph) == 0)
-    return mystrdup(ts);
+    return ts;
 
   size_t stemmorphcatpos;
   std::string mymorph;
