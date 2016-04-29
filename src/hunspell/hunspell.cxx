@@ -128,7 +128,7 @@ private:
   std::vector<std::string> wordbreak;
 
 private:
-  void cleanword(std::string& dest, const char*, int* pcaptype, int* pabbrev);
+  void cleanword(std::string& dest, const std::string&, int* pcaptype, int* pabbrev);
   size_t cleanword2(std::string& dest,
                     std::vector<w_char>& dest_u,
                     const std::string& src,
@@ -271,11 +271,11 @@ size_t HunspellImpl::cleanword2(std::string& dest,
 }
 
 void HunspellImpl::cleanword(std::string& dest,
-                        const char* src,
+                        const std::string& src,
                         int* pcaptype,
                         int* pabbrev) {
   dest.clear();
-  const unsigned char* q = (const unsigned char*)src;
+  const unsigned char* q = (const unsigned char*)src.c_str();
   int firstcap = 0;
 
   // first skip over any leading blanks
@@ -678,16 +678,16 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
         continue;
 
       if (wordbreak[j][0] == '^' &&
-          scw.compare(0, plen - 1, wordbreak[j], 1, plen -1) == 0 && spell(scw.c_str() + plen - 1))
+          scw.compare(0, plen - 1, wordbreak[j], 1, plen -1) == 0 && spell(scw.substr(plen - 1)))
         return true;
 
       if (wordbreak[j][plen - 1] == '$' &&
           scw.compare(wl - plen + 1, plen - 1, wordbreak[j], 0, plen - 1) == 0) {
-        char r = scw[wl - plen + 1];
-        scw[wl - plen + 1] = '\0';
-        if (spell(scw.c_str()))
+        std::string suffix(scw.substr(wl - plen + 1));
+        scw.resize(wl - plen + 1);
+        if (spell(scw))
           return true;
-        scw[wl - plen + 1] = r;
+        scw.append(suffix);
       }
     }
 
@@ -696,22 +696,22 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
       size_t plen = wordbreak[j].size();
       size_t found = scw.find(wordbreak[j]);
       if ((found > 0) && (found < wl - plen)) {
-        if (!spell(scw.c_str() + found + plen))
+        if (!spell(scw.substr(found + plen)))
           continue;
-        char r = scw[found];
-        scw[found] = '\0';
+        std::string suffix(scw.substr(found));
+        scw.resize(found);
         // examine 2 sides of the break point
-        if (spell(scw.c_str()))
+        if (spell(scw))
           return true;
-        scw[found] = r;
+        scw.append(suffix);
 
         // LANG_hu: spec. dash rule
         if (langnum == LANG_hu && wordbreak[j] == "-") {
-          r = scw[found + 1];
-          scw[found + 1] = '\0';
-          if (spell(scw.c_str()))
+          suffix = scw.substr(found + 1);
+          scw.resize(found + 1);
+          if (spell(scw))
             return true;  // check the first part with dash
-          scw[found + 1] = r;
+          scw.append(suffix);
         }
         // end of LANG specific region
       }
@@ -1521,18 +1521,16 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
     if ((n == wl) && (n3 > 0) && (n - n3 > 3))
       return slst;
     if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) &&
-                      checkword(scw.c_str() + n, NULL, NULL))) {
+                      checkword(scw.substr(n), NULL, NULL))) {
       result.append(scw);
       result.resize(n - 1);
       if (n == wl)
-        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n - 1));
+        cat_result(result, pSMgr->suggest_morph(scw.substr(n - 1)));
       else {
-        char sign = scw[n];
-        scw[n] = '\0';
-        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n - 1));
+        std::string chunk = scw.substr(n - 1, 1);
+        cat_result(result, pSMgr->suggest_morph(chunk));
         result.push_back('+');  // XXX SPEC. MORPHCODE
-        scw[n] = sign;
-        cat_result(result, pSMgr->suggest_morph(scw.c_str() + n));
+        cat_result(result, pSMgr->suggest_morph(scw.substr(n)));
       }
       return line_tok(result, MSEP_REC);
     }
@@ -1616,7 +1614,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
 
     // examine 2 sides of the dash
     if (part2.empty()) {  // base word ending with dash
-      if (spell(part1.c_str())) {
+      if (spell(part1)) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
@@ -1624,7 +1622,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
-      if (spell(part1.c_str()) && (spell("-e"))) {
+      if (spell(part1) && (spell("-e"))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
           result.append(st);
@@ -1639,9 +1637,9 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
     } else {
       // first word ending with dash: word- XXX ???
       part1.push_back(' ');
-      nresult = spell(part1.c_str());
+      nresult = spell(part1);
       part1.erase(part1.size() - 1);
-      if (nresult && spell(part2.c_str()) &&
+      if (nresult && spell(part2) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
@@ -1707,7 +1705,7 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   int captype = NOCAP;
   int abbv = 0;
   std::string cw;
-  cleanword(cw, word.c_str(), &captype, &abbv);
+  cleanword(cw, word, &captype, &abbv);
   std::string result;
 
   for (size_t i = 0; i < pl.size(); ++i) {
