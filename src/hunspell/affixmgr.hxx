@@ -208,10 +208,10 @@ class AffixMgr {
                                      PfxEntry* ppfx,
                                      const FLAG needflag = FLAG_NULL);
 
-  char* affix_check_morph(const char* word,
-                          int len,
-                          const FLAG needflag = FLAG_NULL,
-                          char in_compound = IN_CPD_NOT);
+  std::string affix_check_morph(const char* word,
+                                int len,
+                                const FLAG needflag = FLAG_NULL,
+                                char in_compound = IN_CPD_NOT);
   char* prefix_check_morph(const char* word,
                            int len,
                            char in_compound,

@@ -1535,7 +1535,6 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
 
 std::string SuggestMgr::suggest_morph(const std::string& in_w) {
   std::string result;
-  char* st;
 
   struct hentry* rv = NULL;
 
@@ -1573,10 +1572,9 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
     rv = rv->next_homonym;
   }
 
-  st = pAMgr->affix_check_morph(w.c_str(), w.size());
-  if (st) {
+  std::string st = pAMgr->affix_check_morph(w.c_str(), w.size());
+  if (!st.empty()) {
     result.append(st);
-    free(st);
   }
 
   if (pAMgr->get_compound() && result.empty()) {

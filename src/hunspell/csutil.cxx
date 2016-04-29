@@ -440,45 +440,43 @@ void line_uniq(std::string& text, char breakchar)
 }
 
 // uniq and boundary for compound analysis: "1\n\2\n\1" -> " ( \1 | \2 ) "
-char* line_uniq_app(char** text, char breakchar) {
-  if (!strchr(*text, breakchar)) {
-    return *text;
+void line_uniq_app(std::string& text, char breakchar) {
+  if (text.find(breakchar) == std::string::npos) {
+    return;
   }
 
-  char** lines;
-  int i;
-  int linenum = line_tok(*text, &lines, breakchar);
-  int dup = 0;
-  for (i = 0; i < linenum; i++) {
-    for (int j = 0; j < (i - 1); j++) {
-      if (strcmp(lines[i], lines[j]) == 0) {
-        *(lines[i]) = '\0';
-        dup++;
+  std::vector<std::string> lines = line_tok(text, breakchar);
+  text.clear();
+  if (lines.empty()) {
+    return;
+  }
+  text = lines[0];
+  for (size_t i = 1; i < lines.size(); ++i) {
+    bool dup = false;
+    for (size_t j = 0; j < i; ++j) {
+      if (lines[i] == lines[j]) {
+        dup = true;
         break;
       }
     }
-  }
-  if ((linenum - dup) == 1) {
-    strcpy(*text, lines[0]);
-    freelist(&lines, linenum);
-    return *text;
-  }
-  char* newtext = (char*)malloc(strlen(*text) + 2 * linenum + 3 + 1);
-  if (newtext) {
-    free(*text);
-    *text = newtext;
-  } else {
-    freelist(&lines, linenum);
-    return *text;
-  }
-  strcpy(*text, " ( ");
-  for (i = 0; i < linenum; i++)
-    if (*(lines[i])) {
-      sprintf(*text + strlen(*text), "%s%s", lines[i], " | ");
+    if (!dup) {
+      if (!text.empty())
+        text.push_back(breakchar);
+      text.append(lines[i]);
     }
-  (*text)[strlen(*text) - 2] = ')';  // " ) "
-  freelist(&lines, linenum);
-  return *text;
+  }
+
+  if (lines.size() == 1) {
+    text = lines[0];
+    return;
+  }
+
+  text.assign(" ( ");
+  for (size_t i = 0; i < lines.size(); ++i) {
+      text.append(lines[i]);
+      text.append(" | ");
+  }
+  text[text.size() - 2] = ')';  // " ) "
 }
 
 // append s to ends of every lines in text

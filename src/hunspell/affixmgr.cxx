@@ -2295,28 +2295,23 @@ int AffixMgr::compound_check_morph(const char* word,
                (rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundmiddle)))))) {
-          // char * p = prefix_check_morph(st, i, 0, compound);
-          char* p = NULL;
+          std::string p;
           if (compoundflag)
             p = affix_check_morph(st.c_str(), i, compoundflag);
-          if (!p || (*p == '\0')) {
-            if (p)
-              free(p);
-            p = NULL;
+          if (p.empty()) {
             if ((wordnum == 0) && compoundbegin) {
               p = affix_check_morph(st.c_str(), i, compoundbegin);
             } else if ((wordnum > 0) && compoundmiddle) {
               p = affix_check_morph(st.c_str(), i, compoundmiddle);
             }
           }
-          if (p && (*p != '\0')) {
+          if (!p.empty()) {
             presult.push_back(MSEP_FLD);
             presult.append(MORPH_PART);
             presult.append(st.c_str());
-            presult.append(line_uniq_app(&p, MSEP_REC));
+            line_uniq_app(p, MSEP_REC);
+            presult.append(p);
           }
-          if (p)
-            free(p);
           checked_prefix = 1;
         }
         // else check forbiddenwords
@@ -2529,23 +2524,20 @@ int AffixMgr::compound_check_morph(const char* word,
         if (!rv && !defcpdtable.empty() && words) {
           rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
-            char* m = NULL;
+            std::string m;
             if (compoundflag)
               m = affix_check_morph((word + i), strlen(word + i), compoundflag);
-            if ((!m || *m == '\0') && compoundend) {
-              if (m)
-                free(m);
+            if (m.empty() && compoundend) {
               m = affix_check_morph((word + i), strlen(word + i), compoundend);
             }
             result.append(presult);
-            if (m || (*m != '\0')) {
+            if (!m.empty()) {
               result.push_back(MSEP_FLD);
               result.append(MORPH_PART);
               result.append(word + i);
-              result.append(line_uniq_app(&m, MSEP_REC));
+              line_uniq_app(m, MSEP_REC);
+              result.append(m);
             }
-            if (m)
-              free(m);
             result.append("\n");
             ok = 1;
           }
@@ -2622,23 +2614,20 @@ int AffixMgr::compound_check_morph(const char* word,
             (((cpdwordmax == -1) || (wordnum + 1 < cpdwordmax)) ||
              ((cpdmaxsyllable != 0) && (numsyllable <= cpdmaxsyllable))) &&
             ((!checkcompounddup || (rv != rv_first)))) {
-          char* m = NULL;
+          std::string m;
           if (compoundflag)
             m = affix_check_morph((word + i), strlen(word + i), compoundflag);
-          if ((!m || *m == '\0') && compoundend) {
-            if (m)
-              free(m);
+          if (m.empty() && compoundend) {
             m = affix_check_morph((word + i), strlen(word + i), compoundend);
           }
           result.append(presult);
-          if (m && (*m != '\0')) {
+          if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
             result.append(word + 1);
-            result.append(line_uniq_app(&m, MSEP_REC));
+            line_uniq_app(m, MSEP_REC);
+            result.append(m);
           }
-          if (m)
-            free(m);
           result.push_back(MSEP_REC);
           ok = 1;
         }
@@ -3109,7 +3098,7 @@ struct hentry* AffixMgr::affix_check(const char* word,
 }
 
 // check if word with affixes is correctly spelled
-char* AffixMgr::affix_check_morph(const char* word,
+std::string AffixMgr::affix_check_morph(const char* word,
                                   int len,
                                   const FLAG needflag,
                                   char in_compound) {
@@ -3148,7 +3137,7 @@ char* AffixMgr::affix_check_morph(const char* word,
     }
   }
 
-  return mystrdup(result.c_str());
+  return result;
 }
 
 char* AffixMgr::morphgen(const char* ts,
