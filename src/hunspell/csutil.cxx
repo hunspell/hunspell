@@ -320,14 +320,6 @@ char* mystrdup(const char* s) {
 }
 
 // remove cross-platform text line end characters
-void mychomp(char* s) {
-  size_t k = strlen(s);
-  if ((k > 0) && ((*(s + k - 1) == '\r') || (*(s + k - 1) == '\n')))
-    *(s + k - 1) = '\0';
-  if ((k > 1) && (*(s + k - 2) == '\r'))
-    *(s + k - 2) = '\0';
-}
-
 void mychomp(std::string& s) {
   size_t k = s.size();
   size_t newsize = k;

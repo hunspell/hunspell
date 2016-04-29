@@ -141,7 +141,6 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src);
 
 // remove end of line char(s)
-LIBHUNSPELL_DLL_EXPORTED void mychomp(char* s);
 LIBHUNSPELL_DLL_EXPORTED void mychomp(std::string& s);
 
 // duplicate string
