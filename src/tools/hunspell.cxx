@@ -1172,10 +1172,13 @@ void dialogscreen(TextParser* parser,
   for (int i = 0; i < MAXPREVLINE; i++) {
     strncpyu8(line, lines[prevline], x * rowindex, x);
     mvprintw(MAXPREVLINE + 1 - i, 0, "%s", line);
-    rowindex--;
-    if (rowindex == -1) {
-      prevline++;
-      rowindex = strlenu8(lines[prevline]) / x;
+    const bool finished = i == MAXPREVLINE - 1;
+    if (!finished) {
+      rowindex--;
+      if (rowindex == -1) {
+        prevline++;
+        rowindex = strlenu8(lines[prevline]) / x;
+      }
     }
   }
 
