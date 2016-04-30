@@ -684,8 +684,8 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p '" << filename << "' content.xml | sed "
-            "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
+    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
             ">" << odftmpdir << "/content.xml";
     if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
@@ -1028,9 +1028,15 @@ nextline:
   if (bZippedOdf) {
     fclose(fileid);
     std::ostringstream sbuf;
-    sbuf << "rm " << odftmpdir << "/content.xml; rmdir " << odftmpdir;
-    if (system(sbuf.str().c_str()) != 0)
-      perror("write failed");
+    sbuf << odftmpdir << "/content.xml";
+    if (remove(sbuf.str().c_str()) != 0) {
+      perror("temp file delete failed");
+    }
+    sbuf.str("");
+    sbuf << "rmdir " << odftmpdir;
+    if (system(sbuf.str().c_str()) != 0) {
+      perror("temp dir delete failed");
+    }
   }
 
   delete parser;
@@ -1608,8 +1614,8 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p '" << filename << "' content.xml | sed "
-            "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
+    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
             ">" << odftmpdir << "/content.xml";
     if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
@@ -1654,10 +1660,14 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           refresh();
           fclose(tempfile);  // automatically deleted when closed
           if (bZippedOdf) {
+            if (remove(filename) != 0) {
+              perror("temp file delete failed");
+            }
             std::ostringstream sbuf;
-            sbuf << "rm " << filename << "; rmdir " << odftmpdir;
-            if (system(sbuf.str().c_str()) != 0)
-              perror("write failed");
+            sbuf << "rmdir " << odftmpdir;
+            if (system(sbuf.str().c_str()) != 0) {
+              perror("temp dir delete failed");
+            }
             free(filename);
           }
           endwin();
@@ -1695,10 +1705,14 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   }
 
   if (bZippedOdf) {
+    if (remove(filename) != 0) {
+      perror("temp file delete failed");
+    }
     std::ostringstream sbuf;
-    sbuf << "rm " << filename << "; rmdir " << odftmpdir;
-    if (system(sbuf.str().c_str()) != 0)
-      perror("write failed");
+    sbuf << "rmdir " << odftmpdir;
+    if (system(sbuf.str().c_str()) != 0) {
+      perror("temp dir delete failed");
+    }
     free(filename);
   }
 
