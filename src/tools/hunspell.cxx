@@ -998,9 +998,8 @@ nextline:
 
       switch (filter_mode) {
         case AUTO: {
-          char* pLine = mystrdup(parser->get_line().c_str());
-          fprintf(stdout, "%s\n", pLine);
-          free(pLine);
+          std::string pLine = parser->get_line();
+          fprintf(stdout, "%s\n", pLine.c_str());
           break;
         }
 
