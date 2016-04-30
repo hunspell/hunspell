@@ -165,11 +165,11 @@ void TextParser::put_line(const char* word) {
   check_urls();
 }
 
-char* TextParser::get_prevline(int n) {
-  return mystrdup(line[(actual + MAXPREVLINE - n) % MAXPREVLINE].c_str());
+std::string TextParser::get_prevline(int n) const {
+  return line[(actual + MAXPREVLINE - n) % MAXPREVLINE];
 }
 
-char* TextParser::get_line() {
+std::string TextParser::get_line() const {
   return get_prevline(0);
 }
 

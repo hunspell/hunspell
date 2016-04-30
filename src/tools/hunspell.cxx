@@ -998,7 +998,7 @@ nextline:
 
       switch (filter_mode) {
         case AUTO: {
-          char* pLine = parser->get_line();
+          char* pLine = mystrdup(parser->get_line().c_str());
           fprintf(stdout, "%s\n", pLine);
           free(pLine);
           break;
@@ -1144,18 +1144,18 @@ void dialogscreen(TextParser* parser,
   char lines[MAXPREVLINE][MAXLNLEN];
   char* pPrevLine;
   for (int i = 0; i < MAXPREVLINE; i++) {
-    pPrevLine = parser->get_prevline(i);
+    pPrevLine = mystrdup(parser->get_prevline(i).c_str());
     expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc), MAXLNLEN);
     free(pPrevLine);
   }
 
-  pPrevLine = parser->get_prevline(0);
+  pPrevLine = mystrdup(parser->get_prevline(0).c_str());
   strncpy(line, pPrevLine, parser->get_tokenpos());
   free(pPrevLine);
   line[parser->get_tokenpos()] = '\0';
   int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
-  pPrevLine = parser->get_prevline(0);
+  pPrevLine = mystrdup(parser->get_prevline(0).c_str());
   strncpy(line, pPrevLine, parser->get_tokenpos() + strlen(token));
   free(pPrevLine);
   line[parser->get_tokenpos() + strlen(token)] = '\0';
@@ -1564,7 +1564,7 @@ int interactive_line(TextParser* parser,
   }
 
 ki2:
-  fprintf(tempfile, "%s", token = parser->get_line());
+  fprintf(tempfile, "%s", token = mystrdup(parser->get_line().c_str()));
   free(token);
   return dialogexit;
 }
