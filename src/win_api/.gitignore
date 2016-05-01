@@ -1,1 +1,7 @@
 Makefile
+Debug/
+Release/
+Backup/
+*.sdf
+*.suo
+UpgradeLog.htm
