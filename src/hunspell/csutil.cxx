@@ -125,7 +125,7 @@ static int utf_tbl_count =
 
 void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mode)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_MSC_VER)
 #define WIN32_LONG_PATH_PREFIX "\\\\?\\"
   if (strncmp(path, WIN32_LONG_PATH_PREFIX, 4) == 0) {
     int len = MultiByteToWideChar(CP_UTF8, 0, path, -1, NULL, 0);
@@ -138,6 +138,7 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
     delete [] buff;
     delete [] buff2;
   }
+  else
 #endif
   stream.open(path, mode);
 }
