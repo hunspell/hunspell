@@ -111,7 +111,7 @@ int main(int, char** argv) {
       }
       free(next);
     }
-    fprintf(stdout, "%s\n", p->get_line());
+    fprintf(stdout, "%s\n", p->get_line().c_str());
   }
 
   delete p;
