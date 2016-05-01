@@ -103,7 +103,7 @@ class TextParser {
   int tokenize_urls();
   void check_urls();
   int get_url(int token_pos, int* head);
-  char* alloc_token(int token, int* head);
+  bool alloc_token(int token, int* head, std::string& out);
 };
 
 #endif

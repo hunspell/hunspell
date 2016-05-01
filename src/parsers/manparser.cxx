@@ -90,9 +90,10 @@ char* ManParser::next_token() {
       case 3:  // wordchar
         if (!is_wordchar(line[actual].c_str() + head)) {
           state = 2;
-          char* t = alloc_token(token, &head);
-          if (t)
-            return t;
+          std::string t;
+          bool ok = alloc_token(token, &head, t);
+          if (ok)
+            return mystrdup(t.c_str());
         }
         break;
     }

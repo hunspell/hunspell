@@ -206,9 +206,10 @@ char* TextParser::next_token() {
           head += strlen(UTF8_APOS) - 1;
         } else if (!is_wordchar(line[actual].c_str() + head)) {
           state = 0;
-          char* t = alloc_token(token, &head);
-          if (t)
-            return t;
+          std::string t;
+          bool ok = alloc_token(token, &head, t);
+          if (ok)
+            return mystrdup(t.c_str());
         }
         break;
     }
@@ -293,24 +294,17 @@ void TextParser::set_url_checking(int check) {
   checkurl = check;
 }
 
-char* TextParser::alloc_token(int tokn, int* hd) {
+bool TextParser::alloc_token(int tokn, int* hd, std::string& t) {
   int url_head = *hd;
   if (get_url(tokn, &url_head))
-    return NULL;
-  char* t = (char*)malloc(*hd - tokn + 1);
-  if (t) {
-    t[*hd - tokn] = '\0';
-    strncpy(t, line[actual].c_str() + tokn, *hd - tokn);
-    // remove colon for Finnish and Swedish language
-    if (t[*hd - tokn - 1] == ':') {
-      t[*hd - tokn - 1] = '\0';
-      if (!t[0]) {
-        free(t);
-        return NULL;
-      }
+    return false;
+  t = line[actual].substr(tokn, *hd - tokn);
+  // remove colon for Finnish and Swedish language
+  if (!t.empty() && t[t.size() - 1] == ':') {
+    t.resize(t.size() - 1);
+    if (t.empty()) {
+      return false;
     }
-    return t;
   }
-  fprintf(stderr, "Error - Insufficient Memory\n");
-  return NULL;
+  return true;
 }

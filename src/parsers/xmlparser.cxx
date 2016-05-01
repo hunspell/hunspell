@@ -150,9 +150,10 @@ char* XMLParser::next_token(const char* PATTERN[][2],
           head += strlen(UTF8_APOS) - 1;
         } else if (!is_wordchar(line[actual].c_str() + head)) {
           state = prevstate;
-          char* t = alloc_token(token, &head);
-          if (t)
-            return t;
+          std::string t;
+          bool ok = alloc_token(token, &head, t);
+          if (ok)
+            return mystrdup(t.c_str());
         }
         break;
       case ST_TAG:  // comment, labels, etc

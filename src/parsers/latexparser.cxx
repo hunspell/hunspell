@@ -212,11 +212,12 @@ char* LaTeXParser::next_token() {
             (line[actual][head] == '\'' && line[actual][head + 1] == '\'' &&
              ++apostrophe)) {
           state = 0;
-          char* t = alloc_token(token, &head);
+          std::string t;
+          bool ok = alloc_token(token, &head, t);
           if (apostrophe)
             head += 2;
-          if (t)
-            return t;
+          if (ok)
+            return mystrdup(t.c_str());
         }
         break;
       case 2:  // comment, labels, etc
