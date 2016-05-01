@@ -85,8 +85,6 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define SPELL_ORIGCAP (1 << 5)
 #define SPELL_WARN (1 << 6)
 
-#define MAXLNLEN 8192
-
 #define MINCPDLEN 3
 #define MAXCOMPOUND 10
 #define MAXCONDLEN 20
