@@ -670,25 +670,29 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
-  char tmptemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = mkdtemp(tmptemplate);
+    odftmpdir = tmpnam(NULL);
     if (!odftmpdir) {
+      perror(gettext("Can't create tmp dir"));
+      exit(1);
+    }
+    if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
       perror(gettext("Can't create tmp dir"));
       exit(1);
     }
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p '" << filename << "' content.xml | sed "
-            "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
+    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
             ">" << odftmpdir << "/content.xml";
     if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
         perror(gettext("Can't open inputfile"));
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
     std::string file(odftmpdir);
@@ -696,6 +700,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     fileid = fopen(file.c_str(), "r");
     if (fileid == NULL) {
       perror(gettext("Can't open inputfile"));
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
   }
@@ -1022,9 +1027,15 @@ nextline:
   if (bZippedOdf) {
     fclose(fileid);
     std::ostringstream sbuf;
-    sbuf << "rm " << odftmpdir << "/content.xml; rmdir " << odftmpdir;
-    if (system(sbuf.str().c_str()) != 0)
-      perror("write failed");
+    sbuf << odftmpdir << "/content.xml";
+    if (remove(sbuf.str().c_str()) != 0) {
+      perror("temp file delete failed");
+    }
+    sbuf.str("");
+    sbuf << "rmdir " << odftmpdir;
+    if (system(sbuf.str().c_str()) != 0) {
+      perror("temp dir delete failed");
+    }
   }
 
   delete parser;
@@ -1581,21 +1592,25 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
-  char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = mkdtemp(tmpdirtemplate);
+    odftmpdir = tmpnam(NULL);
     if (!odftmpdir) {
       perror(gettext("Can't create tmp dir"));
       endwin();
       exit(1);
     }
+    if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
+        perror(gettext("Can't create tmp dir"));
+        endwin();
+        exit(1);
+    }
     fclose(text);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p '" << filename << "' content.xml | sed "
-            "'s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' "
+    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
             ">" << odftmpdir << "/content.xml";
     if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
@@ -1603,6 +1618,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
       endwin();
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
     odffilename = filename;
@@ -1613,33 +1629,21 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     if (!text) {
       perror(gettext("Can't open inputfile"));
       endwin();
+      system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
   }
 
-  char tmpfiletemplate[] = "/tmp/hunspellXXXXXX";
-  mode_t mask = umask(S_IXUSR | S_IRWXG | S_IRWXO);
-  int tempfileno = mkstemp(tmpfiletemplate);
-  umask(mask);
-  if (tempfileno == -1) {
-    perror(gettext("Can't create tempfile"));
-    delete parser;
-    fclose(text);
-    endwin();
-    exit(1);
-  }
+  FILE* tempfile = tmpfile();
 
-  FILE* tempfile = fdopen(tempfileno, "rw");
   if (!tempfile) {
     perror(gettext("Can't create tempfile"));
     delete parser;
     fclose(text);
     endwin();
-    close(tempfileno);
-    unlink(tmpfiletemplate);
     exit(1);
   }
-
+  
   while (fgets(buf, MAXLNLEN, text)) {
     if (check) {
       parser->put_line(buf);
@@ -1651,14 +1655,17 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           refresh();
           fclose(tempfile);  // automatically deleted when closed
           if (bZippedOdf) {
+            if (remove(filename) != 0) {
+              perror("temp file delete failed");
+            }
             std::ostringstream sbuf;
-            sbuf << "rm " << filename << "; rmdir " << odftmpdir;
-            if (system(sbuf.str().c_str()) != 0)
-              perror("write failed");
+            sbuf << "rmdir " << odftmpdir;
+            if (system(sbuf.str().c_str()) != 0) {
+              perror("temp dir delete failed");
+            }
             free(filename);
           }
           endwin();
-          unlink(tmpfiletemplate);
           exit(0);
         }
         case 1: {
@@ -1693,16 +1700,19 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   }
 
   if (bZippedOdf) {
+    if (remove(filename) != 0) {
+      perror("temp file delete failed");
+    }
     std::ostringstream sbuf;
-    sbuf << "rm " << filename << "; rmdir " << odftmpdir;
-    if (system(sbuf.str().c_str()) != 0)
-      perror("write failed");
+    sbuf << "rmdir " << odftmpdir;
+    if (system(sbuf.str().c_str()) != 0) {
+      perror("temp dir delete failed");
+    }
     free(filename);
   }
 
   delete parser;
-  fclose(tempfile);
-  unlink(tmpfiletemplate);
+  fclose(tempfile);  // automatically deleted when closed
 }
 
 #endif

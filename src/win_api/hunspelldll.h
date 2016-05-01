@@ -59,7 +59,7 @@ LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell* pMS,
                                                  char*** slst,
                                                  int len);
 // make local copy of returned string!!
-LIBHUNSPELL_DLL_EXPORTED char* hunspell_get_dic_encoding(Hunspell* pMS);
+LIBHUNSPELL_DLL_EXPORTED const char* hunspell_get_dic_encoding(Hunspell* pMS);
 
 // add word to dict (word is valid until spell object is not destroyed)
 LIBHUNSPELL_DLL_EXPORTED int hunspell_add(Hunspell* pMS, char* word);
