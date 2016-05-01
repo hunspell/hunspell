@@ -1056,26 +1056,24 @@ static int rl_escape(int count, int key) {
 #endif
 
 #ifdef HAVE_CURSES_H
-int expand_tab(char* dest, char* src, int limit) {
-  int i = 0;
+int expand_tab(std::string& dest, const std::string& in_src) {
+  dest.clear();
+  const char *src = in_src.c_str();
   int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
   int chpos = 0;
-  for (int j = 0; (i < limit) && (src[j] != '\0') && (src[j] != '\r'); j++) {
-    dest[i] = src[j];
+  for (int j = 0; (src[j] != '\0') && (src[j] != '\r'); j++) {
     if (src[j] == '\t') {
       int end = 8 - (chpos % 8);
       for (int k = 0; k < end; k++) {
-        dest[i] = ' ';
-        i++;
+        dest.push_back(' ');
         chpos++;
       }
     } else {
-      i++;
+      dest.push_back(src[j]);
       if (!u8 || (src[j] & 0xc0) != 0x80)
         chpos++;
     }
   }
-  dest[i] = '\0';
   return chpos;
 }
 
@@ -1085,7 +1083,9 @@ int expand_tab(char* dest, char* src, int limit) {
 // What we're really current doing is to deal in the number of characters,
 // like mbstowcs which isn't quite correct, but close enough for western
 // text in UTF-8
-void strncpyu8(char* dest, const char* src, int begin, int n) {
+void strncpyu8(std::string& dest, const std::string& in_src, int begin, int n) {
+  dest.clear();
+  const char *src = in_src.c_str();
   if (n) {
     int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
     for (int i = 0; i < begin + n;) {
@@ -1094,9 +1094,9 @@ void strncpyu8(char* dest, const char* src, int begin, int n) {
       if (!u8 || (*src & 0xc0) != 0x80)
         i++;            // new character
       if (i > begin) {  // copy char (w/ utf-8 bytes)
-        *dest++ = *src++;
+        dest.push_back(*src++);
         while (u8 && (*src & 0xc0) == 0x80)
-          *dest++ = *src++;
+          dest.push_back(*src++);
       } else {  // skip char (w/ utf-8 bytes)
         ++src;
         while (u8 && (*src & 0xc0) == 0x80)
@@ -1104,11 +1104,11 @@ void strncpyu8(char* dest, const char* src, int begin, int n) {
       }
     }
   }
-  *dest = '\0';
 }
 
 // See strncpyu8 for gotchas
-int strlenu8(const char* src) {
+int strlenu8(const std::string& in_src) {
+  const char *src = in_src.c_str();
   int u8 = ((ui_enc != NULL) && (strcmp(ui_enc, "UTF-8") == 0)) ? 1 : 0;
   int i = 0;
   while (*src) {
@@ -1125,8 +1125,6 @@ void dialogscreen(TextParser* parser,
                   int forbidden,
                   std::vector<std::string>& wlst) {
   int x, y;
-  char line[MAXLNLEN];
-  char line2[MAXLNLEN];
   getmaxyx(stdscr, y, x);
   clear();
 
@@ -1139,26 +1137,21 @@ void dialogscreen(TextParser* parser,
          filename);
 
   // handle long lines and tabulators
-
-  char lines[MAXPREVLINE][MAXLNLEN];
-  char* pPrevLine;
+  std::string lines[MAXPREVLINE];
+  std::string pPrevLine;
   for (int i = 0; i < MAXPREVLINE; i++) {
-    pPrevLine = mystrdup(parser->get_prevline(i).c_str());
-    expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc), MAXLNLEN);
-    free(pPrevLine);
+    pPrevLine = parser->get_prevline(i);
+    expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc));
   }
 
-  pPrevLine = mystrdup(parser->get_prevline(0).c_str());
-  strncpy(line, pPrevLine, parser->get_tokenpos());
-  free(pPrevLine);
-  line[parser->get_tokenpos()] = '\0';
-  int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
+  pPrevLine = parser->get_prevline(0);
+  std::string line = pPrevLine.substr(0, parser->get_tokenpos());
+  std::string line2;
+  int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
   pPrevLine = mystrdup(parser->get_prevline(0).c_str());
-  strncpy(line, pPrevLine, parser->get_tokenpos() + strlen(token));
-  free(pPrevLine);
-  line[parser->get_tokenpos() + strlen(token)] = '\0';
-  int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
+  line = pPrevLine.substr(0, parser->get_tokenpos() + strlen(token));
+  int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
   int rowindex = (tokenend - 1) / x;
   int beginrow = rowindex - tokenbeg / x;
@@ -1170,7 +1163,7 @@ void dialogscreen(TextParser* parser,
 
   for (int i = 0; i < MAXPREVLINE; i++) {
     strncpyu8(line, lines[prevline], x * rowindex, x);
-    mvprintw(MAXPREVLINE + 1 - i, 0, "%s", line);
+    mvprintw(MAXPREVLINE + 1 - i, 0, "%s", line.c_str());
     const bool finished = i == MAXPREVLINE - 1;
     if (!finished) {
       rowindex--;
@@ -1182,7 +1175,7 @@ void dialogscreen(TextParser* parser,
   }
 
   strncpyu8(line, lines[0], x * (ri - beginrow), tokenbeg % x);
-  mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line);
+  mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line.c_str());
   attron(A_REVERSE);
   printw("%s", chenc(token, io_enc, ui_enc));
   attroff(A_REVERSE);
