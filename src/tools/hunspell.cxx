@@ -593,8 +593,8 @@ int save_privdic(const std::string& filename, const std::string& filename2, std:
   return 1;
 }
 
-char* basename(char* s, char c) {
-  char* p = s + strlen(s);
+const char* basename(const char* s, char c) {
+  const char* p = s + strlen(s);
   while ((*p != c) && (p != s))
     p--;
   if (*p == c)
