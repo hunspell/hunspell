@@ -61,11 +61,12 @@ class XMLParser : public TextParser {
   XMLParser();
   XMLParser(const char* wc);
   XMLParser(const w_char* wordchars, int len);
-  char* next_token(const char* p[][2],
-                   unsigned int len,
-                   const char* p2[][2],
-                   unsigned int len2);
-  virtual char* next_token();
+  bool next_token(const char* p[][2],
+                  unsigned int len,
+                  const char* p2[][2],
+                  unsigned int len2,
+                  std::string&);
+  virtual bool next_token(std::string&);
   int change_token(const char* word);
   virtual ~XMLParser();
 

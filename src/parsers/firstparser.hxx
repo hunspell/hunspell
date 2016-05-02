@@ -61,7 +61,7 @@ class FirstParser : public TextParser {
   FirstParser(const char* wc);
   virtual ~FirstParser();
 
-  virtual char* next_token();
+  virtual bool next_token(std::string&);
 };
 
 #endif

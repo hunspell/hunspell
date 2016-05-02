@@ -62,7 +62,7 @@ ManParser::ManParser(const w_char* wordchars, int len) {
 
 ManParser::~ManParser() {}
 
-char* ManParser::next_token() {
+bool ManParser::next_token(std::string& t) {
   for (;;) {
     switch (state) {
       case 1:  // command arguments
@@ -90,16 +90,14 @@ char* ManParser::next_token() {
       case 3:  // wordchar
         if (!is_wordchar(line[actual].c_str() + head)) {
           state = 2;
-          std::string t;
-          bool ok = alloc_token(token, &head, t);
-          if (ok)
-            return mystrdup(t.c_str());
+          if (alloc_token(token, &head, t))
+            return true;
         }
         break;
     }
     if (next_char(line[actual].c_str(), &head)) {
       state = 0;
-      return NULL;
+      return false;
     }
   }
 }

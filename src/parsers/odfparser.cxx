@@ -72,8 +72,8 @@ ODFParser::ODFParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 
-char* ODFParser::next_token() {
-  return XMLParser::next_token(PATTERN, PATTERN_LEN, PATTERN2, PATTERN_LEN2);
+bool ODFParser::next_token(std::string& t) {
+  return XMLParser::next_token(PATTERN, PATTERN_LEN, PATTERN2, PATTERN_LEN2, t);
 }
 
 ODFParser::~ODFParser() {}

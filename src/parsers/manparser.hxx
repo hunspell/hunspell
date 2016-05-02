@@ -64,7 +64,7 @@ class ManParser : public TextParser {
   ManParser(const w_char* wordchars, int len);
   virtual ~ManParser();
 
-  virtual char* next_token();
+  virtual bool next_token(std::string&);
 };
 
 #endif

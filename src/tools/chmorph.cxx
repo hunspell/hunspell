@@ -81,11 +81,11 @@ int main(int, char** argv) {
       "qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
 
   char buf[MAXLNLEN];
-  char* next;
 
   while (fgets(buf, MAXLNLEN, f)) {
     p->put_line(buf);
-    while ((next = p->next_token())) {
+    std::string next;
+    while (p->next_token(next)) {
       std::vector<std::string> pl = pMS->analyze(next);
       if (!pl.empty()) {
         int gen = 0;
@@ -104,12 +104,10 @@ int main(int, char** argv) {
           if (!pl2.empty()) {
             p->change_token(pl2[0].c_str());
             // jump over the (possibly un)modified word
-            free(next);
-            next = p->next_token();
+            p->next_token(next);
           }
         }
       }
-      free(next);
     }
     fprintf(stdout, "%s\n", p->get_line().c_str());
   }

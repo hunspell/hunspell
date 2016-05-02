@@ -614,7 +614,7 @@ char* scanline(char* message) {
 #endif
 
 // check words in the dictionaries (and set first checked dictionary)
-bool check(Hunspell** pMS, int* d, char* token, int* info, std::string* root) {
+bool check(Hunspell** pMS, int* d, const std::string& token, int* info, std::string* root) {
   for (int i = 0; i < dmax; ++i) {
     std::string buf(token);
     chenc(buf, io_enc, dic_enc[*d]);
@@ -657,7 +657,6 @@ static bool secure_filename(const char* filename) {
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   char buf[MAXLNLEN];
   std::vector<std::string> dicwords;
-  char* token;
   int pos;
   int bad;
   int lineno = 0;
@@ -800,19 +799,19 @@ nextline:
 
     if (pos >= 0) {
       parser->put_line(buf + pos);
-      while ((token = parser->next_token())) {
-        token = mystrrep(token, ENTITY_APOS, "'");
+      std::string token;
+      while (parser->next_token(token)) {
+        mystrrep(token, ENTITY_APOS, "'");
         switch (filter_mode) {
           case BADWORD: {
-            if (!check(pMS, &d, token, NULL, NULL)) {
+            if (!check(pMS, &d, token.c_str(), NULL, NULL)) {
               bad = 1;
               if (!printgood)
-                fprintf(stdout, "%s\n", token);
+                fprintf(stdout, "%s\n", token.c_str());
             } else {
               if (printgood)
-                fprintf(stdout, "%s\n", token);
+                fprintf(stdout, "%s\n", token.c_str());
             }
-            free(token);
             continue;
           }
 
@@ -824,7 +823,6 @@ nextline:
               if (printgood)
                 fprintf(stdout, "%s\n", buf);
             }
-            free(token);
             goto nextline;
           }
 
@@ -832,7 +830,6 @@ nextline:
             if (!check(pMS, &d, token, NULL, NULL)) {
               bad = 1;
             }
-            free(token);
             continue;
           }
 
@@ -849,18 +846,17 @@ nextline:
                 parser->change_token(chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
-                          lineno, token, chenc(wlst[0], dic_enc[d], io_enc).c_str());
+                          lineno, token.c_str(), chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 } else if (filter_mode == AUTO2) {
-                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, token,
+                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, token.c_str(),
                           chenc(wlst[0], dic_enc[d], io_enc).c_str(), buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
-                          chenc(token, io_enc, ui_enc));
+                          chenc(token, io_enc, ui_enc).c_str());
                   fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 }
               }
             }
-            free(token);
             continue;
           }
 
@@ -868,21 +864,20 @@ nextline:
             std::vector<std::string> result =
               pMS[d]->stem(chenc(token, io_enc, dic_enc[d]));
             for (size_t i = 0; i < result.size(); ++i) {
-              fprintf(stdout, "%s %s\n", token,
+              fprintf(stdout, "%s %s\n", token.c_str(),
                       chenc(result[i], dic_enc[d], ui_enc).c_str());
             }
-            if (result.empty() && token[strlen(token) - 1] == '.') {
-              token[strlen(token) - 1] = '\0';
+            if (result.empty() && !token.empty() && token[token.size() - 1] == '.') {
+              token.resize(token.size() - 1);
               result = pMS[d]->stem(token);
               for (size_t i = 0; i < result.size(); ++i) {
-                fprintf(stdout, "%s %s\n", token,
+                fprintf(stdout, "%s %s\n", token.c_str(),
                         chenc(result[i], dic_enc[d], ui_enc).c_str());
               }
             }
             if (result.empty())
-              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc));
+              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc).c_str());
             fprintf(stdout, "\n");
-            free(token);
             continue;
           }
 
@@ -893,28 +888,26 @@ nextline:
                       chenc(wlst[j], dic_enc[d], io_enc).c_str());
             }
             fflush(stdout);
-            free(token);
             continue;
           }
           case ANALYZE: {
             std::vector<std::string> result =
               pMS[d]->analyze(chenc(token, io_enc, dic_enc[d]));
             for (size_t i = 0; i < result.size(); ++i) {
-              fprintf(stdout, "%s %s\n", token,
+              fprintf(stdout, "%s %s\n", token.c_str(),
                       chenc(result[i], dic_enc[d], ui_enc).c_str());
             }
-            if (result.empty() && token[strlen(token) - 1] == '.') {
-              token[strlen(token) - 1] = '\0';
+            if (result.empty() && !token.empty() && token[token.size() - 1] == '.') {
+              token.resize(token.size() - 1);
               result = pMS[d]->analyze(token);
               for (size_t i = 0; i < result.size(); ++i) {
-                fprintf(stdout, "%s %s\n", token,
+                fprintf(stdout, "%s %s\n", token.c_str(),
                         chenc(result[i], dic_enc[d], ui_enc).c_str());
               }
             }
             if (result.empty())
-              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc));
+              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc).c_str());
             fprintf(stdout, "\n");
-            free(token);
             continue;
           }
 
@@ -924,7 +917,7 @@ nextline:
             if (check(pMS, &d, token, &info, &root)) {
               if (!terse_mode) {
                 if (verbose_mode)
-                  fprintf(stdout, "* %s\n", token);
+                  fprintf(stdout, "* %s\n", token.c_str());
                 else
                   fprintf(stdout, "*\n");
               }
@@ -943,9 +936,9 @@ nextline:
               std::vector<std::string> wlst =
                 pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
               if (wlst.empty()) {
-                fprintf(stdout, "# %s %d", token, char_offset);
+                fprintf(stdout, "# %s %d", token.c_str(), char_offset);
               } else {
-                fprintf(stdout, "& %s %ld %d: ", token, wlst.size(), char_offset);
+                fprintf(stdout, "& %s %ld %d: ", token.c_str(), wlst.size(), char_offset);
                 fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], io_enc).c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
@@ -954,7 +947,6 @@ nextline:
               fprintf(stdout, "\n");
               fflush(stdout);
             }
-            free(token);
             continue;
           }
           case NORMAL: {
@@ -983,10 +975,10 @@ nextline:
               std::vector<std::string> wlst =
                 pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
               if (wlst.empty()) {
-                fprintf(stdout, "# %s %d", chenc(token, io_enc, ui_enc),
+                fprintf(stdout, "# %s %d", chenc(token, io_enc, ui_enc).c_str(),
                         char_offset);
               } else {
-                fprintf(stdout, "& %s %ld %d: ", chenc(token, io_enc, ui_enc),
+                fprintf(stdout, "& %s %ld %d: ", chenc(token, io_enc, ui_enc).c_str(),
                         wlst.size(), char_offset);
                 fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
               }
@@ -996,7 +988,6 @@ nextline:
               fprintf(stdout, "\n");
               fflush(stdout);
             }
-            free(token);
           }
         }
       }
@@ -1131,7 +1122,7 @@ int strlenu8(const std::string& in_src) {
 }
 
 void dialogscreen(TextParser* parser,
-                  char* token,
+                  std::string& token,
                   char* filename,
                   int forbidden,
                   std::vector<std::string>& wlst) {
@@ -1144,7 +1135,7 @@ void dialogscreen(TextParser* parser,
   else if (forbidden & SPELL_WARN)
     printw(gettext("Spelling mistake?"));
 
-  printw(gettext("\t%s\t\tFile: %s\n\n"), chenc(token, io_enc, ui_enc),
+  printw(gettext("\t%s\t\tFile: %s\n\n"), chenc(token, io_enc, ui_enc).c_str(),
          filename);
 
   // handle long lines and tabulators
@@ -1161,7 +1152,7 @@ void dialogscreen(TextParser* parser,
   int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
   pPrevLine = mystrdup(parser->get_prevline(0).c_str());
-  line = pPrevLine.substr(0, parser->get_tokenpos() + strlen(token));
+  line = pPrevLine.substr(0, parser->get_tokenpos() + token.size());
   int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
   int rowindex = (tokenend - 1) / x;
@@ -1188,7 +1179,7 @@ void dialogscreen(TextParser* parser,
   strncpyu8(line, lines[0], x * (ri - beginrow), tokenbeg % x);
   mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line.c_str());
   attron(A_REVERSE);
-  printw("%s", chenc(token, io_enc, ui_enc));
+  printw("%s", chenc(token, io_enc, ui_enc).c_str());
   attroff(A_REVERSE);
 
   mvprintw(MAXPREVLINE + 2, 0, "\n");
@@ -1227,7 +1218,7 @@ std::string lower_first_char(const std::string& token, const char* ioenc, int la
 // for terminal interface
 int dialog(TextParser* parser,
            Hunspell* pMS,
-           char* token,
+           std::string& token,
            char* filename,
            std::vector<std::string>& wlst,
            int forbidden) {
@@ -1399,8 +1390,7 @@ int dialog(TextParser* parser,
           char w[MAXLNLEN], w2[MAXLNLEN], w3[MAXLNLEN];
           char* temp;
 
-          strncpy(w, token, MAXLNLEN - 1);
-          token[MAXLNLEN - 1] = '\0';
+          strncpy(w, token.c_str(), MAXLNLEN - 1);
           temp = basename(w, '-');
           if (w < temp) {
             *(temp - 1) = '\0';
@@ -1541,11 +1531,11 @@ int interactive_line(TextParser* parser,
                      Hunspell** pMS,
                      char* filename,
                      FILE* tempfile) {
-  char* token;
   int dialogexit = 0;
   int info = 0;
   int d = 0;
-  while ((token = parser->next_token())) {
+  std::string token;
+  while (parser->next_token(token)) {
     if (!check(pMS, &d, token, &info, NULL)) {
       std::vector<std::string> wlst;
       dialogscreen(parser, token, filename, info, wlst);  // preview
@@ -1561,14 +1551,12 @@ int interactive_line(TextParser* parser,
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
       }
     }
-    free(token);
     if ((dialogexit == -1) || (dialogexit == 1))
       goto ki2;
   }
 
 ki2:
-  fprintf(tempfile, "%s", token = mystrdup(parser->get_line().c_str()));
-  free(token);
+  fprintf(tempfile, "%s", parser->get_line().c_str());
   return dialogexit;
 }
 

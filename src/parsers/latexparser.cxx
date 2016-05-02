@@ -168,7 +168,8 @@ int LaTeXParser::look_pattern(int col) {
  *
  */
 
-char* LaTeXParser::next_token() {
+bool LaTeXParser::next_token(std::string& t) {
+  t.clear();
   int i;
   int slash = 0;
   int apostrophe;
@@ -212,12 +213,11 @@ char* LaTeXParser::next_token() {
             (line[actual][head] == '\'' && line[actual][head + 1] == '\'' &&
              ++apostrophe)) {
           state = 0;
-          std::string t;
           bool ok = alloc_token(token, &head, t);
           if (apostrophe)
             head += 2;
           if (ok)
-            return mystrdup(t.c_str());
+            return true;
         }
         break;
       case 2:  // comment, labels, etc
@@ -261,7 +261,7 @@ char* LaTeXParser::next_token() {
     if (next_char(line[actual].c_str(), &head)) {
       if (state == 5)
         state = 0;
-      return NULL;
+      return false;
     }
   }
 }

@@ -80,8 +80,8 @@ HTMLParser::HTMLParser(const w_char* wordchars, int len) {
   init(wordchars, len);
 }
 
-char* HTMLParser::next_token() {
-  return XMLParser::next_token(PATTERN, PATTERN_LEN, PATTERN2, PATTERN_LEN2);
+bool HTMLParser::next_token(std::string& t) {
+  return XMLParser::next_token(PATTERN, PATTERN_LEN, PATTERN2, PATTERN_LEN2, t);
 }
 
 HTMLParser::~HTMLParser() {}

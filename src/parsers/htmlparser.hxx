@@ -60,7 +60,7 @@ class HTMLParser : public XMLParser {
  public:
   HTMLParser(const char* wc);
   HTMLParser(const w_char* wordchars, int len);
-  virtual char* next_token();
+  virtual bool next_token(std::string&);
   virtual ~HTMLParser();
 };
 

@@ -104,10 +104,12 @@ int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
  *
  */
 
-char* XMLParser::next_token(const char* PATTERN[][2],
-                            unsigned int PATTERN_LEN,
-                            const char* PATTERN2[][2],
-                            unsigned int PATTERN_LEN2) {
+bool XMLParser::next_token(const char* PATTERN[][2],
+                           unsigned int PATTERN_LEN,
+                           const char* PATTERN2[][2],
+                           unsigned int PATTERN_LEN2,
+                           std::string& t) {
+  t.clear();
   const char* latin1;
 
   for (;;) {
@@ -150,10 +152,8 @@ char* XMLParser::next_token(const char* PATTERN[][2],
           head += strlen(UTF8_APOS) - 1;
         } else if (!is_wordchar(line[actual].c_str() + head)) {
           state = prevstate;
-          std::string t;
-          bool ok = alloc_token(token, &head, t);
-          if (ok)
-            return mystrdup(t.c_str());
+          if (alloc_token(token, &head, t))
+            return true;
         }
         break;
       case ST_TAG:  // comment, labels, etc
@@ -196,13 +196,13 @@ char* XMLParser::next_token(const char* PATTERN[][2],
         }
     }
     if (next_char(line[actual].c_str(), &head))
-      return NULL;
+      return false;
   }
 }
 
-char* XMLParser::next_token() {
+bool XMLParser::next_token(std::string& t) {
   return next_token(__PATTERN__, __PATTERN_LEN__, __PATTERN2__,
-                    __PATTERN_LEN2__);
+                    __PATTERN_LEN2__, t);
 }
 
 int XMLParser::change_token(const char* word) {

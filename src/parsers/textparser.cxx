@@ -173,7 +173,7 @@ std::string TextParser::get_line() const {
   return get_prevline(0);
 }
 
-char* TextParser::next_token() {
+bool TextParser::next_token(std::string &t) {
   const char* latin1;
 
   for (;;) {
@@ -206,15 +206,13 @@ char* TextParser::next_token() {
           head += strlen(UTF8_APOS) - 1;
         } else if (!is_wordchar(line[actual].c_str() + head)) {
           state = 0;
-          std::string t;
-          bool ok = alloc_token(token, &head, t);
-          if (ok)
-            return mystrdup(t.c_str());
+          if (alloc_token(token, &head, t))
+            return true;
         }
         break;
     }
     if (next_char(line[actual].c_str(), &head))
-      return NULL;
+      return false;
   }
 }
 

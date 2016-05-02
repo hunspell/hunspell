@@ -91,7 +91,7 @@ class TextParser {
   void put_line(const char* line);
   std::string get_line() const;
   std::string get_prevline(int n) const;
-  virtual char* next_token();
+  virtual bool next_token(std::string&);
   virtual int change_token(const char* word);
   void set_url_checking(int check);
 

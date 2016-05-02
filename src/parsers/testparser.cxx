@@ -73,14 +73,13 @@ int main(int argc, char** argv) {
       "qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
 
   char buf[MAXLNLEN];
-  char* next;
 
   while (fgets(buf, MAXLNLEN, f)) {
     p->put_line(buf);
     p->set_url_checking(1);
-    while ((next = p->next_token())) {
-      fprintf(stdout, "token: %s\n", next);
-      free(next);
+    std::string next;
+    while (p->next_token(next)) {
+      fprintf(stdout, "token: %s\n", next.c_str());
     }
   }
 
