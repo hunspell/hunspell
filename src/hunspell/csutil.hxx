@@ -151,9 +151,6 @@ LIBHUNSPELL_DLL_EXPORTED std::string::const_iterator mystrsep(const std::string 
                                                               std::string::const_iterator& start);
 
 // replace pat by rep in word and return word
-LIBHUNSPELL_DLL_EXPORTED char* mystrrep(char* word,
-                                        const char* pat,
-                                        const char* rep);
 LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str,
                                                const std::string& search,
                                                const std::string& replace);

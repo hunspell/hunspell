@@ -571,33 +571,6 @@ std::string& mystrrep(std::string& str,
   return str;
 }
 
-char* mystrrep(char* word, const char* pat, const char* rep) {
-  char* pos = strstr(word, pat);
-  if (pos) {
-    int replen = strlen(rep);
-    int patlen = strlen(pat);
-    while (pos) {
-      if (replen < patlen) {
-        char* end = word + strlen(word);
-        char* next = pos + replen;
-        char* prev = pos + strlen(pat);
-        for (; prev < end;* next = *prev, prev++, next++)
-          ;
-        *next = '\0';
-      } else if (replen > patlen) {
-        char* end = pos + patlen;
-        char* next = word + strlen(word) + replen - patlen;
-        char* prev = next - replen + patlen;
-        for (; prev >= end;* next = *prev, prev--, next--)
-          ;
-      }
-      strncpy(pos, rep, replen);
-      pos = strstr(word, pat);
-    }
-  }
-  return word;
-}
-
 // reverse word
 size_t reverseword(std::string& word) {
   std::reverse(word.begin(), word.end());
