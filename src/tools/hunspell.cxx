@@ -1387,17 +1387,15 @@ int dialog(TextParser* parser,
         if (c == (gettext("s"))[0]) {
           modified = 1;
 
-          char w[MAXLNLEN];
-
-          strncpy(w, token.c_str(), MAXLNLEN - 1);
-          char* temp_c = basename(w, '-');
-          if (w < temp_c) {
-            *(temp_c - 1) = '\0';
+          std::string w(token);
+          size_t n_last_of = w.find_last_of('-');
+          if (n_last_of != std::string::npos) {
+            w.resize(n_last_of);
           }
 
 #ifdef HAVE_READLINE
           endwin();
-          rltext = w;
+          rltext = w.c_str();
           if (rltext && *rltext)
             rl_startup_hook = set_rltext;
 #endif
@@ -1413,8 +1411,7 @@ int dialog(TextParser* parser,
             break;
           }
 
-          strncpy(w, temp, MAXLNLEN - 1);
-          w[MAXLNLEN - 1] = '\0';
+          w.assign(temp);
           free(temp);
 
 #ifdef HAVE_READLINE
