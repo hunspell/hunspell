@@ -628,6 +628,21 @@ static bool secure_filename(const char* filename) {
   return true;
 }
 
+char* mymkdtemp(char *templ) {
+#ifdef WIN32
+  char *odftmpdir = tmpnam(NULL);
+  if (!odftmpdir) {
+    return NULL;
+  }
+  if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
+    return NULL;
+  }
+  return odftmpdir;
+#else
+  return mkdtemp(templ);
+#endif
+}
+
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   char buf[MAXLNLEN];
   std::vector<std::string> dicwords;
@@ -641,16 +656,13 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
 
   const char* extension = (filename) ? basename(filename, '.') : NULL;
   TextParser* parser = get_parser(format, extension, pMS[0]);
+  char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = tmpnam(NULL);
+    odftmpdir = mymkdtemp(tmpdirtemplate);
     if (!odftmpdir) {
-      perror(gettext("Can't create tmp dir"));
-      exit(1);
-    }
-    if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
       perror(gettext("Can't create tmp dir"));
       exit(1);
     }
@@ -1549,20 +1561,16 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
 
   const char* extension = basename(filename, '.');
   TextParser* parser = get_parser(format, extension, pMS[0]);
+  char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
   // access content.xml of ODF
   if (bZippedOdf) {
-    odftmpdir = tmpnam(NULL);
+    odftmpdir = mymkdtemp(tmpdirtemplate);
     if (!odftmpdir) {
       perror(gettext("Can't create tmp dir"));
       endwin();
       exit(1);
-    }
-    if (system((std::string("mkdir ") + odftmpdir).c_str()) != 0) {
-        perror(gettext("Can't create tmp dir"));
-        endwin();
-        exit(1);
     }
     fclose(text);
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
