@@ -280,32 +280,6 @@ std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
 #endif
 }
 
-/* change character encoding */
-char* chenc(char* st, const char* enc1, const char* enc2) {
-  char* out = st;
-#ifdef HAVE_ICONV
-  if (enc1 && enc2 && strcmp(enc1, enc2) != 0) {
-    size_t c1 = strlen(st) + 1;
-    size_t c2 = MAXLNLEN;
-    char* source = st;
-    char* dest = text_conv;
-    iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
-    if (conv == (iconv_t)-1) {
-      fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), enc2, enc1);
-    } else {
-      size_t res = iconv(conv, (ICONV_CONST char**)&source, &c1, &dest, &c2);
-      iconv_close(conv);
-      if (res != (size_t)-1)
-        out = text_conv;
-    }
-  }
-#else
-  (void)enc1;
-  (void)enc2;
-#endif
-  return out;
-}
-
 TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   TextParser* p = NULL;
   int io_utf8 = 0;
