@@ -1387,7 +1387,7 @@ int dialog(TextParser* parser,
         if (c == (gettext("s"))[0]) {
           modified = 1;
 
-          char w[MAXLNLEN], w2[MAXLNLEN], w3[MAXLNLEN];
+          char w[MAXLNLEN];
           char* temp;
 
           strncpy(w, token.c_str(), MAXLNLEN - 1);
@@ -1444,23 +1444,24 @@ int dialog(TextParser* parser,
             break;
           }
 
-          strncpy(w2, temp, MAXLNLEN - 1);
-          temp[MAXLNLEN - 1] = '\0';
+          std::string w2(temp);
           free(temp);
 
-          if (strlen(w) + strlen(w2) + 2 < MAXLNLEN) {
-            sprintf(w3, "%s/%s", w, w2);
-          } else
-            break;
+          std::string w3;
+          w3.append(w);
+          w3.append("/");
+          w3.append(w2);
 
           if (!putdic(w3, pMS)) {
             dicwords.push_back(w3);
 
-            if (strlen(w) + strlen(w2) + 4 < MAXLNLEN) {
-              sprintf(w3, "%s-/%s-", w, w2);
-              if (putdic(w3, pMS)) {
-                dicwords.push_back(w3);
-              }
+            w3.clear();
+            w3.append(w);
+            w3.append("-/");
+            w3.append(w2);
+            w3.append("-");
+            if (putdic(w3, pMS)) {
+              dicwords.push_back(w3);
             }
             // save
             std::string sbuf;
