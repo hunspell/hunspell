@@ -3262,7 +3262,6 @@ std::string AffixMgr::morphgen(const char* ts,
 
         // recursive call for secondary suffixes
         if ((level == 0) && (cmp == 1) && (sptr->getContLen() > 0) &&
-            //                    (get_sfxcount(stemmorph) < targetcount) &&
             !TESTAFF(sptr->getCont(), substandard, sptr->getContLen())) {
           std::string newword = sptr->add(ts, wl);
           if (!newword.empty()) {
