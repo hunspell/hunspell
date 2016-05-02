@@ -266,8 +266,6 @@ LIBHUNSPELL_DLL_EXPORTED bool copy_field(std::string& dest,
                                          const std::string& morph,
                                          const std::string& var);
 
-LIBHUNSPELL_DLL_EXPORTED int morphcmp(const char* s, const char* t);
-
 LIBHUNSPELL_DLL_EXPORTED int get_sfxcount(const char* morph);
 
 // conversion function for protected memory
