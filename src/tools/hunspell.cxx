@@ -665,7 +665,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   int d = 0;
   char* odftmpdir = NULL;
 
-  char* extension = (filename) ? basename(filename, '.') : NULL;
+  const char* extension = (filename) ? basename(filename, '.') : NULL;
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
@@ -1388,12 +1388,11 @@ int dialog(TextParser* parser,
           modified = 1;
 
           char w[MAXLNLEN];
-          char* temp;
 
           strncpy(w, token.c_str(), MAXLNLEN - 1);
-          temp = basename(w, '-');
-          if (w < temp) {
-            *(temp - 1) = '\0';
+          char* temp_c = basename(w, '-');
+          if (w < temp_c) {
+            *(temp_c - 1) = '\0';
           }
 
 #ifdef HAVE_READLINE
@@ -1402,7 +1401,7 @@ int dialog(TextParser* parser,
           if (rltext && *rltext)
             rl_startup_hook = set_rltext;
 #endif
-          temp = readline(gettext("New word (stem): "));
+          char* temp = readline(gettext("New word (stem): "));
 
           if ((!temp) || (temp[0] == '\0')) {
             free(temp);
@@ -1577,7 +1576,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
   int dialogexit;
   int check = 1;
 
-  char* extension = basename(filename, '.');
+  const char* extension = basename(filename, '.');
   TextParser* parser = get_parser(format, extension, pMS[0]);
 
   bool bZippedOdf = is_zipped_odf(parser, extension);
