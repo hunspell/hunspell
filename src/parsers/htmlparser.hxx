@@ -60,7 +60,7 @@ class HTMLParser : public XMLParser {
  public:
   HTMLParser(const char* wc);
   HTMLParser(const w_char* wordchars, int len);
-  char* next_token();
+  virtual char* next_token();
   virtual ~HTMLParser();
 };
 

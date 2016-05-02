@@ -65,7 +65,7 @@ class XMLParser : public TextParser {
                    unsigned int len,
                    const char* p2[][2],
                    unsigned int len2);
-  char* next_token();
+  virtual char* next_token();
   int change_token(const char* word);
   virtual ~XMLParser();
 
