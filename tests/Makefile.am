@@ -683,6 +683,10 @@ forceucase.good \
 forceucase.sug \
 forceucase.wrong \
 forceucase.test \
+nepali.aff \
+nepali.dic \
+nepali.good \
+nepali.test \
 warn.aff \
 warn.dic \
 warn.good \

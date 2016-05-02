@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hunspell\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
-"POT-Creation-Date: 2016-04-29 13:44+0100\n"
+"POT-Creation-Date: 2016-05-02 17:03+0100\n"
 "PO-Revision-Date: 2005-09-03 11:22+0200\n"
 "Last-Translator: László Németh <nemeth dot lacko at gmail>\n"
 "Language-Team: Hungarian <openscope.org>\n"
@@ -33,44 +33,45 @@ msgstr "hiba - iconv_open: %s -> %s\n"
 msgid "error - iconv_open: UTF-8 -> %s\n"
 msgstr "hiba - iconv_open: UTF-8 -> %s\n"
 
-#: src/tools/hunspell.cxx:678 src/tools/hunspell.cxx:1594
+#: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:681
+#: src/tools/hunspell.cxx:1599 src/tools/hunspell.cxx:1604
 #, fuzzy
 msgid "Can't create tmp dir"
 msgstr "Nem lehet létrehozni átmeneti állományt."
 
-#: src/tools/hunspell.cxx:689 src/tools/hunspell.cxx:698
-#: src/tools/hunspell.cxx:1577 src/tools/hunspell.cxx:1607
-#: src/tools/hunspell.cxx:1619
+#: src/tools/hunspell.cxx:692 src/tools/hunspell.cxx:702
+#: src/tools/hunspell.cxx:1583 src/tools/hunspell.cxx:1617
+#: src/tools/hunspell.cxx:1630
 msgid "Can't open inputfile"
 msgstr "Nem lehet megnyitni a bemeneti állományt."
 
-#: src/tools/hunspell.cxx:691 src/tools/hunspell.cxx:1609
-#: src/tools/hunspell.cxx:2034 src/tools/hunspell.cxx:2186
-#: src/tools/hunspell.cxx:2203
+#: src/tools/hunspell.cxx:694 src/tools/hunspell.cxx:1619
+#: src/tools/hunspell.cxx:2039 src/tools/hunspell.cxx:2191
+#: src/tools/hunspell.cxx:2208
 #, c-format
 msgid "Can't open %s.\n"
 msgstr "Nem lehet megnyitni a(z) %s-t.\n"
 
-#: src/tools/hunspell.cxx:765 src/tools/hunspell.cxx:1358
-#: src/tools/hunspell.cxx:1474
+#: src/tools/hunspell.cxx:770 src/tools/hunspell.cxx:1364
+#: src/tools/hunspell.cxx:1480
 #, c-format
 msgid "error - missing HOME variable\n"
 msgstr "hiba - nincs definiálva a HOME környezeti változó\n"
 
-#: src/tools/hunspell.cxx:852
+#: src/tools/hunspell.cxx:857
 #, c-format
 msgid "Line %d: %s -> "
 msgstr "%d. sor: %s -> "
 
-#: src/tools/hunspell.cxx:1135
+#: src/tools/hunspell.cxx:1143
 msgid "FORBIDDEN!"
 msgstr "TILTOTT!"
 
-#: src/tools/hunspell.cxx:1137
+#: src/tools/hunspell.cxx:1145
 msgid "Spelling mistake?"
 msgstr "Helyesírási hiba?"
 
-#: src/tools/hunspell.cxx:1139
+#: src/tools/hunspell.cxx:1147
 #, c-format
 msgid ""
 "\t%s\t\tFile: %s\n"
@@ -82,7 +83,7 @@ msgstr ""
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
 #.
-#: src/tools/hunspell.cxx:1200
+#: src/tools/hunspell.cxx:1206
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
@@ -91,7 +92,7 @@ msgstr ""
 "Szóköz=tovább <szám> C)sere J)ó F)elvesz K)isbetűvel T)ő M)égsem V)ége ?"
 "=Súgó\n"
 
-#: src/tools/hunspell.cxx:1271
+#: src/tools/hunspell.cxx:1277
 msgid ""
 "Whenever a word is found that is not in the dictionary\n"
 "it is printed on the first line of the screen.  If the dictionary\n"
@@ -105,7 +106,7 @@ msgstr ""
 "egyet, de megadhatunk akár egy új szót is.\n"
 "Részletes leírás a program lehetőségeiről: man hunspell.\n"
 
-#: src/tools/hunspell.cxx:1277
+#: src/tools/hunspell.cxx:1283
 msgid ""
 "\n"
 "Commands are:\n"
@@ -115,28 +116,28 @@ msgstr ""
 "Billentyűparancsok: \n"
 "\n"
 
-#: src/tools/hunspell.cxx:1278
+#: src/tools/hunspell.cxx:1284
 msgid "R\tReplace the misspelled word completely.\n"
 msgstr "C\tA hibás szó kicserélése egy megadott szóra.\n"
 
-#: src/tools/hunspell.cxx:1279
+#: src/tools/hunspell.cxx:1285
 msgid "Space\tAccept the word this time only.\n"
 msgstr "Szóköz\tA szó egyszeri átugrása változtatás nélkül.\n"
 
-#: src/tools/hunspell.cxx:1281
+#: src/tools/hunspell.cxx:1287
 msgid "A\tAccept the word for the rest of this session.\n"
 msgstr "J\tA szó minden előfordulását jónak tekinti a program futása során.\n"
 
-#: src/tools/hunspell.cxx:1283
+#: src/tools/hunspell.cxx:1289
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
 msgstr ""
 "F\tA szót felveszi a saját szótárba, így új indításkor is ismerni fogja.\n"
 
-#: src/tools/hunspell.cxx:1285
+#: src/tools/hunspell.cxx:1291
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr "K\tMint az előző, de a szót kisbetűsen veszi fel a saját szótárba.\n"
 
-#: src/tools/hunspell.cxx:1287
+#: src/tools/hunspell.cxx:1293
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
@@ -144,28 +145,28 @@ msgstr ""
 "T\tSzótő és mintaszó bekérése és saját szótárban való tárolása.\n"
 "\tA tő felveheti a mintául megadott szó toldalékait is.\n"
 
-#: src/tools/hunspell.cxx:1291
+#: src/tools/hunspell.cxx:1297
 msgid "0-n\tReplace with one of the suggested words.\n"
 msgstr "0-n\tA javasolt szavak közül az adott sorszámúra cserél.\n"
 
-#: src/tools/hunspell.cxx:1293
+#: src/tools/hunspell.cxx:1299
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr "V\tMenti az eddigi javításokat, és rátér a következő állományra.\n"
 
-#: src/tools/hunspell.cxx:1296
+#: src/tools/hunspell.cxx:1302
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr "M\tKilép a javítások mentése nélkül, de előtte megerősítést kér.\n"
 
-#: src/tools/hunspell.cxx:1298
+#: src/tools/hunspell.cxx:1304
 msgid "^Z\tSuspend program. Restart with fg command.\n"
 msgstr "^Z\tA program felfüggesztése. Újraindítás fg paranccsal.\n"
 
-#: src/tools/hunspell.cxx:1299
+#: src/tools/hunspell.cxx:1305
 msgid "?\tShow this help screen.\n"
 msgstr "?\tEnnek a leírásnak a megjelenítése.\n"
 
-#: src/tools/hunspell.cxx:1300
+#: src/tools/hunspell.cxx:1306
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
@@ -176,11 +177,11 @@ msgstr ""
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
-#: src/tools/hunspell.cxx:1312
+#: src/tools/hunspell.cxx:1318
 msgid "r"
 msgstr "c"
 
-#: src/tools/hunspell.cxx:1321
+#: src/tools/hunspell.cxx:1327
 msgid "Replace with: "
 msgstr "Csere: "
 
@@ -190,80 +191,80 @@ msgstr "Csere: "
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "U)ncap" and I)nsert before
-#: src/tools/hunspell.cxx:1345 src/tools/hunspell.cxx:1381
+#: src/tools/hunspell.cxx:1351 src/tools/hunspell.cxx:1387
 msgid "u"
 msgstr "k"
 
-#: src/tools/hunspell.cxx:1346 src/tools/hunspell.cxx:1381
+#: src/tools/hunspell.cxx:1352 src/tools/hunspell.cxx:1387
 msgid "i"
 msgstr "f"
 
-#: src/tools/hunspell.cxx:1374 src/tools/hunspell.cxx:1490
+#: src/tools/hunspell.cxx:1380 src/tools/hunspell.cxx:1496
 #, c-format
 msgid "Cannot update personal dictionary."
 msgstr "Nem lehet frissíteni a saját szótárat."
 
-#: src/tools/hunspell.cxx:1382
+#: src/tools/hunspell.cxx:1388
 msgid "a"
 msgstr "j"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
-#: src/tools/hunspell.cxx:1390
+#: src/tools/hunspell.cxx:1396
 msgid "s"
 msgstr "t"
 
-#: src/tools/hunspell.cxx:1409
+#: src/tools/hunspell.cxx:1415
 msgid "New word (stem): "
 msgstr "Új szó(tő): "
 
-#: src/tools/hunspell.cxx:1438
+#: src/tools/hunspell.cxx:1444
 msgid "Model word (a similar dictionary word): "
 msgstr "Mintaszó (egy hasonló szótári szó): "
 
-#: src/tools/hunspell.cxx:1497
+#: src/tools/hunspell.cxx:1503
 msgid "Model word must be in the dictionary. Press any key!"
 msgstr "A minta csak szótári szó lehet! Továbblépés billentyűleütéssel."
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
-#: src/tools/hunspell.cxx:1507
+#: src/tools/hunspell.cxx:1513
 msgid "x"
 msgstr "v"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
-#: src/tools/hunspell.cxx:1513
+#: src/tools/hunspell.cxx:1519
 msgid "q"
 msgstr "m"
 
-#: src/tools/hunspell.cxx:1516
+#: src/tools/hunspell.cxx:1522
 msgid "Are you sure you want to throw away your changes? "
 msgstr "Kilép a módosítások mentése nélkül (i/n)? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
-#: src/tools/hunspell.cxx:1519
+#: src/tools/hunspell.cxx:1525
 msgid "y"
 msgstr "i"
 
-#: src/tools/hunspell.cxx:1630 src/tools/hunspell.cxx:1639
+#: src/tools/hunspell.cxx:1640
 msgid "Can't create tempfile"
 msgstr "Nem lehet létrehozni átmeneti állományt."
 
-#: src/tools/hunspell.cxx:1683
+#: src/tools/hunspell.cxx:1685
 msgid "Can't open outputfile"
 msgstr "Nem lehet megnyitni a kimeneti állományt."
 
-#: src/tools/hunspell.cxx:1845
+#: src/tools/hunspell.cxx:1850
 #, c-format
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
 msgstr "Használat: hunspell [KAPCSOLÓ]... [ÁLLOMÁNY]...\n"
 
-#: src/tools/hunspell.cxx:1846
+#: src/tools/hunspell.cxx:1851
 #, c-format
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
@@ -273,128 +274,128 @@ msgstr ""
 "ellenőrzi.\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1848
+#: src/tools/hunspell.cxx:1853
 #, c-format
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
 "  -1\t\tcsak az első mezőt ellenőrzi a sorban (mezőhatároló = tabulátor)\n"
 
-#: src/tools/hunspell.cxx:1850
+#: src/tools/hunspell.cxx:1855
 #, c-format
 msgid "  -a\t\tIspell's pipe interface\n"
 msgstr "  -a\t\tIspell-szerű csőfelület\n"
 
-#: src/tools/hunspell.cxx:1851
+#: src/tools/hunspell.cxx:1856
 #, c-format
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr "  --check-url\tURL-ek, e-mail címek és útvonalak ellenőrzése\n"
 
-#: src/tools/hunspell.cxx:1856
+#: src/tools/hunspell.cxx:1861
 #, c-format
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
 msgstr "  --check-apostrophe\tUnicode tipográfiai aposztróf ellenőrzése\n"
 
-#: src/tools/hunspell.cxx:1858
+#: src/tools/hunspell.cxx:1863
 #, c-format
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
 msgstr "  -d d[,d2,...]\ta d (d2 stb.) nevű szótárat használja\n"
 
-#: src/tools/hunspell.cxx:1859
+#: src/tools/hunspell.cxx:1864
 #, c-format
 msgid "  -D\t\tshow available dictionaries\n"
 msgstr "  -D\t\taz elérhető szótárak kilistázása\n"
 
-#: src/tools/hunspell.cxx:1860
+#: src/tools/hunspell.cxx:1865
 #, c-format
 msgid "  -G\t\tprint only correct words or lines\n"
 msgstr "  -G\t\tkiírja a bemenet helyes szavait vagy sorait\n"
 
-#: src/tools/hunspell.cxx:1861
+#: src/tools/hunspell.cxx:1866
 #, c-format
 msgid "  -h, --help\tdisplay this help and exit\n"
 msgstr "  -h, --help\tkiírja ezt a leírást\n"
 
-#: src/tools/hunspell.cxx:1862
+#: src/tools/hunspell.cxx:1867
 #, c-format
 msgid "  -H\t\tHTML input file format\n"
 msgstr "  -H\t\tHTML bemeneti formátum\n"
 
-#: src/tools/hunspell.cxx:1863
+#: src/tools/hunspell.cxx:1868
 #, c-format
 msgid "  -i enc\tinput encoding\n"
 msgstr "  -i kód\tbemeneti karakterkódolás\n"
 
-#: src/tools/hunspell.cxx:1864
+#: src/tools/hunspell.cxx:1869
 #, c-format
 msgid "  -l\t\tprint misspelled words\n"
 msgstr "  -l\t\tkiírja a hibás szavakat\n"
 
-#: src/tools/hunspell.cxx:1865
+#: src/tools/hunspell.cxx:1870
 #, c-format
 msgid "  -L\t\tprint lines with misspelled words\n"
 msgstr "  -L\t\tkiírja a hibás sorokat\n"
 
-#: src/tools/hunspell.cxx:1867
+#: src/tools/hunspell.cxx:1872
 #, c-format
 msgid "  -m \t\tanalyze the words of the input text\n"
 msgstr "  -m \t\tszövegszavak morfológiai elemzése\n"
 
-#: src/tools/hunspell.cxx:1868
+#: src/tools/hunspell.cxx:1873
 #, c-format
 msgid "  -n\t\tnroff/troff input file format\n"
 msgstr "  -n\t\tnroff/troff bemeneti formátum\n"
 
-#: src/tools/hunspell.cxx:1872
+#: src/tools/hunspell.cxx:1877
 #, c-format
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
 msgstr "  -O\t\tOpenDocument (ODF vagy Flat ODF) bemeneti formátum\n"
 
-#: src/tools/hunspell.cxx:1873
+#: src/tools/hunspell.cxx:1878
 #, c-format
 msgid "  -p dict\tset dict custom dictionary\n"
 msgstr "  -p tár\ta tár nevű saját szótárat használja\n"
 
-#: src/tools/hunspell.cxx:1875
+#: src/tools/hunspell.cxx:1880
 #, c-format
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
 msgstr "  -r\t\tlehetséges hibák (ritka szavak) jelzése\n"
 
-#: src/tools/hunspell.cxx:1878
+#: src/tools/hunspell.cxx:1883
 #, c-format
 msgid "  -P password\tset password for encrypted dictionaries\n"
 msgstr "  -P jelszó\tjelszó megadása a titkosított szótárakhoz\n"
 
-#: src/tools/hunspell.cxx:1879
+#: src/tools/hunspell.cxx:1884
 #, c-format
 msgid "  -s \t\tstem the words of the input text\n"
 msgstr "  -s \t\tszövegszavak tövezése\n"
 
-#: src/tools/hunspell.cxx:1880
+#: src/tools/hunspell.cxx:1885
 #, fuzzy, c-format
 msgid "  -S \t\tsuffix words of the input text\n"
 msgstr "  -s \t\tszövegszavak tövezése\n"
 
-#: src/tools/hunspell.cxx:1881
+#: src/tools/hunspell.cxx:1886
 #, c-format
 msgid "  -t\t\tTeX/LaTeX input file format\n"
 msgstr "  -t\t\tTeX/LaTeX bemeneti formátum\n"
 
-#: src/tools/hunspell.cxx:1891
+#: src/tools/hunspell.cxx:1896
 #, c-format
 msgid "  -v, --version\tprint version number\n"
 msgstr "  -v, --version\tkiírja a változat számát\n"
 
-#: src/tools/hunspell.cxx:1893
+#: src/tools/hunspell.cxx:1898
 #, c-format
 msgid "  -vv\t\tprint Ispell compatible version number\n"
 msgstr "  -vv\t\tkiírja a változat számát Ispell-szerűen\n"
 
-#: src/tools/hunspell.cxx:1894
+#: src/tools/hunspell.cxx:1899
 #, c-format
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr "  -w\t\tkiírja a hibás szavakat a soronként egy szavas bemenetből.\n"
 
-#: src/tools/hunspell.cxx:1896
+#: src/tools/hunspell.cxx:1901
 #, c-format
 msgid ""
 "  -X\t\tXML input file format\n"
@@ -403,7 +404,7 @@ msgstr ""
 "  -X\t\tXML bemeneti formátum\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1900
+#: src/tools/hunspell.cxx:1905
 #, c-format
 msgid ""
 "Example: hunspell -d en_US file.txt    # interactive spelling\n"
@@ -443,12 +444,12 @@ msgstr ""
 "         hunspell -p szavak *.odt\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1915
+#: src/tools/hunspell.cxx:1920
 #, c-format
 msgid "Bug reports: http://hunspell.github.io/\n"
 msgstr "Hibajelzés: http://hunspell.github.io/\n"
 
-#: src/tools/hunspell.cxx:1923
+#: src/tools/hunspell.cxx:1928
 #, c-format
 msgid ""
 "\n"
@@ -465,7 +466,7 @@ msgstr ""
 "MySpell copyright (C) Kevin Hendricks, 2001-2002, Licenc: BSD.\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1928
+#: src/tools/hunspell.cxx:1933
 #, c-format
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
@@ -476,7 +477,7 @@ msgstr ""
 "NINCS garancia, még az eladhatóságra vagy valamely célra való\n"
 "alkalmazhatóságra sem.\n"
 
-#: src/tools/hunspell.cxx:2089
+#: src/tools/hunspell.cxx:2094
 #, c-format
 msgid ""
 "SEARCH PATH:\n"
@@ -485,12 +486,12 @@ msgstr ""
 "KERESÉSI ÚTVONAL:\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:2093
+#: src/tools/hunspell.cxx:2098
 #, c-format
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
 msgstr "ELÉRHETŐ SZÓTÁRAK (az útvonal nem kötelező a -d kapcsolónál):\n"
 
-#: src/tools/hunspell.cxx:2107
+#: src/tools/hunspell.cxx:2112
 #, c-format
 msgid ""
 "LOADED DICTIONARY:\n"
@@ -501,17 +502,17 @@ msgstr ""
 "%s\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:2127
+#: src/tools/hunspell.cxx:2132
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
 msgstr "hiba - %s meghaladja a szótárlimitet.\n"
 
-#: src/tools/hunspell.cxx:2133
+#: src/tools/hunspell.cxx:2138
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr "Nem lehet megnyitni a ragozási vagy a szótárállományt (szótár: %s).\n"
 
-#: src/tools/hunspell.cxx:2216
+#: src/tools/hunspell.cxx:2221
 #, c-format
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
 msgstr "A Hunspell Ncurses felhasználói felület nélkül lett fordítva.\n"
