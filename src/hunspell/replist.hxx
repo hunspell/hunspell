@@ -94,7 +94,6 @@ class RepList {
   RepList(int n);
   ~RepList();
 
-  int get_pos();
   int add(const std::string& pat1, const std::string& pat2);
   replentry* item(int n);
   int find(const char* word);

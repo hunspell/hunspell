@@ -311,17 +311,11 @@ class AffixMgr {
   const std::vector<w_char>& get_ignore_utf16() const;
   int get_compound() const;
   FLAG get_compoundflag() const;
-  FLAG get_compoundbegin() const;
   FLAG get_forbiddenword() const;
   FLAG get_nosuggest() const;
   FLAG get_nongramsuggest() const;
   FLAG get_needaffix() const;
   FLAG get_onlyincompound() const;
-  FLAG get_compoundroot() const;
-  FLAG get_lemma_present() const;
-  int get_checknum() const;
-  const char* get_prefix() const;
-  const char* get_suffix() const;
   const char* get_derived() const;
   const std::string& get_version() const;
   int have_contclass() const;

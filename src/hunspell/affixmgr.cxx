@@ -3575,41 +3575,9 @@ FLAG AffixMgr::get_onlyincompound() const {
   return onlyincompound;
 }
 
-// return the compound word signal flag
-FLAG AffixMgr::get_compoundroot() const {
-  return compoundroot;
-}
-
-// return the compound begin signal flag
-FLAG AffixMgr::get_compoundbegin() const {
-  return compoundbegin;
-}
-
-// return the value of checknum
-int AffixMgr::get_checknum() const {
-  return checknum;
-}
-
-// return the value of prefix
-const char* AffixMgr::get_prefix() const {
-  if (pfx)
-    return pfx->getKey();
-  return NULL;
-}
-
-// return the value of suffix
-const char* AffixMgr::get_suffix() const {
-  return sfxappnd;
-}
-
 // return the value of suffix
 const std::string& AffixMgr::get_version() const {
   return version;
-}
-
-// return lemma_present flag
-FLAG AffixMgr::get_lemma_present() const {
-  return lemma_present;
 }
 
 // utility method to look up root words in hash table

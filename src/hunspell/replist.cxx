@@ -95,10 +95,6 @@ RepList::~RepList() {
   free(dat);
 }
 
-int RepList::get_pos() {
-  return pos;
-}
-
 replentry* RepList::item(int n) {
   return dat[n];
 }
