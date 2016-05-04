@@ -111,7 +111,7 @@ class SuggestMgr {
 
   char* ctry;
   int ctryl;
-  w_char* ctry_utf;
+  std::vector<w_char> ctry_utf;
 
   AffixMgr* pAMgr;
   unsigned int maxSug;

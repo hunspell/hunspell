@@ -95,7 +95,6 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
 
   ctryl = 0;
   ctry = NULL;
-  ctry_utf = NULL;
 
   utf8 = 0;
   langnum = 0;
@@ -140,13 +139,7 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
     if (ctry)
       ctryl = strlen(ctry);
     if (ctry && utf8) {
-      std::vector<w_char> t;
-      ctryl = u8_u16(t, tryme);
-      ctry_utf = (w_char*)malloc(ctryl * sizeof(w_char));
-      if (ctry_utf)
-        memcpy(ctry_utf, &t[0], ctryl * sizeof(w_char));
-      else
-        ctryl = 0;
+      ctryl = u8_u16(ctry_utf, tryme);
     }
   }
 }
@@ -163,9 +156,6 @@ SuggestMgr::~SuggestMgr() {
   if (ctry)
     free(ctry);
   ctry = NULL;
-  if (ctry_utf)
-    free(ctry_utf);
-  ctry_utf = NULL;
   ctryl = 0;
   maxSug = 0;
 #ifdef MOZILLA_CLIENT
