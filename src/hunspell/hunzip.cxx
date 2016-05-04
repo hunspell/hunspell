@@ -115,9 +115,7 @@ int Hunzip::getcode(const char* key) {
   }
 
   n = ((int)c[0] << 8) + c[1];
-  dec = (struct bit*)malloc(BASEBITREC * sizeof(struct bit));
-  if (!dec)
-    return fail(MSG_MEMORY, filename);
+  dec.resize(BASEBITREC);
   dec[0].v[0] = 0;
   dec[0].v[1] = 0;
 
@@ -158,7 +156,7 @@ int Hunzip::getcode(const char* key) {
         lastbit++;
         if (lastbit == allocatedbit) {
           allocatedbit += BASEBITREC;
-          dec = (struct bit*)realloc(dec, allocatedbit * sizeof(struct bit));
+          dec.resize(allocatedbit);
         }
         dec[lastbit].v[0] = 0;
         dec[lastbit].v[1] = 0;
@@ -173,8 +171,6 @@ int Hunzip::getcode(const char* key) {
 }
 
 Hunzip::~Hunzip() {
-  if (dec)
-    free(dec);
   if (filename)
     free(filename);
 }

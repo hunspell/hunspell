@@ -48,6 +48,7 @@
 
 #include <stdio.h>
 #include <fstream>
+#include <vector>
 
 #define BUFSIZE 65536
 #define HZIP_EXTENSION ".hz"
@@ -71,7 +72,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunzip {
   char* filename;
   std::ifstream fin;
   int bufsiz, lastbit, inc, inbits, outc;
-  struct bit* dec;          // code table
+  std::vector<bit> dec;     // code table
   char in[BUFSIZE];         // input buffer
   char out[BUFSIZE + 1];    // Huffman-decoded buffer
   char line[BUFSIZE + 50];  // decoded line
