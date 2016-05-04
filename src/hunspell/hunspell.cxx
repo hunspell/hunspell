@@ -151,6 +151,9 @@ private:
   const char* get_xml_pos(const char* s, const char* attr);
   std::vector<std::string> get_xml_list(const char* list, const char* tag);
   int check_xml_par(const char* q, const char* attr, const char* value);
+private:
+  HunspellImpl(const HunspellImpl&);
+  HunspellImpl& operator=(const HunspellImpl&);
 };
 
 Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key)
