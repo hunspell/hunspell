@@ -599,7 +599,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     const std::string *dp_str = dp.empty() ? NULL : &dp;
     // add the word and its index plus its capitalized form optionally
     if (add_word(ts, wcl, flags, al, dp_str, false) ||
-        add_hidden_capitalized_word(ts.c_str(), wcl, flags, al, dp_str, captype)) {
+        add_hidden_capitalized_word(ts, wcl, flags, al, dp_str, captype)) {
       delete dict;
       return 5;
     }

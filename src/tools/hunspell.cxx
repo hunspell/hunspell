@@ -790,7 +790,7 @@ nextline:
         mystrrep(token, ENTITY_APOS, "'");
         switch (filter_mode) {
           case BADWORD: {
-            if (!check(pMS, &d, token.c_str(), NULL, NULL)) {
+            if (!check(pMS, &d, token, NULL, NULL)) {
               bad = 1;
               if (!printgood)
                 fprintf(stdout, "%s\n", token.c_str());
