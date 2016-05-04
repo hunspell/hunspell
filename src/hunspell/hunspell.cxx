@@ -1437,7 +1437,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       break;
     }
     case INITCAP: {
-      wl = mkallsmall2(scw, sunicw);
+      mkallsmall2(scw, sunicw);
       std::string u8buffer(scw);
       mkinitcap2(scw, sunicw);
       cat_result(result, pSMgr->suggest_morph(u8buffer));
