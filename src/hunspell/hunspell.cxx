@@ -1852,38 +1852,38 @@ Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {
 Hunhandle* Hunspell_create_key(const char* affpath,
                                const char* dpath,
                                const char* key) {
-  return (Hunhandle*)(new Hunspell(affpath, dpath, key));
+  return reinterpret_cast<Hunhandle*>(new Hunspell(affpath, dpath, key));
 }
 
 void Hunspell_destroy(Hunhandle* pHunspell) {
-  delete (Hunspell*)(pHunspell);
+  delete reinterpret_cast<Hunspell*>(pHunspell);
 }
 
 int Hunspell_add_dic(Hunhandle* pHunspell, const char* dpath) {
-  return ((Hunspell*)pHunspell)->add_dic(dpath);
+  return reinterpret_cast<Hunspell*>(pHunspell)->add_dic(dpath);
 }
 
 int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
-  return ((Hunspell*)pHunspell)->spell(std::string(word));
+  return reinterpret_cast<Hunspell*>(pHunspell)->spell(std::string(word));
 }
 
 const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
-  return (((Hunspell*)pHunspell)->get_dict_encoding()).c_str();
+  return (reinterpret_cast<Hunspell*>(pHunspell)->get_dict_encoding()).c_str();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
-  std::vector<std::string> suggests = ((Hunspell*)pHunspell)->suggest(word);
+  std::vector<std::string> suggests = reinterpret_cast<Hunspell*>(pHunspell)->suggest(word);
   return munge_vector(slst, suggests);
 }
 
 int Hunspell_analyze(Hunhandle* pHunspell, char*** slst, const char* word) {
-  std::vector<std::string> stems = ((Hunspell*)pHunspell)->analyze(word);
+  std::vector<std::string> stems = reinterpret_cast<Hunspell*>(pHunspell)->analyze(word);
   return munge_vector(slst, stems);
 }
 
 int Hunspell_stem(Hunhandle* pHunspell, char*** slst, const char* word) {
 
-  std::vector<std::string> stems = ((Hunspell*)pHunspell)->stem(word);
+  std::vector<std::string> stems = reinterpret_cast<Hunspell*>(pHunspell)->stem(word);
   return munge_vector(slst, stems);
 }
 
@@ -1892,7 +1892,7 @@ int Hunspell_stem2(Hunhandle* pHunspell, char*** slst, char** desc, int n) {
   for (int i = 0; i < n; ++i)
     morph.push_back(desc[i]);
 
-  std::vector<std::string> stems = ((Hunspell*)pHunspell)->stem(morph);
+  std::vector<std::string> stems = reinterpret_cast<Hunspell*>(pHunspell)->stem(morph);
   return munge_vector(slst, stems);
 }
 
@@ -1900,7 +1900,7 @@ int Hunspell_generate(Hunhandle* pHunspell,
                       char*** slst,
                       const char* word,
                       const char* pattern) {
-  std::vector<std::string> stems = ((Hunspell*)pHunspell)->generate(word, pattern);
+  std::vector<std::string> stems = reinterpret_cast<Hunspell*>(pHunspell)->generate(word, pattern);
   return munge_vector(slst, stems);
 }
 
@@ -1913,7 +1913,7 @@ int Hunspell_generate2(Hunhandle* pHunspell,
   for (int i = 0; i < n; ++i)
     morph.push_back(desc[i]);
 
-  std::vector<std::string> stems = ((Hunspell*)pHunspell)->generate(word, morph);
+  std::vector<std::string> stems = reinterpret_cast<Hunspell*>(pHunspell)->generate(word, morph);
   return munge_vector(slst, stems);
 }
 
@@ -1922,7 +1922,7 @@ int Hunspell_generate2(Hunhandle* pHunspell,
 /* add word to the run-time dictionary */
 
 int Hunspell_add(Hunhandle* pHunspell, const char* word) {
-  return ((Hunspell*)pHunspell)->add(word);
+  return reinterpret_cast<Hunspell*>(pHunspell)->add(word);
 }
 
 /* add word to the run-time dictionary with affix flags of
@@ -1933,13 +1933,13 @@ int Hunspell_add(Hunhandle* pHunspell, const char* word) {
 int Hunspell_add_with_affix(Hunhandle* pHunspell,
                             const char* word,
                             const char* example) {
-  return ((Hunspell*)pHunspell)->add_with_affix(word, example);
+  return reinterpret_cast<Hunspell*>(pHunspell)->add_with_affix(word, example);
 }
 
 /* remove word from the run-time dictionary */
 
 int Hunspell_remove(Hunhandle* pHunspell, const char* word) {
-  return ((Hunspell*)pHunspell)->remove(word);
+  return reinterpret_cast<Hunspell*>(pHunspell)->remove(word);
 }
 
 void Hunspell_free_list(Hunhandle*, char*** list, int n) {
