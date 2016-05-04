@@ -59,7 +59,7 @@ int Hunzip::fail(const char* err, const char* par) {
 }
 
 Hunzip::Hunzip(const char* file, const char* key)
-    : bufsiz(0), lastbit(0), inc(0), inbits(0), outc(0), dec(NULL) {
+    : bufsiz(0), lastbit(0), inc(0), inbits(0), outc(0) {
   in[0] = out[0] = line[0] = '\0';
   filename = mystrdup(file);
   if (getcode(key) == -1)

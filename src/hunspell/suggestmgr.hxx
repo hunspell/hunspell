@@ -106,11 +106,11 @@ class SuggestMgr {
 
  private:
   char* ckey;
-  int ckeyl;
+  size_t ckeyl;
   std::vector<w_char> ckey_utf;
 
   char* ctry;
-  int ctryl;
+  size_t ctryl;
   std::vector<w_char> ctry_utf;
 
   AffixMgr* pAMgr;

@@ -594,7 +594,7 @@ int SuggestMgr::badchar(std::vector<std::string>& wlst, const char* word, int cp
   int timer = MINTIMER;
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
-  for (int j = 0; j < ctryl; j++) {
+  for (size_t j = 0; j < ctryl; ++j) {
     for (std::string::reverse_iterator aI = candidate.rbegin(), aEnd = candidate.rend(); aI != aEnd; ++aI) {
       char tmpc = *aI;
       if (ctry[j] == tmpc)
@@ -620,7 +620,7 @@ int SuggestMgr::badchar_utf(std::vector<std::string>& wlst,
   int timer = MINTIMER;
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
-  for (int j = 0; j < ctryl; j++) {
+  for (size_t j = 0; j < ctryl; ++j) {
     for (int i = wl - 1; i >= 0; i--) {
       w_char tmpc = candidate_utf[i];
       if (tmpc == ctry_utf[j])
@@ -685,7 +685,7 @@ int SuggestMgr::forgotchar(std::vector<std::string>& wlst,
 
   // try inserting a tryme character before every letter (and the null
   // terminator)
-  for (int k = 0; k < ctryl; ++k) {
+  for (size_t k = 0; k < ctryl; ++k) {
     for (size_t i = 0; i <= candidate.size(); ++i) {
       size_t index = candidate.size() - i;
       candidate.insert(candidate.begin() + index, ctry[k]);
@@ -709,7 +709,7 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
 
   // try inserting a tryme character at the end of the word and before every
   // letter
-  for (int k = 0; k < ctryl; ++k) {
+  for (size_t k = 0; k < ctryl; ++k) {
     for (size_t i = 0; i <= candidate_utf.size(); ++i) {
       size_t index = candidate_utf.size() - i;
       candidate_utf.insert(candidate_utf.begin() + index, ctry_utf[k]);
@@ -894,7 +894,7 @@ int SuggestMgr::longswapchar(std::vector<std::string>& wlst,
   // try swapping not adjacent chars one by one
   for (std::string::iterator p = candidate.begin(); p < candidate.end(); ++p) {
     for (std::string::iterator q = candidate.begin(); q < candidate.end(); ++q) {
-      if (abs(std::distance(q, p)) > 1) {
+      if (std::abs(std::distance(q, p)) > 1) {
         std::swap(*p, *q);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
         std::swap(*p, *q);
@@ -913,7 +913,7 @@ int SuggestMgr::longswapchar_utf(std::vector<std::string>& wlst,
   // try swapping not adjacent chars
   for (std::vector<w_char>::iterator p = candidate_utf.begin(); p < candidate_utf.end(); ++p) {
     for (std::vector<w_char>::iterator q = candidate_utf.begin(); q < candidate_utf.end(); ++q) {
-      if (abs(std::distance(q, p)) > 1) {
+      if (std::abs(std::distance(q, p)) > 1) {
         std::swap(*p, *q);
         std::string candidate;
         u16_u8(candidate, candidate_utf);

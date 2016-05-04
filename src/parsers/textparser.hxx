@@ -72,11 +72,11 @@ class TextParser {
   std::vector<bool> urlline;      // mask for url detection
   int checkurl;
   int actual;  // actual line
-  int head;    // head position
-  int token;   // begin of token
+  size_t head; // head position
+  size_t token;// begin of token
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
-  int next_char(const char* line, int* pos);
+  int next_char(const char* line, size_t* pos);
   const w_char* wordchars_utf16;
   int wclen;
 
@@ -95,15 +95,15 @@ class TextParser {
   virtual int change_token(const char* word);
   void set_url_checking(int check);
 
-  int get_tokenpos();
+  size_t get_tokenpos();
   int is_wordchar(const char* w);
   inline int is_utf8() { return utf8; }
   const char* get_latin1(const char* s);
   char* next_char();
   int tokenize_urls();
   void check_urls();
-  int get_url(int token_pos, int* head);
-  bool alloc_token(int token, int* head, std::string& out);
+  int get_url(size_t token_pos, size_t* head);
+  bool alloc_token(size_t token, size_t* head, std::string& out);
 };
 
 #endif

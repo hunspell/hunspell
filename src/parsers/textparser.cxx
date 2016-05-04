@@ -141,7 +141,7 @@ void TextParser::init(const w_char* wc, int len) {
   wclen = len;
 }
 
-int TextParser::next_char(const char* ln, int* pos) {
+int TextParser::next_char(const char* ln, size_t* pos) {
   if (*(ln + *pos) == '\0')
     return 1;
   if (utf8) {
@@ -216,7 +216,7 @@ bool TextParser::next_token(std::string &t) {
   }
 }
 
-int TextParser::get_tokenpos() {
+size_t TextParser::get_tokenpos() {
   return token;
 }
 
@@ -235,8 +235,8 @@ int TextParser::change_token(const char* word) {
 void TextParser::check_urls() {
   urlline.resize(line[actual].size() + 1);
   int url_state = 0;
-  int url_head = 0;
-  int url_token = 0;
+  size_t url_head = 0;
+  size_t url_token = 0;
   int url = 0;
   for (;;) {
     switch (url_state) {
@@ -268,7 +268,7 @@ void TextParser::check_urls() {
                      ((ch >= '0') && (ch <= '9')))) {
           url_state = 0;
           if (url == 1) {
-            for (int i = url_token; i < url_head; i++) {
+            for (size_t i = url_token; i < url_head; ++i) {
               urlline[i] = true;
             }
           }
@@ -282,7 +282,7 @@ void TextParser::check_urls() {
   }
 }
 
-int TextParser::get_url(int token_pos, int* hd) {
+int TextParser::get_url(size_t token_pos, size_t* hd) {
   for (size_t i = *hd; i < line[actual].size() && urlline[i]; i++, (*hd)++)
     ;
   return checkurl ? 0 : urlline[token_pos];
@@ -292,8 +292,8 @@ void TextParser::set_url_checking(int check) {
   checkurl = check;
 }
 
-bool TextParser::alloc_token(int tokn, int* hd, std::string& t) {
-  int url_head = *hd;
+bool TextParser::alloc_token(size_t tokn, size_t* hd, std::string& t) {
+  size_t url_head = *hd;
   if (get_url(tokn, &url_head))
     return false;
   t = line[actual].substr(tokn, *hd - tokn);
