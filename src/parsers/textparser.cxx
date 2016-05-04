@@ -283,7 +283,7 @@ void TextParser::check_urls() {
 }
 
 int TextParser::get_url(int token_pos, int* hd) {
-  for (size_t i = *hd; urlline[i] && i < line[actual].size(); i++, (*hd)++)
+  for (size_t i = *hd; i < line[actual].size() && urlline[i]; i++, (*hd)++)
     ;
   return checkurl ? 0 : urlline[token_pos];
 }
