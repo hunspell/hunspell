@@ -91,7 +91,7 @@ class RepList {
   int pos;
 
  public:
-  RepList(int n);
+  explicit RepList(int n);
   ~RepList();
 
   int add(const std::string& pat1, const std::string& pat2);

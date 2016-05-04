@@ -94,9 +94,9 @@ class PfxEntry : public AffEntry {
   PfxEntry* flgnxt;
 
  public:
-  PfxEntry(AffixMgr* pmgr);
+  explicit PfxEntry(AffixMgr* pmgr);
 
-  inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }
+  bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
                            int len,
                            char in_compound,
@@ -163,9 +163,9 @@ class SfxEntry : public AffEntry {
   SfxEntry* eq_morph;
 
  public:
-  SfxEntry(AffixMgr* pmgr);
+  explicit SfxEntry(AffixMgr* pmgr);
 
-  inline bool allowCross() { return ((opts & aeXPRODUCT) != 0); }
+  bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
                            int len,
                            int optflags,

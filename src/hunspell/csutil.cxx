@@ -277,7 +277,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
 namespace {
 class is_any_of {
  public:
-  is_any_of(const std::string& in) : chars(in) {}
+  explicit is_any_of(const std::string& in) : chars(in) {}
 
   bool operator()(char c) { return chars.find(c) != std::string::npos; }
 

@@ -63,7 +63,7 @@ class LaTeXParser : public TextParser {
   int opt;          // optional argument attrib.
 
  public:
-  LaTeXParser(const char* wc);
+  explicit LaTeXParser(const char* wc);
   LaTeXParser(const w_char* wordchars, int len);
   virtual ~LaTeXParser();
 

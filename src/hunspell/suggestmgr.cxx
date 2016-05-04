@@ -1918,7 +1918,7 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
     } else {
       mkallsmall(t, csconv);
     }
-    for (i = 0; (*(s1 + i) != 0) && i < t.size(); i++) {
+    for (i = 0; i < t.size() && (*(s1 + i) != 0); ++i) {
       if (*(s1 + i) == t[i]) {
         num++;
       } else {

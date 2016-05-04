@@ -83,7 +83,7 @@ class TextParser {
  public:
   TextParser();
   TextParser(const w_char* wordchars, int len);
-  TextParser(const char* wc);
+  explicit TextParser(const char* wc);
   void init(const char*);
   void init(const w_char* wordchars, int len);
   virtual ~TextParser();
