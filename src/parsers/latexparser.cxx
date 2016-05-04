@@ -202,9 +202,6 @@ bool LaTeXParser::next_token(std::string& t) {
             break;
           }
           state = 3;
-        } else if (line[actual][head] == '%') {
-          if ((head == 0) || (line[actual][head - 1] != '\\'))
-            state = 5;
         }
         break;
       case 1:  // wordchar
