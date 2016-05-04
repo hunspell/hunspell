@@ -1387,12 +1387,12 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   std::string result;
 
   size_t n = 0;
-  size_t n2 = 0;
-  size_t n3 = 0;
-
   // test numbers
   // LANG_hu section: set dash information for suggestions
   if (langnum == LANG_hu) {
+    size_t n2 = 0;
+    size_t n3 = 0;
+
     while ((n < wl) && (((scw[n] <= '9') && (scw[n] >= '0')) ||
                         (((scw[n] == '.') || (scw[n] == ',')) && (n > 0)))) {
       n++;
@@ -1494,8 +1494,9 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   // LANG_hu section: set dash information for suggestions
 
   size_t dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
-  int nresult = 0;
   if (dash_pos != std::string::npos) {
+    int nresult = 0;
+
     std::string part1 = scw.substr(0, dash_pos);
     std::string part2 = scw.substr(dash_pos+1);
 

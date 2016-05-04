@@ -748,7 +748,7 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
 int SuggestMgr::twowords(std::vector<std::string>& wlst,
                          const char* word,
                          int cpdsuggest) {
-  int c1, c2;
+  int c2;
   int forbidden = 0;
   int cwrd;
 
@@ -774,7 +774,7 @@ int SuggestMgr::twowords(std::vector<std::string>& wlst,
     if (utf8 && p[1] == '\0')
       break;  // last UTF-8 character
     *p = '\0';
-    c1 = checkword(candidate, cpdsuggest, NULL, NULL);
+    int c1 = checkword(candidate, cpdsuggest, NULL, NULL);
     if (c1) {
       c2 = checkword((p + 1), cpdsuggest, NULL, NULL);
       if (c2) {
@@ -1433,10 +1433,6 @@ int SuggestMgr::checkword(const std::string& word,
                           int cpdsuggest,
                           int* timer,
                           clock_t* timelimit) {
-  struct hentry* rv = NULL;
-  struct hentry* rv2 = NULL;
-  int nosuffix = 0;
-
   // check time limit
   if (timer) {
     (*timer)--;
@@ -1448,8 +1444,12 @@ int SuggestMgr::checkword(const std::string& word,
   }
 
   if (pAMgr) {
+    struct hentry* rv = NULL;
+    int nosuffix = 0;
+
     if (cpdsuggest == 1) {
       if (pAMgr->get_compound()) {
+        struct hentry* rv2 = NULL;
         struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
         rv = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1, 0);  // EXT
         if (rv &&
@@ -1514,10 +1514,8 @@ int SuggestMgr::checkword(const std::string& word,
 }
 
 int SuggestMgr::check_forbidden(const char* word, int len) {
-  struct hentry* rv = NULL;
-
   if (pAMgr) {
-    rv = pAMgr->lookup(word);
+    struct hentry* rv = pAMgr->lookup(word);
     if (rv && rv->astr &&
         (TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))

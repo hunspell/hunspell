@@ -253,14 +253,13 @@ int parse_aff_file(FILE* afflst) {
   int numents = 0;
   char achar = '\0';
   short ff = 0;
-  char ft;
   struct affent* ptr = NULL;
   struct affent* nptr = NULL;
   char* line = (char*)malloc(MAX_LN_LEN);
 
   while (fgets(line, MAX_LN_LEN, afflst)) {
     mychomp(line);
-    ft = ' ';
+    char ft = ' ';
     fprintf(stderr, "parsing line: %s\n", line);
     if (strncmp(line, "PFX", 3) == 0)
       ft = 'P';
@@ -385,7 +384,6 @@ void encodeit(struct affent* ptr, char* cs) {
   int nc;
   int neg;
   int grp;
-  unsigned char c;
   int n;
   int ec;
   int nm;
@@ -409,7 +407,7 @@ void encodeit(struct affent* ptr, char* cs) {
     return;
   }
   while (i < nc) {
-    c = *((unsigned char*)(cs + i));
+    unsigned char c = *((unsigned char*)(cs + i));
     if (c == '[') {
       grp = 1;
       c = 0;
@@ -549,10 +547,7 @@ void suf_chk(const char* word,
 
 void aff_chk(const char* word, int len) {
   int i;
-  int j;
   int nh = 0;
-  char* nword;
-  int nwl;
 
   if (len < 4)
     return;
@@ -564,10 +559,10 @@ void aff_chk(const char* word, int len) {
   nh = numroots;
 
   if (nh > 0) {
-    for (j = 0; j < nh; j++) {
+    for (int j = 0; j < nh; j++) {
       if (roots[j].prefix->xpflg & XPRODUCT) {
-        nword = mystrdup((roots[j].hashent)->word);
-        nwl = strlen(nword);
+        char* nword = mystrdup((roots[j].hashent)->word);
+        int nwl = strlen(nword);
         for (i = 0; i < numsfx; i++) {
           suf_chk(nword, nwl, stable[i].aep, stable[i].num, roots[j].prefix,
                   XPRODUCT);
@@ -624,7 +619,6 @@ int add_word(char* word) {
 /* load a word list and build a hash table on the fly */
 
 int load_tables(FILE* wdlst) {
-  char* ap;
   char ts[MAX_LN_LEN];
   int nExtra = 5;
 
@@ -654,7 +648,7 @@ int load_tables(FILE* wdlst) {
 
   while (fgets(ts, MAX_LN_LEN - 1, wdlst)) {
     mychomp(ts);
-    ap = mystrdup(ts);
+    char* ap = mystrdup(ts);
     add_word(ap);
   }
   return 0;
@@ -783,9 +777,7 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
 
 int expand_rootword(const char* ts, int wl, const char* ap) {
   int i;
-  int j;
   int nh = 0;
-  int nwl;
 
   for (i = 0; i < numsfx; i++) {
     if (strchr(ap, (stable[i].aep)->achar)) {
@@ -796,12 +788,12 @@ int expand_rootword(const char* ts, int wl, const char* ap) {
   nh = numwords;
 
   if (nh > 1) {
-    for (j = 1; j < nh; j++) {
+    for (int j = 1; j < nh; j++) {
       if (wlist[j].pallow) {
         for (i = 0; i < numpfx; i++) {
           if (strchr(ap, (ptable[i].aep)->achar)) {
             if ((ptable[i].aep)->xpflg & XPRODUCT) {
-              nwl = strlen(wlist[j].word);
+              int nwl = strlen(wlist[j].word);
               pfx_add(wlist[j].word, nwl, ptable[i].aep, ptable[i].num);
             }
           }

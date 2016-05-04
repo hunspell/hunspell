@@ -273,8 +273,6 @@ struct hentry* PfxEntry::check_twosfx(const char* word,
                                       int len,
                                       char in_compound,
                                       const FLAG needflag) {
-  struct hentry* he;  // hash entry of root word or NULL
-
   // on entry prefix is 0 length or already matches the beginning of the word.
   // So if the remaining root word has positive length
   // and if there are enough chars in root word and added back strip chars
@@ -306,8 +304,9 @@ struct hentry* PfxEntry::check_twosfx(const char* word,
       // cross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        he = pmyMgr->suffix_check_twosfx(tmpword.c_str(), tmpl, aeXPRODUCT, this,
-                                         needflag);
+        // hash entry of root word or NULL
+        struct hentry* he = pmyMgr->suffix_check_twosfx(tmpword.c_str(), tmpl, aeXPRODUCT, this,
+                                                        needflag);
         if (he)
           return he;
       }
@@ -698,7 +697,6 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
                                       int optflags,
                                       PfxEntry* ppfx,
                                       const FLAG needflag) {
-  struct hentry* he;  // hash entry pointer
   PfxEntry* ep = ppfx;
 
   // if this suffix is being cross checked with a prefix
@@ -736,6 +734,7 @@ struct hentry* SfxEntry::check_twosfx(const char* word,
     // if all conditions are met then recall suffix_check
 
     if (test_condition(end, beg)) {
+      struct hentry* he;  // hash entry pointer
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))

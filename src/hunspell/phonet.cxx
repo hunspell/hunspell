@@ -36,15 +36,13 @@
 #include "phonet.hxx"
 
 void init_phonet_hash(phonetable& parms) {
-  int i, k;
-
-  for (i = 0; i < HASHSIZE; i++) {
+  for (int i = 0; i < HASHSIZE; i++) {
     parms.hash[i] = -1;
   }
 
-  for (i = 0; parms.rules[i][0] != '\0'; i += 2) {
+  for (int i = 0; parms.rules[i][0] != '\0'; i += 2) {
     /**  set hash value  **/
-    k = (unsigned char)parms.rules[i][0];
+    int k = (unsigned char)parms.rules[i][0];
 
     if (parms.hash[k] < 0) {
       parms.hash[k] = i;
@@ -73,7 +71,7 @@ static int myisalpha(char ch) {
 std::string phonet(const std::string& inword, phonetable& parms) {
 
   int i, k = 0, p, z;
-  int k0, n0, p0 = -333, z0;
+  int k0, n0, p0 = -333;
   char c;
   typedef unsigned char uchar;
 
@@ -89,7 +87,7 @@ std::string phonet(const std::string& inword, phonetable& parms) {
   i = z = 0;
   while ((c = word[i]) != '\0') {
     int n = parms.hash[(uchar)c];
-    z0 = 0;
+    int z0 = 0;
 
     if (n >= 0 && !parms.rules[n].empty()) {
       /**  check all rules for the same letter  **/

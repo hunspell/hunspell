@@ -425,10 +425,10 @@ int HashMgr::remove_forbidden_flag(const std::string& word) {
 
 // add a custom dic. word to the hash table (public)
 int HashMgr::add(const std::string& word) {
-  unsigned short* flags = NULL;
-  int al = 0;
   if (remove_forbidden_flag(word)) {
     int captype;
+    int al = 0;
+    unsigned short* flags = NULL;
     int wcl = get_clen_and_captype(word, &captype);
     add_word(word, wcl, flags, al, NULL, false);
     return add_hidden_capitalized_word(word, wcl, flags, al, NULL,

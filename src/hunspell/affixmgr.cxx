@@ -246,7 +246,6 @@ void AffixMgr::finishFileMgr(FileMgr* afflst) {
 
 // read in aff file and build up prefix and suffix entry objects
 int AffixMgr::parse_file(const char* affpath, const char* key) {
-  char ft;     // affix type
 
   // checking flag duplication
   char dupflags[CONTSIZE];
@@ -693,7 +692,8 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     }
 
     /* parse this affix: P - prefix, S - suffix */
-    ft = ' ';
+    // affix type
+    char ft = ' ';
     if (line.compare(0, 3, "PFX", 3) == 0)
       ft = complexprefixes ? 'S' : 'P';
     if (line.compare(0, 3, "SFX", 3) == 0)
@@ -1312,8 +1312,8 @@ int AffixMgr::cpdpat_check(const char* word,
                            hentry* r1,
                            hentry* r2,
                            const char /*affixed*/) {
-  size_t len;
   for (size_t i = 0; i < checkcpdtable.size(); ++i) {
+    size_t len;
     if (isSubset(checkcpdtable[i].pattern2.c_str(), word + pos) &&
         (!r1 || !checkcpdtable[i].cond ||
          (r1->astr && TESTAFF(r1->astr, checkcpdtable[i].cond, r1->alen))) &&
@@ -1585,7 +1585,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   int oldcmax = 0;
   int oldlen = 0;
   int checkedstriple = 0;
-  int onlycpdrule;
   char affixed = 0;
   hentry** oldwords = words;
   size_t len = word.size();
@@ -1606,7 +1605,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
     }
 
     words = oldwords;
-    onlycpdrule = (words) ? 1 : 0;
+    int onlycpdrule = (words) ? 1 : 0;
 
     do {  // onlycpdrule loop
 
@@ -2070,7 +2069,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               // forbid compound word, if it is a non compound word with typical
               // fault
               if (checkcompoundrep || forbiddenword) {
-                struct hentry* rv2 = NULL;
 
                 if (checkcompoundrep && cpdrep_check(word.c_str(), len))
                   return NULL;
@@ -2086,7 +2084,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   }
 
                   if (forbiddenword) {
-                    rv2 = lookup(word.c_str());
+                    struct hentry* rv2 = lookup(word.c_str());
                     if (!rv2)
                       rv2 = affix_check(word.c_str(), len);
                     if (rv2 && rv2->astr &&
@@ -2168,7 +2166,6 @@ int AffixMgr::compound_check_morph(const char* word,
   int cmin;
   int cmax;
 
-  int onlycpdrule;
   char affixed = 0;
   hentry** oldwords = words;
 
@@ -2186,7 +2183,7 @@ int AffixMgr::compound_check_morph(const char* word,
     }
 
     words = oldwords;
-    onlycpdrule = (words) ? 1 : 0;
+    int onlycpdrule = (words) ? 1 : 0;
 
     do {  // onlycpdrule loop
 

@@ -70,7 +70,7 @@ Hunzip::Hunzip(const char* file, const char* key)
 
 int Hunzip::getcode(const char* key) {
   unsigned char c[2];
-  int i, j, n, p;
+  int i, j, n;
   int allocatedbit = BASEBITREC;
   const char* enc = key;
 
@@ -149,7 +149,7 @@ int Hunzip::getcode(const char* key) {
           enc = key;
         in[j] ^= *enc;
       }
-    p = 0;
+    int p = 0;
     for (j = 0; j < l; j++) {
       int b = (in[j / 8] & (1 << (7 - (j % 8)))) ? 1 : 0;
       int oldp = p;
