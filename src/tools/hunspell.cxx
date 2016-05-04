@@ -2159,7 +2159,7 @@ int main(int argc, char** argv) {
         exit(1);
       }
     }
-  } else if (filter_mode == NORMAL) {
+  } else /*filter_mode == NORMAL*/ {
 #ifdef HAVE_CURSES_H
     initscr();
     cbreak();
