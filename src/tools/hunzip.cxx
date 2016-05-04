@@ -48,14 +48,11 @@
   "hunzip - decompress a hzip file to the standard output\n" \
   "Usage: hunzip file.hz [password]\n"
 
-int fail(const char* err, const char* par) {
-  fprintf(stderr, err, par);
-  return 1;
-}
-
 int main(int argc, char** argv) {
-  if (argc == 1 || strcmp(argv[1], "-h") == 0)
-    return fail(DESC, NULL);
+  if (argc == 1 || strcmp(argv[1], "-h") == 0) {
+    fprintf(stderr, DESC);
+    return 1;
+  }
   Hunzip h(argv[1], (argc > 2) ? argv[2] : NULL);
   if (!h.is_open())
     return 0;
