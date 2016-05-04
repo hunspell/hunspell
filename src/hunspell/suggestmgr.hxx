@@ -107,7 +107,7 @@ class SuggestMgr {
  private:
   char* ckey;
   int ckeyl;
-  w_char* ckey_utf;
+  std::vector<w_char> ckey_utf;
 
   char* ctry;
   int ctryl;

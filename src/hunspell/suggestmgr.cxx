@@ -91,7 +91,6 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
 
   ckeyl = 0;
   ckey = NULL;
-  ckey_utf = NULL;
 
   ctryl = 0;
   ctry = NULL;
@@ -122,13 +121,7 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
 
   if (ckey) {
     if (utf8) {
-      std::vector<w_char> t;
-      ckeyl = u8_u16(t, ckey);
-      ckey_utf = (w_char*)malloc(ckeyl * sizeof(w_char));
-      if (ckey_utf)
-        memcpy(ckey_utf, &t[0], ckeyl * sizeof(w_char));
-      else
-        ckeyl = 0;
+      ckeyl = u8_u16(ckey_utf, ckey);
     } else {
       ckeyl = strlen(ckey);
     }
@@ -149,9 +142,6 @@ SuggestMgr::~SuggestMgr() {
   if (ckey)
     free(ckey);
   ckey = NULL;
-  if (ckey_utf)
-    free(ckey_utf);
-  ckey_utf = NULL;
   ckeyl = 0;
   if (ctry)
     free(ctry);
@@ -574,23 +564,23 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
     // check neighbor characters in keyboard string
     if (!ckey)
       continue;
-    w_char* loc = ckey_utf;
-    while ((loc < (ckey_utf + ckeyl)) && *loc != tmpc)
-      loc++;
-    while (loc < (ckey_utf + ckeyl)) {
-      if ((loc > ckey_utf) && *(loc - 1) != W_VLINE) {
-        candidate_utf[i] = *(loc - 1);
+    size_t loc = 0;
+    while ((loc < ckeyl) && ckey_utf[loc] != tmpc)
+      ++loc;
+    while (loc < ckeyl) {
+      if ((loc > 0) && ckey_utf[loc - 1] != W_VLINE) {
+        candidate_utf[i] = ckey_utf[loc - 1];
         u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
-      if (((loc + 1) < (ckey_utf + ckeyl)) && (*(loc + 1) != W_VLINE)) {
-        candidate_utf[i] = *(loc + 1);
+      if (((loc + 1) < ckeyl) && (ckey_utf[loc + 1] != W_VLINE)) {
+        candidate_utf[i] = ckey_utf[loc + 1];
         u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
       do {
         loc++;
-      } while ((loc < (ckey_utf + ckeyl)) && *loc != tmpc);
+      } while ((loc < ckeyl) && ckey_utf[loc] != tmpc);
     }
     candidate_utf[i] = tmpc;
   }
