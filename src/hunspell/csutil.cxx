@@ -2423,26 +2423,21 @@ int get_lang_num(const std::string& lang) {
 
 #ifndef OPENOFFICEORG
 #ifndef MOZILLA_CLIENT
-int initialize_utf_tbl() {
+void initialize_utf_tbl() {
   utf_tbl_count++;
   if (utf_tbl)
-    return 0;
-  utf_tbl = (unicode_info2*)malloc(CONTSIZE * sizeof(unicode_info2));
-  if (utf_tbl) {
-    size_t j;
-    for (j = 0; j < CONTSIZE; j++) {
-      utf_tbl[j].cletter = 0;
-      utf_tbl[j].clower = (unsigned short)j;
-      utf_tbl[j].cupper = (unsigned short)j;
-    }
-    for (j = 0; j < UTF_LST_LEN; j++) {
-      utf_tbl[utf_lst[j].c].cletter = 1;
-      utf_tbl[utf_lst[j].c].clower = utf_lst[j].clower;
-      utf_tbl[utf_lst[j].c].cupper = utf_lst[j].cupper;
-    }
-  } else
-    return 1;
-  return 0;
+    return;
+  utf_tbl = new unicode_info2[CONTSIZE];
+  for (size_t j = 0; j < CONTSIZE; ++j) {
+    utf_tbl[j].cletter = 0;
+    utf_tbl[j].clower = (unsigned short)j;
+    utf_tbl[j].cupper = (unsigned short)j;
+  }
+  for (size_t j = 0; j < UTF_LST_LEN; ++j) {
+    utf_tbl[utf_lst[j].c].cletter = 1;
+    utf_tbl[utf_lst[j].c].clower = utf_lst[j].clower;
+    utf_tbl[utf_lst[j].c].cupper = utf_lst[j].cupper;
+  }
 }
 #endif
 #endif
@@ -2451,7 +2446,7 @@ void free_utf_tbl() {
   if (utf_tbl_count > 0)
     utf_tbl_count--;
   if (utf_tbl && (utf_tbl_count == 0)) {
-    free(utf_tbl);
+    delete[] utf_tbl;
     utf_tbl = NULL;
   }
 }
