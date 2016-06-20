@@ -49,6 +49,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stddef.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
