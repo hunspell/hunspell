@@ -821,9 +821,9 @@ char* mystrsep(char** stringp, const char delim) {
   if (n > 0) {
     char* dp = (char*)memchr(mp, (int)((unsigned char)delim), n);
     if (dp) {
-      int nc;
+      ptrdiff_t nc;
       *stringp = dp + 1;
-      nc = (int)((unsigned long)dp - (unsigned long)mp);
+      nc = dp - mp;
       rv = (char*)malloc(nc + 1);
       if (rv) {
         memcpy(rv, mp, nc);
