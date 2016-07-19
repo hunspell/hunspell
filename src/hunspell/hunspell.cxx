@@ -79,9 +79,6 @@
 #include "hunspell.hxx"
 #include "suggestmgr.hxx"
 #include "hunspell.h"
-#ifndef MOZILLA_CLIENT
-#include "config.h"
-#endif
 #include "csutil.hxx"
 
 #include <limits>
