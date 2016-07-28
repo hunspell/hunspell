@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
   }
 
   TextParser* p = new TextParser(
-      "qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
+      "qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM");
 
   char buf[MAXLNLEN];
 
