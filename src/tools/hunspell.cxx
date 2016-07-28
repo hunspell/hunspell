@@ -2055,7 +2055,7 @@ int main(int argc, char** argv) {
   if (showpath) {
     fprintf(stderr, gettext("SEARCH PATH:\n%s\n"), path);
     fprintf(
-        stderr,
+        stderr, "%s",
         gettext(
             "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"));
     search(path, NULL, NULL);
@@ -2178,7 +2178,7 @@ int main(int argc, char** argv) {
     endwin();
 #else
     fprintf(
-        stderr,
+        stderr, "%s",
         gettext(
             "Hunspell has been compiled without Ncurses user interface.\n"));
 #endif
