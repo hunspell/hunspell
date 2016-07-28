@@ -677,7 +677,9 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
         perror(gettext("Can't open inputfile"));
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
-      system((std::string("rmdir ") + odftmpdir).c_str());
+      if (system((std::string("rmdir ") + odftmpdir).c_str()) != 0) {
+        perror("temp dir delete failed");
+      }
       exit(1);
     }
     std::string file(odftmpdir);
@@ -685,7 +687,9 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     fileid = fopen(file.c_str(), "r");
     if (fileid == NULL) {
       perror(gettext("Can't open inputfile"));
-      system((std::string("rmdir ") + odftmpdir).c_str());
+      if (system((std::string("rmdir ") + odftmpdir).c_str()) != 0) {
+        perror("temp dir delete failed");
+      }
       exit(1);
     }
   }
