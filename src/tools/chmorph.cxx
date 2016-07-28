@@ -78,7 +78,7 @@ int main(int, char** argv) {
 
   Hunspell* pMS = new Hunspell(argv[1], argv[2]);
   TextParser* p = new TextParser(
-      "qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
+      "qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM");
 
   char buf[MAXLNLEN];
 
