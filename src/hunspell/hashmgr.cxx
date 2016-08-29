@@ -701,7 +701,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
         return -1;
       dest = *result;
       for (size_t i = 0; i < flags.size(); ++i) {
-        *dest = (unsigned short)flags[i];
+        *dest = (unsigned char)flags[i];
         dest++;
       }
     }
@@ -767,7 +767,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
     default: {  // Ispell's one-character flags (erfg -> e r f g)
       result.reserve(flags.size());
       for (size_t i = 0; i < flags.size(); ++i) {
-        result.push_back((unsigned short)flags[i]);
+        result.push_back((unsigned char)flags[i]);
       }
     }
   }
@@ -796,7 +796,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       break;
     }
     default:
-      s = (unsigned short)*((unsigned char*)f);
+      s = *(unsigned char*)f;
   }
   if (s == 0)
     HUNSPELL_WARNING(stderr, "error: 0 is wrong flag id\n");
