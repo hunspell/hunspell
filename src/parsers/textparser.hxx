@@ -81,11 +81,8 @@ class TextParser {
   int wclen;
 
  public:
-  TextParser();
   TextParser(const w_char* wordchars, int len);
   explicit TextParser(const char* wc);
-  void init(const char*);
-  void init(const w_char* wordchars, int len);
   virtual ~TextParser();
 
   void put_line(const char* line);
@@ -104,6 +101,9 @@ class TextParser {
   void check_urls();
   int get_url(size_t token_pos, size_t* head);
   bool alloc_token(size_t token, size_t* head, std::string& out);
+private:
+  void init(const char*);
+  void init(const w_char* wordchars, int len);
 };
 
 #endif

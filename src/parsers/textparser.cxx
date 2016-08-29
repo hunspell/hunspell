@@ -67,10 +67,6 @@ static const char* LATIN1[] = {
 #define UTF8_APOS "\xe2\x80\x99"
 #define APOSTROPHE "'"
 
-TextParser::TextParser() {
-  init((char*)NULL);
-}
-
 TextParser::TextParser(const char* wordchars) {
   init(wordchars);
 }

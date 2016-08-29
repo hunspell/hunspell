@@ -129,13 +129,13 @@ static struct {
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
 
 LaTeXParser::LaTeXParser(const char* wordchars)
-    : pattern_num(0), depth(0), arg(0), opt(0) {
-  init(wordchars);
+    : TextParser(wordchars)
+    , pattern_num(0), depth(0), arg(0), opt(0) {
 }
 
 LaTeXParser::LaTeXParser(const w_char* wordchars, int len)
-    : pattern_num(0), depth(0), arg(0), opt(0) {
-  init(wordchars, len);
+    : TextParser(wordchars, len)
+    , pattern_num(0), depth(0), arg(0), opt(0) {
 }
 
 LaTeXParser::~LaTeXParser() {}

@@ -64,12 +64,12 @@ static const char* (*PATTERN2)[2] = NULL;
 
 #define PATTERN_LEN2 0
 
-ODFParser::ODFParser(const char* wordchars) {
-  init(wordchars);
+ODFParser::ODFParser(const char* wordchars)
+  : XMLParser(wordchars) {
 }
 
-ODFParser::ODFParser(const w_char* wordchars, int len) {
-  init(wordchars, len);
+ODFParser::ODFParser(const w_char* wordchars, int len)
+  : XMLParser(wordchars, len) {
 }
 
 bool ODFParser::next_token(std::string& t) {

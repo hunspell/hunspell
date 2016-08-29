@@ -72,12 +72,12 @@ static const char* PATTERN2[][2] = {
 
 #define PATTERN_LEN2 (sizeof(PATTERN2) / (sizeof(char*) * 2))
 
-HTMLParser::HTMLParser(const char* wordchars) {
-  init(wordchars);
+HTMLParser::HTMLParser(const char* wordchars)
+  : XMLParser(wordchars) {
 }
 
-HTMLParser::HTMLParser(const w_char* wordchars, int len) {
-  init(wordchars, len);
+HTMLParser::HTMLParser(const w_char* wordchars, int len)
+  : XMLParser(wordchars, len) {
 }
 
 bool HTMLParser::next_token(std::string& t) {

@@ -50,8 +50,8 @@
 using namespace std;
 #endif
 
-FirstParser::FirstParser(const char* wordchars) {
-  init(wordchars);
+FirstParser::FirstParser(const char* wordchars)
+  : TextParser(wordchars) {
 }
 
 FirstParser::~FirstParser() {}

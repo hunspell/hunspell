@@ -66,21 +66,14 @@ static const char* (*__PATTERN2__)[2] = NULL;
 #define UTF8_APOS "\xe2\x80\x99"
 #define APOSTROPHE "'"
 
-XMLParser::XMLParser()
-    : pattern_num(0),
-      pattern2_num(0),
-      prevstate(0),
-      checkattr(0),
-      quotmark(0) {}
-
 XMLParser::XMLParser(const char* wordchars)
-    : pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
-  init(wordchars);
+    : TextParser(wordchars)
+    , pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
 XMLParser::XMLParser(const w_char* wordchars, int len)
-    : pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
-  init(wordchars, len);
+    : TextParser(wordchars, len)
+    , pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
 XMLParser::~XMLParser() {}
