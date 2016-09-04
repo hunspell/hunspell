@@ -1137,6 +1137,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   int thresh = 0;
   for (int sp = 1; sp < 4; sp++) {
     if (utf8) {
+      u8_u16(u8, word);
       for (int k = sp; k < n; k += 4) {
         u8[k].l = '*';
         u8[k].h = 0;
