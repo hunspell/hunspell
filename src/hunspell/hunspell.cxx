@@ -992,9 +992,9 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
         w.append(slst[j].substr(pos + 1));
         (void)spell(w, &info, NULL);
         if ((info & SPELL_COMPOUND) && (info & SPELL_FORBIDDEN)) {
-          slst[pos] = ' ';
+          slst[j][pos] = ' ';
         } else
-          slst[pos] = '-';
+          slst[j][pos] = '-';
       }
     }
   }
