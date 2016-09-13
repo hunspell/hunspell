@@ -361,15 +361,23 @@ int parse_aff_file(FILE* afflst) {
         nptr++;
       }
       if (ft == 'P') {
-        ptable[numpfx].aep = ptr;
-        ptable[numpfx].num = numents;
-        fprintf(stderr, "ptable %d num is %d\n", numpfx, ptable[numpfx].num);
-        numpfx++;
+        if (numpfx < MAX_PREFIXES) {
+          ptable[numpfx].aep = ptr;
+          ptable[numpfx].num = numents;
+          fprintf(stderr, "ptable %d num is %d\n", numpfx, ptable[numpfx].num);
+          numpfx++;
+        } else {
+          fprintf(stderr, "prefix buffer ptable is full\n");
+        }
       } else {
-        stable[numsfx].aep = ptr;
-        stable[numsfx].num = numents;
-        fprintf(stderr, "stable %d num is %d\n", numsfx, stable[numsfx].num);
-        numsfx++;
+        if (numsfx < MAX_SUFFIXES) {
+          stable[numsfx].aep = ptr;
+          stable[numsfx].num = numents;
+          fprintf(stderr, "stable %d num is %d\n", numsfx, stable[numsfx].num);
+          numsfx++;
+        } else {
+          fprintf(stderr, "suffix buffer stable is full\n");
+        }
       }
       ptr = NULL;
       nptr = NULL;
