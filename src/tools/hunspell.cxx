@@ -1614,7 +1614,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     endwin();
     exit(1);
   }
-  
+
   while (fgets(buf, MAXLNLEN, text)) {
     if (check) {
       parser->put_line(buf);
@@ -1687,16 +1687,6 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
 }
 
 #endif
-
-char* add(char* dest, const char* st) {
-  if (!dest) {
-    dest = mystrdup(st);
-  } else {
-    dest = (char*)realloc(dest, strlen(dest) + strlen(st) + 1);
-    strcat(dest, st);
-  }
-  return dest;
-}
 
 char* exist2(char* dir, int len, const char* name, const char* ext) {
   std::string buf;
@@ -2043,14 +2033,21 @@ int main(int argc, char** argv) {
       dicname = mystrdup(dicname);
     }
   }
-  path = add(mystrdup("."), PATHSEP);  // <- check path in local directory
-  path = add(path, PATHSEP);           // <- check path in root directory
-  if (getenv("DICPATH"))
-    path = add(add(path, getenv("DICPATH")), PATHSEP);
-  path = add(add(path, LIBDIR), PATHSEP);
-  if (HOME)
-    path = add(add(add(add(path, HOME), DIRSEP), USEROOODIR), PATHSEP);
-  path = add(path, OOODIR);
+
+  {
+    std::string path_std_str = ".";
+    path_std_str.append(PATHSEP); // <- check path in local directory
+    path_std_str.append(PATHSEP); // <- check path in root directory
+    if (getenv("DICPATH")) {
+      path_std_str.append(getenv("DICPATH")).append(PATHSEP);
+    }
+    path_std_str.append(LIBDIR).append(PATHSEP);
+    if (HOME) {
+      path_std_str.append(HOME).append(DIRSEP).append(USEROOODIR)
+                  .append(PATHSEP).append(OOODIR);
+    }
+    path = mystrdup(path_std_str.c_str());
+  }
 
   if (showpath) {
     fprintf(stderr, gettext("SEARCH PATH:\n%s\n"), path);
