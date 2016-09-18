@@ -612,9 +612,11 @@
 # ifndef SUBLANG_SERBIAN_CYRILLIC
 # define SUBLANG_SERBIAN_CYRILLIC 0x03
 # endif
-# ifndef SUBLANG_SINDHI_PAKISTAN
-# define SUBLANG_SINDHI_PAKISTAN 0x01
+# ifndef SUBLANG_SINDHI_INDIA
+# define SUBLANG_SINDHI_INDIA 0x01
 # endif
+# undef SUBLANG_SINDHI_PAKISTAN
+# define SUBLANG_SINDHI_PAKISTAN 0x02
 # ifndef SUBLANG_SINDHI_AFGHANISTAN
 # define SUBLANG_SINDHI_AFGHANISTAN 0x02
 # endif
@@ -1386,8 +1388,9 @@ gl_locale_name_default (void)
       case LANG_SINDHI:
 	switch (sub)
 	  {
+      case SUBLANG_SINDHI_INDIA: return "sd_IN";
 	  case SUBLANG_SINDHI_PAKISTAN: return "sd_PK";
-	  case SUBLANG_SINDHI_AFGHANISTAN: return "sd_AF";
+	  /*case SUBLANG_SINDHI_AFGHANISTAN: return "sd_AF";*/
 	  }
 	return "sd";
       case LANG_SINHALESE: return "si_LK";
