@@ -1783,8 +1783,8 @@ int SuggestMgr::ngram(int n,
     for (int j = 1; j <= n; j++) {
       ns = 0;
       for (int i = 0; i <= (l1 - j); i++) {
-        std::string temp(s1.substr(i, j));
-        if (t.find(temp) != std::string::npos) {
+        //t is haystack, s1[i..i+j) is needle
+        if (t.find(s1.c_str()+i, 0, j) != std::string::npos) {
           ns++;
         } else if (opt & NGRAM_WEIGHTED) {
           ns--;
