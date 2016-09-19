@@ -133,14 +133,14 @@ class HashMgr {
                const std::string* desc,
                bool onlyupcase);
   int load_config(const char* affpath, const char* key);
-  bool parse_aliasf(const std::string& line, FileMgr* af);
+  bool parse_aliasf(FileMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
                                   int wcl,
                                   unsigned short* flags,
                                   int al,
                                   const std::string* dp,
                                   int captype);
-  bool parse_aliasm(const std::string& line, FileMgr* af);
+  bool parse_aliasm(FileMgr* af);
   int remove_forbidden_flag(const std::string& word);
 };
 

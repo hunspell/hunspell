@@ -485,17 +485,14 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 
   // first read the first line of file to get hash table size */
   std::string ts;
-  if (!dict->getline(ts)) {
+  if (!dict->readline()) {
     HUNSPELL_WARNING(stderr, "error: empty dic file %s\n", tpath);
     delete dict;
     return 2;
   }
+  ts=dict->getline();
   mychomp(ts);
 
-  /* remove byte order mark */
-  if (ts.compare(0, 3, "\xEF\xBB\xBF", 3) == 0) {
-    ts.erase(0, 3);
-  }
 
   tablesize = atoi(ts.c_str());
 
@@ -523,7 +520,8 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   // loop through all words on much list and add to hash
   // table and create word and affix strings
 
-  while (dict->getline(ts)) {
+  while (dict->readline()) {
+	ts= dict->getline();
     mychomp(ts);
     // split each line into word and morphological description
     size_t dp_pos = 0;
@@ -826,9 +824,8 @@ char* HashMgr::encode_flag(unsigned short f) const {
 
 // read in aff file and set flag mode
 int HashMgr::load_config(const char* affpath, const char* key) {
-  int firstline = 1;
-
-  // open the affix file
+  
+	// open the affix file
   FileMgr* afflst = new FileMgr(affpath, key);
   if (!afflst) {
     HUNSPELL_WARNING(
@@ -838,19 +835,10 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 
   // read in each line ignoring any that do not
   // start with a known line type indicator
-
   std::string line;
-  while (afflst->getline(line)) {
-    mychomp(line);
-
-    /* remove byte order mark */
-    if (firstline) {
-      firstline = 0;
-      if (line.compare(0, 3, "\xEF\xBB\xBF", 3) == 0) {
-        line.erase(0, 3);
-      }
-    }
-
+  while (afflst->readline()) {
+	  line = afflst->getline();
+	
     /* parse in the try string */
     if ((line.compare(0, 4, "FLAG", 4) == 0) && line.size() > 4 && isspace(line[4])) {
       if (flag_mode != FLAG_CHAR) {
@@ -917,14 +905,14 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     }
 
     if ((line.compare(0, 2, "AF", 2) == 0) && line.size() > 2 && isspace(line[2])) {
-      if (!parse_aliasf(line, afflst)) {
+      if (!parse_aliasf(afflst)) {
         delete afflst;
         return 1;
       }
     }
 
     if ((line.compare(0, 2, "AM", 2) == 0) && line.size() > 2 && isspace(line[2])) {
-      if (!parse_aliasm(line, afflst)) {
+      if (!parse_aliasm(afflst)) {
         delete afflst;
         return 1;
       }
@@ -945,77 +933,59 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 }
 
 /* parse in the ALIAS table */
-bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
+bool HashMgr::parse_aliasf(FileMgr* af) {
   if (numaliasf != 0) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return false;
   }
-  int i = 0;
-  int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
-  while (start_piece != line.end()) {
-    switch (i) {
-      case 0: {
-        np++;
-        break;
-      }
-      case 1: {
-        numaliasf = atoi(std::string(start_piece, iter).c_str());
-        if (numaliasf < 1) {
-          numaliasf = 0;
-          aliasf = NULL;
-          aliasflen = NULL;
-          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                           af->getlinenum());
-          return false;
-        }
-        aliasf =
-            (unsigned short**)malloc(numaliasf * sizeof(unsigned short*));
-        aliasflen =
-            (unsigned short*)malloc(numaliasf * sizeof(unsigned short));
-        if (!aliasf || !aliasflen) {
-          numaliasf = 0;
-          if (aliasf)
-            free(aliasf);
-          if (aliasflen)
-            free(aliasflen);
-          aliasf = NULL;
-          aliasflen = NULL;
-          return false;
-        }
-        np++;
-        break;
-      }
-      default:
-        break;
-    }
-    ++i;
-    start_piece = mystrsep(line, iter);
-  }
-  if (np != 2) {
-    numaliasf = 0;
-    free(aliasf);
-    free(aliasflen);
-    aliasf = NULL;
-    aliasflen = NULL;
-    HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
-                     af->getlinenum());
-    return false;
+  std::string piece;
+
+  piece = af->nextpiece();
+  piece = af->nextpiece();
+  
+  if (piece.empty()) {	  
+	  HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
+		  af->getlinenum());
+	  return false;
   }
 
+  numaliasf = atoi(piece.c_str());
+  if (numaliasf < 1) {
+	  numaliasf = 0;
+	  aliasf = NULL;
+	  aliasflen = NULL;
+	  HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+		  af->getlinenum());
+	  return false;
+  }
+  aliasf =
+	  (unsigned short**)malloc(numaliasf * sizeof(unsigned short*));
+  aliasflen =
+	  (unsigned short*)malloc(numaliasf * sizeof(unsigned short));
+  if (!aliasf || !aliasflen) {
+	  numaliasf = 0;
+	  if (aliasf)
+		  free(aliasf);
+	  if (aliasflen)
+		  free(aliasflen);
+	  aliasf = NULL;
+	  aliasflen = NULL;
+	  return false;
+  }
+  
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; j++) {
     std::string nl;
-    if (!af->getline(nl))
+    if (!af->readline())
       return false;
+	nl=af->getline();
     mychomp(nl);
-    i = 0;
+    int i = 0;
     aliasf[j] = NULL;
     aliasflen[j] = 0;
-    iter = nl.begin();
-    start_piece = mystrsep(nl, iter);
+	std::string::const_iterator iter = nl.begin();
+	std::string::const_iterator start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       switch (i) {
         case 0: {
@@ -1032,9 +1002,9 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
           break;
         }
         case 1: {
-          std::string piece(start_piece, iter);
+          std::string piece1(start_piece, iter);
           aliasflen[j] =
-              (unsigned short)decode_flags(&(aliasf[j]), piece, af);
+              (unsigned short)decode_flags(&(aliasf[j]), piece1, af);
           std::sort(aliasf[j], aliasf[j] + aliasflen[j]);
           break;
         }
@@ -1074,62 +1044,49 @@ int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) const {
 }
 
 /* parse morph alias definitions */
-bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
+bool HashMgr::parse_aliasm(FileMgr* af) {
   if (numaliasm != 0) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return false;
   }
-  int i = 0;
-  int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
-  while (start_piece != line.end()) {
-    switch (i) {
-      case 0: {
-        np++;
-        break;
-      }
-      case 1: {
-        numaliasm = atoi(std::string(start_piece, iter).c_str());
-        if (numaliasm < 1) {
-          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                           af->getlinenum());
-          return false;
-        }
-        aliasm = (char**)malloc(numaliasm * sizeof(char*));
-        if (!aliasm) {
-          numaliasm = 0;
-          return false;
-        }
-        np++;
-        break;
-      }
-      default:
-        break;
-    }
-    ++i;
-    start_piece = mystrsep(line, iter);
+  
+  std::string piece;
+
+  piece = af->nextpiece();
+  piece = af->nextpiece();
+
+  if (piece.empty()) {
+	  HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
+		  af->getlinenum());
+	  return false;
   }
-  if (np != 2) {
-    numaliasm = 0;
-    free(aliasm);
-    aliasm = NULL;
-    HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
-                     af->getlinenum());
-    return false;
+
+  numaliasm = atoi(piece.c_str());
+  if (numaliasm < 1) {
+	  HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+		  af->getlinenum());
+	  return false;
   }
+  aliasm = (char**)malloc(numaliasm * sizeof(char*));
+  if (!aliasm) {
+	  numaliasm = 0;
+	  return false;
+  }
+  
+  
 
   /* now parse the numaliasm lines to read in the remainder of the table */
   for (int j = 0; j < numaliasm; j++) {
     std::string nl;
-    if (!af->getline(nl))
+    if (!af->readline())
       return false;
+	nl=af->getline();
     mychomp(nl);
     aliasm[j] = NULL;
-    iter = nl.begin();
-    i = 0;
-    start_piece = mystrsep(nl, iter);
+	int i = 0; 
+	std::string::const_iterator iter = nl.begin();
+    std::string::const_iterator start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
       switch (i) {
         case 0: {

@@ -101,20 +101,63 @@ FileMgr::~FileMgr() {
   delete hin;
 }
 
-bool FileMgr::getline(std::string& dest) {
+bool FileMgr::readline() {
   bool ret = false;
-  ++linenum;
+  line.clear();
+
   if (fin.is_open()) {
-    ret = static_cast<bool>(std::getline(fin, dest));
+    ret = static_cast<bool>(std::getline(fin, line));
   } else if (hin->is_open()) {
-    ret = hin->getline(dest);
+    ret = hin->getline(line);
   }
-  if (!ret) {
-    --linenum;
+
+  if (ret) {
+	  if (linenum==0) {
+		  if (line.compare(0, 3, "\xEF\xBB\xBF", 3) == 0) {
+			  line.erase(0, 3);
+		  }
+	  }
+    ++linenum;
+
+	mychomp(line);
+
+	// ignore blanks
+	if (line.length() == 0) {
+		return readline();
+	}
+
+	// ignore comment lines
+	if (line.compare(0, 1, "#") == 0) {
+		return readline();
+	}
   }
+
+  iter = line.begin();
+
   return ret;
 }
 
-int FileMgr::getlinenum() {
+int FileMgr::getlinenum() const {
   return linenum;
 }
+
+std::string FileMgr::getline() const {
+	return line;
+}
+
+std::string FileMgr::remained() const {
+	std::string r; 
+	r = std::string(iter, line.end());
+	return r;
+}
+
+std::string FileMgr::nextpiece() {
+	std::string piece;
+	std::string::const_iterator start_piece = mystrsep(line, iter);
+	if (start_piece != line.end()) {
+		piece = std::string(start_piece, iter);
+	}
+
+	return piece;
+}
+
