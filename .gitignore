@@ -7,3 +7,7 @@ hunspell.pc
 libtool
 stamp-h1
 hunspell-*.tar.gz
+*.exe
+*.o
+*.a
+*~
