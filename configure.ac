@@ -6,7 +6,7 @@ m4_pattern_allow
 AC_PREREQ(2.59)
 AC_INIT([hunspell],[1.5.0],[nemeth@numbertext.org])
 
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 AC_SUBST(XFAILED)
 
 AM_INIT_AUTOMAKE(hunspell, 1.5.0)
