@@ -1,21 +1,19 @@
 /* Header describing internals of libintl library.
-   Copyright (C) 1995-1999, 2000-2007 Free Software Foundation, Inc.
+   Copyright (C) 1995-2015 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@cygnus.com>, 1995.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _GETTEXTP_H
 #define _GETTEXTP_H
@@ -39,6 +37,7 @@
 #endif
 
 #ifdef _LIBC
+struct loaded_domain;
 extern char *__gettext (const char *__msgid);
 extern char *__dgettext (const char *__domainname, const char *__msgid);
 extern char *__dcgettext (const char *__domainname, const char *__msgid,
@@ -220,6 +219,9 @@ struct binding
 /* A counter which is incremented each time some previous translations
    become invalid.
    This variable is part of the external ABI of the GNU libintl.  */
+#if defined __KLIBC__ && !defined _LIBC
+# define _nl_msg_cat_cntr libintl_nl_msg_cat_cntr
+#endif
 #ifdef IN_LIBGLOCALE
 # include <glocale/config.h>
 extern LIBGLOCALE_DLL_EXPORTED int _nl_msg_cat_cntr;
@@ -231,13 +233,27 @@ extern LIBINTL_DLL_EXPORTED int _nl_msg_cat_cntr;
 extern const char *_nl_language_preferences_default (void);
 # define gl_locale_name_canonicalize _nl_locale_name_canonicalize
 extern void _nl_locale_name_canonicalize (char *name);
+# define gl_locale_name_from_win32_LANGID _nl_locale_name_from_win32_LANGID
+/* extern const char *_nl_locale_name_from_win32_LANGID (LANGID langid); */
+# define gl_locale_name_from_win32_LCID _nl_locale_name_from_win32_LCID
+/* extern const char *_nl_locale_name_from_win32_LCID (LCID lcid); */
+# define gl_locale_name_thread_unsafe _nl_locale_name_thread_unsafe
+extern const char *_nl_locale_name_thread_unsafe (int category,
+						  const char *categoryname);
+# define gl_locale_name_thread _nl_locale_name_thread
+/* extern const char *_nl_locale_name_thread (int category,
+					      const char *categoryname); */
 # define gl_locale_name_posix _nl_locale_name_posix
 extern const char *_nl_locale_name_posix (int category,
 					  const char *categoryname);
+# define gl_locale_name_environ _nl_locale_name_environ
+extern const char *_nl_locale_name_environ (int category,
+					    const char *categoryname);
 # define gl_locale_name_default _nl_locale_name_default
 extern const char *_nl_locale_name_default (void);
 # define gl_locale_name _nl_locale_name
-extern const char *_nl_locale_name (int category, const char *categoryname);
+/* extern const char *_nl_locale_name (int category,
+				       const char *categoryname); */
 #endif
 
 struct loaded_l10nfile *_nl_find_domain (const char *__dirname, char *__locale,

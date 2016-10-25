@@ -1,25 +1,24 @@
 # Makefile for directory with message catalog handling library of GNU gettext
-# Copyright (C) 1995-1998, 2000-2007 Free Software Foundation, Inc.
+# Copyright (C) 1995-1998, 2000-2007, 2009-2015 Free Software
+# Foundation, Inc.
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU Library General Public License as published
-# by the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Library General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Library General Public
-# License along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-# USA.
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
-SHELL = /bin/sh
+SHELL = @SHELL@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -72,7 +71,30 @@ LIBTOOL = @LIBTOOL@
 RANLIB = @RANLIB@
 YACC = @INTLBISON@ -y -d
 YFLAGS = --name-prefix=__gettext
+# Windows resource compiler (windres). Used when libtool is not used.
 WINDRES = @WINDRES@
+# Windows resource compiler (windres). Used via libtool.
+RC = @RC@
+
+# Support for silent-rules.
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_@INTL_DEFAULT_VERBOSITY@)
+am__v_at_0 = @
+AM_V_AR = $(am__v_AR_$(V))
+am__v_AR_ = $(am__v_AR_@INTL_DEFAULT_VERBOSITY@)
+am__v_AR_0 = @echo "  AR    " $@;
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_@INTL_DEFAULT_VERBOSITY@)
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_@INTL_DEFAULT_VERBOSITY@)
+am__v_GEN_0 = @echo "  GEN   " $@;
+AM_V_YACC = $(am__v_YACC_$(V))
+am__v_YACC_ = $(am__v_YACC_@INTL_DEFAULT_VERBOSITY@)
+am__v_YACC_0 = @echo "  YACC  " $@;
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_@INTL_DEFAULT_VERBOSITY@)
+am__v_lt_0 = --silent
 
 # -DBUILDING_LIBINTL: Change expansion of LIBINTL_DLL_EXPORTED macro.
 # -DBUILDING_DLL: Change expansion of RELOCATABLE_DLL_EXPORTED macro.
@@ -91,6 +113,10 @@ LIBS = @LIBS@
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
+# This line will be replaced with pluralx.$lo, when this file is used
+# in gettext-tools/intl/.  See the pluralx.lo rule below for the rationale.
+PLURAL_OBJECT = plural.$lo
+
 HEADERS = \
   gmo.h \
   gettextP.h \
@@ -101,13 +127,15 @@ HEADERS = \
   localcharset.h \
   lock.h \
   relocatable.h \
+  relocatex.h \
   tsearch.h tsearch.c \
+  verify.h \
   xsize.h \
   printf-args.h printf-args.c \
   printf-parse.h wprintf-parse.h printf-parse.c \
   vasnprintf.h vasnwprintf.h vasnprintf.c \
   os2compat.h \
-  libgnuintl.h.in
+  libgnuintl.in.h
 SOURCES = \
   bindtextdom.c \
   dcgettext.c \
@@ -127,13 +155,18 @@ SOURCES = \
   plural.y \
   plural-exp.c \
   localcharset.c \
+  threadlib.c \
   lock.c \
   relocatable.c \
+  relocatex.c \
+  canonicalize.c \
   langprefs.c \
   localename.c \
   log.c \
   printf.c \
+  setlocale.c \
   version.c \
+  xsize.c \
   osdep.c \
   os2compat.c \
   intl-exports.c \
@@ -154,28 +187,34 @@ OBJECTS = \
   dcngettext.$lo \
   dngettext.$lo \
   ngettext.$lo \
-  plural.$lo \
+  $(PLURAL_OBJECT) \
   plural-exp.$lo \
   localcharset.$lo \
+  threadlib.$lo \
   lock.$lo \
   relocatable.$lo \
+  relocatex.$lo \
+  canonicalize.$lo \
   langprefs.$lo \
   localename.$lo \
   log.$lo \
   printf.$lo \
+  setlocale.$lo \
   version.$lo \
+  xsize.$lo \
   osdep.$lo \
   intl-compat.$lo
-OBJECTS_RES_yes = libintl.res
+OBJECTS_RES_yes = libintl.res.$lo
 OBJECTS_RES_no =
 DISTFILES.common = Makefile.in \
 config.charset locale.alias ref-add.sin ref-del.sin export.h libintl.rc \
 $(HEADERS) $(SOURCES)
 DISTFILES.generated = plural.c
 DISTFILES.normal = VERSION
-DISTFILES.gettext = COPYING.LIB-2.0 COPYING.LIB-2.1 libintl.glibc README.woe32
+DISTFILES.gettext = ChangeLog COPYING.LIB libintl.glibc README.woe32
 DISTFILES.obsolete = xopen-msg.sed linux-msg.sed po2tbl.sed.in cat-compat.c \
-COPYING.LIB-2 gettext.h libgettext.h plural-eval.c libgnuintl.h \
+COPYING.LIB-2 COPYING.LIB-2.0 COPYING.LIB-2.1 \
+gettext.h libgettext.h plural-eval.c libgnuintl.h \
 libgnuintl.h_vms Makefile.vms libgnuintl.h.msvc-static \
 libgnuintl.h.msvc-shared Makefile.msvc
 
@@ -186,12 +225,12 @@ all-no-yes: libgnuintl.$la
 all-no-no:
 
 libintl.a libgnuintl.a: $(OBJECTS)
-	rm -f $@
-	$(AR) cru $@ $(OBJECTS)
-	$(RANLIB) $@
+	$(AM_V_at)rm -f $@
+	$(AM_V_AR)$(AR) cru $@ $(OBJECTS)
+	$(AM_V_at)$(RANLIB) $@
 
 libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_@WOE32@)
-	$(LIBTOOL) --mode=link \
+	$(AM_V_GEN)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=link \
 	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
 	  $(OBJECTS) @LTLIBICONV@ @INTL_MACOSX_LIBS@ $(LIBS) @LTLIBTHREAD@ @LTLIBC@ \
 	  $(OBJECTS_RES_@WOE32@) \
@@ -204,83 +243,99 @@ libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_@WOE32@)
 # according to the libtool documentation, section "Library interface versions".
 # Maintainers of other packages that include the intl directory must *not*
 # change these values.
-LTV_CURRENT=8
-LTV_REVISION=2
-LTV_AGE=0
+LTV_CURRENT=9
+LTV_REVISION=4
+LTV_AGE=1
 
 .SUFFIXES:
 .SUFFIXES: .c .y .o .lo .sin .sed
 
 .c.o:
-	$(COMPILE) $<
+	$(AM_V_CC)$(COMPILE) $<
 
 .y.c:
-	$(YACC) $(YFLAGS) --output $@ $<
-	rm -f $*.h
+	$(AM_V_YACC)$(YACC) $(YFLAGS) --output $@ $<
+	$(AM_V_at)rm -f $*.h
 
 bindtextdom.lo: $(srcdir)/bindtextdom.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/bindtextdom.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/bindtextdom.c
 dcgettext.lo: $(srcdir)/dcgettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/dcgettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/dcgettext.c
 dgettext.lo: $(srcdir)/dgettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/dgettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/dgettext.c
 gettext.lo: $(srcdir)/gettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/gettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/gettext.c
 finddomain.lo: $(srcdir)/finddomain.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/finddomain.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/finddomain.c
 hash-string.lo: $(srcdir)/hash-string.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/hash-string.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/hash-string.c
 loadmsgcat.lo: $(srcdir)/loadmsgcat.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/loadmsgcat.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/loadmsgcat.c
 localealias.lo: $(srcdir)/localealias.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/localealias.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/localealias.c
 textdomain.lo: $(srcdir)/textdomain.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/textdomain.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/textdomain.c
 l10nflist.lo: $(srcdir)/l10nflist.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/l10nflist.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/l10nflist.c
 explodename.lo: $(srcdir)/explodename.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/explodename.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/explodename.c
 dcigettext.lo: $(srcdir)/dcigettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/dcigettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/dcigettext.c
 dcngettext.lo: $(srcdir)/dcngettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/dcngettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/dcngettext.c
 dngettext.lo: $(srcdir)/dngettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/dngettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/dngettext.c
 ngettext.lo: $(srcdir)/ngettext.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/ngettext.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/ngettext.c
 plural.lo: $(srcdir)/plural.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/plural.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/plural.c
+# $(srcdir)/plural.c contains a relative file name of the Bison source.
+# That could mess up LCOV when the C source file is referred to from a
+# different base directory.
+pluralx.c: $(srcdir)/plural.c
+	$(AM_V_GEN)sed -e 's|^#line \([0-9]*\) "\(plural\.[cy]\)"|#line \1 "$(srcdir)/\2"|' < $(srcdir)/plural.c > $@
+pluralx.lo: pluralx.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) pluralx.c
 plural-exp.lo: $(srcdir)/plural-exp.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/plural-exp.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/plural-exp.c
 localcharset.lo: $(srcdir)/localcharset.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/localcharset.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/localcharset.c
+threadlib.lo: $(srcdir)/threadlib.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/threadlib.c
 lock.lo: $(srcdir)/lock.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/lock.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/lock.c
+relocatex.lo: $(srcdir)/relocatex.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatex.c
+canonicalize.lo: $(srcdir)/canonicalize.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/canonicalize.c
 relocatable.lo: $(srcdir)/relocatable.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/relocatable.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatable.c
 langprefs.lo: $(srcdir)/langprefs.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/langprefs.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/langprefs.c
 localename.lo: $(srcdir)/localename.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/localename.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/localename.c
 log.lo: $(srcdir)/log.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/log.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/log.c
 printf.lo: $(srcdir)/printf.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/printf.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/printf.c
+setlocale.lo: $(srcdir)/setlocale.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/setlocale.c
 version.lo: $(srcdir)/version.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/version.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/version.c
+xsize.lo: $(srcdir)/xsize.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/xsize.c
 osdep.lo: $(srcdir)/osdep.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/osdep.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/osdep.c
 intl-compat.lo: $(srcdir)/intl-compat.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/intl-compat.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/intl-compat.c
 
 # This rule is executed only on Woe32 systems.
 # The following sed expressions come from the windres-options script. They are
 # inlined here, so that they can be written in a Makefile without requiring a
 # temporary file. They must contain literal newlines rather than semicolons,
-# so that they work with the sed-3.02 that is shipped with MSYS. We can use
-# GNU bash's $'\n' syntax to obtain such a newline.
-libintl.res: $(srcdir)/libintl.rc
-	nl=$$'\n'; \
+# so that they work with the sed-3.02 that is shipped with MSYS.
+libintl.res.o: $(srcdir)/libintl.rc
+	nlinit=`echo 'nl="'; echo '"'`; eval "$$nlinit"; \
 	sed_extract_major='/^[0-9]/{'$${nl}'s/^\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
 	sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
 	sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
@@ -289,7 +344,18 @@ libintl.res: $(srcdir)/libintl.rc
 	  "-DPACKAGE_VERSION_MAJOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_major"` \
 	  "-DPACKAGE_VERSION_MINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_minor"` \
 	  "-DPACKAGE_VERSION_SUBMINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_subminor"` \
-	  -i $(srcdir)/libintl.rc -o libintl.res --output-format=coff
+	  -i $(srcdir)/libintl.rc -o libintl.res.o --output-format=coff
+libintl.res.lo: $(srcdir)/libintl.rc
+	nlinit=`echo 'nl="'; echo '"'`; eval "$$nlinit"; \
+	sed_extract_major='/^[0-9]/{'$${nl}'s/^\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	$(LIBTOOL) --mode=compile --tag=RC $(RC) \
+	  "-DPACKAGE_VERSION_STRING=\\\"$(VERSION)\\\"" \
+	  "-DPACKAGE_VERSION_MAJOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_major"` \
+	  "-DPACKAGE_VERSION_MINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_minor"` \
+	  "-DPACKAGE_VERSION_SUBMINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_subminor"` \
+	  -i $(srcdir)/libintl.rc -o libintl.res.lo --output-format=coff
 
 ref-add.sed: $(srcdir)/ref-add.sin
 	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-add.sin > t-ref-add.sed
@@ -300,13 +366,14 @@ ref-del.sed: $(srcdir)/ref-del.sin
 
 INCLUDES = -I. -I$(srcdir) -I..
 
-libgnuintl.h: $(srcdir)/libgnuintl.h.in
+libgnuintl.h: $(srcdir)/libgnuintl.in.h
 	sed -e '/IN_LIBGLOCALE/d' \
 	    -e 's,@''HAVE_POSIX_PRINTF''@,@HAVE_POSIX_PRINTF@,g' \
 	    -e 's,@''HAVE_ASPRINTF''@,@HAVE_ASPRINTF@,g' \
+	    -e 's,@''HAVE_NEWLOCALE''@,@HAVE_NEWLOCALE@,g' \
 	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
 	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
-	  < $(srcdir)/libgnuintl.h.in \
+	  < $(srcdir)/libgnuintl.in.h \
 	| if test '@WOE32DLL@' = yes; then \
 	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/'; \
 	  else \
@@ -317,13 +384,14 @@ libgnuintl.h: $(srcdir)/libgnuintl.h.in
 	| sed -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
 	  > libgnuintl.h
 
-libintl.h: $(srcdir)/libgnuintl.h.in
+libintl.h: $(srcdir)/libgnuintl.in.h
 	sed -e '/IN_LIBGLOCALE/d' \
 	    -e 's,@''HAVE_POSIX_PRINTF''@,@HAVE_POSIX_PRINTF@,g' \
 	    -e 's,@''HAVE_ASPRINTF''@,@HAVE_ASPRINTF@,g' \
+	    -e 's,@''HAVE_NEWLOCALE''@,@HAVE_NEWLOCALE@,g' \
 	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
 	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
-	  < $(srcdir)/libgnuintl.h.in > libintl.h
+	  < $(srcdir)/libgnuintl.in.h > libintl.h
 
 charset.alias: $(srcdir)/config.charset
 	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
@@ -335,7 +403,7 @@ check: all
 # system which has the GNU gettext() function in its C library or in a
 # separate library.
 # If you want to use the one which comes with this version of the
-# package, you have to use `configure --with-included-gettext'.
+# package, you have to use "configure --with-included-gettext".
 install: install-exec install-data
 install-exec: all
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
@@ -367,7 +435,21 @@ install-exec: all
 	  : ; \
 	fi
 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  test @GLIBC21@ != no || $(mkdir_p) $(DESTDIR)$(libdir); \
+	  if test @GLIBC21@ = no; then \
+	    case '@host_os@' in \
+	      darwin[56]*) \
+	        need_charset_alias=true ;; \
+	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
+	        need_charset_alias=false ;; \
+	      *) \
+	        need_charset_alias=true ;; \
+	    esac; \
+	  else \
+	    need_charset_alias=false; \
+	  fi; \
+	  if $$need_charset_alias; then \
+	    $(mkdir_p) $(DESTDIR)$(libdir); \
+	  fi; \
 	  temp=$(DESTDIR)$(libdir)/t-charset.alias; \
 	  dest=$(DESTDIR)$(libdir)/charset.alias; \
 	  if test -f $(DESTDIR)$(libdir)/charset.alias; then \
@@ -376,7 +458,7 @@ install-exec: all
 	    $(INSTALL_DATA) $$temp $$dest; \
 	    rm -f $$temp; \
 	  else \
-	    if test @GLIBC21@ = no; then \
+	    if $$need_charset_alias; then \
 	      orig=charset.alias; \
 	      sed -f ref-add.sed $$orig > $$temp; \
 	      $(INSTALL_DATA) $$temp $$dest; \
@@ -399,8 +481,7 @@ install-data: all
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	  $(INSTALL_DATA) VERSION $(DESTDIR)$(gettextsrcdir)/VERSION; \
-	  $(INSTALL_DATA) ChangeLog.inst $(DESTDIR)$(gettextsrcdir)/ChangeLog; \
-	  dists="COPYING.LIB-2.0 COPYING.LIB-2.1 $(DISTFILES.common)"; \
+	  dists="COPYING.LIB $(DISTFILES.common)"; \
 	  for file in $$dists; do \
 	    $(INSTALL_DATA) $(srcdir)/$$file \
 			    $(DESTDIR)$(gettextsrcdir)/$$file; \
@@ -439,7 +520,21 @@ installdirs:
 	  : ; \
 	fi
 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  test @GLIBC21@ != no || $(mkdir_p) $(DESTDIR)$(libdir); \
+	  if test @GLIBC21@ = no; then \
+	    case '@host_os@' in \
+	      darwin[56]*) \
+	        need_charset_alias=true ;; \
+	      darwin* | cygwin* | mingw* | pw32* | cegcc*) \
+	        need_charset_alias=false ;; \
+	      *) \
+	        need_charset_alias=true ;; \
+	    esac; \
+	  else \
+	    need_charset_alias=false; \
+	  fi; \
+	  if $$need_charset_alias; then \
+	    $(mkdir_p) $(DESTDIR)$(libdir); \
+	  fi; \
 	  $(mkdir_p) $(DESTDIR)$(localedir); \
 	else \
 	  : ; \
@@ -496,7 +591,7 @@ uninstall:
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools"; then \
-	  for file in VERSION ChangeLog COPYING.LIB-2.0 COPYING.LIB-2.1 $(DISTFILES.common) $(DISTFILES.generated); do \
+	  for file in VERSION COPYING.LIB $(DISTFILES.common) $(DISTFILES.generated); do \
 	    rm -f $(DESTDIR)$(gettextsrcdir)/$$file; \
 	  done; \
 	else \
@@ -506,20 +601,21 @@ uninstall:
 info dvi ps pdf html:
 
 $(OBJECTS): ../config.h libgnuintl.h
-bindtextdom.$lo dcgettext.$lo dcigettext.$lo dcngettext.$lo dgettext.$lo dngettext.$lo finddomain.$lo gettext.$lo intl-compat.$lo loadmsgcat.$lo localealias.$lo ngettext.$lo textdomain.$lo: $(srcdir)/gettextP.h $(srcdir)/gmo.h $(srcdir)/loadinfo.h
+bindtextdom.$lo dcgettext.$lo dcigettext.$lo dcngettext.$lo dgettext.$lo dngettext.$lo finddomain.$lo gettext.$lo intl-compat.$lo loadmsgcat.$lo localealias.$lo ngettext.$lo setlocale.$lo textdomain.$lo: $(srcdir)/gettextP.h $(srcdir)/gmo.h $(srcdir)/loadinfo.h
+localename.$lo: $(srcdir)/gettextP.h
 hash-string.$lo dcigettext.$lo loadmsgcat.$lo: $(srcdir)/hash-string.h
 explodename.$lo l10nflist.$lo: $(srcdir)/loadinfo.h
-dcigettext.$lo loadmsgcat.$lo plural.$lo plural-exp.$lo: $(srcdir)/plural-exp.h
+dcigettext.$lo loadmsgcat.$lo $(PLURAL_OBJECT) plural-exp.$lo: $(srcdir)/plural-exp.h
 dcigettext.$lo: $(srcdir)/eval-plural.h
 localcharset.$lo: $(srcdir)/localcharset.h
 bindtextdom.$lo dcigettext.$lo finddomain.$lo loadmsgcat.$lo localealias.$lo lock.$lo log.$lo: $(srcdir)/lock.h
 localealias.$lo localcharset.$lo relocatable.$lo: $(srcdir)/relocatable.h
-printf.$lo: $(srcdir)/printf-args.h $(srcdir)/printf-args.c $(srcdir)/printf-parse.h $(srcdir)/wprintf-parse.h $(srcdir)/xsize.h $(srcdir)/printf-parse.c $(srcdir)/vasnprintf.h $(srcdir)/vasnwprintf.h $(srcdir)/vasnprintf.c
+printf.$lo: $(srcdir)/printf-args.h $(srcdir)/printf-args.c $(srcdir)/printf-parse.h $(srcdir)/wprintf-parse.h $(srcdir)/xsize.h $(srcdir)/xsize.c $(srcdir)/printf-parse.c $(srcdir)/vasnprintf.h $(srcdir)/vasnwprintf.h $(srcdir)/vasnprintf.c
 
 # A bison-2.1 generated plural.c includes <libintl.h> if ENABLE_NLS.
 PLURAL_DEPS_yes = libintl.h
 PLURAL_DEPS_no =
-plural.$lo: $(PLURAL_DEPS_@USE_INCLUDED_LIBINTL@)
+$(PLURAL_OBJECT): $(PLURAL_DEPS_@USE_INCLUDED_LIBINTL@)
 
 tags: TAGS
 
@@ -538,16 +634,17 @@ ID: $(HEADERS) $(SOURCES)
 
 
 mostlyclean:
-	rm -f *.a *.la *.o *.obj *.lo libintl.res core core.*
+	rm -f *.a *.la *.o *.obj *.lo core core.*
 	rm -f libgnuintl.h libintl.h charset.alias ref-add.sed ref-del.sed
 	rm -f -r .libs _libs
+	rm -f pluralx.c
 
 clean: mostlyclean
 
 distclean: clean
 	rm -f Makefile ID TAGS
 	if test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; then \
-	  rm -f ChangeLog.inst $(DISTFILES.normal); \
+	  rm -f $(DISTFILES.normal); \
 	else \
 	  : ; \
 	fi
@@ -557,7 +654,7 @@ maintainer-clean: distclean
 	@echo "it deletes files that may require special tools to rebuild."
 
 
-# GNU gettext needs not contain the file `VERSION' but contains some
+# GNU gettext needs not contain the file 'VERSION' but contains some
 # other files which should not be distributed in other packages.
 distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
 dist distdir: Makefile
@@ -570,7 +667,7 @@ dist distdir: Makefile
 	    additional="$(DISTFILES.normal)"; \
 	  fi; \
 	  $(MAKE) $(DISTFILES.common) $(DISTFILES.generated) $$additional; \
-	  for file in ChangeLog $(DISTFILES.common) $(DISTFILES.generated) $$additional; do \
+	  for file in $(DISTFILES.common) $(DISTFILES.generated) $$additional; do \
 	    if test -f $$file; then dir=.; else dir=$(srcdir); fi; \
 	    cp -p $$dir/$$file $(distdir) || test $$file = Makefile.in || exit 1; \
 	  done; \

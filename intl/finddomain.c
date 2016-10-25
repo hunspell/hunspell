@@ -1,21 +1,19 @@
 /* Handle list of needed message catalogs
-   Copyright (C) 1995-1999, 2000-2001, 2003-2007 Free Software Foundation, Inc.
+   Copyright (C) 1995-2015 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.org>, 1995.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -195,7 +193,7 @@ out:
 /* This is called from iconv/gconv_db.c's free_mem, as locales must
    be freed before freeing gconv steps arrays.  */
 void __libc_freeres_fn_section
-_nl_finddomain_subfreeres ()
+_nl_finddomain_subfreeres (void)
 {
   struct loaded_l10nfile *runp = _nl_loaded_domains;
 

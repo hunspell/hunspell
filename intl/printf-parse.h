@@ -1,37 +1,46 @@
 /* Parse printf format string.
-   Copyright (C) 1999, 2002-2003 Free Software Foundation, Inc.
+   Copyright (C) 1999, 2002-2003, 2005, 2007, 2010-2011, 2015 Free
+   Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _PRINTF_PARSE_H
 #define _PRINTF_PARSE_H
+
+#if HAVE_FEATURES_H
+# include <features.h> /* for __GLIBC__, __UCLIBC__ */
+#endif
 
 #include "printf-args.h"
 
 
 /* Flags */
-#define FLAG_GROUP	 1	/* ' flag */
-#define FLAG_LEFT	 2	/* - flag */
-#define FLAG_SHOWSIGN	 4	/* + flag */
-#define FLAG_SPACE	 8	/* space flag */
-#define FLAG_ALT	16	/* # flag */
-#define FLAG_ZERO	32
+#define FLAG_GROUP       1      /* ' flag */
+#define FLAG_LEFT        2      /* - flag */
+#define FLAG_SHOWSIGN    4      /* + flag */
+#define FLAG_SPACE       8      /* space flag */
+#define FLAG_ALT        16      /* # flag */
+#define FLAG_ZERO       32
+#if __GLIBC__ >= 2 && !defined __UCLIBC__
+# define FLAG_LOCALIZED 64      /* I flag, uses localized digits */
+#endif
 
 /* arg_index value indicating that no argument is consumed.  */
-#define ARG_NONE	(~(size_t)0)
+#define ARG_NONE        (~(size_t)0)
+
+/* Number of directly allocated directives (no malloc() needed).  */
+#define N_DIRECT_ALLOC_DIRECTIVES 7
 
 /* A parsed directive.  */
 typedef struct
@@ -57,6 +66,7 @@ typedef struct
   char_directive *dir;
   size_t max_width_length;
   size_t max_precision_length;
+  char_directive direct_alloc_dir[N_DIRECT_ALLOC_DIRECTIVES];
 }
 char_directives;
 

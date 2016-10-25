@@ -1,20 +1,18 @@
 /* Locking in multithreaded situations.
-   Copyright (C) 2005-2007 Free Software Foundation, Inc.
+   Copyright (C) 2005-2008, 2015 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2005.
    Based on GCC's gthr-posix.h, gthr-posix95.h, gthr-solaris.h,
@@ -32,6 +30,11 @@
      Taking the lock:     gl_lock_lock (name);
      Releasing the lock:  gl_lock_unlock (name);
      De-initialization:   gl_lock_destroy (name);
+   Equivalent functions with control of error handling:
+     Initialization:      err = glthread_lock_init (&name);
+     Taking the lock:     err = glthread_lock_lock (&name);
+     Releasing the lock:  err = glthread_lock_unlock (&name);
+     De-initialization:   err = glthread_lock_destroy (&name);
 
    Read-Write (non-recursive) locks:
      Type:                gl_rwlock_t
@@ -42,6 +45,12 @@
                           gl_rwlock_wrlock (name);
      Releasing the lock:  gl_rwlock_unlock (name);
      De-initialization:   gl_rwlock_destroy (name);
+   Equivalent functions with control of error handling:
+     Initialization:      err = glthread_rwlock_init (&name);
+     Taking the lock:     err = glthread_rwlock_rdlock (&name);
+                          err = glthread_rwlock_wrlock (&name);
+     Releasing the lock:  err = glthread_rwlock_unlock (&name);
+     De-initialization:   err = glthread_rwlock_destroy (&name);
 
    Recursive locks:
      Type:                gl_recursive_lock_t
@@ -51,16 +60,26 @@
      Taking the lock:     gl_recursive_lock_lock (name);
      Releasing the lock:  gl_recursive_lock_unlock (name);
      De-initialization:   gl_recursive_lock_destroy (name);
+   Equivalent functions with control of error handling:
+     Initialization:      err = glthread_recursive_lock_init (&name);
+     Taking the lock:     err = glthread_recursive_lock_lock (&name);
+     Releasing the lock:  err = glthread_recursive_lock_unlock (&name);
+     De-initialization:   err = glthread_recursive_lock_destroy (&name);
 
   Once-only execution:
      Type:                gl_once_t
      Initializer:         gl_once_define(extern, name)
      Execution:           gl_once (name, initfunction);
+   Equivalent functions with control of error handling:
+     Execution:           err = glthread_once (&name, initfunction);
 */
 
 
 #ifndef _LOCK_H
 #define _LOCK_H
+
+#include <errno.h>
+#include <stdlib.h>
 
 /* ========================================================================= */
 
@@ -69,7 +88,6 @@
 /* Use the POSIX threads library.  */
 
 # include <pthread.h>
-# include <stdlib.h>
 
 # ifdef __cplusplus
 extern "C" {
@@ -147,34 +165,14 @@ typedef pthread_mutex_t gl_lock_t;
     STORAGECLASS pthread_mutex_t NAME = gl_lock_initializer;
 # define gl_lock_initializer \
     PTHREAD_MUTEX_INITIALIZER
-# define gl_lock_init(NAME) \
-    do                                                                  \
-      {                                                                 \
-        if (pthread_in_use () && pthread_mutex_init (&NAME, NULL) != 0) \
-          abort ();                                                     \
-      }                                                                 \
-    while (0)
-# define gl_lock_lock(NAME) \
-    do                                                            \
-      {                                                           \
-        if (pthread_in_use () && pthread_mutex_lock (&NAME) != 0) \
-          abort ();                                               \
-      }                                                           \
-    while (0)
-# define gl_lock_unlock(NAME) \
-    do                                                              \
-      {                                                             \
-        if (pthread_in_use () && pthread_mutex_unlock (&NAME) != 0) \
-          abort ();                                                 \
-      }                                                             \
-    while (0)
-# define gl_lock_destroy(NAME) \
-    do                                                               \
-      {                                                              \
-        if (pthread_in_use () && pthread_mutex_destroy (&NAME) != 0) \
-          abort ();                                                  \
-      }                                                              \
-    while (0)
+# define glthread_lock_init(LOCK) \
+    (pthread_in_use () ? pthread_mutex_init (LOCK, NULL) : 0)
+# define glthread_lock_lock(LOCK) \
+    (pthread_in_use () ? pthread_mutex_lock (LOCK) : 0)
+# define glthread_lock_unlock(LOCK) \
+    (pthread_in_use () ? pthread_mutex_unlock (LOCK) : 0)
+# define glthread_lock_destroy(LOCK) \
+    (pthread_in_use () ? pthread_mutex_destroy (LOCK) : 0)
 
 /* ------------------------- gl_rwlock_t datatype ------------------------- */
 
@@ -189,41 +187,16 @@ typedef pthread_rwlock_t gl_rwlock_t;
       STORAGECLASS pthread_rwlock_t NAME = gl_rwlock_initializer;
 #   define gl_rwlock_initializer \
       PTHREAD_RWLOCK_INITIALIZER
-#   define gl_rwlock_init(NAME) \
-      do                                                                   \
-        {                                                                  \
-          if (pthread_in_use () && pthread_rwlock_init (&NAME, NULL) != 0) \
-            abort ();                                                      \
-        }                                                                  \
-      while (0)
-#   define gl_rwlock_rdlock(NAME) \
-      do                                                               \
-        {                                                              \
-          if (pthread_in_use () && pthread_rwlock_rdlock (&NAME) != 0) \
-            abort ();                                                  \
-        }                                                              \
-      while (0)
-#   define gl_rwlock_wrlock(NAME) \
-      do                                                               \
-        {                                                              \
-          if (pthread_in_use () && pthread_rwlock_wrlock (&NAME) != 0) \
-            abort ();                                                  \
-        }                                                              \
-      while (0)
-#   define gl_rwlock_unlock(NAME) \
-      do                                                               \
-        {                                                              \
-          if (pthread_in_use () && pthread_rwlock_unlock (&NAME) != 0) \
-            abort ();                                                  \
-        }                                                              \
-      while (0)
-#   define gl_rwlock_destroy(NAME) \
-      do                                                                \
-        {                                                               \
-          if (pthread_in_use () && pthread_rwlock_destroy (&NAME) != 0) \
-            abort ();                                                   \
-        }                                                               \
-      while (0)
+#   define glthread_rwlock_init(LOCK) \
+      (pthread_in_use () ? pthread_rwlock_init (LOCK, NULL) : 0)
+#   define glthread_rwlock_rdlock(LOCK) \
+      (pthread_in_use () ? pthread_rwlock_rdlock (LOCK) : 0)
+#   define glthread_rwlock_wrlock(LOCK) \
+      (pthread_in_use () ? pthread_rwlock_wrlock (LOCK) : 0)
+#   define glthread_rwlock_unlock(LOCK) \
+      (pthread_in_use () ? pthread_rwlock_unlock (LOCK) : 0)
+#   define glthread_rwlock_destroy(LOCK) \
+      (pthread_in_use () ? pthread_rwlock_destroy (LOCK) : 0)
 
 #  else
 
@@ -240,46 +213,21 @@ typedef struct
       STORAGECLASS gl_rwlock_t NAME = gl_rwlock_initializer;
 #   define gl_rwlock_initializer \
       { 0, PTHREAD_MUTEX_INITIALIZER }
-#   define gl_rwlock_init(NAME) \
-      do                                  \
-        {                                 \
-          if (pthread_in_use ())          \
-            glthread_rwlock_init (&NAME); \
-        }                                 \
-      while (0)
-#   define gl_rwlock_rdlock(NAME) \
-      do                                    \
-        {                                   \
-          if (pthread_in_use ())            \
-            glthread_rwlock_rdlock (&NAME); \
-        }                                   \
-      while (0)
-#   define gl_rwlock_wrlock(NAME) \
-      do                                    \
-        {                                   \
-          if (pthread_in_use ())            \
-            glthread_rwlock_wrlock (&NAME); \
-        }                                   \
-      while (0)
-#   define gl_rwlock_unlock(NAME) \
-      do                                    \
-        {                                   \
-          if (pthread_in_use ())            \
-            glthread_rwlock_unlock (&NAME); \
-        }                                   \
-      while (0)
-#   define gl_rwlock_destroy(NAME) \
-      do                                     \
-        {                                    \
-          if (pthread_in_use ())             \
-            glthread_rwlock_destroy (&NAME); \
-        }                                    \
-      while (0)
-extern void glthread_rwlock_init (gl_rwlock_t *lock);
-extern void glthread_rwlock_rdlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_wrlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_unlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_destroy (gl_rwlock_t *lock);
+#   define glthread_rwlock_init(LOCK) \
+      (pthread_in_use () ? glthread_rwlock_init_multithreaded (LOCK) : 0)
+#   define glthread_rwlock_rdlock(LOCK) \
+      (pthread_in_use () ? glthread_rwlock_rdlock_multithreaded (LOCK) : 0)
+#   define glthread_rwlock_wrlock(LOCK) \
+      (pthread_in_use () ? glthread_rwlock_wrlock_multithreaded (LOCK) : 0)
+#   define glthread_rwlock_unlock(LOCK) \
+      (pthread_in_use () ? glthread_rwlock_unlock_multithreaded (LOCK) : 0)
+#   define glthread_rwlock_destroy(LOCK) \
+      (pthread_in_use () ? glthread_rwlock_destroy_multithreaded (LOCK) : 0)
+extern int glthread_rwlock_init_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_rdlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_wrlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_unlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_destroy_multithreaded (gl_rwlock_t *lock);
 
 #  endif
 
@@ -300,46 +248,21 @@ typedef struct
     STORAGECLASS gl_rwlock_t NAME = gl_rwlock_initializer;
 # define gl_rwlock_initializer \
     { PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, PTHREAD_COND_INITIALIZER, 0, 0 }
-# define gl_rwlock_init(NAME) \
-    do                                  \
-      {                                 \
-        if (pthread_in_use ())          \
-          glthread_rwlock_init (&NAME); \
-      }                                 \
-    while (0)
-# define gl_rwlock_rdlock(NAME) \
-    do                                    \
-      {                                   \
-        if (pthread_in_use ())            \
-          glthread_rwlock_rdlock (&NAME); \
-      }                                   \
-    while (0)
-# define gl_rwlock_wrlock(NAME) \
-    do                                    \
-      {                                   \
-        if (pthread_in_use ())            \
-          glthread_rwlock_wrlock (&NAME); \
-      }                                   \
-    while (0)
-# define gl_rwlock_unlock(NAME) \
-    do                                    \
-      {                                   \
-        if (pthread_in_use ())            \
-          glthread_rwlock_unlock (&NAME); \
-      }                                   \
-    while (0)
-# define gl_rwlock_destroy(NAME) \
-    do                                     \
-      {                                    \
-        if (pthread_in_use ())             \
-          glthread_rwlock_destroy (&NAME); \
-      }                                    \
-    while (0)
-extern void glthread_rwlock_init (gl_rwlock_t *lock);
-extern void glthread_rwlock_rdlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_wrlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_unlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_destroy (gl_rwlock_t *lock);
+# define glthread_rwlock_init(LOCK) \
+    (pthread_in_use () ? glthread_rwlock_init_multithreaded (LOCK) : 0)
+# define glthread_rwlock_rdlock(LOCK) \
+    (pthread_in_use () ? glthread_rwlock_rdlock_multithreaded (LOCK) : 0)
+# define glthread_rwlock_wrlock(LOCK) \
+    (pthread_in_use () ? glthread_rwlock_wrlock_multithreaded (LOCK) : 0)
+# define glthread_rwlock_unlock(LOCK) \
+    (pthread_in_use () ? glthread_rwlock_unlock_multithreaded (LOCK) : 0)
+# define glthread_rwlock_destroy(LOCK) \
+    (pthread_in_use () ? glthread_rwlock_destroy_multithreaded (LOCK) : 0)
+extern int glthread_rwlock_init_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_rdlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_wrlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_unlock_multithreaded (gl_rwlock_t *lock);
+extern int glthread_rwlock_destroy_multithreaded (gl_rwlock_t *lock);
 
 # endif
 
@@ -361,34 +284,15 @@ typedef pthread_mutex_t gl_recursive_lock_t;
 #    define gl_recursive_lock_initializer \
        PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
 #   endif
-#   define gl_recursive_lock_init(NAME) \
-      do                                                                  \
-        {                                                                 \
-          if (pthread_in_use () && pthread_mutex_init (&NAME, NULL) != 0) \
-            abort ();                                                     \
-        }                                                                 \
-      while (0)
-#   define gl_recursive_lock_lock(NAME) \
-      do                                                            \
-        {                                                           \
-          if (pthread_in_use () && pthread_mutex_lock (&NAME) != 0) \
-            abort ();                                               \
-        }                                                           \
-      while (0)
-#   define gl_recursive_lock_unlock(NAME) \
-      do                                                              \
-        {                                                             \
-          if (pthread_in_use () && pthread_mutex_unlock (&NAME) != 0) \
-            abort ();                                                 \
-        }                                                             \
-      while (0)
-#   define gl_recursive_lock_destroy(NAME) \
-      do                                                               \
-        {                                                              \
-          if (pthread_in_use () && pthread_mutex_destroy (&NAME) != 0) \
-            abort ();                                                  \
-        }                                                              \
-      while (0)
+#   define glthread_recursive_lock_init(LOCK) \
+      (pthread_in_use () ? glthread_recursive_lock_init_multithreaded (LOCK) : 0)
+#   define glthread_recursive_lock_lock(LOCK) \
+      (pthread_in_use () ? pthread_mutex_lock (LOCK) : 0)
+#   define glthread_recursive_lock_unlock(LOCK) \
+      (pthread_in_use () ? pthread_mutex_unlock (LOCK) : 0)
+#   define glthread_recursive_lock_destroy(LOCK) \
+      (pthread_in_use () ? pthread_mutex_destroy (LOCK) : 0)
+extern int glthread_recursive_lock_init_multithreaded (gl_recursive_lock_t *lock);
 
 #  else
 
@@ -405,38 +309,18 @@ typedef struct
       STORAGECLASS gl_recursive_lock_t NAME = gl_recursive_lock_initializer;
 #   define gl_recursive_lock_initializer \
       { PTHREAD_MUTEX_INITIALIZER, PTHREAD_MUTEX_INITIALIZER, 0 }
-#   define gl_recursive_lock_init(NAME) \
-      do                                          \
-        {                                         \
-          if (pthread_in_use ())                  \
-            glthread_recursive_lock_init (&NAME); \
-        }                                         \
-      while (0)
-#   define gl_recursive_lock_lock(NAME) \
-      do                                          \
-        {                                         \
-          if (pthread_in_use ())                  \
-            glthread_recursive_lock_lock (&NAME); \
-        }                                         \
-      while (0)
-#   define gl_recursive_lock_unlock(NAME) \
-      do                                            \
-        {                                           \
-          if (pthread_in_use ())                    \
-            glthread_recursive_lock_unlock (&NAME); \
-        }                                           \
-      while (0)
-#   define gl_recursive_lock_destroy(NAME) \
-      do                                             \
-        {                                            \
-          if (pthread_in_use ())                     \
-            glthread_recursive_lock_destroy (&NAME); \
-        }                                            \
-      while (0)
-extern void glthread_recursive_lock_init (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_lock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_unlock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_destroy (gl_recursive_lock_t *lock);
+#   define glthread_recursive_lock_init(LOCK) \
+      (pthread_in_use () ? glthread_recursive_lock_init_multithreaded (LOCK) : 0)
+#   define glthread_recursive_lock_lock(LOCK) \
+      (pthread_in_use () ? glthread_recursive_lock_lock_multithreaded (LOCK) : 0)
+#   define glthread_recursive_lock_unlock(LOCK) \
+      (pthread_in_use () ? glthread_recursive_lock_unlock_multithreaded (LOCK) : 0)
+#   define glthread_recursive_lock_destroy(LOCK) \
+      (pthread_in_use () ? glthread_recursive_lock_destroy_multithreaded (LOCK) : 0)
+extern int glthread_recursive_lock_init_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_lock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_unlock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_destroy_multithreaded (gl_recursive_lock_t *lock);
 
 #  endif
 
@@ -458,38 +342,18 @@ typedef struct
      STORAGECLASS gl_recursive_lock_t NAME = gl_recursive_lock_initializer;
 #  define gl_recursive_lock_initializer \
      { PTHREAD_MUTEX_INITIALIZER, (pthread_t) 0, 0 }
-#  define gl_recursive_lock_init(NAME) \
-     do                                          \
-       {                                         \
-         if (pthread_in_use ())                  \
-           glthread_recursive_lock_init (&NAME); \
-       }                                         \
-     while (0)
-#  define gl_recursive_lock_lock(NAME) \
-     do                                          \
-       {                                         \
-         if (pthread_in_use ())                  \
-           glthread_recursive_lock_lock (&NAME); \
-       }                                         \
-     while (0)
-#  define gl_recursive_lock_unlock(NAME) \
-     do                                            \
-       {                                           \
-         if (pthread_in_use ())                    \
-           glthread_recursive_lock_unlock (&NAME); \
-       }                                           \
-     while (0)
-#  define gl_recursive_lock_destroy(NAME) \
-     do                                             \
-       {                                            \
-         if (pthread_in_use ())                     \
-           glthread_recursive_lock_destroy (&NAME); \
-       }                                            \
-     while (0)
-extern void glthread_recursive_lock_init (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_lock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_unlock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_destroy (gl_recursive_lock_t *lock);
+#  define glthread_recursive_lock_init(LOCK) \
+     (pthread_in_use () ? glthread_recursive_lock_init_multithreaded (LOCK) : 0)
+#  define glthread_recursive_lock_lock(LOCK) \
+     (pthread_in_use () ? glthread_recursive_lock_lock_multithreaded (LOCK) : 0)
+#  define glthread_recursive_lock_unlock(LOCK) \
+     (pthread_in_use () ? glthread_recursive_lock_unlock_multithreaded (LOCK) : 0)
+#  define glthread_recursive_lock_destroy(LOCK) \
+     (pthread_in_use () ? glthread_recursive_lock_destroy_multithreaded (LOCK) : 0)
+extern int glthread_recursive_lock_init_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_lock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_unlock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_destroy_multithreaded (gl_recursive_lock_t *lock);
 
 # endif
 
@@ -498,21 +362,10 @@ extern void glthread_recursive_lock_destroy (gl_recursive_lock_t *lock);
 typedef pthread_once_t gl_once_t;
 # define gl_once_define(STORAGECLASS, NAME) \
     STORAGECLASS pthread_once_t NAME = PTHREAD_ONCE_INIT;
-# define gl_once(NAME, INITFUNCTION) \
-    do                                                   \
-      {                                                  \
-        if (pthread_in_use ())                           \
-          {                                              \
-            if (pthread_once (&NAME, INITFUNCTION) != 0) \
-              abort ();                                  \
-          }                                              \
-        else                                             \
-          {                                              \
-            if (glthread_once_singlethreaded (&NAME))    \
-              INITFUNCTION ();                           \
-          }                                              \
-      }                                                  \
-    while (0)
+# define glthread_once(ONCE_CONTROL, INITFUNCTION) \
+    (pthread_in_use ()                                                         \
+     ? pthread_once (ONCE_CONTROL, INITFUNCTION)                               \
+     : (glthread_once_singlethreaded (ONCE_CONTROL) ? (INITFUNCTION (), 0) : 0))
 extern int glthread_once_singlethreaded (pthread_once_t *once_control);
 
 # ifdef __cplusplus
@@ -528,7 +381,6 @@ extern int glthread_once_singlethreaded (pthread_once_t *once_control);
 /* Use the GNU Pth threads library.  */
 
 # include <pth.h>
-# include <stdlib.h>
 
 # ifdef __cplusplus
 extern "C" {
@@ -564,29 +416,14 @@ typedef pth_mutex_t gl_lock_t;
     STORAGECLASS pth_mutex_t NAME = gl_lock_initializer;
 # define gl_lock_initializer \
     PTH_MUTEX_INIT
-# define gl_lock_init(NAME) \
-    do                                               \
-      {                                              \
-        if (pth_in_use() && !pth_mutex_init (&NAME)) \
-          abort ();                                  \
-      }                                              \
-    while (0)
-# define gl_lock_lock(NAME) \
-    do                                                           \
-      {                                                          \
-        if (pth_in_use() && !pth_mutex_acquire (&NAME, 0, NULL)) \
-          abort ();                                              \
-      }                                                          \
-    while (0)
-# define gl_lock_unlock(NAME) \
-    do                                                  \
-      {                                                 \
-        if (pth_in_use() && !pth_mutex_release (&NAME)) \
-          abort ();                                     \
-      }                                                 \
-    while (0)
-# define gl_lock_destroy(NAME) \
-    (void)(&NAME)
+# define glthread_lock_init(LOCK) \
+    (pth_in_use () && !pth_mutex_init (LOCK) ? errno : 0)
+# define glthread_lock_lock(LOCK) \
+    (pth_in_use () && !pth_mutex_acquire (LOCK, 0, NULL) ? errno : 0)
+# define glthread_lock_unlock(LOCK) \
+    (pth_in_use () && !pth_mutex_release (LOCK) ? errno : 0)
+# define glthread_lock_destroy(LOCK) \
+    ((void)(LOCK), 0)
 
 /* ------------------------- gl_rwlock_t datatype ------------------------- */
 
@@ -597,38 +434,16 @@ typedef pth_rwlock_t gl_rwlock_t;
      STORAGECLASS pth_rwlock_t NAME = gl_rwlock_initializer;
 #  define gl_rwlock_initializer \
      PTH_RWLOCK_INIT
-#  define gl_rwlock_init(NAME) \
-     do                                                \
-       {                                               \
-         if (pth_in_use() && !pth_rwlock_init (&NAME)) \
-           abort ();                                   \
-       }                                               \
-     while (0)
-#  define gl_rwlock_rdlock(NAME) \
-     do                                                              \
-       {                                                             \
-         if (pth_in_use()                                            \
-             && !pth_rwlock_acquire (&NAME, PTH_RWLOCK_RD, 0, NULL)) \
-           abort ();                                                 \
-       }                                                             \
-     while (0)
-#  define gl_rwlock_wrlock(NAME) \
-     do                                                              \
-       {                                                             \
-         if (pth_in_use()                                            \
-             && !pth_rwlock_acquire (&NAME, PTH_RWLOCK_RW, 0, NULL)) \
-           abort ();                                                 \
-       }                                                             \
-     while (0)
-#  define gl_rwlock_unlock(NAME) \
-     do                                                   \
-       {                                                  \
-         if (pth_in_use() && !pth_rwlock_release (&NAME)) \
-           abort ();                                      \
-       }                                                  \
-     while (0)
-#  define gl_rwlock_destroy(NAME) \
-     (void)(&NAME)
+#  define glthread_rwlock_init(LOCK) \
+     (pth_in_use () && !pth_rwlock_init (LOCK) ? errno : 0)
+#  define glthread_rwlock_rdlock(LOCK) \
+     (pth_in_use () && !pth_rwlock_acquire (LOCK, PTH_RWLOCK_RD, 0, NULL) ? errno : 0)
+#  define glthread_rwlock_wrlock(LOCK) \
+     (pth_in_use () && !pth_rwlock_acquire (LOCK, PTH_RWLOCK_RW, 0, NULL) ? errno : 0)
+#  define glthread_rwlock_unlock(LOCK) \
+     (pth_in_use () && !pth_rwlock_release (LOCK) ? errno : 0)
+#  define glthread_rwlock_destroy(LOCK) \
+     ((void)(LOCK), 0)
 
 /* --------------------- gl_recursive_lock_t datatype --------------------- */
 
@@ -640,52 +455,25 @@ typedef pth_mutex_t gl_recursive_lock_t;
      STORAGECLASS pth_mutex_t NAME = gl_recursive_lock_initializer;
 #  define gl_recursive_lock_initializer \
      PTH_MUTEX_INIT
-#  define gl_recursive_lock_init(NAME) \
-     do                                               \
-       {                                              \
-         if (pth_in_use() && !pth_mutex_init (&NAME)) \
-           abort ();                                  \
-       }                                              \
-     while (0)
-#  define gl_recursive_lock_lock(NAME) \
-     do                                                           \
-       {                                                          \
-         if (pth_in_use() && !pth_mutex_acquire (&NAME, 0, NULL)) \
-           abort ();                                              \
-       }                                                          \
-     while (0)
-#  define gl_recursive_lock_unlock(NAME) \
-     do                                                  \
-       {                                                 \
-         if (pth_in_use() && !pth_mutex_release (&NAME)) \
-           abort ();                                     \
-       }                                                 \
-     while (0)
-#  define gl_recursive_lock_destroy(NAME) \
-     (void)(&NAME)
+#  define glthread_recursive_lock_init(LOCK) \
+     (pth_in_use () && !pth_mutex_init (LOCK) ? errno : 0)
+#  define glthread_recursive_lock_lock(LOCK) \
+     (pth_in_use () && !pth_mutex_acquire (LOCK, 0, NULL) ? errno : 0)
+#  define glthread_recursive_lock_unlock(LOCK) \
+     (pth_in_use () && !pth_mutex_release (LOCK) ? errno : 0)
+#  define glthread_recursive_lock_destroy(LOCK) \
+     ((void)(LOCK), 0)
 
 /* -------------------------- gl_once_t datatype -------------------------- */
 
 typedef pth_once_t gl_once_t;
 # define gl_once_define(STORAGECLASS, NAME) \
     STORAGECLASS pth_once_t NAME = PTH_ONCE_INIT;
-# define gl_once(NAME, INITFUNCTION) \
-    do                                                                \
-      {                                                               \
-        if (pth_in_use ())                                            \
-          {                                                           \
-            void (*gl_once_temp) (void) = INITFUNCTION;               \
-            if (!pth_once (&NAME, glthread_once_call, &gl_once_temp)) \
-              abort ();                                               \
-          }                                                           \
-        else                                                          \
-          {                                                           \
-            if (glthread_once_singlethreaded (&NAME))                 \
-              INITFUNCTION ();                                        \
-          }                                                           \
-      }                                                               \
-    while (0)
-extern void glthread_once_call (void *arg);
+# define glthread_once(ONCE_CONTROL, INITFUNCTION) \
+    (pth_in_use ()                                                             \
+     ? glthread_once_multithreaded (ONCE_CONTROL, INITFUNCTION)                \
+     : (glthread_once_singlethreaded (ONCE_CONTROL) ? (INITFUNCTION (), 0) : 0))
+extern int glthread_once_multithreaded (pth_once_t *once_control, void (*initfunction) (void));
 extern int glthread_once_singlethreaded (pth_once_t *once_control);
 
 # ifdef __cplusplus
@@ -702,7 +490,6 @@ extern int glthread_once_singlethreaded (pth_once_t *once_control);
 
 # include <thread.h>
 # include <synch.h>
-# include <stdlib.h>
 
 # ifdef __cplusplus
 extern "C" {
@@ -741,34 +528,14 @@ typedef mutex_t gl_lock_t;
     STORAGECLASS mutex_t NAME = gl_lock_initializer;
 # define gl_lock_initializer \
     DEFAULTMUTEX
-# define gl_lock_init(NAME) \
-    do                                                                       \
-      {                                                                      \
-        if (thread_in_use () && mutex_init (&NAME, USYNC_THREAD, NULL) != 0) \
-          abort ();                                                          \
-      }                                                                      \
-    while (0)
-# define gl_lock_lock(NAME) \
-    do                                                   \
-      {                                                  \
-        if (thread_in_use () && mutex_lock (&NAME) != 0) \
-          abort ();                                      \
-      }                                                  \
-    while (0)
-# define gl_lock_unlock(NAME) \
-    do                                                     \
-      {                                                    \
-        if (thread_in_use () && mutex_unlock (&NAME) != 0) \
-          abort ();                                        \
-      }                                                    \
-    while (0)
-# define gl_lock_destroy(NAME) \
-    do                                                      \
-      {                                                     \
-        if (thread_in_use () && mutex_destroy (&NAME) != 0) \
-          abort ();                                         \
-      }                                                     \
-    while (0)
+# define glthread_lock_init(LOCK) \
+    (thread_in_use () ? mutex_init (LOCK, USYNC_THREAD, NULL) : 0)
+# define glthread_lock_lock(LOCK) \
+    (thread_in_use () ? mutex_lock (LOCK) : 0)
+# define glthread_lock_unlock(LOCK) \
+    (thread_in_use () ? mutex_unlock (LOCK) : 0)
+# define glthread_lock_destroy(LOCK) \
+    (thread_in_use () ? mutex_destroy (LOCK) : 0)
 
 /* ------------------------- gl_rwlock_t datatype ------------------------- */
 
@@ -779,41 +546,16 @@ typedef rwlock_t gl_rwlock_t;
     STORAGECLASS rwlock_t NAME = gl_rwlock_initializer;
 # define gl_rwlock_initializer \
     DEFAULTRWLOCK
-# define gl_rwlock_init(NAME) \
-    do                                                                        \
-      {                                                                       \
-        if (thread_in_use () && rwlock_init (&NAME, USYNC_THREAD, NULL) != 0) \
-          abort ();                                                           \
-      }                                                                       \
-    while (0)
-# define gl_rwlock_rdlock(NAME) \
-    do                                                  \
-      {                                                 \
-        if (thread_in_use () && rw_rdlock (&NAME) != 0) \
-          abort ();                                     \
-      }                                                 \
-    while (0)
-# define gl_rwlock_wrlock(NAME) \
-    do                                                  \
-      {                                                 \
-        if (thread_in_use () && rw_wrlock (&NAME) != 0) \
-          abort ();                                     \
-      }                                                 \
-    while (0)
-# define gl_rwlock_unlock(NAME) \
-    do                                                  \
-      {                                                 \
-        if (thread_in_use () && rw_unlock (&NAME) != 0) \
-          abort ();                                     \
-      }                                                 \
-    while (0)
-# define gl_rwlock_destroy(NAME) \
-    do                                                       \
-      {                                                      \
-        if (thread_in_use () && rwlock_destroy (&NAME) != 0) \
-          abort ();                                          \
-      }                                                      \
-    while (0)
+# define glthread_rwlock_init(LOCK) \
+    (thread_in_use () ? rwlock_init (LOCK, USYNC_THREAD, NULL) : 0)
+# define glthread_rwlock_rdlock(LOCK) \
+    (thread_in_use () ? rw_rdlock (LOCK) : 0)
+# define glthread_rwlock_wrlock(LOCK) \
+    (thread_in_use () ? rw_wrlock (LOCK) : 0)
+# define glthread_rwlock_unlock(LOCK) \
+    (thread_in_use () ? rw_unlock (LOCK) : 0)
+# define glthread_rwlock_destroy(LOCK) \
+    (thread_in_use () ? rwlock_destroy (LOCK) : 0)
 
 /* --------------------- gl_recursive_lock_t datatype --------------------- */
 
@@ -833,38 +575,18 @@ typedef struct
     STORAGECLASS gl_recursive_lock_t NAME = gl_recursive_lock_initializer;
 # define gl_recursive_lock_initializer \
     { DEFAULTMUTEX, (thread_t) 0, 0 }
-# define gl_recursive_lock_init(NAME) \
-    do                                          \
-      {                                         \
-        if (thread_in_use ())                   \
-          glthread_recursive_lock_init (&NAME); \
-      }                                         \
-    while (0)
-# define gl_recursive_lock_lock(NAME) \
-    do                                          \
-      {                                         \
-        if (thread_in_use ())                   \
-          glthread_recursive_lock_lock (&NAME); \
-      }                                         \
-    while (0)
-# define gl_recursive_lock_unlock(NAME) \
-    do                                            \
-      {                                           \
-        if (thread_in_use ())                     \
-          glthread_recursive_lock_unlock (&NAME); \
-      }                                           \
-    while (0)
-# define gl_recursive_lock_destroy(NAME) \
-    do                                             \
-      {                                            \
-        if (thread_in_use ())                      \
-          glthread_recursive_lock_destroy (&NAME); \
-      }                                            \
-    while (0)
-extern void glthread_recursive_lock_init (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_lock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_unlock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_destroy (gl_recursive_lock_t *lock);
+# define glthread_recursive_lock_init(LOCK) \
+    (thread_in_use () ? glthread_recursive_lock_init_multithreaded (LOCK) : 0)
+# define glthread_recursive_lock_lock(LOCK) \
+    (thread_in_use () ? glthread_recursive_lock_lock_multithreaded (LOCK) : 0)
+# define glthread_recursive_lock_unlock(LOCK) \
+    (thread_in_use () ? glthread_recursive_lock_unlock_multithreaded (LOCK) : 0)
+# define glthread_recursive_lock_destroy(LOCK) \
+    (thread_in_use () ? glthread_recursive_lock_destroy_multithreaded (LOCK) : 0)
+extern int glthread_recursive_lock_init_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_lock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_unlock_multithreaded (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_destroy_multithreaded (gl_recursive_lock_t *lock);
 
 /* -------------------------- gl_once_t datatype -------------------------- */
 
@@ -876,21 +598,11 @@ typedef struct
         gl_once_t;
 # define gl_once_define(STORAGECLASS, NAME) \
     STORAGECLASS gl_once_t NAME = { 0, DEFAULTMUTEX };
-# define gl_once(NAME, INITFUNCTION) \
-    do                                                \
-      {                                               \
-        if (thread_in_use ())                         \
-          {                                           \
-            glthread_once (&NAME, INITFUNCTION);      \
-          }                                           \
-        else                                          \
-          {                                           \
-            if (glthread_once_singlethreaded (&NAME)) \
-              INITFUNCTION ();                        \
-          }                                           \
-      }                                               \
-    while (0)
-extern void glthread_once (gl_once_t *once_control, void (*initfunction) (void));
+# define glthread_once(ONCE_CONTROL, INITFUNCTION) \
+    (thread_in_use ()                                                          \
+     ? glthread_once_multithreaded (ONCE_CONTROL, INITFUNCTION)                \
+     : (glthread_once_singlethreaded (ONCE_CONTROL) ? (INITFUNCTION (), 0) : 0))
+extern int glthread_once_multithreaded (gl_once_t *once_control, void (*initfunction) (void));
 extern int glthread_once_singlethreaded (gl_once_t *once_control);
 
 # ifdef __cplusplus
@@ -901,16 +613,17 @@ extern int glthread_once_singlethreaded (gl_once_t *once_control);
 
 /* ========================================================================= */
 
-#if USE_WIN32_THREADS
+#if USE_WINDOWS_THREADS
 
+# define WIN32_LEAN_AND_MEAN  /* avoid including junk */
 # include <windows.h>
 
 # ifdef __cplusplus
 extern "C" {
 # endif
 
-/* We can use CRITICAL_SECTION directly, rather than the Win32 Event, Mutex,
-   Semaphore types, because
+/* We can use CRITICAL_SECTION directly, rather than the native Windows Event,
+   Mutex, Semaphore types, because
      - we need only to synchronize inside a single process (address space),
        not inter-process locking,
      - we don't need to support trylock operations.  (TryEnterCriticalSection
@@ -936,18 +649,18 @@ typedef struct
     STORAGECLASS gl_lock_t NAME = gl_lock_initializer;
 # define gl_lock_initializer \
     { { 0, -1 } }
-# define gl_lock_init(NAME) \
-    glthread_lock_init (&NAME)
-# define gl_lock_lock(NAME) \
-    glthread_lock_lock (&NAME)
-# define gl_lock_unlock(NAME) \
-    glthread_lock_unlock (&NAME)
-# define gl_lock_destroy(NAME) \
-    glthread_lock_destroy (&NAME)
-extern void glthread_lock_init (gl_lock_t *lock);
-extern void glthread_lock_lock (gl_lock_t *lock);
-extern void glthread_lock_unlock (gl_lock_t *lock);
-extern void glthread_lock_destroy (gl_lock_t *lock);
+# define glthread_lock_init(LOCK) \
+    (glthread_lock_init_func (LOCK), 0)
+# define glthread_lock_lock(LOCK) \
+    glthread_lock_lock_func (LOCK)
+# define glthread_lock_unlock(LOCK) \
+    glthread_lock_unlock_func (LOCK)
+# define glthread_lock_destroy(LOCK) \
+    glthread_lock_destroy_func (LOCK)
+extern void glthread_lock_init_func (gl_lock_t *lock);
+extern int glthread_lock_lock_func (gl_lock_t *lock);
+extern int glthread_lock_unlock_func (gl_lock_t *lock);
+extern int glthread_lock_destroy_func (gl_lock_t *lock);
 
 /* ------------------------- gl_rwlock_t datatype ------------------------- */
 
@@ -962,13 +675,13 @@ typedef struct
           unsigned int alloc; /* length of allocated array */
           unsigned int offset; /* index of first waiting thread in array */
         }
-        gl_waitqueue_t;
+        gl_carray_waitqueue_t;
 typedef struct
         {
           gl_spinlock_t guard; /* protects the initialization */
           CRITICAL_SECTION lock; /* protects the remaining fields */
-          gl_waitqueue_t waiting_readers; /* waiting readers */
-          gl_waitqueue_t waiting_writers; /* waiting writers */
+          gl_carray_waitqueue_t waiting_readers; /* waiting readers */
+          gl_carray_waitqueue_t waiting_writers; /* waiting writers */
           int runcount; /* number of readers running, or -1 when a writer runs */
         }
         gl_rwlock_t;
@@ -978,27 +691,27 @@ typedef struct
     STORAGECLASS gl_rwlock_t NAME = gl_rwlock_initializer;
 # define gl_rwlock_initializer \
     { { 0, -1 } }
-# define gl_rwlock_init(NAME) \
-    glthread_rwlock_init (&NAME)
-# define gl_rwlock_rdlock(NAME) \
-    glthread_rwlock_rdlock (&NAME)
-# define gl_rwlock_wrlock(NAME) \
-    glthread_rwlock_wrlock (&NAME)
-# define gl_rwlock_unlock(NAME) \
-    glthread_rwlock_unlock (&NAME)
-# define gl_rwlock_destroy(NAME) \
-    glthread_rwlock_destroy (&NAME)
-extern void glthread_rwlock_init (gl_rwlock_t *lock);
-extern void glthread_rwlock_rdlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_wrlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_unlock (gl_rwlock_t *lock);
-extern void glthread_rwlock_destroy (gl_rwlock_t *lock);
+# define glthread_rwlock_init(LOCK) \
+    (glthread_rwlock_init_func (LOCK), 0)
+# define glthread_rwlock_rdlock(LOCK) \
+    glthread_rwlock_rdlock_func (LOCK)
+# define glthread_rwlock_wrlock(LOCK) \
+    glthread_rwlock_wrlock_func (LOCK)
+# define glthread_rwlock_unlock(LOCK) \
+    glthread_rwlock_unlock_func (LOCK)
+# define glthread_rwlock_destroy(LOCK) \
+    glthread_rwlock_destroy_func (LOCK)
+extern void glthread_rwlock_init_func (gl_rwlock_t *lock);
+extern int glthread_rwlock_rdlock_func (gl_rwlock_t *lock);
+extern int glthread_rwlock_wrlock_func (gl_rwlock_t *lock);
+extern int glthread_rwlock_unlock_func (gl_rwlock_t *lock);
+extern int glthread_rwlock_destroy_func (gl_rwlock_t *lock);
 
 /* --------------------- gl_recursive_lock_t datatype --------------------- */
 
-/* The Win32 documentation says that CRITICAL_SECTION already implements a
-   recursive lock.  But we need not rely on it: It's easy to implement a
-   recursive lock without this assumption.  */
+/* The native Windows documentation says that CRITICAL_SECTION already
+   implements a recursive lock.  But we need not rely on it: It's easy to
+   implement a recursive lock without this assumption.  */
 
 typedef struct
         {
@@ -1014,18 +727,18 @@ typedef struct
     STORAGECLASS gl_recursive_lock_t NAME = gl_recursive_lock_initializer;
 # define gl_recursive_lock_initializer \
     { { 0, -1 }, 0, 0 }
-# define gl_recursive_lock_init(NAME) \
-    glthread_recursive_lock_init (&NAME)
-# define gl_recursive_lock_lock(NAME) \
-    glthread_recursive_lock_lock (&NAME)
-# define gl_recursive_lock_unlock(NAME) \
-    glthread_recursive_lock_unlock (&NAME)
-# define gl_recursive_lock_destroy(NAME) \
-    glthread_recursive_lock_destroy (&NAME)
-extern void glthread_recursive_lock_init (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_lock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_unlock (gl_recursive_lock_t *lock);
-extern void glthread_recursive_lock_destroy (gl_recursive_lock_t *lock);
+# define glthread_recursive_lock_init(LOCK) \
+    (glthread_recursive_lock_init_func (LOCK), 0)
+# define glthread_recursive_lock_lock(LOCK) \
+    glthread_recursive_lock_lock_func (LOCK)
+# define glthread_recursive_lock_unlock(LOCK) \
+    glthread_recursive_lock_unlock_func (LOCK)
+# define glthread_recursive_lock_destroy(LOCK) \
+    glthread_recursive_lock_destroy_func (LOCK)
+extern void glthread_recursive_lock_init_func (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_lock_func (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_unlock_func (gl_recursive_lock_t *lock);
+extern int glthread_recursive_lock_destroy_func (gl_recursive_lock_t *lock);
 
 /* -------------------------- gl_once_t datatype -------------------------- */
 
@@ -1038,9 +751,9 @@ typedef struct
         gl_once_t;
 # define gl_once_define(STORAGECLASS, NAME) \
     STORAGECLASS gl_once_t NAME = { -1, -1 };
-# define gl_once(NAME, INITFUNCTION) \
-    glthread_once (&NAME, INITFUNCTION)
-extern void glthread_once (gl_once_t *once_control, void (*initfunction) (void));
+# define glthread_once(ONCE_CONTROL, INITFUNCTION) \
+    (glthread_once_func (ONCE_CONTROL, INITFUNCTION), 0)
+extern void glthread_once_func (gl_once_t *once_control, void (*initfunction) (void));
 
 # ifdef __cplusplus
 }
@@ -1050,7 +763,7 @@ extern void glthread_once (gl_once_t *once_control, void (*initfunction) (void))
 
 /* ========================================================================= */
 
-#if !(USE_POSIX_THREADS || USE_PTH_THREADS || USE_SOLARIS_THREADS || USE_WIN32_THREADS)
+#if !(USE_POSIX_THREADS || USE_PTH_THREADS || USE_SOLARIS_THREADS || USE_WINDOWS_THREADS)
 
 /* Provide dummy implementation if threads are not supported.  */
 
@@ -1059,46 +772,155 @@ extern void glthread_once (gl_once_t *once_control, void (*initfunction) (void))
 typedef int gl_lock_t;
 # define gl_lock_define(STORAGECLASS, NAME)
 # define gl_lock_define_initialized(STORAGECLASS, NAME)
-# define gl_lock_init(NAME)
-# define gl_lock_lock(NAME)
-# define gl_lock_unlock(NAME)
+# define glthread_lock_init(NAME) 0
+# define glthread_lock_lock(NAME) 0
+# define glthread_lock_unlock(NAME) 0
+# define glthread_lock_destroy(NAME) 0
 
 /* ------------------------- gl_rwlock_t datatype ------------------------- */
 
 typedef int gl_rwlock_t;
 # define gl_rwlock_define(STORAGECLASS, NAME)
 # define gl_rwlock_define_initialized(STORAGECLASS, NAME)
-# define gl_rwlock_init(NAME)
-# define gl_rwlock_rdlock(NAME)
-# define gl_rwlock_wrlock(NAME)
-# define gl_rwlock_unlock(NAME)
+# define glthread_rwlock_init(NAME) 0
+# define glthread_rwlock_rdlock(NAME) 0
+# define glthread_rwlock_wrlock(NAME) 0
+# define glthread_rwlock_unlock(NAME) 0
+# define glthread_rwlock_destroy(NAME) 0
 
 /* --------------------- gl_recursive_lock_t datatype --------------------- */
 
 typedef int gl_recursive_lock_t;
 # define gl_recursive_lock_define(STORAGECLASS, NAME)
 # define gl_recursive_lock_define_initialized(STORAGECLASS, NAME)
-# define gl_recursive_lock_init(NAME)
-# define gl_recursive_lock_lock(NAME)
-# define gl_recursive_lock_unlock(NAME)
+# define glthread_recursive_lock_init(NAME) 0
+# define glthread_recursive_lock_lock(NAME) 0
+# define glthread_recursive_lock_unlock(NAME) 0
+# define glthread_recursive_lock_destroy(NAME) 0
 
 /* -------------------------- gl_once_t datatype -------------------------- */
 
 typedef int gl_once_t;
 # define gl_once_define(STORAGECLASS, NAME) \
     STORAGECLASS gl_once_t NAME = 0;
-# define gl_once(NAME, INITFUNCTION) \
-    do                       \
-      {                      \
-        if (NAME == 0)       \
-          {                  \
-            NAME = ~ 0;      \
-            INITFUNCTION (); \
-          }                  \
-      }                      \
-    while (0)
+# define glthread_once(ONCE_CONTROL, INITFUNCTION) \
+    (*(ONCE_CONTROL) == 0 ? (*(ONCE_CONTROL) = ~ 0, INITFUNCTION (), 0) : 0)
 
 #endif
+
+/* ========================================================================= */
+
+/* Macros with built-in error handling.  */
+
+/* -------------------------- gl_lock_t datatype -------------------------- */
+
+#define gl_lock_init(NAME) \
+   do                                  \
+     {                                 \
+       if (glthread_lock_init (&NAME)) \
+         abort ();                     \
+     }                                 \
+   while (0)
+#define gl_lock_lock(NAME) \
+   do                                  \
+     {                                 \
+       if (glthread_lock_lock (&NAME)) \
+         abort ();                     \
+     }                                 \
+   while (0)
+#define gl_lock_unlock(NAME) \
+   do                                    \
+     {                                   \
+       if (glthread_lock_unlock (&NAME)) \
+         abort ();                       \
+     }                                   \
+   while (0)
+#define gl_lock_destroy(NAME) \
+   do                                     \
+     {                                    \
+       if (glthread_lock_destroy (&NAME)) \
+         abort ();                        \
+     }                                    \
+   while (0)
+
+/* ------------------------- gl_rwlock_t datatype ------------------------- */
+
+#define gl_rwlock_init(NAME) \
+   do                                    \
+     {                                   \
+       if (glthread_rwlock_init (&NAME)) \
+         abort ();                       \
+     }                                   \
+   while (0)
+#define gl_rwlock_rdlock(NAME) \
+   do                                      \
+     {                                     \
+       if (glthread_rwlock_rdlock (&NAME)) \
+         abort ();                         \
+     }                                     \
+   while (0)
+#define gl_rwlock_wrlock(NAME) \
+   do                                      \
+     {                                     \
+       if (glthread_rwlock_wrlock (&NAME)) \
+         abort ();                         \
+     }                                     \
+   while (0)
+#define gl_rwlock_unlock(NAME) \
+   do                                      \
+     {                                     \
+       if (glthread_rwlock_unlock (&NAME)) \
+         abort ();                         \
+     }                                     \
+   while (0)
+#define gl_rwlock_destroy(NAME) \
+   do                                       \
+     {                                      \
+       if (glthread_rwlock_destroy (&NAME)) \
+         abort ();                          \
+     }                                      \
+   while (0)
+
+/* --------------------- gl_recursive_lock_t datatype --------------------- */
+
+#define gl_recursive_lock_init(NAME) \
+   do                                            \
+     {                                           \
+       if (glthread_recursive_lock_init (&NAME)) \
+         abort ();                               \
+     }                                           \
+   while (0)
+#define gl_recursive_lock_lock(NAME) \
+   do                                            \
+     {                                           \
+       if (glthread_recursive_lock_lock (&NAME)) \
+         abort ();                               \
+     }                                           \
+   while (0)
+#define gl_recursive_lock_unlock(NAME) \
+   do                                              \
+     {                                             \
+       if (glthread_recursive_lock_unlock (&NAME)) \
+         abort ();                                 \
+     }                                             \
+   while (0)
+#define gl_recursive_lock_destroy(NAME) \
+   do                                               \
+     {                                              \
+       if (glthread_recursive_lock_destroy (&NAME)) \
+         abort ();                                  \
+     }                                              \
+   while (0)
+
+/* -------------------------- gl_once_t datatype -------------------------- */
+
+#define gl_once(NAME, INITFUNCTION) \
+   do                                           \
+     {                                          \
+       if (glthread_once (&NAME, INITFUNCTION)) \
+         abort ();                              \
+     }                                          \
+   while (0)
 
 /* ========================================================================= */
 

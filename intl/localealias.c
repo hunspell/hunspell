@@ -1,20 +1,18 @@
 /* Handle aliases for locale names.
-   Copyright (C) 1995-1999, 2000-2001, 2003, 2005-2006 Free Software Foundation, Inc.
+   Copyright (C) 1995-2015 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* Tell glibc's <string.h> to provide a prototype for mempcpy().
    This must come before <config.h> because <config.h> may include
@@ -62,7 +60,7 @@ char *alloca ();
 
 #include "gettextP.h"
 
-#if ENABLE_RELOCATABLE
+#ifdef ENABLE_RELOCATABLE
 # include "relocatable.h"
 #else
 # define relocate(pathname) (pathname)
@@ -74,7 +72,7 @@ char *alloca ();
 /* Rename the non ANSI C functions.  This is required by the standard
    because some ANSI C functions will require linking with this object
    file and the name space must not be polluted.  */
-# define strcasecmp __strcasecmp
+# define strcasecmp(s1, s2) __strcasecmp_l (s1, s2, _nl_C_locobj_ptr)
 
 # ifndef mempcpy
 #  define mempcpy __mempcpy
@@ -97,7 +95,7 @@ char *alloca ();
 /* Some optimizations for glibc.  */
 #ifdef _LIBC
 # define FEOF(fp)		feof_unlocked (fp)
-# define FGETS(buf, n, fp)	fgets_unlocked (buf, n, fp)
+# define FGETS(buf, n, fp)	__fgets_unlocked (buf, n, fp)
 #else
 # define FEOF(fp)		feof (fp)
 # define FGETS(buf, n, fp)	fgets (buf, n, fp)
@@ -112,11 +110,13 @@ char *alloca ();
 # define freea(p) free (p)
 #endif
 
-#if defined _LIBC_REENTRANT || HAVE_DECL_FGETS_UNLOCKED
+#if defined _LIBC_REENTRANT \
+  || (defined HAVE_DECL_FGETS_UNLOCKED && HAVE_DECL_FGETS_UNLOCKED)
 # undef fgets
 # define fgets(buf, len, s) fgets_unlocked (buf, len, s)
 #endif
-#if defined _LIBC_REENTRANT || HAVE_DECL_FEOF_UNLOCKED
+#if defined _LIBC_REENTRANT \
+  || (defined HAVE_DECL_FEOF_UNLOCKED && HAVE_DECL_FEOF_UNLOCKED)
 # undef feof
 # define feof(s) feof_unlocked (s)
 #endif
@@ -234,7 +234,7 @@ read_alias_file (const char *fname, int fname_len)
 #ifdef _LIBC
   /* Note the file is opened with cancellation in the I/O functions
      disabled.  */
-  fp = fopen (relocate (full_fname), "rc");
+  fp = fopen (relocate (full_fname), "rce");
 #else
   fp = fopen (relocate (full_fname), "r");
 #endif
@@ -390,7 +390,7 @@ read_alias_file (const char *fname, int fname_len)
 
 
 static int
-extend_alias_table ()
+extend_alias_table (void)
 {
   size_t new_size;
   struct alias_map *new_map;

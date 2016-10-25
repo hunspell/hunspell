@@ -1,25 +1,27 @@
 /* Message catalogs for internationalization.
-   Copyright (C) 1995-1997, 2000-2007 Free Software Foundation, Inc.
+   Copyright (C) 1995-1997, 2000-2015 Free Software Foundation,
+   Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _LIBINTL_H
-#define _LIBINTL_H	1
+#define _LIBINTL_H 1
 
 #include <locale.h>
+#if (defined __APPLE__ && defined __MACH__) && @HAVE_NEWLOCALE@
+# include <xlocale.h>
+#endif
 
 /* The LC_MESSAGES locale category is the category used by the functions
    gettext() and dgettext().  It is specified in POSIX, but not in ANSI C.
@@ -53,7 +55,7 @@ extern "C" {
 
 
 /* Version number: (major<<16) + (minor<<8) + subminor */
-#define LIBINTL_VERSION 0x001100
+#define LIBINTL_VERSION 0x001307
 extern int libintl_version;
 
 
@@ -88,7 +90,7 @@ extern int libintl_version;
    If he doesn't, we choose the method.  A third possible method is
    _INTL_REDIRECT_ASM, supported only by GCC.  */
 #if !(defined _INTL_REDIRECT_INLINE || defined _INTL_REDIRECT_MACROS)
-# if __GNUC__ >= 2 && !(__APPLE_CC__ > 1) && !defined __MINGW32__ && !(__GNUC__ == 2 && defined _AIX) && (defined __STDC__ || defined __cplusplus)
+# if defined __GNUC__ && __GNUC__ >= 2 && !(defined __APPLE_CC__ && __APPLE_CC__ > 1) && !defined __MINGW32__ && !(__GNUC__ == 2 && defined _AIX) && (defined __STDC__ || defined __cplusplus)
 #  define _INTL_REDIRECT_ASM
 # else
 #  ifdef __cplusplus
@@ -110,7 +112,7 @@ extern int libintl_version;
 /* _INTL_MAY_RETURN_STRING_ARG(n) declares that the given function may return
    its n-th argument literally.  This enables GCC to warn for example about
    printf (gettext ("foo %y")).  */
-#if __GNUC__ >= 3 && !(__APPLE_CC__ > 1 && defined __cplusplus)
+#if defined __GNUC__ && __GNUC__ >= 3 && !(defined __APPLE_CC__ && __APPLE_CC__ > 1 && defined __cplusplus)
 # define _INTL_MAY_RETURN_STRING_ARG(n) __attribute__ ((__format_arg__ (n)))
 #else
 # define _INTL_MAY_RETURN_STRING_ARG(n)
@@ -157,10 +159,10 @@ extern char *dgettext (const char *__domainname, const char *__msgid)
    locale.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_dcgettext (const char *__domainname, const char *__msgid,
-				int __category)
+                                int __category)
        _INTL_MAY_RETURN_STRING_ARG (2);
 static inline char *dcgettext (const char *__domainname, const char *__msgid,
-			       int __category)
+                               int __category)
 {
   return libintl_dcgettext (__domainname, __msgid, __category);
 }
@@ -169,20 +171,20 @@ static inline char *dcgettext (const char *__domainname, const char *__msgid,
 # define dcgettext libintl_dcgettext
 #endif
 extern char *dcgettext (const char *__domainname, const char *__msgid,
-			int __category)
+                        int __category)
        _INTL_ASM (libintl_dcgettext)
        _INTL_MAY_RETURN_STRING_ARG (2);
 #endif
 
 
-/* Similar to `gettext' but select the plural form corresponding to the
+/* Similar to 'gettext' but select the plural form corresponding to the
    number N.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_ngettext (const char *__msgid1, const char *__msgid2,
-			       unsigned long int __n)
+                               unsigned long int __n)
        _INTL_MAY_RETURN_STRING_ARG (1) _INTL_MAY_RETURN_STRING_ARG (2);
 static inline char *ngettext (const char *__msgid1, const char *__msgid2,
-			      unsigned long int __n)
+                              unsigned long int __n)
 {
   return libintl_ngettext (__msgid1, __msgid2, __n);
 }
@@ -191,19 +193,19 @@ static inline char *ngettext (const char *__msgid1, const char *__msgid2,
 # define ngettext libintl_ngettext
 #endif
 extern char *ngettext (const char *__msgid1, const char *__msgid2,
-		       unsigned long int __n)
+                       unsigned long int __n)
        _INTL_ASM (libintl_ngettext)
        _INTL_MAY_RETURN_STRING_ARG (1) _INTL_MAY_RETURN_STRING_ARG (2);
 #endif
 
-/* Similar to `dgettext' but select the plural form corresponding to the
+/* Similar to 'dgettext' but select the plural form corresponding to the
    number N.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_dngettext (const char *__domainname, const char *__msgid1,
-				const char *__msgid2, unsigned long int __n)
+                                const char *__msgid2, unsigned long int __n)
        _INTL_MAY_RETURN_STRING_ARG (2) _INTL_MAY_RETURN_STRING_ARG (3);
 static inline char *dngettext (const char *__domainname, const char *__msgid1,
-			       const char *__msgid2, unsigned long int __n)
+                               const char *__msgid2, unsigned long int __n)
 {
   return libintl_dngettext (__domainname, __msgid1, __msgid2, __n);
 }
@@ -212,22 +214,22 @@ static inline char *dngettext (const char *__domainname, const char *__msgid1,
 # define dngettext libintl_dngettext
 #endif
 extern char *dngettext (const char *__domainname,
-			const char *__msgid1, const char *__msgid2,
-			unsigned long int __n)
+                        const char *__msgid1, const char *__msgid2,
+                        unsigned long int __n)
        _INTL_ASM (libintl_dngettext)
        _INTL_MAY_RETURN_STRING_ARG (2) _INTL_MAY_RETURN_STRING_ARG (3);
 #endif
 
-/* Similar to `dcgettext' but select the plural form corresponding to the
+/* Similar to 'dcgettext' but select the plural form corresponding to the
    number N.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_dcngettext (const char *__domainname,
-				 const char *__msgid1, const char *__msgid2,
-				 unsigned long int __n, int __category)
+                                 const char *__msgid1, const char *__msgid2,
+                                 unsigned long int __n, int __category)
        _INTL_MAY_RETURN_STRING_ARG (2) _INTL_MAY_RETURN_STRING_ARG (3);
 static inline char *dcngettext (const char *__domainname,
-				const char *__msgid1, const char *__msgid2,
-				unsigned long int __n, int __category)
+                                const char *__msgid1, const char *__msgid2,
+                                unsigned long int __n, int __category)
 {
   return libintl_dcngettext (__domainname, __msgid1, __msgid2, __n, __category);
 }
@@ -236,8 +238,8 @@ static inline char *dcngettext (const char *__domainname,
 # define dcngettext libintl_dcngettext
 #endif
 extern char *dcngettext (const char *__domainname,
-			 const char *__msgid1, const char *__msgid2,
-			 unsigned long int __n, int __category)
+                         const char *__msgid1, const char *__msgid2,
+                         unsigned long int __n, int __category)
        _INTL_ASM (libintl_dcngettext)
        _INTL_MAY_RETURN_STRING_ARG (2) _INTL_MAY_RETURN_STRING_ARG (3);
 #endif
@@ -266,9 +268,9 @@ extern char *textdomain (const char *__domainname)
    in DIRNAME rather than in the system locale data base.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_bindtextdomain (const char *__domainname,
-				     const char *__dirname);
+                                     const char *__dirname);
 static inline char *bindtextdomain (const char *__domainname,
-				    const char *__dirname)
+                                    const char *__dirname)
 {
   return libintl_bindtextdomain (__domainname, __dirname);
 }
@@ -284,9 +286,9 @@ extern char *bindtextdomain (const char *__domainname, const char *__dirname)
    DOMAINNAME message catalog will be returned.  */
 #ifdef _INTL_REDIRECT_INLINE
 extern char *libintl_bind_textdomain_codeset (const char *__domainname,
-					      const char *__codeset);
+                                              const char *__codeset);
 static inline char *bind_textdomain_codeset (const char *__domainname,
-					     const char *__codeset)
+                                             const char *__codeset)
 {
   return libintl_bind_textdomain_codeset (__domainname, __codeset);
 }
@@ -295,7 +297,7 @@ static inline char *bind_textdomain_codeset (const char *__domainname,
 # define bind_textdomain_codeset libintl_bind_textdomain_codeset
 #endif
 extern char *bind_textdomain_codeset (const char *__domainname,
-				      const char *__codeset)
+                                      const char *__codeset)
        _INTL_ASM (libintl_bind_textdomain_codeset);
 #endif
 
@@ -316,58 +318,84 @@ extern char *bind_textdomain_codeset (const char *__domainname,
 #include <stddef.h>
 
 /* Get va_list.  */
-#if __STDC__ || defined __cplusplus || defined _MSC_VER
+#if (defined __STDC__ && __STDC__) || defined __cplusplus || defined _MSC_VER
 # include <stdarg.h>
 #else
 # include <varargs.h>
 #endif
 
+#if !(defined fprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef fprintf
 #define fprintf libintl_fprintf
 extern int fprintf (FILE *, const char *, ...);
+#endif
+#if !(defined vfprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef vfprintf
 #define vfprintf libintl_vfprintf
 extern int vfprintf (FILE *, const char *, va_list);
+#endif
 
+#if !(defined printf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef printf
-#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
+#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__ || defined _MSC_VER
 /* Don't break __attribute__((format(printf,M,N))).
    This redefinition is only possible because the libc in NetBSD, Cygwin,
-   mingw does not have a function __printf__.  */
+   mingw does not have a function __printf__.
+   Alternatively, we could have done this redirection only when compiling with
+   __GNUC__, together with a symbol redirection:
+       extern int printf (const char *, ...)
+              __asm__ (#__USER_LABEL_PREFIX__ "libintl_printf");
+   But doing it now would introduce a binary incompatibility with already
+   distributed versions of libintl on these systems.  */
 # define libintl_printf __printf__
 #endif
 #define printf libintl_printf
 extern int printf (const char *, ...);
+#endif
+#if !(defined vprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef vprintf
 #define vprintf libintl_vprintf
 extern int vprintf (const char *, va_list);
+#endif
 
+#if !(defined sprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef sprintf
 #define sprintf libintl_sprintf
 extern int sprintf (char *, const char *, ...);
+#endif
+#if !(defined vsprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef vsprintf
 #define vsprintf libintl_vsprintf
 extern int vsprintf (char *, const char *, va_list);
+#endif
 
 #if @HAVE_SNPRINTF@
 
+#if !(defined snprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef snprintf
 #define snprintf libintl_snprintf
 extern int snprintf (char *, size_t, const char *, ...);
+#endif
+#if !(defined vsnprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef vsnprintf
 #define vsnprintf libintl_vsnprintf
 extern int vsnprintf (char *, size_t, const char *, va_list);
+#endif
 
 #endif
 
 #if @HAVE_ASPRINTF@
 
+#if !(defined asprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef asprintf
 #define asprintf libintl_asprintf
 extern int asprintf (char **, const char *, ...);
+#endif
+#if !(defined vasprintf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef vasprintf
 #define vasprintf libintl_vasprintf
 extern int vasprintf (char **, const char *, va_list);
+#endif
 
 #endif
 
@@ -399,6 +427,26 @@ extern int vswprintf (wchar_t *, size_t, const wchar_t *, va_list);
 #endif
 
 
+/* Support for the locale chosen by the user.  */
+#if (defined __APPLE__ && defined __MACH__) || defined _WIN32 || defined __WIN32__ || defined __CYGWIN__
+
+#ifndef GNULIB_defined_setlocale /* don't override gnulib */
+#undef setlocale
+#define setlocale libintl_setlocale
+extern char *setlocale (int, const char *);
+#endif
+
+#if @HAVE_NEWLOCALE@
+
+#undef newlocale
+#define newlocale libintl_newlocale
+extern locale_t newlocale (int, const char *, locale_t);
+
+#endif
+
+#endif
+
+
 /* Support for relocatable packages.  */
 
 /* Sets the original and the current installation prefix of the package.
@@ -409,7 +457,7 @@ extern int vswprintf (wchar_t *, size_t, const wchar_t *, va_list);
 #define libintl_set_relocation_prefix libintl_set_relocation_prefix
 extern void
        libintl_set_relocation_prefix (const char *orig_prefix,
-				      const char *curr_prefix);
+                                      const char *curr_prefix);
 
 
 #ifdef __cplusplus

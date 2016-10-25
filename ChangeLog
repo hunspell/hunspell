@@ -1,3 +1,7 @@
+2016-10-26  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Bump to 0.19.7.
+
 2016-04-29 Caolán McNamara <caolanm at LibO>:
 	* deprecate old api and add new one
 	  old one remains implemented in terms of new one

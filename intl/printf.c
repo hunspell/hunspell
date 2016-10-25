@@ -1,21 +1,20 @@
 /* Formatted output to strings, using POSIX/XSI format strings with positions.
-   Copyright (C) 2003, 2006-2007 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2006-2007, 2009-2011, 2015 Free Software
+   Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -60,7 +59,9 @@ char *alloca ();
 /* When building a DLL, we must export some functions.  Note that because
    the functions are only defined for binary backward compatibility, we
    don't need to use __declspec(dllimport) in any case.  */
-#if defined _MSC_VER && BUILDING_DLL
+#if HAVE_VISIBILITY && BUILDING_DLL
+# define DLL_EXPORTED __attribute__((__visibility__("default")))
+#elif defined _MSC_VER && BUILDING_DLL
 # define DLL_EXPORTED __declspec(dllexport)
 #else
 # define DLL_EXPORTED
@@ -68,7 +69,7 @@ char *alloca ();
 
 #define STATIC static
 
-/* This needs to be consistent with libgnuintl.h.in.  */
+/* This needs to be consistent with libgnuintl.in.h.  */
 #if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
 /* Don't break __attribute__((format(printf,M,N))).
    This redefinition is only possible because the libc in NetBSD, Cygwin,
@@ -102,17 +103,17 @@ libintl_vfprintf (FILE *stream, const char *format, va_list args)
       char *result = libintl_vasnprintf (NULL, &length, format, args);
       int retval = -1;
       if (result != NULL)
-	{
-	  size_t written = fwrite (result, 1, length, stream);
-	  free (result);
-	  if (written == length)
-	    {
-	      if (length > INT_MAX)
-		errno = EOVERFLOW;
-	      else
-		retval = length;
-	    }
-	}
+        {
+          size_t written = fwrite (result, 1, length, stream);
+          free (result);
+          if (written == length)
+            {
+              if (length > INT_MAX)
+                errno = EOVERFLOW;
+              else
+                retval = length;
+            }
+        }
       return retval;
     }
 }
@@ -161,17 +162,17 @@ libintl_vsprintf (char *resultbuf, const char *format, va_list args)
       size_t length = (size_t) ~0 / (4 * sizeof (char));
       char *result = libintl_vasnprintf (resultbuf, &length, format, args);
       if (result != resultbuf)
-	{
-	  free (result);
-	  return -1;
-	}
+        {
+          free (result);
+          return -1;
+        }
       if (length > INT_MAX)
-	{
-	  errno = EOVERFLOW;
-	  return -1;
-	}
+        {
+          errno = EOVERFLOW;
+          return -1;
+        }
       else
-	return length;
+        return length;
     }
 }
 
@@ -191,8 +192,13 @@ libintl_sprintf (char *resultbuf, const char *format, ...)
 #if HAVE_SNPRINTF
 
 # if HAVE_DECL__SNPRINTF
-   /* Windows.  */
-#  define system_vsnprintf _vsnprintf
+   /* Windows.  The mingw function vsnprintf() has fewer bugs than the MSVCRT
+      function _vsnprintf(), so prefer that.  */
+#  if defined __MINGW32__
+#   define system_vsnprintf vsnprintf
+#  else
+#   define system_vsnprintf _vsnprintf
+#  endif
 # else
    /* Unix.  */
 #  define system_vsnprintf vsnprintf
@@ -202,30 +208,32 @@ DLL_EXPORTED
 int
 libintl_vsnprintf (char *resultbuf, size_t length, const char *format, va_list args)
 {
-  if (strchr (format, '$') == NULL)
+  if (0 && (strchr (format, '$') == NULL))
     return system_vsnprintf (resultbuf, length, format, args);
   else
     {
       size_t maxlength = length;
       char *result = libintl_vasnprintf (resultbuf, &length, format, args);
+      if (result == NULL)
+        return -1;
       if (result != resultbuf)
-	{
-	  if (maxlength > 0)
-	    {
-	      size_t pruned_length =
-		(length < maxlength ? length : maxlength - 1);
-	      memcpy (resultbuf, result, pruned_length);
-	      resultbuf[pruned_length] = '\0';
-	    }
-	  free (result);
-	}
+        {
+          if (maxlength > 0)
+            {
+              size_t pruned_length =
+                (length < maxlength ? length : maxlength - 1);
+              memcpy (resultbuf, result, pruned_length);
+              resultbuf[pruned_length] = '\0';
+            }
+          free (result);
+        }
       if (length > INT_MAX)
-	{
-	  errno = EOVERFLOW;
-	  return -1;
-	}
+        {
+          errno = EOVERFLOW;
+          return -1;
+        }
       else
-	return length;
+        return length;
     }
 }
 
@@ -302,7 +310,8 @@ libintl_asprintf (char **resultp, const char *format, ...)
 #endif
 
 # if HAVE_DECL__SNWPRINTF
-   /* Windows.  */
+   /* Windows.  The function vswprintf() has a different signature than
+      on Unix; we use the function _vsnwprintf() instead.  */
 #  define system_vswprintf _vsnwprintf
 # else
    /* Unix.  */
@@ -321,20 +330,20 @@ libintl_vfwprintf (FILE *stream, const wchar_t *format, va_list args)
       wchar_t *result = libintl_vasnwprintf (NULL, &length, format, args);
       int retval = -1;
       if (result != NULL)
-	{
-	  size_t i;
-	  for (i = 0; i < length; i++)
-	    if (fputwc (result[i], stream) == WEOF)
-	      break;
-	  free (result);
-	  if (i == length)
-	    {
-	      if (length > INT_MAX)
-		errno = EOVERFLOW;
-	      else
-		retval = length;
-	    }
-	}
+        {
+          size_t i;
+          for (i = 0; i < length; i++)
+            if (fputwc (result[i], stream) == WEOF)
+              break;
+          free (result);
+          if (i == length)
+            {
+              if (length > INT_MAX)
+                errno = EOVERFLOW;
+              else
+                retval = length;
+            }
+        }
       return retval;
     }
 }
@@ -382,30 +391,32 @@ libintl_vswprintf (wchar_t *resultbuf, size_t length, const wchar_t *format, va_
     {
       size_t maxlength = length;
       wchar_t *result = libintl_vasnwprintf (resultbuf, &length, format, args);
+      if (result == NULL)
+        return -1;
       if (result != resultbuf)
-	{
-	  if (maxlength > 0)
-	    {
-	      size_t pruned_length =
-		(length < maxlength ? length : maxlength - 1);
-	      memcpy (resultbuf, result, pruned_length * sizeof (wchar_t));
-	      resultbuf[pruned_length] = 0;
-	    }
-	  free (result);
-	  /* Unlike vsnprintf, which has to return the number of character that
-	     would have been produced if the resultbuf had been sufficiently
-	     large, the vswprintf function has to return a negative value if
-	     the resultbuf was not sufficiently large.  */
-	  if (length >= maxlength)
-	    return -1;
-	}
+        {
+          if (maxlength > 0)
+            {
+              size_t pruned_length =
+                (length < maxlength ? length : maxlength - 1);
+              memcpy (resultbuf, result, pruned_length * sizeof (wchar_t));
+              resultbuf[pruned_length] = 0;
+            }
+          free (result);
+          /* Unlike vsnprintf, which has to return the number of character that
+             would have been produced if the resultbuf had been sufficiently
+             large, the vswprintf function has to return a negative value if
+             the resultbuf was not sufficiently large.  */
+          if (length >= maxlength)
+            return -1;
+        }
       if (length > INT_MAX)
-	{
-	  errno = EOVERFLOW;
-	  return -1;
-	}
+        {
+          errno = EOVERFLOW;
+          return -1;
+        }
       else
-	return length;
+        return length;
     }
 }
 

@@ -1,20 +1,18 @@
-/* Copyright (C) 1995-1999, 2000-2006 Free Software Foundation, Inc.
+/* Copyright (C) 1995-2015 Free Software Foundation, Inc.
    Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1995.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* Tell glibc's <string.h> to provide a prototype for stpcpy().
    This must come before <config.h> because <config.h> may include
@@ -82,9 +80,7 @@ static char *stpcpy (char *dest, const char *src);
 
 /* Define function which are usually not available.  */
 
-#ifdef _LIBC
-# define __argz_count(argz, len) INTUSE(__argz_count) (argz, len)
-#elif defined HAVE_ARGZ_COUNT
+#if defined HAVE_ARGZ_COUNT
 # undef __argz_count
 # define __argz_count argz_count
 #else
@@ -106,10 +102,7 @@ argz_count__ (const char *argz, size_t len)
 # define __argz_count(argz, len) argz_count__ (argz, len)
 #endif	/* !_LIBC && !HAVE_ARGZ_COUNT */
 
-#ifdef _LIBC
-# define __argz_stringify(argz, len, sep) \
-  INTUSE(__argz_stringify) (argz, len, sep)
-#elif defined HAVE_ARGZ_STRINGIFY
+#if defined HAVE_ARGZ_STRINGIFY
 # undef __argz_stringify
 # define __argz_stringify argz_stringify
 #else
@@ -156,8 +149,8 @@ argz_next__ (char *argz, size_t argz_len, const char *entry)
 # define __argz_next(argz, len, entry) argz_next__ (argz, len, entry)
 #endif	/* !_LIBC && !HAVE_ARGZ_NEXT */
 
-
 /* Return number of bits set in X.  */
+#ifndef ARCH_POP
 static inline int
 pop (int x)
 {
@@ -169,6 +162,7 @@ pop (int x)
 
   return x;
 }
+#endif
 
 
 struct loaded_l10nfile *
@@ -346,7 +340,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 const char *
 _nl_normalize_codeset (const char *codeset, size_t name_len)
 {
-  int len = 0;
+  size_t len = 0;
   int only_digit = 1;
   char *retval;
   char *wp;

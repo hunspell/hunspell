@@ -1,20 +1,19 @@
 /* Decomposed printf argument list.
-   Copyright (C) 1999, 2002-2003, 2006-2007 Free Software Foundation, Inc.
+   Copyright (C) 1999, 2002-2003, 2006-2007, 2011, 2015 Free Software
+   Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _PRINTF_ARGS_H
 #define _PRINTF_ARGS_H
@@ -94,52 +93,56 @@ typedef struct
   arg_type type;
   union
   {
-    signed char			a_schar;
-    unsigned char		a_uchar;
-    short			a_short;
-    unsigned short		a_ushort;
-    int				a_int;
-    unsigned int		a_uint;
-    long int			a_longint;
-    unsigned long int		a_ulongint;
+    signed char                 a_schar;
+    unsigned char               a_uchar;
+    short                       a_short;
+    unsigned short              a_ushort;
+    int                         a_int;
+    unsigned int                a_uint;
+    long int                    a_longint;
+    unsigned long int           a_ulongint;
 #if HAVE_LONG_LONG_INT
-    long long int		a_longlongint;
-    unsigned long long int	a_ulonglongint;
+    long long int               a_longlongint;
+    unsigned long long int      a_ulonglongint;
 #endif
-    float			a_float;
-    double			a_double;
-    long double			a_longdouble;
-    int				a_char;
+    float                       a_float;
+    double                      a_double;
+    long double                 a_longdouble;
+    int                         a_char;
 #if HAVE_WINT_T
-    wint_t			a_wide_char;
+    wint_t                      a_wide_char;
 #endif
-    const char*			a_string;
+    const char*                 a_string;
 #if HAVE_WCHAR_T
-    const wchar_t*		a_wide_string;
+    const wchar_t*              a_wide_string;
 #endif
-    void*			a_pointer;
-    signed char *		a_count_schar_pointer;
-    short *			a_count_short_pointer;
-    int *			a_count_int_pointer;
-    long int *			a_count_longint_pointer;
+    void*                       a_pointer;
+    signed char *               a_count_schar_pointer;
+    short *                     a_count_short_pointer;
+    int *                       a_count_int_pointer;
+    long int *                  a_count_longint_pointer;
 #if HAVE_LONG_LONG_INT
-    long long int *		a_count_longlongint_pointer;
+    long long int *             a_count_longlongint_pointer;
 #endif
 #if ENABLE_UNISTDIO
     /* The unistdio extensions.  */
-    const uint8_t *		a_u8_string;
-    const uint16_t *		a_u16_string;
-    const uint32_t *		a_u32_string;
+    const uint8_t *             a_u8_string;
+    const uint16_t *            a_u16_string;
+    const uint32_t *            a_u32_string;
 #endif
   }
   a;
 }
 argument;
 
+/* Number of directly allocated arguments (no malloc() needed).  */
+#define N_DIRECT_ALLOC_ARGUMENTS 7
+
 typedef struct
 {
   size_t count;
   argument *arg;
+  argument direct_alloc_arg[N_DIRECT_ALLOC_ARGUMENTS];
 }
 arguments;
 

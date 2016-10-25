@@ -1,20 +1,18 @@
 /* Binary tree data structure.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2015 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-   USA.  */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _TSEARCH_H
 #define _TSEARCH_H
@@ -47,18 +45,18 @@ VISIT;
    If one is found, it is returned.  Otherwise, a new element equal to KEY
    is inserted in the tree and is returned.  */
 extern void * tsearch (const void *key, void **vrootp,
-		       int (*compar) (const void *, const void *));
+                       int (*compar) (const void *, const void *));
 
 /* Searches an element in the tree *VROOTP that compares equal to KEY.
    If one is found, it is returned.  Otherwise, NULL is returned.  */
 extern void * tfind (const void *key, void *const *vrootp,
-		     int (*compar) (const void *, const void *));
+                     int (*compar) (const void *, const void *));
 
 /* Searches an element in the tree *VROOTP that compares equal to KEY.
    If one is found, it is removed from the tree, and its parent node is
    returned.  Otherwise, NULL is returned.  */
 extern void * tdelete (const void *key, void **vrootp,
-		       int (*compar) (const void *, const void *));
+                       int (*compar) (const void *, const void *));
 
 /* Perform a depth-first, left-to-right traversal of the tree VROOT.
    The ACTION function is called:
@@ -72,7 +70,7 @@ extern void * tdelete (const void *key, void **vrootp,
      2. an indicator which visit of the node this is,
      3. the level of the node in the tree (0 for the root).  */
 extern void twalk (const void *vroot,
-		   void (*action) (const void *, VISIT, int));
+                   void (*action) (const void *, VISIT, int));
 
 #ifdef __cplusplus
 }
