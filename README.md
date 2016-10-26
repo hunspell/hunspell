@@ -1,4 +1,4 @@
-About Hunspell
+About Hunspell 
 --------------
 
 Hunspell is a spell checker and morphological analyzer library and program
