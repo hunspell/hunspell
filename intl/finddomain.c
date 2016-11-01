@@ -1,5 +1,5 @@
 /* Handle list of needed message catalogs
-   Copyright (C) 1995-2015 Free Software Foundation, Inc.
+   Copyright (C) 1995-2016 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.org>, 1995.
 
    This program is free software: you can redistribute it and/or modify

@@ -1,6 +1,5 @@
 # Makefile for directory with message catalog handling library of GNU gettext
-# Copyright (C) 1995-1998, 2000-2007, 2009-2015 Free Software
-# Foundation, Inc.
+# Copyright (C) 1995-1998, 2000-2007, 2009-2016 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -127,7 +126,6 @@ HEADERS = \
   localcharset.h \
   lock.h \
   relocatable.h \
-  relocatex.h \
   tsearch.h tsearch.c \
   verify.h \
   xsize.h \
@@ -158,8 +156,6 @@ SOURCES = \
   threadlib.c \
   lock.c \
   relocatable.c \
-  relocatex.c \
-  canonicalize.c \
   langprefs.c \
   localename.c \
   log.c \
@@ -193,8 +189,6 @@ OBJECTS = \
   threadlib.$lo \
   lock.$lo \
   relocatable.$lo \
-  relocatex.$lo \
-  canonicalize.$lo \
   langprefs.$lo \
   localename.$lo \
   log.$lo \
@@ -244,7 +238,7 @@ libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_@WOE32@)
 # Maintainers of other packages that include the intl directory must *not*
 # change these values.
 LTV_CURRENT=9
-LTV_REVISION=4
+LTV_REVISION=5
 LTV_AGE=1
 
 .SUFFIXES:
@@ -304,10 +298,6 @@ threadlib.lo: $(srcdir)/threadlib.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/threadlib.c
 lock.lo: $(srcdir)/lock.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/lock.c
-relocatex.lo: $(srcdir)/relocatex.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatex.c
-canonicalize.lo: $(srcdir)/canonicalize.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/canonicalize.c
 relocatable.lo: $(srcdir)/relocatable.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatable.c
 langprefs.lo: $(srcdir)/langprefs.c

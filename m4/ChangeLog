@@ -1,3 +1,36 @@
+2016-11-01  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* iconv.m4: Upgrade to gettext-0.19.8.1.
+	* lib-ld.m4: Upgrade to gettext-0.19.8.1.
+	* lib-link.m4: Upgrade to gettext-0.19.8.1.
+	* lib-prefix.m4: Upgrade to gettext-0.19.8.1.
+	* nls.m4: Upgrade to gettext-0.19.8.1.
+	* po.m4: Upgrade to gettext-0.19.8.1.
+	* progtest.m4: Upgrade to gettext-0.19.8.1.
+	* codeset.m4: Upgrade to gettext-0.19.8.1.
+	* fcntl-o.m4: Upgrade to gettext-0.19.8.1.
+	* glibc2.m4: Upgrade to gettext-0.19.8.1.
+	* glibc21.m4: Upgrade to gettext-0.19.8.1.
+	* intdiv0.m4: Upgrade to gettext-0.19.8.1.
+	* intl.m4: Upgrade to gettext-0.19.8.1.
+	* intldir.m4: Upgrade to gettext-0.19.8.1.
+	* intlmacosx.m4: Upgrade to gettext-0.19.8.1.
+	* intmax.m4: Upgrade to gettext-0.19.8.1.
+	* inttypes_h.m4: Upgrade to gettext-0.19.8.1.
+	* inttypes-pri.m4: Upgrade to gettext-0.19.8.1.
+	* lcmessage.m4: Upgrade to gettext-0.19.8.1.
+	* lock.m4: Upgrade to gettext-0.19.8.1.
+	* longlong.m4: Upgrade to gettext-0.19.8.1.
+	* printf-posix.m4: Upgrade to gettext-0.19.8.1.
+	* size_max.m4: Upgrade to gettext-0.19.8.1.
+	* stdint_h.m4: Upgrade to gettext-0.19.8.1.
+	* threadlib.m4: Upgrade to gettext-0.19.8.1.
+	* uintmax_t.m4: Upgrade to gettext-0.19.8.1.
+	* visibility.m4: Upgrade to gettext-0.19.8.1.
+	* wchar_t.m4: Upgrade to gettext-0.19.8.1.
+	* wint_t.m4: Upgrade to gettext-0.19.8.1.
+	* xsize.m4: Upgrade to gettext-0.19.8.1.
+
 2016-10-26  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* gettext.m4: Upgrade to gettext-0.19.7.

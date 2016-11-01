@@ -1,5 +1,5 @@
 /* Implementation of the bindtextdomain(3) function
-   Copyright (C) 1995-2015 Free Software Foundation, Inc.
+   Copyright (C) 1995-2016 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "gettextP.h"
 #ifdef _LIBC
@@ -64,12 +63,6 @@ gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
 #else
 # define BINDTEXTDOMAIN libintl_bindtextdomain
 # define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
-#endif
-
-#if ENABLE_RELOCATABLE
-# include "relocatex.h"
-#else
-# define relocate(pathname) (pathname)
 #endif
 
 /* Specifies the directory name *DIRNAMEP and the output codeset *CODESETP
@@ -324,23 +317,34 @@ set_binding_values (const char *domainname,
 char *
 BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 {
-/*
+#ifdef __EMX__
+  const char *saved_dirname = dirname;
+  char dirname_with_drive[_MAX_PATH];
+
+  /* Resolve UNIXROOT into dirname if it is not resolved by os2compat.[ch]. */
+  if (dirname && (dirname[0] == '/' || dirname[0] == '\\' ))
+    {
+      const char *unixroot = getenv ("UNIXROOT");
+      size_t len = strlen (dirname) + 1;
+
+      if (unixroot
+          && unixroot[0] != '\0'
+          && unixroot[1] == ':'
+          && unixroot[2] == '\0'
+          && 2 + len <= _MAX_PATH)
+        {
+          memcpy (dirname_with_drive, unixroot, 2);
+          memcpy (dirname_with_drive + 2, dirname, len);
+
+          dirname = dirname_with_drive;
+        }
+    }
+#endif
   set_binding_values (domainname, &dirname, NULL);
+#ifdef __EMX__
+  dirname = saved_dirname;
+#endif
   return (char *) dirname;
-*/
-  if (!access (dirname, R_OK)) {
-	  set_binding_values (domainname, &dirname, NULL);
-	  return (char *) dirname;
-  } else {
-	  char *locale_dirname, *installdir = strdup (dirname), *s;
-	  if ((s = strrchr (installdir, '/'))) *s = '\0';
-	  if ((s = strrchr (installdir, '/'))) *s = '\0';
-	  locale_dirname = relocatex (installdir, dirname);
-	  set_binding_values (domainname, (const char **) &locale_dirname, NULL);
-	  if (installdir)
-	  	free (installdir);
-	  return (char *) locale_dirname;
-  }	  
 }
 
 /* Specify the character encoding in which the messages from the

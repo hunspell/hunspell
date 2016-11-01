@@ -1,6 +1,5 @@
 /* Message catalogs for internationalization.
-   Copyright (C) 1995-1997, 2000-2015 Free Software Foundation,
-   Inc.
+   Copyright (C) 1995-1997, 2000-2016 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +54,7 @@ extern "C" {
 
 
 /* Version number: (major<<16) + (minor<<8) + subminor */
-#define LIBINTL_VERSION 0x001307
+#define LIBINTL_VERSION 0x001308
 extern int libintl_version;
 
 
@@ -337,7 +336,7 @@ extern int vfprintf (FILE *, const char *, va_list);
 
 #if !(defined printf && defined _GL_STDIO_H) /* don't override gnulib */
 #undef printf
-#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__ || defined _MSC_VER
+#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
 /* Don't break __attribute__((format(printf,M,N))).
    This redefinition is only possible because the libc in NetBSD, Cygwin,
    mingw does not have a function __printf__.

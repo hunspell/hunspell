@@ -1,5 +1,5 @@
 /* Formatted output to strings, using POSIX/XSI format strings with positions.
-   Copyright (C) 2003, 2006-2007, 2009-2011, 2015 Free Software
+   Copyright (C) 2003, 2006-2007, 2009-2011, 2015-2016 Free Software
    Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
@@ -208,7 +208,7 @@ DLL_EXPORTED
 int
 libintl_vsnprintf (char *resultbuf, size_t length, const char *format, va_list args)
 {
-  if (0 && (strchr (format, '$') == NULL))
+  if (strchr (format, '$') == NULL)
     return system_vsnprintf (resultbuf, length, format, args);
   else
     {
