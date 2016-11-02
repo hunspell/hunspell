@@ -1,5 +1,5 @@
 /* Expression parsing and evaluation for plural form selection.
-   Copyright (C) 2000-2016 Free Software Foundation, Inc.
+   Copyright (C) 2000-2015 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@cygnus.com>, 2000.
 
    This program is free software: you can redistribute it and/or modify
@@ -105,24 +105,10 @@ struct parse_args
 # define EXTRACT_PLURAL_EXPRESSION extract_plural_expression
 #endif
 
-#if (defined __GNUC__ && !(defined __APPLE_CC_ && __APPLE_CC__ > 1) \
-     && !defined __cplusplus)                                       \
-    || (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L)    \
-    || (defined __SUNPRO_C && 0x560 <= __SUNPRO_C                   \
-        && !(defined __STDC__ && __STDC__ == 1))
-# define HAVE_STRUCT_INITIALIZER 1
-#else
-# define HAVE_STRUCT_INITIALIZER 0
-#endif
-
 extern void FREE_EXPRESSION (struct expression *exp)
      internal_function;
 extern int PLURAL_PARSE (struct parse_args *arg);
-#if HAVE_STRUCT_INITIALIZER
 extern const struct expression GERMANIC_PLURAL attribute_hidden;
-#else
-extern struct expression GERMANIC_PLURAL attribute_hidden;
-#endif
 extern void EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
 				       const struct expression **pluralp,
 				       unsigned long int *npluralsp)

@@ -1,5 +1,6 @@
 # Makefile for directory with message catalog handling library of GNU gettext
-# Copyright (C) 1995-1998, 2000-2007, 2009-2016 Free Software Foundation, Inc.
+# Copyright (C) 1995-1998, 2000-2007, 2009-2015 Free Software
+# Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -238,7 +239,7 @@ libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_@WOE32@)
 # Maintainers of other packages that include the intl directory must *not*
 # change these values.
 LTV_CURRENT=9
-LTV_REVISION=5
+LTV_REVISION=4
 LTV_AGE=1
 
 .SUFFIXES:

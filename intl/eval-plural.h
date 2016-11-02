@@ -1,5 +1,5 @@
 /* Plural expression evaluation.
-   Copyright (C) 2000-2003, 2007, 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2000-2003, 2007, 2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License as published by

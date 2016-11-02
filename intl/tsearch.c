@@ -1,4 +1,4 @@
-/* Copyright (C) 1995-1997, 2000, 2006, 2015-2016 Free Software Foundation,
+/* Copyright (C) 1995-1997, 2000, 2006, 2015 Free Software Foundation,
    Inc.
    Contributed by Bernd Schmidt <crux@Pool.Informatik.RWTH-Aachen.DE>, 1997.
 

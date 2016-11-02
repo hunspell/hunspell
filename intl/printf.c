@@ -1,5 +1,5 @@
 /* Formatted output to strings, using POSIX/XSI format strings with positions.
-   Copyright (C) 2003, 2006-2007, 2009-2011, 2015-2016 Free Software
+   Copyright (C) 2003, 2006-2007, 2009-2011, 2015 Free Software
    Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
