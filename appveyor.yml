@@ -1,0 +1,2 @@
+build_script:
+  - cmd: 'c:\cygwin\bin\bash -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf && ./configure && make && make check"'
