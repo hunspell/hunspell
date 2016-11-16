@@ -71,8 +71,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _AFFIXMGR_HXX_
-#define _AFFIXMGR_HXX_
+#ifndef AFFIXMGR_HXX_
+#define AFFIXMGR_HXX_
 
 #include <stdio.h>
 

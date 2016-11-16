@@ -46,8 +46,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _HTMLPARSER_HXX_
-#define _HTMLPARSER_HXX_
+#ifndef HTMLPARSER_HXX_
+#define HTMLPARSER_HXX_
 
 #include "xmlparser.hxx"
 

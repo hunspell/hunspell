@@ -46,8 +46,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _LATEXPARSER_HXX_
-#define _LATEXPARSER_HXX_
+#ifndef LATEXPARSER_HXX_
+#define LATEXPARSER_HXX_
 
 #include "textparser.hxx"
 

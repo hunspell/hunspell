@@ -70,8 +70,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#ifndef _MYSPELLMGR_HXX_
-#define _MYSPELLMGR_HXX_
+#ifndef MYSPELLMGR_HXX_
+#define MYSPELLMGR_HXX_
 
 #include "hunvisapi.h"
 #include "w_char.hxx"

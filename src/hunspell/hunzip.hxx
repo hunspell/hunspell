@@ -41,8 +41,8 @@
 /* hunzip: file decompression for sorted dictionaries with optional encryption,
  * algorithm: prefix-suffix encoding and 16-bit Huffman encoding */
 
-#ifndef _HUNZIP_HXX_
-#define _HUNZIP_HXX_
+#ifndef HUNZIP_HXX_
+#define HUNZIP_HXX_
 
 #include "hunvisapi.h"
 

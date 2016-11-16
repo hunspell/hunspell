@@ -46,8 +46,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _FIRSTPARSER_HXX_
-#define _FIRSTPARSER_HXX_
+#ifndef FIRSTPARSER_HXX_
+#define FIRSTPARSER_HXX_
 
 #include "textparser.hxx"
 

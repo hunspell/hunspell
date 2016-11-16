@@ -71,8 +71,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _HASHMGR_HXX_
-#define _HASHMGR_HXX_
+#ifndef HASHMGR_HXX_
+#define HASHMGR_HXX_
 
 #include <stdio.h>
 #include <string>

@@ -71,8 +71,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _SUGGESTMGR_HXX_
-#define _SUGGESTMGR_HXX_
+#ifndef SUGGESTMGR_HXX_
+#define SUGGESTMGR_HXX_
 
 #define MAX_ROOTS 100
 #define MAX_WORDS 100

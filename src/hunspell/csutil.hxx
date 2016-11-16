@@ -71,8 +71,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __CSUTILHXX__
-#define __CSUTILHXX__
+#ifndef CSUTIL_HXX_
+#define CSUTIL_HXX_
 
 #include "hunvisapi.h"
 

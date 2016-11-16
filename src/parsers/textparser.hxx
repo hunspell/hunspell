@@ -46,8 +46,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _TEXTPARSER_HXX_
-#define _TEXTPARSER_HXX_
+#ifndef TEXTPARSER_HXX_
+#define TEXTPARSER_HXX_
 
 // set sum of actual and previous lines
 #define MAXPREVLINE 4

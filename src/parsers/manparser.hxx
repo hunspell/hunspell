@@ -46,8 +46,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _MANPARSER_HXX_
-#define _MANPARSER_HXX_
+#ifndef MANPARSER_HXX_
+#define MANPARSER_HXX_
 
 #include "textparser.hxx"
 

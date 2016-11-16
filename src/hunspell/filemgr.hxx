@@ -72,8 +72,8 @@
  */
 
 /* file manager class - read lines of files [filename] OR [filename.hz] */
-#ifndef _FILEMGR_HXX_
-#define _FILEMGR_HXX_
+#ifndef FILEMGR_HXX_
+#define FILEMGR_HXX_
 
 #include "hunzip.hxx"
 #include <stdio.h>

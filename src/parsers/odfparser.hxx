@@ -44,8 +44,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _ODFPARSER_HXX_
-#define _ODFPARSER_HXX_
+#ifndef ODFPARSER_HXX_
+#define ODFPARSER_HXX_
 
 #include "xmlparser.hxx"
 

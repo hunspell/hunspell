@@ -72,8 +72,8 @@
  */
 
 /* string replacement list class */
-#ifndef _REPLIST_HXX_
-#define _REPLIST_HXX_
+#ifndef REPLIST_HXX_
+#define REPLIST_HXX_
 
 #include "w_char.hxx"
 

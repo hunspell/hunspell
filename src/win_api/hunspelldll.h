@@ -33,8 +33,8 @@
  * ***** END LICENSE BLOCK ***** **/
 #include "hunspell.hxx"
 
-#ifndef _DLL_H_
-#define _DLL_H_
+#ifndef HUNSPELLDLL_H_
+#define HUNSPELLDLL_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,4 +76,4 @@ LIBHUNSPELL_DLL_EXPORTED int hunspell_remove(Hunspell* pMS, char* word);
 }
 #endif
 
-#endif /* _DLL_H_ */
+#endif /* HUNSPELLDLL_H_ */
