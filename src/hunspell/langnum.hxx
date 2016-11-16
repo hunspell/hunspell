@@ -43,7 +43,7 @@
 
 /*
  language numbers for language specific codes
- see http://l10n.openoffice.org/languages.html
+ see https://wiki.openoffice.org/w/index.php?title=Languages&oldid=230199
 */
 
 enum {
