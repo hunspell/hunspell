@@ -104,11 +104,13 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   if (ec) {
     /* error condition - what should we do here */
     HUNSPELL_WARNING(stderr, "Hash Manager Error : %d\n", ec);
-    if (tableptr) {
-      free(tableptr);
-      tableptr = NULL;
+    free(tableptr);
+    //keep tablesize to 1 to fix possible division with zero
+    tablesize = 1;
+    tableptr = (struct hentry**)calloc(tablesize, sizeof(struct hentry*));
+    if (!tableptr) {
+      tablesize = 0;
     }
-    tablesize = 0;
   }
 }
 
