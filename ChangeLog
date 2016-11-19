@@ -1,3 +1,10 @@
+2016-11-18 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5
+	* Lot of stability fixes
+	* Fixed compilation errors on various systems (Windows, FreeBSD)
+	* Small performance improvement compared to 1.4.0
+	* API is same as 1.4.
+
 2016-04-29 Caolán McNamara <caolanm at LibO>:
 	* deprecate old api and add new one
 	  old one remains implemented in terms of new one
