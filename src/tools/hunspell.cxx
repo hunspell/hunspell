@@ -253,8 +253,8 @@ std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
   std::string out(st.size(), std::string::value_type());
   size_t c1(st.size());
   size_t c2(out.size());
-  char* source(const_cast<char*>(&st[0]));
-  char* dest(const_cast<char*>(&out[0]));
+  ICONV_CONST char* source = &st[0];
+  char* dest = &out[0];
   iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
   if (conv == (iconv_t)-1) {
     fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), enc2, enc1);
