@@ -173,7 +173,7 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
     if (c > 0)
       break;
     else if (c == 0) { // subpatterns match. Patterns can't be identical since would catch earlier
-      for (int j = i - 2; j && !strncmp(dat[i-1]->pattern.c_str(), dat[j]->pattern.c_str(), dat[i-1]->pattern.size()); --j)
+      for (int j = i - 2; j > 1 && !strncmp(dat[i-1]->pattern.c_str(), dat[j]->pattern.c_str(), dat[i-1]->pattern.size()); --j)
         if (dat[j]->pattern.size() > r->pattern.size() ||
               (dat[j]->pattern.size() == r->pattern.size() && strncmp(dat[j]->pattern.c_str(), r->pattern.c_str(), r->pattern.size()) > 0)) {
           i = j;
