@@ -388,6 +388,7 @@ int HashMgr::remove(const std::string& word) {
       for (int i = 0; i < dp->alen; i++)
         flags[i] = dp->astr[i];
       flags[dp->alen] = forbiddenword;
+      free(dp->astr);
       dp->astr = flags;
       dp->alen++;
       std::sort(flags, flags + dp->alen);
@@ -417,6 +418,7 @@ int HashMgr::remove_forbidden_flag(const std::string& word) {
             flags2[j++] = dp->astr[i];
         }
         dp->alen--;
+        free(dp->astr);
         dp->astr = flags2;  // XXX allowed forbidden words
       }
     }
