@@ -59,7 +59,7 @@ struct aff_data
 	char16_t nosuggest_flag;
 	short max_compound_suggestions;
 	short max_ngram_suggestions;
-	signed char max_diff_factor;
+	short max_diff_factor;
 	bool only_max_diff;
 	bool no_split_suggestions;
 	bool suggest_with_dots;
@@ -70,9 +70,63 @@ struct aff_data
 	bool forbid_warn_flag;
 	
 	//compouding options
+	vector<string> break_patterns;
+	vector<string> compound_rules;
+	short compoud_minimum;
+	char16_t compound_flag;
+	char16_t compound_begin_flag;
+	char16_t compound_last_flag;
+	char16_t compound_middle_flag;
+	char16_t compound_onlyin_flag;
+	char16_t compound_permit_flag;
+	char16_t compound_forbid_flag;
+	bool compound_more_suffixes;
+	char16_t compound_root_flag;
+	short compound_word_max;
+	bool compound_check_up;
+	bool compound_check_rep;
+	bool compound_check_case;
+	bool compound_check_triple;
+	bool compound_simplified_triple;
 	
-	//affix options
+	struct compound_check_pattern {
+		string end_chars;
+		char16_t end_flag;
+		string begin_chars;
+		char16_t begin_flag;
+		string replacement;
+	};
+	vector<compound_check_pattern> compound_check_patterns;
+	char16_t compound_force_uppercase;
+	short compound_syllable_max;
+	string compound_syllable_vowels;
+	u16string compound_syllable_num;
 	
+	//affix creation
+	struct affix {
+		char16_t flag;
+		bool cross_product;
+		string stripping;
+		string affix;
+		string new_flags;
+		string condition;
+		vector<string> morphological_fields;
+	};
+	vector<affix> prefixes;
+	vector<affix> suffixes;
+	
+	//others
+	char16_t circumfix_flag;
+	char16_t forbiddenword_flag;
+	bool fullstrip;
+	char16_t keepcase_flag;
+	vector<pair<string, string>> input_conversion;
+	vector<pair<string, string>> output_conversion;
+	char16_t need_affix_flag;
+	char16_t substandard_flag;
+	string wordchars;
+	bool checksharps;
+
 	//methods
 	bool parse(std::istream& in);
 };

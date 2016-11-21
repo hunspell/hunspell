@@ -46,11 +46,7 @@ bool aff_data::parse(std::istream& in)
 	string line;
 	string command;
 	string parametar_line;
-	do {
-		getline(in, line);
-		if (in.fail() && !in.eof()) {
-			return false;
-		}
+	while (getline(in, line)) {
 		stringstream ss(line);
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
@@ -58,16 +54,12 @@ bool aff_data::parse(std::istream& in)
 		}
 		ss >> command;
 		for (auto & c: command) c = toupper(c);
-		//auto& vec = table[command];
 		ss >> ws;
-		if (ss.eof()) {
-				continue; //nothing more to read
-		}
-		getline(ss, parametar_line);
-		//vec.push_back(parametar_line);
-	} while (!in.eof());
+		//getline(ss, parametar_line);
+		//parse_line(command, parametar_line)
+	}
 
-	return true;
+	return in.eof(); // success if we reached eof
 }
 
 }
