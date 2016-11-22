@@ -67,7 +67,7 @@ struct aff_data
 	vector<pair<string, string>> map_related_chars;
 	vector<pair<string, string>> phonetic_replacements;
 	char16_t warn_flag;
-	bool forbid_warn_flag;
+	bool forbid_warn;
 	
 	//compouding options
 	vector<string> break_patterns;
