@@ -42,31 +42,30 @@ namespace hunspell {
 using namespace std;
 
 namespace {
-	inline void toupper_ascii(string& s)
-	{
-		for (auto& c: s) c = toupper(c);
+inline void toupper_ascii(string& s)
+{
+	for (auto& c: s) c = toupper(c);
+}
+
+template <class T, class Func>
+void parse_vector_of_T(istream& in, const string& command,
+	unordered_map<string, int>& counts, vector<T>& vec, Func factory)
+{
+	auto dat = counts.find(command);
+	if (dat == counts.end()) {
+		//first line
+		int a;
+		in >> a;
+		counts[command] = a;
 	}
-	
-	template <class T, class Func>
-	void parse_vector_of_T(istream& in,
-		const string& command, unordered_map<string, int>& counts,
-		vector<T>& vec, Func factory)
-	{
-		auto dat = counts.find(command);
-		if (dat == counts.end()) {
-			//first line
-			int a;
-			in >> a;
-			counts[command] = a;
+	else if (dat->second) {
+		vec.emplace_back();
+		if (factory(in, vec.back()) == false) {
+			vec.pop_back();
 		}
-		else if (dat->second) {
-			vec.emplace_back();
-			if (factory(in, vec.back()) == false) {
-				vec.pop_back();
-			}
-			dat->second--;
-		}
+		dat->second--;
 	}
+}
 }
 
 bool aff_data::parse(std::istream& in)
@@ -75,47 +74,47 @@ bool aff_data::parse(std::istream& in)
 		{"SET", &encoding},
 		{"LANG", &language_code},
 		{"IGNORE", &ignore_chars},
-	
+
 		{"KEY", &keyboard_layout},
 		{"TRY", &try_chars},
-	
+
 		{"WORDCHARS", &wordchars}
 	};
-	
+
 	unordered_map<string, bool*> command_bools = {
 		{"COMPLEXPREFIXES", &complex_prefixes},
-	
+
 
 		{"ONLYMAXDIFF", &only_max_diff},
 		{"NOSPLITSUGS", &no_split_suggestions},
 		{"SUGSWITHDOTS", &suggest_with_dots},
 		{"FORBIDWARN", &forbid_warn},
-	
+
 		{"COMPOUNDMORESUFFIXES", &compound_more_suffixes},
 		{"CHECKCOMPOUNDDUP", &compound_check_up},
 		{"CHECKCOMPOUNDREP", &compound_check_rep},
 		{"CHECKCOMPOUNDCASE", &compound_check_case},
 		{"CHECKCOMPOUNDTRIPLE", &compound_check_triple},
 		{"SIMPLIFIEDTRIPLE", &compound_simplified_triple},
-	
+
 		{"FULLSTRIP", &fullstrip},
 		{"CHECKSHARPS", &checksharps}
 	};
-	
+
 	unordered_map<string, vector<string>*> command_vec_str = {
 		{"BREAK", &break_patterns},
 		{"COMPOUNDRULE", &compound_rules}
 	};
 
-	unordered_map<string, short*> command_shorts = {	
+	unordered_map<string, short*> command_shorts = {
 		{"MAXCPDSUGS", &max_compound_suggestions},
 		{"MAXNGRAMSUGS", &max_ngram_suggestions},
 		{"MAXDIFF", &max_diff_factor},
-	
+
 		{"COMPOUNDMIN", &compoud_minimum},
 		{"COMPOUNDWORDMAX", &compound_word_max}
 	};
-	
+
 	unordered_map<string, vector<pair<string,string>>*> command_vec_pair = {
 		{"REP", &replacements},
 		{"MAP", &map_related_chars},
@@ -160,7 +159,7 @@ bool aff_data::parse(std::istream& in)
 		toupper_ascii(command);
 		ss >> ws;
 		if (command == "PFX" || command == "SFX") {
-		
+
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
@@ -205,7 +204,7 @@ bool aff_data::parse(std::istream& in)
 	//{"AF", &flag_aliases},
 	//{"AM", &morphological_aliases},
 	//{"FLAG", &flag_type},
-	
+
 	//{"CHECKCOMPOUNDPATTERN", &compound_check_patterns},
 	//{"COMPOUNDSYLLABLE", &compound_syllable_max}, //compound_syllable_vowels
 	//{"SYLLABLENUM", &compound_syllable_num},

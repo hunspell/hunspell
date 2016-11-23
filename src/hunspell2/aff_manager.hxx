@@ -23,7 +23,7 @@
  * Portions created by the Initial Developers are Copyright (C) 2002-2005
  * the Initial Developers. All Rights Reserved.
  */
- 
+
 #ifndef HUNSPELL_AFF_MANAGER_HXX
 #define HUNSPELL_AFF_MANAGER_HXX
 
@@ -52,7 +52,7 @@ struct aff_data
 	using vector = std::vector<T>;
 	template <class T, class U>
 	using pair = std::pair<T, U>;
-	
+
 	string encoding;
 	flag_type_t flag_type;
 	bool complex_prefixes;
@@ -60,7 +60,7 @@ struct aff_data
 	string ignore_chars;
 	std::vector<u16string> flag_aliases;
 	std::vector<u16string> morphological_aliases;
-	
+
 	//suggestion options
 	string keyboard_layout;
 	string try_chars;
@@ -76,7 +76,7 @@ struct aff_data
 	vector<pair<string, string>> phonetic_replacements;
 	char16_t warn_flag;
 	bool forbid_warn;
-	
+
 	//compouding options
 	vector<string> break_patterns;
 	vector<string> compound_rules;
@@ -96,7 +96,7 @@ struct aff_data
 	bool compound_check_case;
 	bool compound_check_triple;
 	bool compound_simplified_triple;
-	
+
 	struct compound_check_pattern {
 		string end_chars;
 		char16_t end_flag;
@@ -109,7 +109,7 @@ struct aff_data
 	short compound_syllable_max;
 	string compound_syllable_vowels;
 	u16string compound_syllable_num;
-	
+
 	//affix creation
 	struct affix {
 		char16_t flag;
@@ -122,7 +122,7 @@ struct aff_data
 	};
 	vector<affix> prefixes;
 	vector<affix> suffixes;
-	
+
 	//others
 	char16_t circumfix_flag;
 	char16_t forbiddenword_flag;
