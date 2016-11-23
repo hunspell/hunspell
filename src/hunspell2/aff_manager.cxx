@@ -41,6 +41,34 @@ namespace hunspell {
 
 using namespace std;
 
+namespace {
+	inline void toupper_ascii(string& s)
+	{
+		for (auto& c: s) c = toupper(c);
+	}
+	
+	template <class T, class Func>
+	void parse_vector_of_T(istream& in,
+		const string& command, unordered_map<string, int>& counts,
+		vector<T>& vec, Func factory)
+	{
+		auto dat = counts.find(command);
+		if (dat == counts.end()) {
+			//first line
+			int a;
+			in >> a;
+			counts[command] = a;
+		}
+		else if (dat->second) {
+			vec.emplace_back();
+			if (factory(in, vec.back()) == false) {
+				vec.pop_back();
+			}
+			dat->second--;
+		}
+	}
+}
+
 bool aff_data::parse(std::istream& in)
 {
 	unordered_map<string, string*> command_strings = {
@@ -117,27 +145,29 @@ bool aff_data::parse(std::istream& in)
 		{"SUBSTANDARD", &substandard_flag}
 	};
 
-
+	//keeps count for each vector
+	unordered_map<string, int> cmd_with_vec_cnt;
 	string line;
 	string command;
-	string parametar_line;
+	flag_type = flag_type_t::single_char;
 	while (getline(in, line)) {
-		stringstream ss(line);
+		istringstream ss(line);
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
 				continue; //skip comment or empty lines
 		}
 		ss >> command;
-		for (auto & c: command) c = toupper(c);
+		toupper_ascii(command);
 		ss >> ws;
-		//getline(ss, parametar_line);
-		//parse_line(command, parametar_line)
-		parametar_line.clear();
 		if (command == "PFX" || command == "SFX") {
 		
 		}
 		else if (command_strings.count(command)) {
-			ss >> *command_strings[command];
+			auto& str = *command_strings[command];
+			ss >> str;
+			if (&str == &encoding){
+				toupper_ascii(str);
+			}
 		}
 		else if (command_bools.count(command)) {
 			*command_bools[command] = true;
@@ -146,35 +176,31 @@ bool aff_data::parse(std::istream& in)
 			ss >> *command_shorts[command];
 		}
 		else if (command_flag.count(command)) {
-			ss >> parametar_line;
 			//parse flag
 		}
 		else if (command_vec_str.count(command)) {
 			auto& vec = *command_vec_str[command];
-			if (vec.empty()) {  //fix this with separate indicator for first line
-				//first lines
-				size_t a;
-				ss >> a;
-				vec.reserve(a);
-			}
-			else {
-				ss >> parametar_line;
-				vec.push_back(parametar_line);
-			}
+			auto func = [&](istream& in, string& p) {
+				return (bool)(in >> p);
+			};
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
+				vec, func);
 		}
 		else if (command_vec_pair.count(command)) {
 			auto& vec = *command_vec_pair[command];
-			if (vec.empty()) { //fix this with separate indicator for first line
-				//first lines
-				size_t a;
-				ss >> a;
-				vec.reserve(a);
-			}
-			else {
-				string p2;
-				ss >> parametar_line >> p2;
-				vec.emplace_back(parametar_line, p2);
-			}
+			auto func = [&](istream& in, pair<string, string>& p) {
+				return (bool)(in >> p.first >> p.second);
+			};
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
+				vec, func);
+		}
+		else if (command == "FLAG") {
+			string p;
+			ss >> p;
+			toupper_ascii(p);
+			if (p == "LONG") flag_type = double_char;
+			else if (p == "NUM") flag_type = number;
+			//else if (p == "UTF-8") flag_type = utf_8;
 		}
 	//{"AF", &flag_aliases},
 	//{"AM", &morphological_aliases},
