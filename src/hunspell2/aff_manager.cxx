@@ -68,6 +68,68 @@ void parse_vector_of_T(istream& in, const string& command,
 }
 }
 
+// Expects that there are flags in the stream.
+// If there are no flags in the stream (eg, stream is at eof)
+// or if the format of the flags is incorrect the stream failbit will be set.
+std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8)
+{
+	u16string ret;
+	switch(t) {
+	case single_char:
+		if (utf8) {
+			
+		}
+		else {
+			string s;
+			in >> s;
+			ret = u16string(s.begin(), s.end());
+		}
+		break;
+	case double_char:
+		if (utf8) {
+			
+		}
+		else {
+			string s;
+			in >> s;
+			auto i = s.begin();
+			auto e = s.end();
+			if (s.size() | 1) {
+				--e;
+			}
+			for(; i!=e; i+=2) {
+				char16_t c1 = *i, c2 = *(i+1);
+				ret.push_back(c1 << 8 & c2);
+			}
+			if (i != s.end()) {
+				ret.push_back(*i);
+			}
+		}
+		break;
+	case number:
+		unsigned short flag;
+		if (in >> flag) {
+			ret.push_back(flag);
+		}else {
+			//err no flag at all
+			break;
+		}
+		while (in.peek() == ',') {
+			in.get();
+			if (in >> flag) {
+				ret.push_back(flag);
+			} else {
+				//err, comma and no number after that
+				break;
+			}
+		}
+		
+		break;
+	}
+	
+	return ret;
+}
+
 bool aff_data::parse(std::istream& in)
 {
 	unordered_map<string, string*> command_strings = {

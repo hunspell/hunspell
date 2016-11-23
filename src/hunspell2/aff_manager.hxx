@@ -38,11 +38,7 @@ enum flag_type_t {single_char, double_char, number};
 
 
 //with flag type + utf8 there are 6 different cases how to parse flags
-inline std::u16string
-decode_flags(const std::string& s, flag_type_t t, bool utf8)
-{
-	return u"";
-}
+std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8);
 
 struct aff_data
 {
