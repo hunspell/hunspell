@@ -17,8 +17,8 @@
 
 #CC=gcc 
 #CXX=g++
-CC=gcc -mno-cygwin -DHUNSPELL_STATIC
-CXX=g++ -mno-cygwin -DHUNSPELL_STATIC
+CC=gcc -DHUNSPELL_STATIC
+CXX=g++ -DHUNSPELL_STATIC
 
 CXXFLAGS= -O2 -ansi -pedantic -I.
 #CXXFLAGS= -O2 -Wall -ansi -pedantic -I.
