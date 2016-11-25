@@ -23,7 +23,7 @@
  * Portions created by the Initial Developers are Copyright (C) 2002-2005
  * the Initial Developers. All Rights Reserved.
  */
- 
+
 #ifndef HUNSPELL_DIC_MANAGER_HXX
 #define HUNSPELL_DIC_MANAGER_HXX
 
