@@ -32,10 +32,11 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <locale>
+#include <codecvt>
 
 #include <cctype>
 
-#include <iterator>
 
 namespace hunspell {
 
@@ -60,12 +61,31 @@ void parse_vector_of_T(istream& in, const string& command,
 	}
 	else if (dat->second) {
 		vec.emplace_back();
-		if (factory(in, vec.back()) == false) {
+		factory(in, vec.back());
+		if (in.fail()) {
 			vec.pop_back();
 		}
 		dat->second--;
 	}
 }
+
+template <class InStrType>
+void decode_flags_double_char(InStrType s, u16string& out)
+{
+	auto i = s.begin();
+	auto e = s.end();
+	if (s.size() | 1) {
+		--e;
+	}
+	for(; i!=e; i+=2) {
+		char16_t c1 = *i, c2 = *(i+1);
+		out.push_back(c1 << 8 & c2);
+	}
+	if (i != s.end()) {
+		out.push_back(*i);
+	}
+}
+
 }
 
 // Expects that there are flags in the stream.
@@ -74,43 +94,33 @@ void parse_vector_of_T(istream& in, const string& command,
 std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8)
 {
 	u16string ret;
-	switch(t) {
+	string s;
+	
+	//utf8 to ucs-2 converter. flags can be only in BPM
+	wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
+	switch (t) {
 	case single_char:
+		in >> s;
 		if (utf8) {
-			
-		}
-		else {
-			string s;
-			in >> s;
+			ret = cv.from_bytes(s);
+		} else {
 			ret = u16string(s.begin(), s.end());
 		}
 		break;
 	case double_char:
+		in >> s;
 		if (utf8) {
-			
-		}
-		else {
-			string s;
-			in >> s;
-			auto i = s.begin();
-			auto e = s.end();
-			if (s.size() | 1) {
-				--e;
-			}
-			for(; i!=e; i+=2) {
-				char16_t c1 = *i, c2 = *(i+1);
-				ret.push_back(c1 << 8 & c2);
-			}
-			if (i != s.end()) {
-				ret.push_back(*i);
-			}
+			u16string tmp = cv.from_bytes(s);
+			decode_flags_double_char(tmp, ret);
+		} else {
+			decode_flags_double_char(s, ret);
 		}
 		break;
 	case number:
 		unsigned short flag;
 		if (in >> flag) {
 			ret.push_back(flag);
-		}else {
+		} else {
 			//err no flag at all
 			break;
 		}
@@ -128,6 +138,20 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8)
 	}
 	
 	return ret;
+}
+
+u16string aff_data::decode_flags(istream& in)
+{
+	return hunspell::decode_flags(in, flag_type, encoding == "UTF-8");
+}
+
+char16_t aff_data::decode_single_flag(istream& in)
+{
+	auto flags = decode_flags(in);
+	if (flags.size()) {
+		return flags.front();
+	}
+	return 0;
 }
 
 bool aff_data::parse(std::istream& in)
@@ -221,7 +245,8 @@ bool aff_data::parse(std::istream& in)
 		toupper_ascii(command);
 		ss >> ws;
 		if (command == "PFX" || command == "SFX") {
-
+//{"PFX", &prefixes},
+//{"SFX", &suffixes},
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
@@ -237,12 +262,12 @@ bool aff_data::parse(std::istream& in)
 			ss >> *command_shorts[command];
 		}
 		else if (command_flag.count(command)) {
-			//parse flag
+			*command_flag[command] = decode_single_flag(ss);
 		}
 		else if (command_vec_str.count(command)) {
 			auto& vec = *command_vec_str[command];
 			auto func = [&](istream& in, string& p) {
-				return (bool)(in >> p);
+				in >> p;
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
 				vec, func);
@@ -250,7 +275,7 @@ bool aff_data::parse(std::istream& in)
 		else if (command_vec_pair.count(command)) {
 			auto& vec = *command_vec_pair[command];
 			auto func = [&](istream& in, pair<string, string>& p) {
-				return (bool)(in >> p.first >> p.second);
+				in >> p.first >> p.second;
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
 				vec, func);
@@ -263,15 +288,28 @@ bool aff_data::parse(std::istream& in)
 			else if (p == "NUM") flag_type = number;
 			//else if (p == "UTF-8") flag_type = utf_8;
 		}
-	//{"AF", &flag_aliases},
-	//{"AM", &morphological_aliases},
-	//{"FLAG", &flag_type},
-
-	//{"CHECKCOMPOUNDPATTERN", &compound_check_patterns},
-	//{"COMPOUNDSYLLABLE", &compound_syllable_max}, //compound_syllable_vowels
-	//{"SYLLABLENUM", &compound_syllable_num},
-	//{"PFX", &prefixes},
-	//{"SFX", &suffixes},
+		else if (command == "AF") {
+			auto& vec = flag_aliases;
+			auto func = [&](istream& in, u16string& p) {
+				p = decode_flags(in);
+			};
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
+				vec, func);
+		}
+		else if (command == "AM") {
+//{"AM", &morphological_aliases},
+		}
+		else if (command == "CHECKCOMPOUNDPATTERN") {
+//{"CHECKCOMPOUNDPATTERN", &compound_check_patterns},
+			
+		}
+		else if (command == "COMPOUNDSYLLABLE") {
+//{"COMPOUNDSYLLABLE", &compound_syllable_max}, //compound_syllable_vowels
+			
+		}
+		else if (command == "SYLLABLENUM") {
+//{"SYLLABLENUM", &compound_syllable_num},
+		}
 	}
 
 	return in.eof(); // success if we reached eof
