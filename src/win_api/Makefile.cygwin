@@ -86,7 +86,7 @@ clean:
 
 distclean:	clean
 
-hunspell.hxx:
+hunspell.hxx license.hunspell:
 	ln -s $(OBJ)/*xx $(OBJ)/hunspell.h $(OBJ)/license* $(OBJ2)/*xx ./
 	ln -s $(OBJ)/hunvisapi.h ./
 	ln -s  $(OBJ3)/hunspell.cxx ./hunspellprg.cxx
