@@ -151,6 +151,7 @@ char16_t aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv)
 	if (flags.size()) {
 		return flags.front();
 	}
+	return 0;
 }
 
 //u16string aff_data::decode_flags(istream& in)
@@ -243,6 +244,7 @@ bool aff_data::parse(std::istream& in)
 
 	//keeps count for each vector
 	unordered_map<string, int> cmd_with_vec_cnt;
+	unordered_map<string, pair<bool, int>> cmd_affix;
 	string line;
 	string command;
 	flag_type = flag_type_t::single_char;
@@ -259,6 +261,43 @@ bool aff_data::parse(std::istream& in)
 		if (command == "PFX" || command == "SFX") {
 //{"PFX", &prefixes},
 //{"SFX", &suffixes},
+			auto& vec = command[0] == 'P' ? prefixes : suffixes;
+			char16_t f = decode_single_flag(ss, cv);
+			char f1 = f&0xff;
+			char f2 = (f>>8)&&0xff;
+			command.push_back(f1);
+			command.push_back(f2);
+			auto cnt = cmd_affix.find(command);
+			if (cnt == cmd_affix.end()) {
+				char cross_char; // 'Y' or 'N'
+				int cnt;
+				ss >> cross_char >> cnt;
+				bool cross = cross_char == 'Y';
+				cmd_affix[command] = make_pair(cross, cnt);
+			} else {
+				vec.emplace_back();
+				auto& elem = vec.back();
+				elem.flag = f;
+				elem.cross_product = cnt->second.first;
+				ss >> elem.stripping;
+				//ss >> elem.affix; //stop at space or '/'
+				elem.new_flags = decode_flags(ss, cv);
+				ss >> elem.condition;
+				string morph;
+				if (ss.fail()) {
+					vec.pop_back();
+				}
+				else {
+					while (ss >> morph) {
+						elem
+						.morphological_fields
+						.push_back(morph);
+					}
+					ss.clear(ss.failbit);
+				}
+				cnt->second.second--;
+			}
+			
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];

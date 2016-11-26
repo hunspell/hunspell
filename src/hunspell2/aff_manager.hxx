@@ -111,7 +111,7 @@ struct aff_data
 		bool cross_product;
 		string stripping;
 		string affix;
-		string new_flags;
+		u16string new_flags;
 		string condition;
 		vector<string> morphological_fields;
 	};
