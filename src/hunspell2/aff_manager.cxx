@@ -155,8 +155,8 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		aff_data& thiss)
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
-	char f1 = f&0xff;
-	char f2 = (f>>8)&&0xff;
+	char f1 = f & 0xff;
+	char f2 = (f>>8) & 0xff;
 	command.push_back(f1);
 	command.push_back(f2);
 	auto cnt = cmd_affix.find(command);
@@ -180,8 +180,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		string morph;
 		if (ss.fail()) {
 			vec.pop_back();
-		}
-		else {
+		} else {
 			while (ss >> morph) {
 				elem.morphological_fields.push_back(morph);
 			}
