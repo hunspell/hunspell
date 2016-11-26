@@ -138,6 +138,54 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 	return ret;
 }
 
+void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
+		unordered_map<string, pair<bool, int>>& cmd_affix,
+		aff_data::utf8_to_ucs2_converter& cv,
+		aff_data& thiss)
+{
+	char16_t f = thiss.decode_single_flag(ss, cv);
+	char f1 = f&0xff;
+	char f2 = (f>>8)&&0xff;
+	command.push_back(f1);
+	command.push_back(f2);
+	auto cnt = cmd_affix.find(command);
+	if (cnt == cmd_affix.end()) {
+		char cross_char; // 'Y' or 'N'
+		int cnt;
+		ss >> cross_char >> cnt;
+		bool cross = cross_char == 'Y';
+		cmd_affix[command] = make_pair(cross, cnt);
+	} else {
+		vec.emplace_back();
+		auto& elem = vec.back();
+		elem.flag = f;
+		elem.cross_product = cnt->second.first;
+		ss >> elem.stripping;
+		//ss >> elem.affix; //stop at space or '/'
+		ss >> ws;
+		int c;
+		while ((c = ss.get()) != istream::traits_type::eof()
+			&& c != ' ' && c != '/') {
+			elem.affix.push_back(c);
+		}
+		if (c == '/') {
+			elem.new_flags = thiss.decode_flags(ss, cv);		
+		}
+		ss >> elem.condition;
+		string morph;
+		if (ss.fail()) {
+			vec.pop_back();
+		}
+		else {
+			while (ss >> morph) {
+				elem.morphological_fields.push_back(morph);
+			}
+			ss.clear(ss.failbit);
+		}
+		cnt->second.second--;
+	}
+}
+
 }
 
 u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv)
@@ -248,7 +296,7 @@ bool aff_data::parse(std::istream& in)
 	string line;
 	string command;
 	flag_type = flag_type_t::single_char;
-	wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
+	utf8_to_ucs2_converter cv;
 	while (getline(in, line)) {
 		istringstream ss(line);
 		ss >> ws;
@@ -262,41 +310,7 @@ bool aff_data::parse(std::istream& in)
 //{"PFX", &prefixes},
 //{"SFX", &suffixes},
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
-			char16_t f = decode_single_flag(ss, cv);
-			char f1 = f&0xff;
-			char f2 = (f>>8)&&0xff;
-			command.push_back(f1);
-			command.push_back(f2);
-			auto cnt = cmd_affix.find(command);
-			if (cnt == cmd_affix.end()) {
-				char cross_char; // 'Y' or 'N'
-				int cnt;
-				ss >> cross_char >> cnt;
-				bool cross = cross_char == 'Y';
-				cmd_affix[command] = make_pair(cross, cnt);
-			} else {
-				vec.emplace_back();
-				auto& elem = vec.back();
-				elem.flag = f;
-				elem.cross_product = cnt->second.first;
-				ss >> elem.stripping;
-				//ss >> elem.affix; //stop at space or '/'
-				elem.new_flags = decode_flags(ss, cv);
-				ss >> elem.condition;
-				string morph;
-				if (ss.fail()) {
-					vec.pop_back();
-				}
-				else {
-					while (ss >> morph) {
-						elem
-						.morphological_fields
-						.push_back(morph);
-					}
-					ss.clear(ss.failbit);
-				}
-				cnt->second.second--;
-			}
+			parse_affix(ss, command, vec, cmd_affix, cv, *this);
 			
 		}
 		else if (command_strings.count(command)) {
