@@ -67,7 +67,7 @@ struct aff_data
 	bool no_split_suggestions;
 	bool suggest_with_dots;
 	vector<pair<string, string>> replacements;
-	vector<pair<string, string>> map_related_chars;
+	vector<string> map_related_chars;
 	vector<pair<string, string>> phonetic_replacements;
 	char16_t warn_flag;
 	bool forbid_warn;
