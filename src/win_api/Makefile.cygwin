@@ -53,7 +53,9 @@ textparser.o \
 firstparser.o \
 htmlparser.o \
 latexparser.o \
-manparser.o
+manparser.o \
+xmlparser.o \
+odfparser.o
 
 all: hunspell example hzip hunzip 
 
@@ -134,6 +136,7 @@ hunspell.o: atypes.hxx w_char.hxx baseaffix.hxx phonet.hxx suggestmgr.hxx
 hunspellprg.o: config.h hunspell.hxx hashmgr.hxx htypes.hxx filemgr.hxx
 hunspellprg.o: hunzip.hxx affixmgr.hxx atypes.hxx w_char.hxx baseaffix.hxx
 hunspellprg.o: latexparser.hxx manparser.hxx firstparser.hxx
+hunspellprg.o: xmlparser.hxx odfparser.hxx
 hunzip.o: hunzip.hxx
 latexparser.o: ../hunspell/csutil.hxx w_char.hxx latexparser.hxx
 latexparser.o: textparser.hxx
