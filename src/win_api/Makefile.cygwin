@@ -87,13 +87,13 @@ clean:
 
 distclean:	clean
 
-hunspell.hxx license.hunspell:
+$(notdir $(wildcard $(OBJ)/*xx $(OBJ)/license* $(OBJ2)/*xx)) \
+hunspell.h hunvisapi.h hunspellprg.cxx hunzipprg.cxx example.cxx hzip.cxx:
 	ln -s $(OBJ)/*xx $(OBJ)/hunspell.h $(OBJ)/license* $(OBJ2)/*xx ./
 	ln -s $(OBJ)/hunvisapi.h ./
 	ln -s  $(OBJ3)/hunspell.cxx ./hunspellprg.cxx
 	ln -s  $(OBJ3)/hunzip.cxx ./hunzipprg.cxx
 	ln -s  $(OBJ3)/example.cxx $(OBJ3)/hzip.cxx ./
-	make -f Makefile.cygwin
 
 depend:
 	makedepend -- $(CXXFLAGS) -- *.[ch]xx
