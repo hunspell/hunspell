@@ -82,7 +82,8 @@ hzip: hzip.o
 
 clean:
 	rm -f *.exe *xx license* license* hunspell.h hzip.cxx *prg.cxx \
-	*.o *~ example hunspell hzip hunzip libhunspell.a libparser.a
+	*.o *~ example hunspell hzip hunzip libhunspell.a libparser.a \
+	hunvisapi.h
 
 distclean:	clean
 
