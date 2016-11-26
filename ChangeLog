@@ -1,9 +1,20 @@
+2016-11-26 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5
+	* Fixed the changelog notice bellow about the API. I had a mistake.
+
 2016-11-18 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5
 	* Lot of stability fixes
 	* Fixed compilation errors on various systems (Windows, FreeBSD)
 	* Small performance improvement compared to 1.4.0
-	* API is same as 1.4.
+	* The C++ API is updated to use modern C++ types (string, vector).
+	  Backward compatibility is kept for most of the functions except for
+	  the following:
+		get_wordchars();
+		get_wordchars_utf16();
+		get_version();
+		input_conv(string, string);
+	  Some rarely used and experimetal functions were removed.
 
 2016-04-29 Caolán McNamara <caolanm at LibO>:
 	* deprecate old api and add new one
