@@ -138,6 +138,17 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 	return ret;
 }
 
+int read_until_slash(istream& in, string& out)
+{
+	in >> ws;
+	int c;
+	while ((c = in.get()) != istream::traits_type::eof()
+		&& !isspace((char)c, in.getloc()) && c != '/') {
+		out.push_back(c);
+	}
+	return c;
+}
+
 void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		unordered_map<string, pair<bool, int>>& cmd_affix,
 		aff_data::utf8_to_ucs2_converter& cv,
@@ -161,13 +172,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		elem.flag = f;
 		elem.cross_product = cnt->second.first;
 		ss >> elem.stripping;
-		//ss >> elem.affix; //stop at space or '/'
-		ss >> ws;
-		int c;
-		while ((c = ss.get()) != istream::traits_type::eof()
-			&& c != ' ' && c != '/') {
-			elem.affix.push_back(c);
-		}
+		int c = read_until_slash(ss, elem.affix);
 		if (c == '/') {
 			elem.new_flags = thiss.decode_flags(ss, cv);		
 		}
