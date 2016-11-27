@@ -1,4 +1,8 @@
 2016-11-27 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5.2
+	* Reverted full backward compatibility with 1.4 public API, again
+
+2016-11-27 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5.1
 	* Reverted full backward compatibility with 1.4 public API
 
