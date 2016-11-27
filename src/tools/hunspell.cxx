@@ -53,6 +53,7 @@
 #include "atypes.hxx"
 #include "hunspell.hxx"
 #include "csutil.hxx"
+#include "hunzip.hxx"
 
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50

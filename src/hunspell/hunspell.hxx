@@ -75,6 +75,7 @@
 
 #include "hunvisapi.h"
 #include "w_char.hxx"
+#include "atypes.hxx"
 #include <string>
 #include <vector>
 

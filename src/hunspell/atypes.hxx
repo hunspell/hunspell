@@ -55,10 +55,10 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 // HUNSTEM def.
 #define HUNSTEM
 
-#include "hashmgr.hxx"
 #include "w_char.hxx"
 #include <algorithm>
 #include <string>
+#include <vector>
 
 #define SETSIZE 256
 #define CONTSIZE 65536
