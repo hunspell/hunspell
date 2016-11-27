@@ -209,15 +209,18 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* other */
 
   /* get extra word characters definied in affix file for tokenization */
-  const std::string& get_wordchars() const;
+  const char* get_wordchars() const;
+  const std::string& get_wordchars_cpp() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
 
-  const std::string& get_version() const;
+  const char* get_version() const;
+  const std::string& get_version_cpp() const;
 
   int get_langnum() const;
 
   /* need for putdic */
   bool input_conv(const std::string& word, std::string& dest);
+  H_DEPRECATED int input_conv(const char* word, char* dest, size_t destsize);
 };
 
 #endif

@@ -1246,7 +1246,11 @@ std::vector<std::string> HunspellImpl::stem(const std::string& word) {
   return stem(analyze(word));
 }
 
-const std::string& Hunspell::get_wordchars() const {
+const char* Hunspell::get_wordchars() const {
+  return m_Impl->get_wordchars().c_str();
+}
+
+const std::string& Hunspell::get_wordchars_cpp() const {
   return m_Impl->get_wordchars();
 }
 
@@ -1323,7 +1327,11 @@ int HunspellImpl::remove(const std::string& word) {
   return 0;
 }
 
-const std::string& Hunspell::get_version() const {
+const char* Hunspell::get_version() const {
+  return m_Impl->get_version().c_str();
+}
+
+const std::string& Hunspell::get_version_cpp() const {
   return m_Impl->get_version();
 }
 
@@ -1663,6 +1671,16 @@ int HunspellImpl::get_langnum() const {
 
 bool Hunspell::input_conv(const std::string& word, std::string& dest) {
   return m_Impl->input_conv(word, dest);
+}
+
+int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
+  std::string d;
+  int ret = input_conv(word, d);
+  if (ret && d.size() < destsize) {
+    strncpy(dest, d.c_str(), destsize);
+    return 1;
+  }
+  return 0;
 }
 
 bool HunspellImpl::input_conv(const std::string& word, std::string& dest) {
