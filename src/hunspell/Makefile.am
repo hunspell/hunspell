@@ -10,7 +10,7 @@ libhunspell_1_5_la_SOURCES=affentry.cxx affixmgr.cxx csutil.cxx \
 	             phonet.hxx filemgr.hxx hunzip.hxx replist.hxx
 
 libhunspell_1_5_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
-		                w_char.hxx atypes.hxx csutil.hxx
+		                w_char.hxx atypes.hxx csutil.hxx htypes.hxx
 
 libhunspell_1_5_la_DEPENDENCIES=utf_info.cxx
 libhunspell_1_5_la_LDFLAGS=-no-undefined
