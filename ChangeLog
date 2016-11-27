@@ -1,3 +1,7 @@
+2016-11-27 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5.1
+	* Reverted full backward compatibility with 1.4 public API
+
 2016-11-26 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5
 	* Fixed the changelog notice bellow about the API. I had a mistake.
@@ -11,10 +15,9 @@
 	  Backward compatibility is kept for most of the functions except for
 	  the following:
 		get_wordchars();
-		get_wordchars_utf16();
 		get_version();
 		input_conv(string, string);
-	  Some rarely used and experimetal functions were removed.
+		removed get_csconv();
 
 2016-04-29 Caolán McNamara <caolanm at LibO>:
 	* deprecate old api and add new one
