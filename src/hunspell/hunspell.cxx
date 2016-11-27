@@ -109,6 +109,7 @@ public:
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
   const std::string& get_version() const;
+  struct cs_info* get_csconv();
 
 
 private:
@@ -1339,6 +1340,14 @@ const std::string& HunspellImpl::get_version() const {
   return pAMgr->get_version();
 }
 
+struct cs_info* HunspellImpl::get_csconv() {
+  return csconv;
+}
+
+struct cs_info* Hunspell::get_csconv() {
+  return m_Impl->get_csconv();
+}
+
 void HunspellImpl::cat_result(std::string& result, const std::string& st) {
   if (!st.empty()) {
     if (!result.empty())
@@ -1675,7 +1684,7 @@ bool Hunspell::input_conv(const std::string& word, std::string& dest) {
 
 int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
   std::string d;
-  int ret = input_conv(word, d);
+  bool ret = input_conv(word, d);
   if (ret && d.size() < destsize) {
     strncpy(dest, d.c_str(), destsize);
     return 1;
