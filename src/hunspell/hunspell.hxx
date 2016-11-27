@@ -156,7 +156,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   H_DEPRECATED void free_list(char*** slst, int n);
 
   const std::string& get_dict_encoding() const;
-  H_DEPRECATED const char* get_dic_encoding() const;
+  char* get_dic_encoding();
 
   /* morphological functions */
 

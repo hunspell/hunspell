@@ -110,7 +110,7 @@ public:
   int remove(const std::string& word);
   const std::string& get_version() const;
   struct cs_info* get_csconv();
-
+  std::vector<char> dic_encoding_vec;
 
 private:
   AffixMgr* pAMgr;
@@ -180,6 +180,9 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
     csconv = get_current_cs(encoding);
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
+
+  dic_encoding_vec.resize(encoding.size()+1);
+  strcpy(&dic_encoding_vec[0], encoding.c_str());
 
   /* and finally set up the suggestion manager */
   pSMgr = new SuggestMgr(try_string, MAXSUGGESTION, pAMgr);
@@ -1847,8 +1850,8 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
   return munge_vector(slst, stems);
 }
 
-const char* Hunspell::get_dic_encoding() const {
-  return Hunspell_get_dic_encoding((Hunhandle*)(this));
+char* Hunspell::get_dic_encoding() {
+  return &(m_Impl->dic_encoding_vec[0]);
 }
 
 int Hunspell::stem(char*** slst, char** desc, int n) {
@@ -1893,8 +1896,8 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
   return reinterpret_cast<Hunspell*>(pHunspell)->spell(std::string(word));
 }
 
-const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
-  return (reinterpret_cast<Hunspell*>(pHunspell)->get_dict_encoding()).c_str();
+char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
+  return reinterpret_cast<Hunspell*>(pHunspell)->get_dic_encoding();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
