@@ -1,3 +1,7 @@
+2016-11-28 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5.3
+	* Removed a #include from hunspell.hxx that was creating trouble
+
 2016-11-27 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5.2
 	* Reverted full backward compatibility with 1.4 public API, again
