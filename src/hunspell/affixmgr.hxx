@@ -338,20 +338,19 @@ class AffixMgr {
 
  private:
   int parse_file(const char* affpath, const char* key);
-  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
-  bool parse_num(const std::string& line, int* out, FileMgr* af);
-  bool parse_cpdsyllable(const std::string& line, FileMgr* af);
-  bool parse_reptable(const std::string& line, FileMgr* af);
-  bool parse_convtable(const std::string& line,
-                      FileMgr* af,
+  bool parse_flag(unsigned short* out, FileMgr* af);
+  bool parse_num(int* out, FileMgr* af);
+  bool parse_cpdsyllable(FileMgr* af);
+  bool parse_reptable(FileMgr* af);
+  bool parse_convtable(FileMgr* af,
                       RepList** rl,
                       const std::string& keyword);
-  bool parse_phonetable(const std::string& line, FileMgr* af);
-  bool parse_maptable(const std::string& line, FileMgr* af);
-  bool parse_breaktable(const std::string& line, FileMgr* af);
-  bool parse_checkcpdtable(const std::string& line, FileMgr* af);
-  bool parse_defcpdtable(const std::string& line, FileMgr* af);
-  bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
+  bool parse_phonetable(FileMgr* af);
+  bool parse_maptable(FileMgr* af);
+  bool parse_breaktable(FileMgr* af);
+  bool parse_checkcpdtable(FileMgr* af);
+  bool parse_defcpdtable(FileMgr* af);
+  bool parse_affix(const char at, FileMgr* af, char* dupflags);
 
   void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);

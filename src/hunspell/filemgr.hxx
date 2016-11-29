@@ -91,11 +91,16 @@ class FileMgr {
   char in[BUFSIZE + 50];  // input buffer
   int fail(const char* err, const char* par);
   int linenum;
+  std::string line;
+  std::string::const_iterator iter;
 
  public:
   FileMgr(const char* filename, const char* key = NULL);
   ~FileMgr();
-  bool getline(std::string&);
-  int getlinenum();
+  bool readline();
+  std::string nextpiece();
+  std::string remained() const;
+  int getlinenum() const;
+  std::string getline() const;
 };
 #endif
