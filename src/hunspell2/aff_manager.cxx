@@ -60,6 +60,9 @@ void parse_vector_of_T(istream& in, const string& command,
 		//first line
 		int a;
 		in >> a;
+		if (!in || a < 0) {
+			a = 0; //err
+		}
 		counts[command] = a;
 	}
 	else if (dat->second) {
@@ -166,22 +169,32 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		aff_data& thiss)
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
+	if (f == 0) {
+		//err
+		return;
+	}
 	char f1 = f & 0xff;
 	char f2 = (f>>8) & 0xff;
 	command.push_back(f1);
 	command.push_back(f2);
-	auto cnt = cmd_affix.find(command);
-	if (cnt == cmd_affix.end()) {
+	auto dat = cmd_affix.find(command);
+	// note: the current affix parser does not allow the same flag
+	// to be used once with cross product and again witohut
+	// one flag is tied to one cross product value
+	if (dat == cmd_affix.end()) {
 		char cross_char; // 'Y' or 'N'
 		int cnt;
 		ss >> cross_char >> cnt;
 		bool cross = cross_char == 'Y';
+		if (!ss || cnt < 0) {
+			cnt = 0; //err
+		}
 		cmd_affix[command] = make_pair(cross, cnt);
-	} else {
+	} else if (dat->second.second) {
 		vec.emplace_back();
 		auto& elem = vec.back();
 		elem.flag = f;
-		elem.cross_product = cnt->second.first;
+		elem.cross_product = dat->second.first;
 		ss >> elem.stripping;
 		if (read_until_slash(ss, elem.affix)) {
 			elem.new_flags = thiss.decode_flags(ss, cv);		
@@ -196,7 +209,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 			}
 			reset_failbit_istream(ss);
 		}
-		cnt->second.second--;
+		dat->second.second--;
 	}
 }
 
