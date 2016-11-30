@@ -1,3 +1,7 @@
+2016-11-30 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.5.4
+	* Fixes the command COMPOUNDSYLLABLE used in Hungarian dictionary.
+
 2016-11-28 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5.3
 	* Removed a #include from hunspell.hxx that was creating trouble
