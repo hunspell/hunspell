@@ -109,7 +109,8 @@ public:
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
   const std::string& get_version() const;
-
+  struct cs_info* get_csconv();
+  std::vector<char> dic_encoding_vec;
 
 private:
   AffixMgr* pAMgr;
@@ -179,6 +180,9 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
     csconv = get_current_cs(encoding);
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
+
+  dic_encoding_vec.resize(encoding.size()+1);
+  strcpy(&dic_encoding_vec[0], encoding.c_str());
 
   /* and finally set up the suggestion manager */
   pSMgr = new SuggestMgr(try_string, MAXSUGGESTION, pAMgr);
@@ -1246,7 +1250,11 @@ std::vector<std::string> HunspellImpl::stem(const std::string& word) {
   return stem(analyze(word));
 }
 
-const std::string& Hunspell::get_wordchars() const {
+const char* Hunspell::get_wordchars() const {
+  return m_Impl->get_wordchars().c_str();
+}
+
+const std::string& Hunspell::get_wordchars_cpp() const {
   return m_Impl->get_wordchars();
 }
 
@@ -1323,12 +1331,24 @@ int HunspellImpl::remove(const std::string& word) {
   return 0;
 }
 
-const std::string& Hunspell::get_version() const {
+const char* Hunspell::get_version() const {
+  return m_Impl->get_version().c_str();
+}
+
+const std::string& Hunspell::get_version_cpp() const {
   return m_Impl->get_version();
 }
 
 const std::string& HunspellImpl::get_version() const {
   return pAMgr->get_version();
+}
+
+struct cs_info* HunspellImpl::get_csconv() {
+  return csconv;
+}
+
+struct cs_info* Hunspell::get_csconv() {
+  return m_Impl->get_csconv();
 }
 
 void HunspellImpl::cat_result(std::string& result, const std::string& st) {
@@ -1665,6 +1685,16 @@ bool Hunspell::input_conv(const std::string& word, std::string& dest) {
   return m_Impl->input_conv(word, dest);
 }
 
+int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
+  std::string d;
+  bool ret = input_conv(word, d);
+  if (ret && d.size() < destsize) {
+    strncpy(dest, d.c_str(), destsize);
+    return 1;
+  }
+  return 0;
+}
+
 bool HunspellImpl::input_conv(const std::string& word, std::string& dest) {
   RepList* rl = pAMgr ? pAMgr->get_iconvtable() : NULL;
   if (rl) {
@@ -1820,8 +1850,8 @@ int Hunspell::suffix_suggest(char*** slst, const char* root_word) {
   return munge_vector(slst, stems);
 }
 
-const char* Hunspell::get_dic_encoding() const {
-  return Hunspell_get_dic_encoding((Hunhandle*)(this));
+char* Hunspell::get_dic_encoding() {
+  return &(m_Impl->dic_encoding_vec[0]);
 }
 
 int Hunspell::stem(char*** slst, char** desc, int n) {
@@ -1866,8 +1896,8 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
   return reinterpret_cast<Hunspell*>(pHunspell)->spell(std::string(word));
 }
 
-const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
-  return (reinterpret_cast<Hunspell*>(pHunspell)->get_dict_encoding()).c_str();
+char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
+  return reinterpret_cast<Hunspell*>(pHunspell)->get_dic_encoding();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {

@@ -30,13 +30,14 @@ Main features of Hunspell spell checker and morphological analyzer:
 
 - Free software (LGPL, GPL, MPL tri-license)
 
-Compiling on Unix/Linux
------------------------
+Compiling on Unix/Linux and others
+----------------------------------
 
-autoreconf; automake --add-missing # if needed
+autoreconf -vfi
 ./configure
 make
-make install
+make install	#if neccesary prefix with sudo
+ldconfig	#not needed on windows, on linux sudo may be needed
 
 For dictionary development, use the --with-warnings option of configure.
 
@@ -44,7 +45,7 @@ For interactive user interface of Hunspell executable, use the --with-ui option.
 
 The developer packages you need to compile Hunspell's interface:
 
-glibc-devel
+autoconf automake autopoint libtool g++
 
 optional developer packages:
 
@@ -54,49 +55,38 @@ readline (for fancy input line editing,
 locale and gettext (but you can also use the
   --with-included-gettext configure parameter)
 
-Hunspell distribution uses new Autoconf (2.59) and Automake (1.9).
-
 Compiling on Windows
 --------------------
 
-1. Compiling with Windows SDK
+1. Compiling with Visual Studio
 
-Download the free Windows SDK of Microsoft, open a command prompt
-window and cd into hunspell/src/win_api. Use the following command
-to compile hunspell:
+Download the free Visual Studio Community Edition of Microsoft, open the 
+file hunspell/src/win_api/Hunspell.sln. Select the appropirate build (Debug, 
+Release, Win32, x64) and press Build.
 
-vcbuild
+2. Compiling with Mingw64 and MSYS2
 
-2. Compiling in Cygwin environment
+Download Msys2, update everything and install the following packages:
+
+pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool
+
+Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see above.
+
+3. Compiling in Cygwin environment
 
 Download and install Cygwin environment for Windows with the following
 extra packages: 
 
 make
+automake
+autoconf
 gcc-g++ development package
-mingw development package (for cygwin.dll free native Windows compilation)
 ncurses, readline (for user interface)
 iconv (character conversion)
 
-2.1. Cygwin1.dll dependent compiling
+3.1. Cygwin1.dll dependent compiling
 
-Open a Cygwin shell, cd into the hunspell root directory:
-
-./configure
-make
-make install
-
-For dictionary development, use the --with-warnings option of configure.
-
-For interactive user interface of Hunspell executable, use the --with-ui option.
-
-readline configure parameter: --with-readline (for fancy input line editing)
-
-1.2. Cygwin1.dll free compiling
-
-Open a Cygwin shell, cd into the hunspell/src/win_api and
-
-make -f Makefile.cygwin
+Same as on Linux.
 
 Testing
 -------

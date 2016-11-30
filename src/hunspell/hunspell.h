@@ -68,7 +68,7 @@ LIBHUNSPELL_DLL_EXPORTED int Hunspell_add_dic(Hunhandle* pHunspell,
  */
 LIBHUNSPELL_DLL_EXPORTED int Hunspell_spell(Hunhandle* pHunspell, const char*);
 
-LIBHUNSPELL_DLL_EXPORTED const char* Hunspell_get_dic_encoding(Hunhandle* pHunspell);
+LIBHUNSPELL_DLL_EXPORTED char* Hunspell_get_dic_encoding(Hunhandle* pHunspell);
 
 /* suggest(suggestions, word) - search suggestions
  * input: pointer to an array of strings pointer and the (bad) word

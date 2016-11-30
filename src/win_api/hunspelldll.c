@@ -73,7 +73,7 @@ LIBHUNSPELL_DLL_EXPORTED void hunspell_free_list(Hunspell* pMS,
   pMS->free_list(slst, len);
 }
 
-LIBHUNSPELL_DLL_EXPORTED const char* hunspell_get_dic_encoding(Hunspell* pMS) {
+LIBHUNSPELL_DLL_EXPORTED char* hunspell_get_dic_encoding(Hunspell* pMS) {
   return pMS->get_dic_encoding();
 }
 

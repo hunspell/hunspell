@@ -53,6 +53,7 @@
 #include "atypes.hxx"
 #include "hunspell.hxx"
 #include "csutil.hxx"
+#include "hunzip.hxx"
 
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
@@ -304,7 +305,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
 
   if (io_utf8) {
     const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
-    const std::string& vec_wordchars = pMS->get_wordchars();
+    const std::string& vec_wordchars = pMS->get_wordchars_cpp();
     wordchars_utf16_len = vec_wordchars_utf16.size();
     wordchars_utf16 = wordchars_utf16_len ? &vec_wordchars_utf16[0] : NULL;
     if ((strcmp(denc, "UTF-8") != 0) && !vec_wordchars.empty()) {
@@ -362,7 +363,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     *pletters = '\0';
 
     // UTF-8 wordchars -> 8 bit wordchars
-    const std::string& vec_wordchars = pMS->get_wordchars();
+    const std::string& vec_wordchars = pMS->get_wordchars_cpp();
     size_t len = vec_wordchars.size();
     if (len) {
       if ((strcmp(denc, "UTF-8") == 0)) {
@@ -393,7 +394,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     io_utf8 = 1;
   } else {
     std::string casechars = get_casechars(denc);
-    std::string wchars = pMS->get_wordchars();
+    std::string wchars = pMS->get_wordchars_cpp();
     wordchars = casechars + wchars;
   }
   io_enc = denc;
@@ -697,7 +698,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   if (filter_mode == NORMAL) {
     fprintf(stdout, "%s", gettext(HUNSPELL_HEADING));
     fprintf(stdout, HUNSPELL_VERSION);
-    const std::string& version = pMS[0]->get_version();
+    const std::string& version = pMS[0]->get_version_cpp();
     if (!version.empty())
       fprintf(stdout, " - %s", version.c_str());
     fprintf(stdout, "\n");
