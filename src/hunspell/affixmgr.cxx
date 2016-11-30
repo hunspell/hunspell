@@ -3690,11 +3690,11 @@ bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
     HUNSPELL_WARNING(stderr,
                      "error: line %d: missing compoundsyllable information\n",
                      af->getlinenum());
-    return 1;
+    return false;
   }
   if (np == 2)
     cpdvowels = "AEIOUaeiou";
-  return 0;
+  return true;
 }
 
 /* parse in the typical fault correcting table */

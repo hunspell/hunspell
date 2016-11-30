@@ -643,8 +643,8 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       if (!*result)
         return -1;
       for (int i = 0; i < len; i++) {
-        (*result)[i] = (((unsigned short)flags[i * 2]) << 8) +
-                       (unsigned short)flags[i * 2 + 1];
+        (*result)[i] = ((unsigned short)((unsigned char)flags[i * 2]) << 8) +
+                       (unsigned char)flags[i * 2 + 1];
       }
       break;
     }
@@ -726,8 +726,8 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       len /= 2;
       result.reserve(result.size() + len);
       for (size_t i = 0; i < len; ++i) {
-        result.push_back((((unsigned short)flags[i * 2]) << 8) +
-                         (unsigned short)flags[i * 2 + 1]);
+        result.push_back(((unsigned short)((unsigned char)flags[i * 2]) << 8) +
+                         (unsigned char)flags[i * 2 + 1]);
       }
       break;
     }
@@ -783,7 +783,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
   int i;
   switch (flag_mode) {
     case FLAG_LONG:
-      s = ((unsigned short)f[0] << 8) + (unsigned short)f[1];
+      s = ((unsigned short)((unsigned char)f[0]) << 8) + (unsigned char)f[1];
       break;
     case FLAG_NUM:
       i = atoi(f);
