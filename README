@@ -53,14 +53,7 @@ optional developer packages:
 Compiling on Windows
 ====================
 
-1. Compiling with Visual Studio
--------------------------------
-
-Download the free Visual Studio Community Edition of Microsoft, open the 
-file hunspell/src/win_api/Hunspell.sln. Select the appropirate build (Debug, 
-Release, Win32, x64) and press Build.
-
-2. Compiling with Mingw64 and MSYS2
+1. Compiling with Mingw64 and MSYS2
 -----------------------------------
 
 Download Msys2, update everything and install the following packages:
@@ -69,7 +62,7 @@ Download Msys2, update everything and install the following packages:
 
 Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see above.
 
-3. Compiling in Cygwin environment
+2. Compiling in Cygwin environment
 ----------------------------------
 
 Download and install Cygwin environment for Windows with the following
