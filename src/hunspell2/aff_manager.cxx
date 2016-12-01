@@ -32,6 +32,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <algorithm>
 
 #include <cctype>
 
@@ -84,14 +85,24 @@ void decode_flags_double_char(InStrType s, u16string& out)
 		--e;
 	}
 	for(; i!=e; i+=2) {
-		char16_t c1 = *i, c2 = *(i+1);
-		out.push_back(c1 << 8 & c2);
+		char16_t c1 = (unsigned char)*i;
+		char16_t c2 = (unsigned char)*(i+1);
+		out.push_back((c1 << 8) | c2);
 	}
 	if (i != s.end()) {
-		out.push_back(*i);
+		out.push_back((unsigned char)*i);
 	}
 }
 
+template <class To>
+struct cast_lambda
+{
+	template <class From>
+	To operator()(From& f) const
+	{
+		return static_cast<To>(f);
+	}
+};
 
 
 // Expects that there are flags in the stream.
@@ -110,7 +121,9 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 		if (utf8) {
 			ret = cv.from_bytes(s);
 		} else {
-			ret = u16string(s.begin(), s.end());
+			ret.resize(s.size());
+			transform(s.begin(), s.end(), ret.begin(),
+					cast_lambda<unsigned char>());
 		}
 		break;
 	case double_char:
