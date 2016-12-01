@@ -1,1 +1,3 @@
 testSubDir
+*.log
+*.trs
