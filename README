@@ -110,8 +110,7 @@ http://hunspell.github.io/
 Usage
 =====
 
-The src/tools dictionary contains ten executables after compiling
-(or some of them are in the src/win_api):
+The src/tools dictionary contains ten executables after compiling:
 
 - affixcompress: dictionary generation from large (millions of words)
   vocabularies
@@ -124,7 +123,7 @@ The src/tools dictionary contains ten executables after compiling
 - makealias: alias compression (Hunspell only, not back compatible with MySpell)
 - munch: dictionary generation from vocabularies (it needs an affix file, too).
 - unmunch: list all recognized words of a MySpell dictionary
-wordforms: word generation (Hunspell version of unmunch)
+- wordforms: word generation (Hunspell version of unmunch)
 
 After compiling and installing (see INSTALL) you can
 run the Hunspell spell checker (compiled with user interface)
