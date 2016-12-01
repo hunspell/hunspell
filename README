@@ -31,8 +31,8 @@ Compiling on Unix/Linux and others
 	autoreconf -vfi
 	./configure
 	make
-	make install	#if neccesary prefix with sudo
-	ldconfig	#not needed on windows, on linux sudo may be needed
+	make install    #if neccesary prefix with sudo
+	ldconfig        #not needed on windows, on linux sudo may be needed
 
 For dictionary development, use the --with-warnings option of configure.
 
@@ -75,12 +75,12 @@ Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see above.
 Download and install Cygwin environment for Windows with the following
 extra packages: 
 
-make
-automake
-autoconf
-gcc-g++ development package
-ncurses, readline (for user interface)
-iconv (character conversion)
+- make
+- automake
+- autoconf
+- gcc-g++ development package
+- ncurses, readline (for user interface)
+- iconv (character conversion)
 
 ###3.1. Cygwin1.dll dependent compiling
 
