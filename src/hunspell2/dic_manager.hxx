@@ -27,6 +27,32 @@
 #ifndef HUNSPELL_DIC_MANAGER_HXX
 #define HUNSPELL_DIC_MANAGER_HXX
 
+#include <string>
+#include <vector>
+#include <istream>
+#include <iostream>
+#include <unordered_map>
 
+#include "aff_manager.hxx"
+
+namespace hunspell
+{
+
+struct aff_data
+{
+	//word and flag vector
+	std::unordered_map<std::string, std::u16string> data;
+
+	//word and morphological data
+	std::unordered_map<std::string, std::vector<std::string>> morph_data;
+
+	//we keep them separate because morph data is generally absent
+
+	//methods
+	//parses the dic data to hashtable
+	void parse(std::istream& in, const aff_data& aff);
+};
+
+}
 
 #endif

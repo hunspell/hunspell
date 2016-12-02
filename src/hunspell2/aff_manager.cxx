@@ -54,7 +54,8 @@ void reset_failbit_istream(istream& in)
 
 template <class T, class Func>
 void parse_vector_of_T(istream& in, const string& command,
-                       unordered_map<string, int>& counts, vector<T>& vec, Func factory)
+                       unordered_map<string, int>& counts,
+                       vector<T>& vec, Func factory)
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
