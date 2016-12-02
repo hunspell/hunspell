@@ -23,7 +23,8 @@ Main features of Hunspell spell checker and morphological analyzer:
   Azeri and Turkish dotted i, or German sharp s)
 - Handle conditional affixes, circumfixes, fogemorphemes,
   forbidden words, pseudoroots and homonyms.
-- Free software (LGPL, GPL, MPL tri-license)
+- Free software. Versions 1.x are licenced under LGPL, GPL, MPL tri-license.
+  Version 2 is licenced only under GNU LGPL.
 
 Compiling on Unix/Linux and others
 ==================================
