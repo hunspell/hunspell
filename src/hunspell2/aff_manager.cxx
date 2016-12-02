@@ -54,7 +54,7 @@ void reset_failbit_istream(istream& in)
 
 template <class T, class Func>
 void parse_vector_of_T(istream& in, const string& command,
-	unordered_map<string, int>& counts, vector<T>& vec, Func factory)
+                       unordered_map<string, int>& counts, vector<T>& vec, Func factory)
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
@@ -109,7 +109,7 @@ struct cast_lambda
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
 std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
-	aff_data::utf8_to_ucs2_converter& cv)
+                            aff_data::utf8_to_ucs2_converter& cv)
 {
 	string s;
 	u16string ret;
@@ -123,7 +123,7 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 		} else {
 			ret.resize(s.size());
 			transform(s.begin(), s.end(), ret.begin(),
-					cast_lambda<unsigned char>());
+			          cast_lambda<unsigned char>());
 		}
 		break;
 	case double_char:
@@ -165,7 +165,7 @@ bool read_until_slash(istream& in, string& out)
 	int c;
 	bool readSomething = false;
 	while ((c = in.get()) != istream::traits_type::eof()
-		&& !isspace((char)c, in.getloc()) && c != '/') {
+	        && !isspace((char)c, in.getloc()) && c != '/') {
 		out.push_back(c);
 		readSomething = true;
 	}
@@ -177,9 +177,9 @@ bool read_until_slash(istream& in, string& out)
 }
 
 void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
-		unordered_map<string, pair<bool, int>>& cmd_affix,
-		aff_data::utf8_to_ucs2_converter& cv,
-		aff_data& thiss)
+                 unordered_map<string, pair<bool, int>>& cmd_affix,
+                 aff_data::utf8_to_ucs2_converter& cv,
+                 aff_data& thiss)
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
 	if (f == 0) {
@@ -210,7 +210,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		elem.cross_product = dat->second.first;
 		ss >> elem.stripping;
 		if (read_until_slash(ss, elem.affix)) {
-			elem.new_flags = thiss.decode_flags(ss, cv);		
+			elem.new_flags = thiss.decode_flags(ss, cv);
 		}
 		ss >> elem.condition;
 		string morph;
@@ -343,7 +343,7 @@ bool aff_data::parse(std::istream& in)
 		istringstream ss(line);
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
-				continue; //skip comment or empty lines
+			continue; //skip comment or empty lines
 		}
 		ss >> command;
 		toupper_ascii(command);
@@ -351,12 +351,12 @@ bool aff_data::parse(std::istream& in)
 		if (command == "PFX" || command == "SFX") {
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
 			parse_affix(ss, command, vec, cmd_affix, cv, *this);
-			
+
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
 			ss >> str;
-			if (&str == &encoding){
+			if (&str == &encoding) {
 				toupper_ascii(str);
 			}
 		}
@@ -375,7 +375,7 @@ bool aff_data::parse(std::istream& in)
 				in >> p;
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-				vec, func);
+			                  vec, func);
 		}
 		else if (command_vec_pair.count(command)) {
 			auto& vec = *command_vec_pair[command];
@@ -383,7 +383,7 @@ bool aff_data::parse(std::istream& in)
 				in >> p.first >> p.second;
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-				vec, func);
+			                  vec, func);
 		}
 		else if (command == "FLAG") {
 			string p;
@@ -399,7 +399,7 @@ bool aff_data::parse(std::istream& in)
 				p = decode_flags(inn, cv);
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-				vec, func);
+			                  vec, func);
 		}
 		else if (command == "AM") {
 //{"AM", &morphological_aliases},
@@ -413,7 +413,7 @@ bool aff_data::parse(std::istream& in)
 				}
 				if (read_until_slash(in, p.begin_chars)) {
 					p.begin_flag =
-						decode_single_flag(in, cv);
+					    decode_single_flag(in, cv);
 				}
 				if (in.fail()) {
 					return;
@@ -422,7 +422,7 @@ bool aff_data::parse(std::istream& in)
 				reset_failbit_istream(in);
 			};
 			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-				vec, func);
+			                  vec, func);
 		}
 		else if (command == "COMPOUNDSYLLABLE") {
 			ss >> compound_syllable_max >> compound_syllable_vowels;
@@ -432,7 +432,7 @@ bool aff_data::parse(std::istream& in)
 		}
 		if (ss.fail()) {
 			cerr << "Hunspell aff error in line " << line_number
-				<< ": " << line << endl;
+			     << ": " << line << endl;
 		}
 	}
 

@@ -134,15 +134,15 @@ struct aff_data
 	bool parse(std::istream& in);
 
 	using utf8_to_ucs2_converter =
-		std::wstring_convert<std::codecvt_utf8<char16_t>,char16_t>;
+	    std::wstring_convert<std::codecvt_utf8<char16_t>,char16_t>;
 
 	u16string decode_flags(std::istream& in,
-		utf8_to_ucs2_converter& cv);
+	                       utf8_to_ucs2_converter& cv);
 
 	//u16string decode_flags(std::istream& in);
 
 	char16_t decode_single_flag(std::istream& in,
-		utf8_to_ucs2_converter& cv);
+	                            utf8_to_ucs2_converter& cv);
 
 	//char16_t decode_single_flag(std::istream& in);
 };

@@ -20,10 +20,10 @@ int main(int argc, char * argv[])
 	}
 	for (auto& a: aff.suffixes) {
 		cout << (char)a.flag << ' '
-		<< (a.cross_product ? 'Y' : 'N') << ' '
-		<< a.stripping << ' '
-		<< a.affix << (a.new_flags.size() ? "/ " : " ")
-		<< a.condition << endl;
+		     << (a.cross_product ? 'Y' : 'N') << ' '
+		     << a.stripping << ' '
+		     << a.affix << (a.new_flags.size() ? "/ " : " ")
+		     << a.condition << endl;
 	}
 	return 0;
 }
