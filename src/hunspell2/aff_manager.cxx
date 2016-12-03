@@ -89,7 +89,7 @@ void decode_flags_double_char(InStrType s, u16string& out)
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
+std::u16string decode_flags(std::istream& in, flag_type_t t,
                             utf8_to_ucs2_converter& cv)
 {
 	string s;
@@ -99,24 +99,13 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 	switch (t) {
 	case single_char:
 		in >> s;
-		if (utf8) {
-			ret = cv.from_bytes(s);
-		}
-		else {
-			ret.resize(s.size());
-			transform(s.begin(), s.end(), ret.begin(),
-			          cast_lambda<unsigned char>());
-		}
+		ret.resize(s.size());
+		transform(s.begin(), s.end(), ret.begin(),
+		          cast_lambda<unsigned char>());
 		break;
 	case double_char:
 		in >> s;
-		if (utf8) {
-			u16string tmp = cv.from_bytes(s);
-			decode_flags_double_char(tmp, ret);
-		}
-		else {
-			decode_flags_double_char(s, ret);
-		}
+		decode_flags_double_char(s, ret);
 		break;
 	case number:
 		unsigned short flag;
@@ -139,6 +128,9 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 			}
 		}
 
+		break;
+	case utf_8:
+		ret = cv.from_bytes(s);
 		break;
 	}
 	return ret;
@@ -201,7 +193,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv)
 const
 {
-	return hunspell::decode_flags(in, flag_type, encoding == "UTF-8", cv);
+	return hunspell::decode_flags(in, flag_type, cv);
 }
 
 char16_t aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv)
@@ -363,7 +355,7 @@ bool aff_data::parse(std::istream& in)
 			toupper_ascii(p);
 			if (p == "LONG") flag_type = double_char;
 			else if (p == "NUM") flag_type = number;
-			//else if (p == "UTF-8") flag_type = utf_8;
+			else if (p == "UTF-8") flag_type = utf_8;
 		}
 		else if (command == "AF") {
 			auto& vec = flag_aliases;

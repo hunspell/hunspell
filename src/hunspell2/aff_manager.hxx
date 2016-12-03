@@ -34,7 +34,7 @@
 #include <istream>
 
 namespace hunspell {
-enum flag_type_t {single_char, double_char, number};
+enum flag_type_t {single_char, double_char, number, utf_8};
 
 
 struct aff_data {
