@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sstream>
 #include <limits>
+#include <algorithm>
 
 namespace hunspell {
 
@@ -61,18 +62,16 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 		flags.clear();
 		morphs.clear();
 		if (line.find('/') == line.npos) {
-			//no slash, treat word untill first space
+			//no slash, treat word until first space
 			ss >> word;
 			if (ss.fail()) {
+				//probably all whitespace
 				continue;
-			}
-			while (ss >> morph) {
-				morphs.push_back(morph);
 			}
 		}
 		else { //slash found, word untill slash
 			read_to_slash(ss, word);
-			if (ss.fail()) {
+			if (ss.fail() || word.empty()) {
 				continue;
 			}
 			if (aff.flag_aliases.empty()) {
@@ -88,9 +87,9 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 				}
 				flags = aff.flag_aliases[flag_alias_idx-1];
 			}
-			while (ss >> morph) {
-				morphs.push_back(morph);
-			}
+		}
+		while (ss >> morph) {
+			morphs.push_back(morph);
 		}
 		words[word].append(flags);
 		if (morphs.size()) {
@@ -98,6 +97,11 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 			vec.insert(vec.end(), morphs.begin(), morphs.end());
 		}
 	}
-
+	for (auto& wd: words) {
+		//sort unique flag vectors
+		auto& vec = wd.second;
+		sort(vec.begin(), vec.end());
+		vec.erase(unique(vec.begin(), vec.end()), vec.end());
+	}
 }
 }

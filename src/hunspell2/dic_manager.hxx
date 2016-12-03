@@ -38,6 +38,10 @@ namespace hunspell {
 
 struct dic_data {
 	//word and flag vector
+	//efficient for short flag vectors
+	//for long flag vectors like in Korean dict
+	//we should keep pointers to the string in the affix aliases vector
+	//for now we will leave it like this
 	std::unordered_map<std::string, std::u16string> words;
 
 	//word and morphological data
