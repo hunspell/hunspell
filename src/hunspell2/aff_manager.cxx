@@ -26,6 +26,7 @@
 
 #include "aff_manager.hxx"
 
+#include "string_utils.hxx"
 #include <string>
 #include <vector>
 #include <istream>
@@ -34,23 +35,13 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include <cctype>
-
 
 namespace hunspell {
 
 using namespace std;
 
 namespace {
-inline void toupper_ascii(string& s)
-{
-	for (auto& c: s) c = toupper(c);
-}
 
-void reset_failbit_istream(istream& in)
-{
-	in.clear(in.rdstate() & ~in.failbit);
-}
 
 template <class T, class Func>
 void parse_vector_of_T(istream& in, const string& command,
@@ -95,22 +86,11 @@ void decode_flags_double_char(InStrType s, u16string& out)
 	}
 }
 
-template <class To>
-struct cast_lambda
-{
-	template <class From>
-	To operator()(From& f) const
-	{
-		return static_cast<To>(f);
-	}
-};
-
-
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
 std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
-                            aff_data::utf8_to_ucs2_converter& cv)
+                            utf8_to_ucs2_converter& cv)
 {
 	string s;
 	u16string ret;
@@ -121,7 +101,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 		in >> s;
 		if (utf8) {
 			ret = cv.from_bytes(s);
-		} else {
+		}
+		else {
 			ret.resize(s.size());
 			transform(s.begin(), s.end(), ret.begin(),
 			          cast_lambda<unsigned char>());
@@ -132,7 +113,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 		if (utf8) {
 			u16string tmp = cv.from_bytes(s);
 			decode_flags_double_char(tmp, ret);
-		} else {
+		}
+		else {
 			decode_flags_double_char(s, ret);
 		}
 		break;
@@ -140,7 +122,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 		unsigned short flag;
 		if (in >> flag) {
 			ret.push_back(flag);
-		} else {
+		}
+		else {
 			//err no flag at all
 			break;
 		}
@@ -149,7 +132,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 			in.get();
 			if (in >> flag) {
 				ret.push_back(flag);
-			} else {
+			}
+			else {
 				//err, comma and no number after that
 				break;
 			}
@@ -160,26 +144,9 @@ std::u16string decode_flags(std::istream& in, flag_type_t t, bool utf8,
 	return ret;
 }
 
-bool read_until_slash(istream& in, string& out)
-{
-	in >> ws;
-	int c;
-	bool readSomething = false;
-	while ((c = in.get()) != istream::traits_type::eof()
-	        && !isspace((char)c, in.getloc()) && c != '/') {
-		out.push_back(c);
-		readSomething = true;
-	}
-	bool slash = c == '/';
-	if (readSomething || slash) {
-		reset_failbit_istream(in);
-	}
-	return slash;
-}
-
 void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
                  unordered_map<string, pair<bool, int>>& cmd_affix,
-                 aff_data::utf8_to_ucs2_converter& cv,
+                 utf8_to_ucs2_converter& cv,
                  aff_data& thiss)
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
@@ -204,20 +171,22 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 			cnt = 0; //err
 		}
 		cmd_affix[command] = make_pair(cross, cnt);
-	} else if (dat->second.second) {
+	}
+	else if (dat->second.second) {
 		vec.emplace_back();
 		auto& elem = vec.back();
 		elem.flag = f;
 		elem.cross_product = dat->second.first;
 		ss >> elem.stripping;
-		if (read_until_slash(ss, elem.affix)) {
+		if (read_to_slash_or_space(ss, elem.affix)) {
 			elem.new_flags = thiss.decode_flags(ss, cv);
 		}
 		ss >> elem.condition;
 		string morph;
 		if (ss.fail()) {
 			vec.pop_back();
-		} else {
+		}
+		else {
 			while (ss >> morph) {
 				elem.morphological_fields.push_back(morph);
 			}
@@ -230,11 +199,13 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 }
 
 u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv)
+const
 {
 	return hunspell::decode_flags(in, flag_type, encoding == "UTF-8", cv);
 }
 
 char16_t aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv)
+const
 {
 	auto flags = decode_flags(in, cv);
 	if (flags.size()) {
@@ -409,10 +380,10 @@ bool aff_data::parse(std::istream& in)
 			auto& vec = compound_check_patterns;
 			auto func =
 			[&](istream& in, compound_check_pattern& p) {
-				if (read_until_slash(in, p.end_chars)) {
+				if (read_to_slash_or_space(in, p.end_chars)) {
 					p.end_flag = decode_single_flag(in, cv);
 				}
-				if (read_until_slash(in, p.begin_chars)) {
+				if (read_to_slash_or_space(in, p.begin_chars)) {
 					p.begin_flag =
 					    decode_single_flag(in, cv);
 				}

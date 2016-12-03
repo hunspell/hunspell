@@ -62,5 +62,6 @@ Makefile
 *.o
 *.a
 *~
+a.out
 
 hunspell-*.tar.gz
