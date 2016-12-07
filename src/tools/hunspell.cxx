@@ -1590,7 +1590,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
       endwin();
-      system((std::string("rmdir ") + odftmpdir).c_str());
+      (void)system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
     odffilename = filename;
@@ -1601,7 +1601,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     if (!text) {
       perror(gettext("Can't open inputfile"));
       endwin();
-      system((std::string("rmdir ") + odftmpdir).c_str());
+      (void)system((std::string("rmdir ") + odftmpdir).c_str());
       exit(1);
     }
   }
