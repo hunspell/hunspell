@@ -1131,19 +1131,19 @@ void dialogscreen(TextParser* parser,
 
   // handle long lines and tabulators
   std::string lines[MAXPREVLINE];
-  std::string pPrevLine;
+  std::string prevLine;
   for (int i = 0; i < MAXPREVLINE; i++) {
-    pPrevLine = parser->get_prevline(i);
-    expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc));
+    prevLine = parser->get_prevline(i);
+    expand_tab(lines[i], chenc(prevLine, io_enc, ui_enc));
   }
 
-  pPrevLine = parser->get_prevline(0);
-  std::string line = pPrevLine.substr(0, parser->get_tokenpos());
+  prevLine = parser->get_prevline(0);
+  std::string line = prevLine.substr(0, parser->get_tokenpos());
   std::string line2;
   int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
-  pPrevLine = mystrdup(parser->get_prevline(0).c_str());
-  line = pPrevLine.substr(0, parser->get_tokenpos() + token.size());
+  prevLine = parser->get_prevline(0);
+  line = prevLine.substr(0, parser->get_tokenpos() + token.size());
   int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc));
 
   int rowindex = (tokenend - 1) / x;
