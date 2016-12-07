@@ -104,7 +104,7 @@ int main(int, char** argv) {
           if (!pl2.empty()) {
             p->change_token(pl2[0].c_str());
             // jump over the (possibly un)modified word
-            p->next_token(next);
+            (void)p->next_token(next);
           }
         }
       }
