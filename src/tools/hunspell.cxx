@@ -2095,6 +2095,9 @@ int main(int argc, char** argv) {
           pMS[dmax] = new Hunspell(aff, dic, key);
           dic_enc[dmax] = pMS[dmax]->get_dict_encoding().c_str();
           dmax++;
+          if (showpath) {
+            fprintf(stderr, gettext("LOADED DICTIONARY:\n%s\n%s\n"), aff, dic);
+          }
         } else
           fprintf(stderr, gettext("error - %s exceeds dictionary limit.\n"),
                   dicname2);
