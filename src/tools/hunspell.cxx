@@ -88,6 +88,13 @@
 #define DIRSEP "\\"
 #define PATHSEP ";"
 
+#ifdef __MINGW32__
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <unistd.h>
+#endif
+
 #include "textparser.hxx"
 #include "htmlparser.hxx"
 #include "latexparser.hxx"
@@ -1706,7 +1713,7 @@ char* exist2(char* dir, int len, const char* name, const char* ext) {
   return NULL;
 }
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(__MINGW32__)
 int listdicpath(char* dir, int len) {
   std::string buf;
   const char* sep = (len == 0) ? "" : DIRSEP;
@@ -1741,7 +1748,7 @@ char* search(char* begin, char* name, const char* ext) {
     if (name) {
       res = exist2(begin, end - begin, name, ext);
     } else {
-#ifndef WIN32
+#if !defined(WIN32) || defined(__MINGW32__)
       listdicpath(begin, end - begin);
 #endif
     }
