@@ -84,8 +84,6 @@ int FileMgr::fail(const char* err, const char* par) {
 }
 
 FileMgr::FileMgr(const char* file, const char* key) : hin(NULL), linenum(0) {
-  in[0] = '\0';
-
   myopen(fin, file, std::ios_base::in);
   if (!fin.is_open()) {
     // check hzipped file

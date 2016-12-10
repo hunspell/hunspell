@@ -71,31 +71,25 @@
  * SUCH DAMAGE.
  */
 
-/* file manager class - read lines of files [filename] OR [filename.hz] */
-#ifndef FILEMGR_HXX_
-#define FILEMGR_HXX_
+#ifndef STRMGR_HXX_
+#define STRMGR_HXX_
 
 #include "hunzip.hxx"
-#include "istrmgr.hxx" 
-#include <stdio.h>
-#include <fstream>
+#include "istrmgr.hxx"
+#include <sstream>
+#include <string>
 
+class StrMgr : public IStrMgr {
+protected:
+	std::istringstream ss;
+	std::string str_copy;
+	int fail(const char * err,const char * par);
+	int linenum;
 
-class FileMgr : public IStrMgr {
- private:
-  FileMgr(const FileMgr&);
-  FileMgr& operator=(const FileMgr&);
-
- protected:
-  std::ifstream fin;
-  Hunzip* hin;
-  int fail(const char* err, const char* par);
-  int linenum;
-
- public:
-  FileMgr(const char* filename, const char* key = NULL);
-  virtual ~FileMgr();
-  virtual bool getline(std::string&);
-  virtual int getlinenum();
+public:
+	StrMgr(const char * str, const char * key = NULL);
+	virtual ~StrMgr();
+	virtual bool getline(std::string&);
+	virtual int getlinenum();
 };
 #endif

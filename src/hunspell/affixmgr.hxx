@@ -179,7 +179,7 @@ class AffixMgr {
                                // affix)
 
  public:
-  AffixMgr(const char* affpath, const std::vector<HashMgr*>& ptr, const char* key = NULL);
+  AffixMgr(const char* affpath, const std::vector<HashMgr*>& ptr, const char* key = NULL, bool isbuffer = false);
   ~AffixMgr();
   struct hentry* affix_check(const char* word,
                              int len,
@@ -337,21 +337,21 @@ class AffixMgr {
   int get_fullstrip() const;
 
  private:
-  int parse_file(const char* affpath, const char* key);
-  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
-  bool parse_num(const std::string& line, int* out, FileMgr* af);
-  bool parse_cpdsyllable(const std::string& line, FileMgr* af);
-  bool parse_reptable(const std::string& line, FileMgr* af);
+  int parse_file(const char* affpath, const char* key, bool isbuffer = false);
+  bool parse_flag(const std::string& line, unsigned short* out, IStrMgr* af);
+  bool parse_num(const std::string& line, int* out, IStrMgr* af);
+  bool parse_cpdsyllable(const std::string& line, IStrMgr* af);
+  bool parse_reptable(const std::string& line, IStrMgr* af);
   bool parse_convtable(const std::string& line,
-                      FileMgr* af,
+                      IStrMgr* af,
                       RepList** rl,
                       const std::string& keyword);
-  bool parse_phonetable(const std::string& line, FileMgr* af);
-  bool parse_maptable(const std::string& line, FileMgr* af);
-  bool parse_breaktable(const std::string& line, FileMgr* af);
-  bool parse_checkcpdtable(const std::string& line, FileMgr* af);
-  bool parse_defcpdtable(const std::string& line, FileMgr* af);
-  bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
+  bool parse_phonetable(const std::string& line, IStrMgr* af);
+  bool parse_maptable(const std::string& line, IStrMgr* af);
+  bool parse_breaktable(const std::string& line, IStrMgr* af);
+  bool parse_checkcpdtable(const std::string& line, IStrMgr* af);
+  bool parse_defcpdtable(const std::string& line, IStrMgr* af);
+  bool parse_affix(const std::string& line, const char at, IStrMgr* af, char* dupflags);
 
   void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);
@@ -366,7 +366,7 @@ class AffixMgr {
   int process_pfx_tree_to_list();
   int process_sfx_tree_to_list();
   int redundant_condition(char, const char* strip, int stripl, const char* cond, int);
-  void finishFileMgr(FileMgr* afflst);
+  void finishIStrMgr(IStrMgr* afflst);
 };
 
 #endif

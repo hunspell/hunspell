@@ -79,6 +79,7 @@
 #include <vector>
 
 #include "htypes.hxx"
+#include "strmgr.hxx"
 #include "filemgr.hxx"
 #include "w_char.hxx"
 
@@ -104,7 +105,7 @@ class HashMgr {
   char** aliasm;
 
  public:
-  HashMgr(const char* tpath, const char* apath, const char* key = NULL);
+  HashMgr(const char* tpath, const char* apath, const char* key = NULL, bool isbuffer = false);
   ~HashMgr();
 
   struct hentry* lookup(const char*) const;
@@ -114,33 +115,33 @@ class HashMgr {
   int add(const std::string& word);
   int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
-  int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
+  int decode_flags(unsigned short** result, const std::string& flags, IStrMgr* af) const;
+  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, IStrMgr* af) const;
   unsigned short decode_flag(const char* flag) const;
   char* encode_flag(unsigned short flag) const;
   int is_aliasf() const;
-  int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
+  int get_aliasf(int index, unsigned short** fvec, IStrMgr* af) const;
   int is_aliasm() const;
   char* get_aliasm(int index) const;
 
  private:
   int get_clen_and_captype(const std::string& word, int* captype);
-  int load_tables(const char* tpath, const char* key);
+  int load_tables(const char* tpath, const char* key, bool isbuffer);
   int add_word(const std::string& word,
                int wcl,
                unsigned short* ap,
                int al,
                const std::string* desc,
                bool onlyupcase);
-  int load_config(const char* affpath, const char* key);
-  bool parse_aliasf(const std::string& line, FileMgr* af);
+  int load_config(const char* affpath, const char* key, bool isbuffer);
+  bool parse_aliasf(const std::string& line, IStrMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
                                   int wcl,
                                   unsigned short* flags,
                                   int al,
                                   const std::string* dp,
                                   int captype);
-  bool parse_aliasm(const std::string& line, FileMgr* af);
+  bool parse_aliasm(const std::string& line, IStrMgr* af);
   int remove_forbidden_flag(const std::string& word);
 };
 

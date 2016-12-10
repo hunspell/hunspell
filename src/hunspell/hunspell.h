@@ -56,6 +56,11 @@ LIBHUNSPELL_DLL_EXPORTED Hunhandle* Hunspell_create_key(const char* affpath,
                                                         const char* dpath,
                                                         const char* key);
 
+LIBHUNSPELL_DLL_EXPORTED Hunhandle* Hunspell_create_buffer(const char* affpath,
+                                                        const char* dpath,
+							const char* key,
+							int isbuffer);
+
 LIBHUNSPELL_DLL_EXPORTED void Hunspell_destroy(Hunhandle* pHunspell);
 
 /* load extra dictionaries (only dic files)
