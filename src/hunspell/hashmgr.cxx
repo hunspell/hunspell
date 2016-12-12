@@ -483,7 +483,7 @@ struct hentry* HashMgr::walk_hashtable(int& col, struct hentry* hp) const {
 // load a munched word list and build a hash table on the fly
 int HashMgr::load_tables(const char* tpath, const char* key, bool isbuffer) {
   // open dictionary file
-  IStrMgr* dict = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(tpath, key)) : dynamic_cast<IStrMgr*>(new FileMgr(tpath, key));
+  IStrMgr* dict = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(tpath)) : dynamic_cast<IStrMgr*>(new FileMgr(tpath, key));
   if (dict == NULL)
     return 1;
 
@@ -833,7 +833,7 @@ int HashMgr::load_config(const char* affpath, const char* key, bool isbuffer) {
   int firstline = 1;
 
   // open the affix file
-  IStrMgr* afflst = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(affpath, key)) : dynamic_cast<IStrMgr*>(new FileMgr(affpath, key));
+  IStrMgr* afflst = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(affpath)) : dynamic_cast<IStrMgr*>(new FileMgr(affpath, key));
   if (!afflst) {
     HUNSPELL_WARNING(
         stderr, "Error - could not open affix description file or there was an error processing the buffer%s\n", affpath);

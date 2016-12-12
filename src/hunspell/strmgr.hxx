@@ -82,12 +82,11 @@
 class StrMgr : public IStrMgr {
 protected:
 	std::istringstream ss;
-	std::string str_copy;
-	int fail(const char * err,const char * par);
+	int fail(const char * err);
 	int linenum;
-
+	bool error;
 public:
-	StrMgr(const char * str, const char * key = NULL);
+	StrMgr(const char * str);
 	virtual ~StrMgr();
 	virtual bool getline(std::string&);
 	virtual int getlinenum();

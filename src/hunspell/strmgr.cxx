@@ -76,23 +76,28 @@
 #include <string.h>
 #include "strmgr.hxx"
 
-int StrMgr::fail(const char * err, const char * par) {
-  fprintf(stderr, err, par);
+int StrMgr::fail(const char * err) {
+  fprintf(stderr, err);
   return -1;
 }
 
-StrMgr::StrMgr(const char * str, const char * key) {
-  std::string str_copy(str, strlen(str));
-  std::istringstream ss(str_copy);
+StrMgr::StrMgr(const char * str) : linenum(0), error(false) {
+  if (!str) {
+    fail("StrMgr: initialized with empty string\n");
+    error = true;
+  } else {
+    ss.str(str);
+  }
 }
 
 StrMgr::~StrMgr() {}
 
 bool StrMgr::getline(std::string& dest) {
-  bool ret = static_cast<bool>(std::getline(ss, dest));
-  if (ret) {
+  bool ret = false;
+  if (!error)
+    ret = static_cast<bool>(std::getline(ss, dest));
+  if (!ret)
     linenum++;
-  }
   return ret;
 }
 

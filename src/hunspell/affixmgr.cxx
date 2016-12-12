@@ -256,7 +256,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key, bool isbuffer) {
   int firstline = 1;
 
   // open the affix file
-  IStrMgr* afflst = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(affpath, key)) : dynamic_cast<IStrMgr*>(new FileMgr(affpath, key));
+  IStrMgr* afflst = isbuffer ? dynamic_cast<IStrMgr*>(new StrMgr(affpath)) : dynamic_cast<IStrMgr*>(new FileMgr(affpath, key));
   if (!afflst) {
     HUNSPELL_WARNING(
         stderr, "error: could not open affix description file %s\n", affpath);
