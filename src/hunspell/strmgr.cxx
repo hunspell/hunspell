@@ -73,7 +73,6 @@
 
 
 #include <stdio.h>
-#include <string.h>
 #include "strmgr.hxx"
 
 int StrMgr::fail(const char * err) {

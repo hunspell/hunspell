@@ -74,10 +74,8 @@
 #ifndef STRMGR_HXX_
 #define STRMGR_HXX_
 
-#include "hunzip.hxx"
 #include "istrmgr.hxx"
 #include <sstream>
-#include <string>
 
 class StrMgr : public IStrMgr {
 protected:
