@@ -14,15 +14,15 @@
  * The Original Code is Hunspell, based on MySpell.
  *
  * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and NÈmeth L·szlÛ (Hunspell).
+ * Kevin Hendricks (MySpell) and N√©meth L√°szl√≥ (Hunspell).
  * Portions created by the Initial Developers are Copyright (C) 2002-2005
  * the Initial Developers. All Rights Reserved.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
- * Gianluca Turconi, Simon Brouwer, Noll J·nos, BÌrÛ ¡rp·d,
- * Goldman EleonÛra, SarlÛs Tam·s, Bencs·th Boldizs·r, Hal·csy PÈter,
- * Dvornik L·szlÛ, Gefferth Andr·s, Nagy Viktor, Varga D·niel, Chris Halls,
- * Rene Engelhard, Bram Moolenaar, Dafydd Jones, Harri Pitk‰nen
+ * Gianluca Turconi, Simon Brouwer, Noll J√°nos, B√≠r√≥ √Årp√°d,
+ * Goldman Eleon√≥ra, Sarl√≥s Tam√°s, Bencs√°th Boldizs√°r, Hal√°csy P√©ter,
+ * Dvornik L√°szl√≥, Gefferth Andr√°s, Nagy Viktor, Varga D√°niel, Chris Halls,
+ * Rene Engelhard, Bram Moolenaar, Dafydd Jones, Harri Pitk√§nen
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
