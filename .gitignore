@@ -65,3 +65,5 @@ Makefile
 a.out
 
 hunspell-*.tar.gz
+
+/doxygen/
