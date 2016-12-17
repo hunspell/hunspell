@@ -1,10 +1,15 @@
 About Hunspell
 ==============
 
+NOTICE: Verison 2 is in the works. For contributing see
+[version 2 specification][v2spec] and the folder `src/hunspell2`.
+
+[v2spec]: https://github.com/hunspell/hunspell/wiki/Version-2-Specification
+
 Hunspell is a spell checker and morphological analyzer library and program
 designed for languages with rich morphology and complex word compounding or
 character encoding. Hunspell interfaces: Ispell-like terminal interface
-using Curses library, Ispell pipe interface, OpenOffice.org UNO module.
+using Curses library, Ispell pipe interface, C++ class and C functions.
 
 Hunspell's code base comes from the OpenOffice.org MySpell
 (http://lingucomponent.openoffice.org/MySpell-3.zip). See README.MYSPELL,
