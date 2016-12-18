@@ -46,7 +46,7 @@ namespace {
 template <class T, class Func>
 void parse_vector_of_T(istream& in, const string& command,
                        unordered_map<string, int>& counts,
-                       vector<T>& vec, Func factory)
+                       vector<T>& vec, Func parseLineFunc)
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
@@ -60,29 +60,15 @@ void parse_vector_of_T(istream& in, const string& command,
 	}
 	else if (dat->second) {
 		vec.emplace_back();
-		factory(in, vec.back());
+		parseLineFunc(in, vec.back());
 		if (in.fail()) {
 			vec.pop_back();
 		}
 		dat->second--;
 	}
-}
-
-template <class InStrType>
-void decode_flags_double_char(InStrType s, u16string& out)
-{
-	auto i = s.begin();
-	auto e = s.end();
-	if (s.size() | 1) {
-		--e;
-	}
-	for(; i!=e; i+=2) {
-		char16_t c1 = (unsigned char)*i;
-		char16_t c2 = (unsigned char)*(i+1);
-		out.push_back((c1 << 8) | c2);
-	}
-	if (i != s.end()) {
-		out.push_back((unsigned char)*i);
+	else {
+		cerr << "Hunspell warning: extra entries of "
+		     << command << '\n';
 	}
 }
 
@@ -103,10 +89,23 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 		transform(s.begin(), s.end(), ret.begin(),
 		          cast_lambda<unsigned char>());
 		break;
-	case double_char:
+	case double_char: {
 		in >> s;
-		decode_flags_double_char(s, ret);
+		auto i = s.begin();
+		auto e = s.end();
+		if (s.size() | 1) {
+			--e;
+		}
+		for(; i!=e; i+=2) {
+			char16_t c1 = (unsigned char)*i;
+			char16_t c2 = (unsigned char)*(i+1);
+			ret.push_back((c1 << 8) | c2);
+		}
+		if (i != s.end()) {
+			ret.push_back((unsigned char)*i);
+		}
 		break;
+	}
 	case number:
 		unsigned short flag;
 		if (in >> flag) {
@@ -114,6 +113,7 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 		}
 		else {
 			//err no flag at all
+			cerr << "Hunspell error: missing flag\n";
 			break;
 		}
 		//peek can set failbit
@@ -124,6 +124,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 			}
 			else {
 				//err, comma and no number after that
+				cerr << "Hunspell error: long flag, no number "
+				        "after comma\n";
 				break;
 			}
 		}
@@ -174,17 +176,18 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 			elem.new_flags = thiss.decode_flags(ss, cv);
 		}
 		ss >> elem.condition;
-		string morph;
 		if (ss.fail()) {
 			vec.pop_back();
 		}
 		else {
-			while (ss >> morph) {
-				elem.morphological_fields.push_back(morph);
-			}
-			reset_failbit_istream(ss);
+			parse_morhological_fields(ss,
+			                          elem.morphological_fields);
 		}
 		dat->second.second--;
+	}
+	else {
+		cerr << "Hunspell warning: extra entries of "
+		     << command.substr(0, 3) << '\n';
 	}
 }
 
@@ -205,18 +208,6 @@ const
 	}
 	return 0;
 }
-
-//u16string aff_data::decode_flags(istream& in)
-//{
-//	utf8_to_ucs2_converter cv;
-//	return decode_flags(in, cv);
-//}
-
-//char16_t aff_data::decode_single_flag(istream& in)
-//{
-//	utf8_to_ucs2_converter cv;
-//	return decode_single_flag(in, cv);
-//}
 
 bool aff_data::parse(std::istream& in)
 {
@@ -366,7 +357,9 @@ bool aff_data::parse(std::istream& in)
 			                  vec, func);
 		}
 		else if (command == "AM") {
-//{"AM", &morphological_aliases},
+			auto& vec = morphological_aliases;
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
+			                  vec, parse_morhological_fields);
 		}
 		else if (command == "CHECKCOMPOUNDPATTERN") {
 			auto& vec = compound_check_patterns;

@@ -88,9 +88,7 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 				flags = aff.flag_aliases[flag_alias_idx-1];
 			}
 		}
-		while (ss >> morph) {
-			morphs.push_back(morph);
-		}
+		parse_morhological_fields(ss, morphs);
 		words[word].append(flags);
 		if (morphs.size()) {
 			auto& vec = morph_data[word];

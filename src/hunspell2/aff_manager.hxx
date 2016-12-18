@@ -50,8 +50,8 @@ struct aff_data {
 	bool complex_prefixes;
 	string language_code;
 	string ignore_chars;
-	std::vector<u16string> flag_aliases;
-	std::vector<u16string> morphological_aliases;
+	vector<u16string> flag_aliases;
+	vector<vector<string>> morphological_aliases;
 
 	//suggestion options
 	string keyboard_layout;

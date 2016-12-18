@@ -28,6 +28,7 @@
 #define HUNSPELL_STRING_UTILS_HXX
 
 #include <string>
+#include <vector>
 #include <istream>
 #include <locale>
 #include <codecvt>
@@ -90,6 +91,20 @@ inline bool read_to_slash(std::istream& in, std::string& out)
 		reset_failbit_istream(in);
 	}
 	return slash;
+}
+
+inline void parse_morhological_fields(std::istream& in,
+                                 std::vector<std::string>& vecOut)
+{
+	if (!in.good()) {
+		return;
+	}
+
+	std::string morph;
+	while (in >> morph) {
+		vecOut.push_back(morph);
+	}
+	reset_failbit_istream(in);
 }
 
 }
