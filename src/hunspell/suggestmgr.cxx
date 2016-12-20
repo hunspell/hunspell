@@ -1792,7 +1792,7 @@ int SuggestMgr::ngram(int n,
 
   l1 = su1.size();
   l2 = su2.size();
-  if (l1 == 0 || l2 == 0)
+  if (l2 == 0)
     return 0;
   // lowering dictionary word
   const std::vector<w_char>* p_su2 = &su2;
