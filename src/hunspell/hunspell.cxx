@@ -89,9 +89,9 @@
 class HunspellImpl
 {
 public:
-  HunspellImpl(const char* affpath, const char* dpath, const char* key);
+  HunspellImpl(const char* affpath, const char* dpath, const char* key, bool isbuffer);
   ~HunspellImpl();
-  int add_dic(const char* dpath, const char* key);
+  int add_dic(const char* dpath, const char* key, bool isbuffer);
   std::vector<std::string> suffix_suggest(const std::string& root_word);
   std::vector<std::string> generate(const std::string& word, const std::vector<std::string>& pl);
   std::vector<std::string> generate(const std::string& word, const std::string& pattern);
@@ -153,22 +153,22 @@ private:
   HunspellImpl& operator=(const HunspellImpl&);
 };
 
-Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key)
-  : m_Impl(new HunspellImpl(affpath, dpath, key)) {
+Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key, bool isbuffer)
+  : m_Impl(new HunspellImpl(affpath, dpath, key, isbuffer)) {
 }
 
-HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key) {
+HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key, bool isbuffer) {
   csconv = NULL;
   utf8 = 0;
   complexprefixes = 0;
   affixpath = mystrdup(affpath);
 
   /* first set up the hash manager */
-  m_HMgrs.push_back(new HashMgr(dpath, affpath, key));
+  m_HMgrs.push_back(new HashMgr(dpath, affpath, key, isbuffer));
 
   /* next set up the affix manager */
   /* it needs access to the hash manager lookup methods */
-  pAMgr = new AffixMgr(affpath, m_HMgrs, key);
+  pAMgr = new AffixMgr(affpath, m_HMgrs, key, isbuffer);
 
   /* get the preferred try string and the dictionary */
   /* encoding from the Affix Manager for that dictionary */
@@ -211,15 +211,15 @@ HunspellImpl::~HunspellImpl() {
 }
 
 // load extra dictionaries
-int Hunspell::add_dic(const char* dpath, const char* key) {
-  return m_Impl->add_dic(dpath, key);
+int Hunspell::add_dic(const char* dpath, const char* key, bool isbuffer) {
+  return m_Impl->add_dic(dpath, key, isbuffer);
 }
 
 // load extra dictionaries
-int HunspellImpl::add_dic(const char* dpath, const char* key) {
+int HunspellImpl::add_dic(const char* dpath, const char* key, bool isbuffer) {
   if (!affixpath)
     return 1;
-  m_HMgrs.push_back(new HashMgr(dpath, affixpath, key));
+  m_HMgrs.push_back(new HashMgr(dpath, affixpath, key, isbuffer));
   return 0;
 }
 
@@ -1874,7 +1874,7 @@ int Hunspell::generate(char*** slst, const char* word, const char* pattern) {
   return Hunspell_generate((Hunhandle*)(this), slst, word, pattern);
 }
 
-Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {
+Hunhandle* Hunspell_create(const char* affpath, const char* dpath, int isbuffer) {
   return (Hunhandle*)(new Hunspell(affpath, dpath));
 }
 
@@ -1882,6 +1882,10 @@ Hunhandle* Hunspell_create_key(const char* affpath,
                                const char* dpath,
                                const char* key) {
   return reinterpret_cast<Hunhandle*>(new Hunspell(affpath, dpath, key));
+}
+
+Hunhandle* Hunspell_create_buffer(const char* affpath, const char* dpath, const char* key, int isbuffer){
+  return (Hunhandle*)(new Hunspell(affpath, dpath, key, isbuffer));
 }
 
 void Hunspell_destroy(Hunhandle* pHunspell) {

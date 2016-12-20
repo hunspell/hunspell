@@ -1759,6 +1759,31 @@ char* search(char* begin, char* name, const char* ext) {
   }
 }
 
+char* file_to_buffer(char* file_path) {
+  FILE* fp = fopen(file_path, "r");
+  if (!fp)
+    return NULL;
+
+  fseek(fp , 0L , SEEK_END);
+  long size = ftell(fp);
+  rewind(fp);
+
+  char* buffer = (char*)calloc(1, size+1);
+  if(!buffer) {
+      buffer = NULL;
+      goto close_file;
+  }
+
+  if(!fread(buffer, size, 1, fp)) {
+    free(buffer);
+    buffer = NULL;
+  }
+
+close_file:
+  fclose(fp);
+  return buffer;
+}
+
 int main(int argc, char** argv) {
   std::string buf;
   Hunspell* pMS[DMAX];
@@ -1766,6 +1791,7 @@ int main(int argc, char** argv) {
   int arg_files = -1;  // first filename argumentum position in argv
   int format = FMT_TEXT;
   int argstate = 0;
+  int from_buffer = 0;
 
 #ifdef ENABLE_NLS
 #ifdef HAVE_LOCALE_H
@@ -1815,6 +1841,8 @@ int main(int argc, char** argv) {
       argstate = 3;
     else if (strcmp(argv[i], "-P") == 0)
       argstate = 4;
+    else if (strcmp(argv[i], "-b") == 0)
+      from_buffer = 1;
     else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
       fprintf(stderr, "%s", gettext("Usage: hunspell [OPTION]... [FILE]...\n"));
       fprintf(stderr, "%s", gettext("Check spelling of each FILE. Without FILE, "
@@ -2078,7 +2106,14 @@ int main(int argc, char** argv) {
     if (showpath) {
       fprintf(stderr, gettext("LOADED DICTIONARY:\n%s\n%s\n"), aff, dic);
     }
-    pMS[0] = new Hunspell(aff, dic, key);
+    if (from_buffer) {
+       char* aff_dump = file_to_buffer(aff);
+       char* dic_dump = file_to_buffer(dic);
+       pMS[0] = new Hunspell(aff_dump, dic_dump, key, true);
+       free(aff_dump);
+       free(dic_dump);
+    } else
+      pMS[0] = new Hunspell(aff, dic, key);
     dic_enc[0] = pMS[0]->get_dict_encoding().c_str();
     dmax = 1;
     while (dicplus) {
@@ -2092,7 +2127,14 @@ int main(int argc, char** argv) {
       dic = search(path, dicname2, ".dic");
       if (aff && dic) {
         if (dmax < DMAX) {
-          pMS[dmax] = new Hunspell(aff, dic, key);
+          if (from_buffer) {
+            char* aff_dump = file_to_buffer(aff);
+            char* dic_dump = file_to_buffer(dic);
+            pMS[dmax] = new Hunspell(aff, dic, key, true);
+            free(aff_dump);
+            free(dic_dump);
+          } else
+            pMS[dmax] = new Hunspell(aff, dic, key);
           dic_enc[dmax] = pMS[dmax]->get_dict_encoding().c_str();
           dmax++;
           if (showpath) {

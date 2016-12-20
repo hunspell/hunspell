@@ -112,11 +112,11 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * long path names (without the long path prefix Hunspell will use fopen()
    * with system-dependent character encoding instead of _wfopen()).
    */
-  Hunspell(const char* affpath, const char* dpath, const char* key = NULL);
+  Hunspell(const char* affpath, const char* dpath, const char* key = NULL, bool isbuffer = false);
   ~Hunspell();
 
   /* load extra dictionaries (only dic files) */
-  int add_dic(const char* dpath, const char* key = NULL);
+  int add_dic(const char* dpath, const char* key = NULL, bool isbuffer = false);
 
   /* spell(word) - spellcheck word
    * output: false = bad word, true = good word

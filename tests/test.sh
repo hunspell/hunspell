@@ -99,11 +99,39 @@ if test -f $TESTDIR/$NAME.good; then
     rm -f $TEMPDIR/$NAME.good
 fi
 
+# Tests good words
+if test -f $TESTDIR/$NAME.good; then
+    hunspell -b -l $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
+    if test -s $TEMPDIR/$NAME.good; then
+        echo "============================================="
+        echo "Fail in $NAME.good. Good words recognised as wrong:"
+        cat $TEMPDIR/$NAME.good
+        rm -f $TEMPDIR/$NAME.good
+        exit 1
+    fi
+    rm -f $TEMPDIR/$NAME.good
+fi
+
 check_valgrind_log "good words"
 
 # Tests bad words
 if test -f $TESTDIR/$NAME.wrong; then
     hunspell -l $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong
+    tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
+    if ! cmp $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab >/dev/null; then
+        echo "============================================="
+        echo "Fail in $NAME.wrong. Bad words recognised as good:"
+        tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
+        diff $TEMPDIR/$NAME.wrong.detab $TEMPDIR/$NAME.wrong | grep '^<' | sed 's/^..//'
+        rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
+        exit 1
+    fi
+    rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
+fi
+
+# Tests bad words
+if test -f $TESTDIR/$NAME.wrong; then
+    hunspell -b -l $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong
     tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
     if ! cmp $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab >/dev/null; then
         echo "============================================="
@@ -137,7 +165,21 @@ check_valgrind_log "morphological analysis"
 # Tests suggestions
 if test -f $TESTDIR/$NAME.sug; then
     hunspell $* -a -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong | grep -a '^&' | \
-        sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug 
+        sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug
+    if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
+        echo "============================================="
+        echo "Fail in $NAME.sug. Bad suggestion?"
+        diff $TESTDIR/$NAME.sug $TEMPDIR/$NAME.sug
+        rm -f $TEMPDIR/$NAME.sug
+        exit 1
+    fi
+    rm -f $TEMPDIR/$NAME.sug
+fi
+
+# Tests suggestions
+if test -f $TESTDIR/$NAME.sug; then
+    hunspell -b $* -a -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong | grep -a '^&' | \
+        sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug
     if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.sug. Bad suggestion?"
