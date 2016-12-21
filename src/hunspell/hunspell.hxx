@@ -83,7 +83,10 @@
 
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
-#define MAXWORDLEN 176
+
+#ifndef MAXWORDLEN
+#define MAXWORDLEN 100
+#endif
 
 #if defined __GNUC__ && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
 #  define H_DEPRECATED __attribute__((__deprecated__))
