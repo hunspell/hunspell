@@ -1050,12 +1050,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   phonetable* ph = (pAMgr) ? pAMgr->get_phonetable() : NULL;
   std::string target;
   std::string candidate;
+  std::vector<w_char> w_candidate;
   if (ph) {
     if (utf8) {
-      std::vector<w_char> _w;
-      u8_u16(_w, word);
-      mkallcap_utf(_w, langnum);
-      u16_u8(candidate, _w);
+      u8_u16(w_candidate, word);
+      mkallcap_utf(w_candidate, langnum);
+      u16_u8(candidate, w_candidate);
     } else {
       candidate.assign(word);
       if (!nonbmp)
@@ -1074,6 +1074,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     u8_u16(w_word, word);
     u8_u16(w_target, target);
   }
+  
+  std::vector<w_char> w_entry;
+  std::string f;
+  std::vector<w_char> w_f;
+  std::vector<w_char> w_target2;
+  
   for (size_t i = 0; i < rHMgr.size(); ++i) {
     while (0 != (hp = rHMgr[i]->walk_hashtable(col, hp))) {
       if ((hp->astr) && (pAMgr) &&
@@ -1085,7 +1091,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         continue;
 
       if (utf8) {
-        std::vector<w_char> w_entry;
+        w_entry.clear();
         u8_u16(w_entry, HENTRY_WORD(hp));
         sc = ngram(3, w_word, w_entry, NGRAM_LONGER_WORSE + low) +
              leftcommonsubstring(w_word, w_entry);
@@ -1095,12 +1101,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       }
 
       // check special pronounciation
-      std::string f;
+      f.clear();
       if ((hp->var & H_OPT_PHON) &&
           copy_field(f, HENTRY_DATA(hp), MORPH_PHON)) {
         int sc2;
         if (utf8) {
-          std::vector<w_char> w_f;
+          w_f.clear();
           u8_u16(w_f, f.c_str());
           sc2 = ngram(3, w_word, w_f, NGRAM_LONGER_WORSE + low) +
                 leftcommonsubstring(w_word, w_f);
@@ -1115,16 +1121,16 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       int scphon = -20000;
       if (ph && (sc > 2) && (abs(n - (int)hp->clen) <= 3)) {
         if (utf8) {
-          std::vector<w_char> _w;
-          u8_u16(_w, HENTRY_WORD(hp));
-          mkallcap_utf(_w, langnum);
-          u16_u8(candidate, _w);
+          w_candidate.clear();
+          u8_u16(w_candidate, HENTRY_WORD(hp));
+          mkallcap_utf(w_candidate, langnum);
+          u16_u8(candidate, w_candidate);
         } else {
-          candidate.assign(HENTRY_WORD(hp));
+          candidate = HENTRY_WORD(hp);
           mkallcap(candidate, csconv);
         }
         std::string target2 = phonet(candidate, *ph);
-        std::vector<w_char> w_target2;
+        w_target2.clear();
         if (utf8) {
           u8_u16(w_target2, target2.c_str());
           scphon = 2 * ngram(3, w_target, w_target2,
@@ -1162,10 +1168,11 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   // find minimum threshold for a passable suggestion
   // mangle original word three differnt ways
   // and score them to generate a minimum acceptable score
+  std::vector<w_char> w_mw;
   int thresh = 0;
   for (int sp = 1; sp < 4; sp++) {
     if (utf8) {
-      std::vector<w_char> w_mw = w_word;
+      w_mw = w_word;
       for (int k = sp; k < n; k += 4) {
         w_mw[k].l = '*';
         w_mw[k].h = 0;
@@ -1203,11 +1210,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     return;
   }
 
+  std::vector<w_char> w_glst_word;
   for (int i = 0; i < MAX_ROOTS; i++) {
     if (roots[i]) {
       struct hentry* rp = roots[i];
 
-      std::string f;
+      f.clear();
       const char *field = NULL;
       if ((rp->var & H_OPT_PHON) && copy_field(f, HENTRY_DATA(rp), MORPH_PHON))
           field = f.c_str();
@@ -1217,7 +1225,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
 
       for (int k = 0; k < nw; k++) {
         if (utf8) {
-          std::vector<w_char> w_glst_word;
+          w_glst_word.clear();
           u8_u16(w_glst_word, glst[k].word);
           sc = ngram(n, w_word, w_glst_word,
                      NGRAM_ANY_MISMATCH + low) +
@@ -1280,16 +1288,17 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       fact = (10.0 - maxd) / 5.0;
   }
 
+  std::vector<w_char> w_gl;
   for (int i = 0; i < MAX_GUESS; i++) {
     if (guess[i]) {
       // lowering guess[i]
       std::string gl;
       int len;
       if (utf8) {
-        std::vector<w_char> _w;
-        len = u8_u16(_w, guess[i]);
-        mkallsmall_utf(_w, langnum);
-        u16_u8(gl, _w);
+        w_gl.clear();
+        len = u8_u16(w_gl, guess[i]);
+        mkallsmall_utf(w_gl, langnum);
+        u16_u8(gl, w_gl);
       } else {
         gl.assign(guess[i]);
         if (!nonbmp)
@@ -1306,7 +1315,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       }
       // using 2-gram instead of 3, and other weightening
 
-      std::vector<w_char> w_gl;
+      w_gl.clear();
       if (utf8) {
         u8_u16(w_gl, gl);
         re = ngram(2, w_word, w_gl, NGRAM_ANY_MISMATCH + low + NGRAM_WEIGHTED) +
@@ -1354,7 +1363,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         // lowering rootphon[i]
         std::string gl;
         int len;
-        std::vector<w_char> w_gl;
+        w_gl.clear();
         if (utf8) {
           len = u8_u16(w_gl, rootsphon[i]);
           mkallsmall_utf(w_gl, langnum);
