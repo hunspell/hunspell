@@ -1,3 +1,14 @@
+2016-12-22 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.6.0
+	* Changes in the library:
+	*  Performance improvement in ngsuggest(), suggestions should be faster.
+	*  Revert MAXWORDLEN to 100 as in 1.3.3 for performance reasons.
+	*  MAXWORDLEN can be set during build time with -D defines.
+	*  Fix crash when word with 102 consecutive X is spelled.
+	* Changes in the command line tool:
+	*  -D shows all loaded dictionares insted of only the first.
+	*  -D properly lists all available dictionaries on Windows.
+
 2016-11-30 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.5.4
 	* Fixes the command COMPOUNDSYLLABLE used in Hungarian dictionary.
