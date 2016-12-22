@@ -102,7 +102,6 @@ AC_CONFIG_FILES([Makefile
                  man/hu/Makefile
                  intl/Makefile
                  po/Makefile.in
-                 m4/Makefile
 		 src/Makefile
 		 src/hunspell/Makefile
 		 src/hunspell/hunvisapi.h
