@@ -74,7 +74,7 @@
 #ifdef WIN32
 
 #define LIBDIR "C:\\Hunspell\\"
-#define USEROOODIR "Application Data\\OpenOffice.org 2\\user\\wordbook"
+#define USEROOODIR { "Application Data\\OpenOffice.org 2\\user\\wordbook" }
 #define OOODIR                                                 \
   "C:\\Program files\\OpenOffice.org 2.4\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
@@ -123,11 +123,11 @@
   "/usr/share/myspell:"       \
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
-#define USEROOODIR                    \
-  ".openoffice.org/3/user/wordbook:"  \
-  ".openoffice.org2/user/wordbook:"   \
-  ".openoffice.org2.0/user/wordbook:" \
-  "Library/Spelling"
+#define USEROOODIR {                  \
+  ".openoffice.org/3/user/wordbook", \
+  ".openoffice.org2/user/wordbook",  \
+  ".openoffice.org2.0/user/wordbook",\
+  "Library/Spelling" }
 #define OOODIR                                       \
   "/opt/openoffice.org/basis3.0/share/dict/ooo:"     \
   "/usr/lib/openoffice.org/basis3.0/share/dict/ooo:" \
@@ -2051,8 +2051,15 @@ int main(int argc, char** argv) {
     }
     path_std_str.append(LIBDIR).append(PATHSEP);
     if (HOME) {
-      path_std_str.append(HOME).append(DIRSEP).append(USEROOODIR)
-                  .append(PATHSEP).append(OOODIR);
+      const char * userooodir[] = USEROOODIR;
+      for(size_t i = 0; i < sizeof(userooodir)/sizeof(userooodir[0]); ++i) {
+        path_std_str += HOME;
+#ifndef _WIN32
+        path_std_str += DIRSEP;
+#endif
+        path_std_str.append(userooodir[i]).append(PATHSEP);
+      }
+      path_std_str.append(OOODIR);
     }
     path = mystrdup(path_std_str.c_str());
   }
