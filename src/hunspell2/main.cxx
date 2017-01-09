@@ -37,6 +37,8 @@ using namespace std;
 int main(int argc, char * argv[])
 {
 	auto v = hunspell::get_default_search_directories();
+	hunspell::get_mozilla_directories(v);
+	hunspell::get_libreoffice_directories(v);
 	for (auto& a: v) {
 		cout << a << endl;
 	}

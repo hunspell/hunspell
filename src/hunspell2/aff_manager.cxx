@@ -27,9 +27,6 @@
 #include "aff_manager.hxx"
 
 #include "string_utils.hxx"
-#include <string>
-#include <vector>
-#include <istream>
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
