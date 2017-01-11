@@ -90,7 +90,7 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 		in >> s;
 		auto i = s.begin();
 		auto e = s.end();
-		if (s.size() | 1) {
+		if (s.size() & 1) {
 			--e;
 		}
 		for(; i!=e; i+=2) {
