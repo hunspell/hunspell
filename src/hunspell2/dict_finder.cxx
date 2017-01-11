@@ -30,6 +30,7 @@
 #include <iterator>
 #include <unordered_set>
 #include <algorithm>
+#include <utility>
 
 #include <sys/types.h>
 #include <dirent.h>
@@ -84,15 +85,36 @@ vector<string> get_default_search_directories()
 struct Globber {
 	glob_t globdata;
 	int ret;
-	Globber(const string& pattern): globdata{0}
+	Globber(const char* pattern): globdata{0}
 	{
-		ret = ::glob(pattern.c_str(), 0, nullptr, &globdata);
+		ret = ::glob(pattern, 0, nullptr, &globdata);
+	}
+	Globber(const string& pattern): Globber(pattern.c_str())
+	{
+	}
+	int glob(const char* pattern)
+	{
+		globfree(&globdata);
+		ret = ::glob(pattern, 0, nullptr, &globdata);
+		return ret;
 	}
 	int glob(const string& pattern)
 	{
-		globfree(&globdata);
-		ret = ::glob(pattern.c_str(), 0, nullptr, &globdata);
-		return ret;
+		return glob(pattern.c_str());
+	}
+	char** begin() {
+		return globdata.gl_pathv;
+	}
+	char** end() {
+		return begin() + globdata.gl_pathc;
+	}
+	template <class OutIt>
+	OutIt copy_glob_paths(OutIt out)
+	{
+		if (ret == 0) {
+			out = copy(begin(), end(), out);
+		}
+		return out;
 	}
 	~Globber()
 	{
@@ -121,13 +143,9 @@ OutIt get_mozilla_directories(OutIt out)
 		return out;
 	}
 	string moz = home;
-	moz += "/.mozilla/firefox/*/extensions/"
-	       "*@dictionaries.addons.mozilla.org/dictionaries/";
+	moz += "/.mozilla/firefox/*/extensions/*/dictionaries";
 	Globber g(moz);
-	if (g.ret == 0) {
-		std::copy(g.globdata.gl_pathv,
-		          g.globdata.gl_pathv+g.globdata.gl_pathc, out);
-	}
+	g.copy_glob_paths(out);
 	return out;
 }
 
@@ -139,18 +157,36 @@ void get_mozilla_directories(std::vector<std::string>& out)
 template <class OutIt>
 OutIt get_libreoffice_directories(OutIt out)
 {
-	//add Libreoffice global directory
-	const char * dirpath = "/usr/lib/libreoffice/share/dict/ooo";
-	struct stat dir_stat;
-	if (lstat(dirpath, &dir_stat) == 0) {
-		if (S_ISDIR(dir_stat.st_mode)) {
-			*out = dirpath;
-			++out;
-		}
+	//add Libreoffice global directories
+	string lo_glob = "/libreoffice/share/extensions/dict-*";
+	Globber g("/usr/local/lib" + lo_glob);
+	out = g.copy_glob_paths(out);
+	g.glob("/usr/lib" + lo_glob);
+	out = g.copy_glob_paths(out);
+	g.glob("/opt" + lo_glob);
+	out = g.copy_glob_paths(out);
+	
+	char * home = getenv("HOME");
+	if (home == nullptr) {
+		return out;
 	}
+
+	string lo_user_glob = home;
+	lo_user_glob += '/';
+	lo_user_glob += ".config/libreoffice/?/user/uno_packages/cache"
+	               "/uno_packages/*/*.oxt/";
 	
-	//TODO: add Libreoffice user directory
+	g.glob(lo_user_glob + "dictionaries");
+	out = g.copy_glob_paths(out);
 	
+	g.glob(lo_user_glob + "*.aff");
+	string path_str;
+	for (auto& path: g) {
+		path_str = path;
+		path_str.erase(path_str.rfind('/'));
+		*out = std::move(path_str);
+		++out;
+	}
 	return out;
 }
 
