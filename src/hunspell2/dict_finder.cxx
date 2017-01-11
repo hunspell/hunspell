@@ -31,6 +31,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <utility>
+#include <sstream>
 
 #include <sys/types.h>
 #include <dirent.h>
@@ -41,6 +42,18 @@ using namespace std;
 
 namespace hunspell {
 
+template <class CharT, class OutIt>
+OutIt split(const basic_string<CharT>& s, CharT sep, OutIt out)
+{
+	basic_istringstream<CharT> is(s);
+	basic_string<CharT> out_str;
+	while (getline(is, out_str, sep)) {
+		*out = out_str;
+		++out;
+	}
+	return out;
+}
+
 template <class OutIt>
 OutIt get_default_search_directories(OutIt out)
 {
@@ -48,8 +61,7 @@ OutIt get_default_search_directories(OutIt out)
 	++out;
 	char * dicpath = getenv("DICPATH");
 	if (dicpath) {
-		*out = dicpath;
-		++out;
+		out = split(string(dicpath), ':', out);
 	}
 	char * home = getenv("HOME");
 	array<string, 3> prefixes = {
@@ -125,18 +137,21 @@ struct Globber {
 template <class OutIt>
 OutIt get_mozilla_directories(OutIt out)
 {
-	//add Mozilla global directory, /usr/lib/firefox/dictionaries
-	// do not add if it's symlink to the standard folders up
-	const char * dirpath = "/usr/lib/firefox/dictionaries";
+	//add Mozilla global directory
+	array<const char*, 2> dirs = {
+		"/usr/local/lib/firefox/dictionaries",
+		"/usr/lib/firefox/dictionaries" };
 	struct stat dir_stat;
-	if (lstat(dirpath, &dir_stat) == 0) {
-		if (S_ISDIR(dir_stat.st_mode)) {
-			*out = dirpath;
-			++out;
+	for(auto& dir: dirs) {
+		if (lstat(dir, &dir_stat) == 0) {
+			if (S_ISDIR(dir_stat.st_mode)) {
+				*out = dir;
+				++out;
+			}
+			//if SYMLINK do not add
 		}
-		//if SYMLINK do not add
 	}
-	
+
 	//add Mozilla user directory
 	char * home = getenv("HOME");
 	if (home == nullptr) {
@@ -158,27 +173,28 @@ template <class OutIt>
 OutIt get_libreoffice_directories(OutIt out)
 {
 	//add Libreoffice global directories
-	string lo_glob = "/libreoffice/share/extensions/dict-*";
-	Globber g("/usr/local/lib" + lo_glob);
-	out = g.copy_glob_paths(out);
-	g.glob("/usr/lib" + lo_glob);
-	out = g.copy_glob_paths(out);
-	g.glob("/opt" + lo_glob);
-	out = g.copy_glob_paths(out);
-	
+
+	array<const char*, 3> prefixes = {
+		"/usr/local/lib/libreoffice",
+		"/usr/lib/libreoffice",
+		"/opt/libreoffice*" };
+	for (auto& p: prefixes) {
+		Globber g(string(p) + "/share/extensions/dict-*");
+		out = g.copy_glob_paths(out);
+	}
+
 	char * home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
 
 	string lo_user_glob = home;
-	lo_user_glob += '/';
-	lo_user_glob += ".config/libreoffice/?/user/uno_packages/cache"
-	               "/uno_packages/*/*.oxt/";
-	
-	g.glob(lo_user_glob + "dictionaries");
+	lo_user_glob += "/.config/libreoffice/?/user/uno_packages/cache"
+	                "/uno_packages/*/*.oxt/";
+
+	Globber g(lo_user_glob + "dictionaries");
 	out = g.copy_glob_paths(out);
-	
+
 	g.glob(lo_user_glob + "*.aff");
 	string path_str;
 	for (auto& path: g) {
@@ -215,7 +231,7 @@ struct Directory {
 	{
 		close();
 	}
-	
+
 };
 
 template <class OutIt>
@@ -265,7 +281,7 @@ OutIt search_dir_for_dicts(const string& dir, OutIt out)
 vector<pair<string, string>>
 search_dirs_for_dicts(const vector<string>& dirs) {
 
-	vector<pair<string, string>> v;	
+	vector<pair<string, string>> v;
 	for(auto& dir: dirs) {
 		search_dir_for_dicts(dir, back_inserter(v));
 	}
