@@ -3292,7 +3292,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
     wlst[nh].word = mystrdup(ts);
     if (!wlst[nh].word)
       return 0;
-    wlst[nh].allow = (1 == 0);
+    wlst[nh].allow = false;
     wlst[nh].orig = NULL;
     nh++;
     // add special phonetic version
@@ -3300,7 +3300,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
       wlst[nh].word = mystrdup(phon);
       if (!wlst[nh].word)
         return nh - 1;
-      wlst[nh].allow = (1 == 0);
+      wlst[nh].allow = false;
       wlst[nh].orig = mystrdup(ts);
       if (!wlst[nh].orig)
         return nh - 1;
@@ -3341,7 +3341,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               wlst[nh].word = mystrdup(prefix.c_str());
               if (!wlst[nh].word)
                 return nh - 1;
-              wlst[nh].allow = (1 == 0);
+              wlst[nh].allow = false;
               wlst[nh].orig = mystrdup(newword.c_str());
               if (!wlst[nh].orig)
                 return nh - 1;
