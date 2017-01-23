@@ -1494,9 +1494,8 @@ int AffixMgr::defcpd_check(hentry*** words,
 }
 
 inline int AffixMgr::candidate_check(const char* word, int len) {
-  struct hentry* rv = NULL;
 
-  rv = lookup(word);
+  struct hentry* rv = lookup(word);
   if (rv)
     return 1;
 
@@ -3045,10 +3044,9 @@ struct hentry* AffixMgr::affix_check(const char* word,
                                      int len,
                                      const FLAG needflag,
                                      char in_compound) {
-  struct hentry* rv = NULL;
 
   // check all prefixes (also crossed with suffixes if allowed)
-  rv = prefix_check(word, len, in_compound, needflag);
+  struct hentry* rv = prefix_check(word, len, in_compound, needflag);
   if (rv)
     return rv;
 
