@@ -143,10 +143,10 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
   stream.open(path, mode);
 }
 
-std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
+std::string& u16_u8(std::string& dest, const wide::string& src) {
   dest.clear();
-  std::vector<w_char>::const_iterator u2 = src.begin();
-  std::vector<w_char>::const_iterator u2_max = src.end();
+  wide::string::const_iterator u2 = src.begin();
+  wide::string::const_iterator u2_max = src.end();
   while (u2 < u2_max) {
     signed char u8;
     if (u2->h) {  // > 0xFF
@@ -180,7 +180,7 @@ std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   return dest;
 }
 
-int u8_u16(std::vector<w_char>& dest, const std::string& src) {
+int u8_u16(wide::string& dest, const std::string& src) {
   dest.clear();
   std::string::const_iterator u8 = src.begin();
   std::string::const_iterator u8_max = src.end();
@@ -474,7 +474,7 @@ size_t reverseword(std::string& word) {
 
 // reverse word
 size_t reverseword_utf(std::string& word) {
-  std::vector<w_char> w;
+  wide::string w;
   u8_u16(w, word);
   std::reverse(w.begin(), w.end());
   u16_u8(word, w);
@@ -552,7 +552,7 @@ std::string& mkallsmall(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u,
+wide::string& mkallsmall_utf(wide::string& u,
                                           int langnum) {
   for (size_t i = 0; i < u.size(); ++i) {
     unsigned short idx = (u[i].h << 8) + u[i].l;
@@ -565,7 +565,7 @@ std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u,
   return u;
 }
 
-std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
+wide::string& mkallcap_utf(wide::string& u, int langnum) {
   for (size_t i = 0; i < u.size(); i++) {
     unsigned short idx = (u[i].h << 8) + u[i].l;
     unsigned short upridx = unicodetoupper(idx, langnum);
@@ -584,7 +584,7 @@ std::string& mkinitcap(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-std::vector<w_char>& mkinitcap_utf(std::vector<w_char>& u, int langnum) {
+wide::string& mkinitcap_utf(wide::string& u, int langnum) {
   if (!u.empty()) {
     unsigned short idx = (u[0].h << 8) + u[0].l;
     unsigned short upridx = unicodetoupper(idx, langnum);
@@ -603,7 +603,7 @@ std::string& mkinitsmall(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-std::vector<w_char>& mkinitsmall_utf(std::vector<w_char>& u, int langnum) {
+wide::string& mkinitsmall_utf(wide::string& u, int langnum) {
   if (!u.empty()) {
     unsigned short idx = (u[0].h << 8) + u[0].l;
     unsigned short lwridx = unicodetolower(idx, langnum);
@@ -2532,7 +2532,7 @@ int get_captype(const std::string& word, cs_info* csconv) {
   return HUHCAP;
 }
 
-int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
+int get_captype_utf8(const wide::string& word, int langnum) {
   // now determine the capitalization type of the first nl letters
   size_t ncap = 0;
   size_t nneutral = 0;
@@ -2565,9 +2565,9 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
 
 // strip all ignored characters in the string
 size_t remove_ignored_chars_utf(std::string& word,
-                                const std::vector<w_char>& ignored_chars) {
-  std::vector<w_char> w;
-  std::vector<w_char> w2;
+                                const wide::string& ignored_chars) {
+  wide::string w;
+  wide::string w2;
   u8_u16(w, word);
 
   for (size_t i = 0; i < w.size(); ++i) {
@@ -2626,7 +2626,7 @@ bool parse_string(const std::string& line, std::string& out, int ln) {
 
 bool parse_array(const std::string& line,
                  std::string& out,
-                 std::vector<w_char>& out_utf16,
+                 wide::string& out_utf16,
                  int utf8,
                  int ln) {
   if (!parse_string(line, out, ln))

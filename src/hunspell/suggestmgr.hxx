@@ -107,11 +107,11 @@ class SuggestMgr {
  private:
   char* ckey;
   size_t ckeyl;
-  std::vector<w_char> ckey_utf;
+  wide::string ckey_utf;
 
   char* ctry;
   size_t ctryl;
-  std::vector<w_char> ctry_utf;
+  wide::string ctry_utf;
 
   AffixMgr* pAMgr;
   unsigned int maxSug;
@@ -173,12 +173,12 @@ class SuggestMgr {
                   const std::vector<mapentry>&,
                   int*,
                   clock_t*);
-  int ngram(int n, const std::vector<w_char>& su1,
-            const std::vector<w_char>& su2, int opt);
+  int ngram(int n, const wide::string& su1,
+            const wide::string& su2, int opt);
   int ngram(int n, const std::string& s1, const std::string& s2, int opt);
   int mystrlen(const char* word);
-  int leftcommonsubstring(const std::vector<w_char>& su1,
-                          const std::vector<w_char>& su2);
+  int leftcommonsubstring(const wide::string& su1,
+                          const wide::string& su2);
   int leftcommonsubstring(const char* s1, const char* s2);
   int commoncharacterpositions(const char* s1, const char* s2, int* is_swap);
   void bubblesort(char** rwd, char** rwd2, int* rsc, int n);

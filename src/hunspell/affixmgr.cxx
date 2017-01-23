@@ -1338,7 +1338,7 @@ int AffixMgr::cpdcase_check(const char* word, int pos) {
     for (p = word + pos - 1; (*p & 0xc0) == 0x80; p--)
       ;
     std::string pair(p);
-    std::vector<w_char> pair_u;
+    wide::string pair_u;
     u8_u16(pair_u, pair);
     unsigned short a = pair_u.size() > 1 ? ((pair_u[1].h << 8) + pair_u[1].l) : 0;
     unsigned short b = !pair_u.empty() ? ((pair_u[0].h << 8) + pair_u[0].l) : 0;
@@ -1523,7 +1523,7 @@ short AffixMgr::get_syllable(const std::string& word) {
       }
     }
   } else if (!cpdvowels_utf16.empty()) {
-    std::vector<w_char> w;
+    wide::string w;
     u8_u16(w, word);
     for (size_t i = 0; i < w.size(); ++i) {
       if (std::binary_search(cpdvowels_utf16.begin(),
@@ -3505,7 +3505,7 @@ const char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-const std::vector<w_char>& AffixMgr::get_ignore_utf16() const {
+const wide::string& AffixMgr::get_ignore_utf16() const {
   return ignorechars_utf16;
 }
 
@@ -3528,7 +3528,7 @@ const std::string& AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-const std::vector<w_char>& AffixMgr::get_wordchars_utf16() const {
+const wide::string& AffixMgr::get_wordchars_utf16() const {
   return wordchars_utf16;
 }
 

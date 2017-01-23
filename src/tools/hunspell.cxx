@@ -199,7 +199,7 @@ enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
 std::string wordchars;
 char* dicpath = NULL;
 const w_char* wordchars_utf16 = NULL;
-std::vector<w_char> new_wordchars_utf16;
+wide::string new_wordchars_utf16;
 int wordchars_utf16_len;
 char* dicname = NULL;
 char* privdicname = NULL;
@@ -311,7 +311,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   }
 
   if (io_utf8) {
-    const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+    const wide::string& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
     const std::string& vec_wordchars = pMS->get_wordchars_cpp();
     wordchars_utf16_len = vec_wordchars_utf16.size();
     wordchars_utf16 = wordchars_utf16_len ? &vec_wordchars_utf16[0] : NULL;
@@ -356,7 +356,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         ch[1] = '\0';
         size_t res = iconv(conv, (ICONV_CONST char**)&ch8bit, &c1, &dest, &c2);
         if (res != (size_t)-1) {
-          std::vector<w_char> w;
+          wide::string w;
           u8_u16(w, std::string(u8, dest));
           unsigned short idx = w.empty() ? 0 : (w[0].h << 8) + w[0].l;
           if (unicodeisalpha(idx)) {
@@ -395,7 +395,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   }
 #else
   if (strcmp(denc, "UTF-8") == 0) {
-    const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+    const wide::string& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
     wordchars_utf16 = &vec_wordchars_utf16[0];
     wordchars_utf16_len = vec_wordchars_utf16.size();
     io_utf8 = 1;
@@ -1199,7 +1199,7 @@ void dialogscreen(TextParser* parser,
 std::string lower_first_char(const std::string& token, const char* ioenc, int langnum) {
   std::string utf8str(token);
   chenc(utf8str, ioenc, "UTF-8");
-  std::vector<w_char> u;
+  wide::string u;
   u8_u16(u, utf8str);
   if (!u.empty()) {
     unsigned short idx = (u[0].h << 8) + u[0].l;

@@ -345,7 +345,7 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
     flags2[flagslen] = ONLYUPCASEFLAG;
     if (utf8) {
       std::string st;
-      std::vector<w_char> w;
+      wide::string w;
       u8_u16(w, word);
       mkallsmall_utf(w, langnum);
       mkinitcap_utf(w, langnum);
@@ -366,7 +366,7 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
   int len;
   if (utf8) {
-    std::vector<w_char> dest_utf;
+    wide::string dest_utf;
     len = u8_u16(dest_utf, word);
     *captype = get_captype_utf8(dest_utf, langnum);
   } else {
@@ -688,7 +688,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<w_char> w;
+      wide::string w;
       u8_u16(w, flags);
       len = w.size();
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
@@ -760,7 +760,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<w_char> w;
+      wide::string w;
       u8_u16(w, flags);
       size_t len = w.size();
       size_t origsize = result.size();
@@ -793,7 +793,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       s = (unsigned short)i;
       break;
     case FLAG_UNI: {
-      std::vector<w_char> w;
+      wide::string w;
       u8_u16(w, f);
       if (!w.empty())
           memcpy(&s, &w[0], 1 * sizeof(short));
@@ -820,7 +820,7 @@ char* HashMgr::encode_flag(unsigned short f) const {
     ch = stream.str();
   } else if (flag_mode == FLAG_UNI) {
     const w_char* w_c = (const w_char*)&f;
-    std::vector<w_char> w(w_c, w_c + 1);
+    wide::string w(w_c, w_c + 1);
     u16_u8(ch, w);
   } else {
     ch.push_back((unsigned char)(f));
