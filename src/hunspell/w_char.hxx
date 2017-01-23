@@ -78,7 +78,7 @@ namespace wide
 #if __cplusplus >= 201103L
     typedef std::basic_string<w_char> string;
 #else
-    typedef vector<w_char> string;
+    typedef std::vector<w_char> string;
 #endif
 }
 
