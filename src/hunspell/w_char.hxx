@@ -42,6 +42,9 @@
 #define W_CHAR_HXX_
 
 #include <string>
+#if __cplusplus < 201103L
+#include <vector>
+#endif
 
 #ifndef GCC
 struct w_char {
@@ -74,7 +77,11 @@ struct replentry {
 
 namespace wide
 {
+#if __cplusplus >= 201103L
     typedef std::basic_string<w_char> string;
+#else
+    typedef vector<w_char> string;
+#endif
 }
 
 #endif
