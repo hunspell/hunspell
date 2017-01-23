@@ -105,6 +105,9 @@ class SuggestMgr {
   SuggestMgr& operator=(const SuggestMgr&);
 
  private:
+  mutable wide::string workbuf1;
+  mutable wide::string workbuf2;
+
   char* ckey;
   size_t ckeyl;
   wide::string ckey_utf;
