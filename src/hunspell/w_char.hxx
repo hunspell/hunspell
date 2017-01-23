@@ -42,9 +42,7 @@
 #define W_CHAR_HXX_
 
 #include <string>
-#if __cplusplus < 201103L
 #include <vector>
-#endif
 
 #ifndef GCC
 struct w_char {
