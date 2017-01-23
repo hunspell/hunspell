@@ -115,13 +115,10 @@ void TextParser::init(const char* wordchars) {
   checkurl = 0;
   wordchars_utf16 = NULL;
   wclen = 0;
-  unsigned int j;
-  for (j = 0; j < 256; j++) {
-    wordcharacters[j] = 0;
-  }
+  wordcharacters.resize(256, 0);
   if (!wordchars)
     wordchars = "qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM";
-  for (j = 0; j < strlen(wordchars); j++) {
+  for (unsigned int j = 0; j < strlen(wordchars); ++j) {
     wordcharacters[(wordchars[j] + 256) % 256] = 1;
   }
 }

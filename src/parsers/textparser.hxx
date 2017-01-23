@@ -67,7 +67,7 @@
 
 class TextParser {
  protected:
-  int wordcharacters[256];        // for detection of the word boundaries
+  std::vector<int> wordcharacters;// for detection of the word boundaries
   std::string line[MAXPREVLINE];  // parsed and previous lines
   std::vector<bool> urlline;      // mask for url detection
   int checkurl;
