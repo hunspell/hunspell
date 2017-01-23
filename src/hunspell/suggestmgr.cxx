@@ -1107,7 +1107,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         int sc2;
         if (utf8) {
           w_f.clear();
-          u8_u16(w_f, f.c_str());
+          u8_u16(w_f, f);
           sc2 = ngram(3, w_word, w_f, NGRAM_LONGER_WORSE + low) +
                 leftcommonsubstring(w_word, w_f);
         } else {
@@ -1132,7 +1132,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         std::string target2 = phonet(candidate, *ph);
         w_target2.clear();
         if (utf8) {
-          u8_u16(w_target2, target2.c_str());
+          u8_u16(w_target2, target2);
           scphon = 2 * ngram(3, w_target, w_target2,
                              NGRAM_LONGER_WORSE);
         } else {
