@@ -42,7 +42,6 @@
 #define W_CHAR_HXX_
 
 #include <string>
-#include <vector>
 
 #ifndef GCC
 struct w_char {
@@ -75,7 +74,7 @@ struct replentry {
 
 namespace wide
 {
-    typedef std::vector<w_char> string;
+    typedef std::basic_string<w_char> string;
 }
 
 #endif
