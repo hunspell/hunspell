@@ -936,7 +936,7 @@ nextline:
               if (wlst.empty()) {
                 fprintf(stdout, "# %s %d", token.c_str(), char_offset);
               } else {
-                fprintf(stdout, "& %s %lu %d: ", token.c_str(), static_cast<unsigned int>(wlst.size()), char_offset);
+                fprintf(stdout, "& %s %u %d: ", token.c_str(), static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], io_enc).c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
@@ -976,7 +976,7 @@ nextline:
                 fprintf(stdout, "# %s %d", chenc(token, io_enc, ui_enc).c_str(),
                         char_offset);
               } else {
-                fprintf(stdout, "& %s %lu %d: ", chenc(token, io_enc, ui_enc).c_str(),
+                fprintf(stdout, "& %s %u %d: ", chenc(token, io_enc, ui_enc).c_str(),
                         static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
               }
