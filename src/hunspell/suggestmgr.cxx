@@ -491,11 +491,10 @@ int SuggestMgr::doubletwochars_utf(std::vector<std::string>& wlst,
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3) {
-        workbuf1.clear();
-        workbuf1.insert(workbuf1.end(), word, word + i - 1);
-        workbuf1.insert(workbuf1.end(), word + i + 1, word + wl);
+        wide::string candidate_utf(word, word + i - 1);
+        candidate_utf.insert(candidate_utf.end(), word + i + 1, word + wl);
         std::string candidate;
-        u16_u8(candidate, workbuf1);
+        u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
         state = 0;
       }
@@ -1051,11 +1050,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   phonetable* ph = (pAMgr) ? pAMgr->get_phonetable() : NULL;
   std::string target;
   std::string candidate;
+  wide::string w_candidate;
   if (ph) {
     if (utf8) {
-      u8_u16(workbuf1, word);
-      mkallcap_utf(workbuf1, langnum);
-      u16_u8(candidate, workbuf1);
+      u8_u16(w_candidate, word);
+      mkallcap_utf(w_candidate, langnum);
+      u16_u8(candidate, w_candidate);
     } else {
       candidate.assign(word);
       if (!nonbmp)
@@ -1121,9 +1121,10 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       int scphon = -20000;
       if (ph && (sc > 2) && (abs(n - (int)hp->clen) <= 3)) {
         if (utf8) {
-          u8_u16(workbuf1, HENTRY_WORD(hp));
-          mkallcap_utf(workbuf1, langnum);
-          u16_u8(candidate, workbuf1);
+          w_candidate.clear();
+          u8_u16(w_candidate, HENTRY_WORD(hp));
+          mkallcap_utf(w_candidate, langnum);
+          u16_u8(candidate, w_candidate);
         } else {
           candidate = HENTRY_WORD(hp);
           mkallcap(candidate, csconv);
@@ -1803,10 +1804,11 @@ int SuggestMgr::ngram(int n,
     return 0;
   // lowering dictionary word
   const wide::string* p_su2 = &su2;
+  wide::string su2_copy;
   if (opt & NGRAM_LOWERING) {
-    workbuf1 = su2;
-    mkallsmall_utf(workbuf1, langnum);
-    p_su2 = &workbuf1;
+    su2_copy = su2;
+    mkallsmall_utf(su2_copy, langnum);
+    p_su2 = &su2_copy;
   }
   for (int j = 1; j <= n; j++) {
     ns = 0;
@@ -1946,20 +1948,22 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
   int diffpos[2];
   *is_swap = 0;
   if (utf8) {
-    int l1 = u8_u16(workbuf1, s1);
-    int l2 = u8_u16(workbuf2, s2);
+    wide::string su1;
+    wide::string su2;
+    int l1 = u8_u16(su1, s1);
+    int l2 = u8_u16(su2, s2);
 
     if (l1 <= 0 || l2 <= 0)
       return 0;
 
     // decapitalize dictionary word
     if (complexprefixes) {
-      workbuf2[l2 - 1] = lower_utf(workbuf2[l2 - 1], langnum);
+      su2[l2 - 1] = lower_utf(su2[l2 - 1], langnum);
     } else {
-      workbuf2[0] = lower_utf(workbuf2[0], langnum);
+      su2[0] = lower_utf(su2[0], langnum);
     }
     for (int i = 0; (i < l1) && (i < l2); i++) {
-      if (workbuf1[i] == workbuf2[i]) {
+      if (su1[i] == su2[i]) {
         num++;
       } else {
         if (diff < 2)
@@ -1968,8 +1972,8 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
       }
     }
     if ((diff == 2) && (l1 == l2) &&
-        (workbuf1[diffpos[0]] == workbuf2[diffpos[1]]) &&
-        (workbuf1[diffpos[1]] == workbuf2[diffpos[0]]))
+        (su1[diffpos[0]] == su2[diffpos[1]]) &&
+        (su1[diffpos[1]] == su2[diffpos[0]]))
       *is_swap = 1;
   } else {
     size_t i;
@@ -2000,7 +2004,8 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
 
 int SuggestMgr::mystrlen(const char* word) {
   if (utf8) {
-    return u8_u16(workbuf1, word);
+    wide::string w;
+    return u8_u16(w, word);
   } else
     return strlen(word);
 }
@@ -2039,13 +2044,15 @@ void SuggestMgr::lcs(const char* s,
                      int* l2,
                      char** result) {
   int n, m;
+  wide::string su;
+  wide::string su2;
   char* b;
   char* c;
   int i;
   int j;
   if (utf8) {
-    m = u8_u16(workbuf1, s);
-    n = u8_u16(workbuf2, s2);
+    m = u8_u16(su, s);
+    n = u8_u16(su2, s2);
   } else {
     m = strlen(s);
     n = strlen(s2);
@@ -2066,7 +2073,7 @@ void SuggestMgr::lcs(const char* s,
     c[j] = 0;
   for (i = 1; i <= m; i++) {
     for (j = 1; j <= n; j++) {
-      if (((utf8) && (workbuf1[i - 1] == workbuf2[j - 1])) ||
+      if (((utf8) && (su[i - 1] == su2[j - 1])) ||
           ((!utf8) && (s[i - 1] == s2[j - 1]))) {
         c[i * (n + 1) + j] = c[(i - 1) * (n + 1) + j - 1] + 1;
         b[i * (n + 1) + j] = LCS_UPLEFT;
