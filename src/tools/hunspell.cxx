@@ -1244,7 +1244,7 @@ int dialog(TextParser* parser,
       case '8':
       case '9':
         modified = 1;
-        if ((firstletter != '\0') && (firstletter == '1')) {
+        if (firstletter == '1') {
           c += 10;
         }
         c -= '0';
