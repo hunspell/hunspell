@@ -134,10 +134,10 @@ LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
 
 // convert UTF-16 characters to UTF-8
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
-                                             const wide::string& src);
+                                             const std::vector<w_char>& src);
 
 // convert UTF-8 characters to UTF-16
-LIBHUNSPELL_DLL_EXPORTED int u8_u16(wide::string& dest,
+LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src);
 
 // remove end of line char(s)
@@ -219,31 +219,31 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkinitcap(std::string& s,
                                                 const struct cs_info* csconv);
 
 // convert first letter of UTF-8 string to capital
-LIBHUNSPELL_DLL_EXPORTED wide::string&
-mkinitcap_utf(wide::string& u, int langnum);
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
+mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
 // convert UTF-8 string to little
-LIBHUNSPELL_DLL_EXPORTED wide::string&
-mkallsmall_utf(wide::string& u, int langnum);
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
+mkallsmall_utf(std::vector<w_char>& u, int langnum);
 
 // convert first letter of UTF-8 string to little
-LIBHUNSPELL_DLL_EXPORTED wide::string&
-mkinitsmall_utf(wide::string& u, int langnum);
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
+mkinitsmall_utf(std::vector<w_char>& u, int langnum);
 
 // convert UTF-8 string to capital
-LIBHUNSPELL_DLL_EXPORTED wide::string&
-mkallcap_utf(wide::string& u, int langnum);
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
+mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, cs_info*);
 
 // get type of capitalization (UTF-8)
-LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const wide::string& q, int langnum);
+LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int langnum);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     std::string& word,
-    const wide::string& ignored_chars);
+    const std::vector<w_char>& ignored_chars);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
@@ -256,7 +256,7 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
                                           std::string& out,
-                                          wide::string& out_utf16,
+                                          std::vector<w_char>& out_utf16,
                                           int utf8,
                                           int ln);
 

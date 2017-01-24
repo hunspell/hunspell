@@ -42,7 +42,6 @@
 #define W_CHAR_HXX_
 
 #include <string>
-#include <vector>
 
 #ifndef GCC
 struct w_char {
@@ -72,14 +71,5 @@ struct replentry {
   std::string pattern;
   std::string outstrings[4]; // med, ini, fin, isol
 };
-
-namespace wide
-{
-#if __cplusplus >= 201103L
-    typedef std::basic_string<w_char> string;
-#else
-    typedef std::vector<w_char> string;
-#endif
-}
 
 #endif

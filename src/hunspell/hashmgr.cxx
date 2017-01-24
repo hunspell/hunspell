@@ -345,10 +345,11 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
     flags2[flagslen] = ONLYUPCASEFLAG;
     if (utf8) {
       std::string st;
-      u8_u16(workbuf, word);
-      mkallsmall_utf(workbuf, langnum);
-      mkinitcap_utf(workbuf, langnum);
-      u16_u8(st, workbuf);
+      std::vector<w_char> w;
+      u8_u16(w, word);
+      mkallsmall_utf(w, langnum);
+      mkinitcap_utf(w, langnum);
+      u16_u8(st, w);
       return add_word(st, wcl, flags2, flagslen + 1, dp, true);
     } else {
       std::string new_word(word);
@@ -365,8 +366,9 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
   int len;
   if (utf8) {
-    len = u8_u16(workbuf, word);
-    *captype = get_captype_utf8(workbuf, langnum);
+    std::vector<w_char> dest_utf;
+    len = u8_u16(dest_utf, word);
+    *captype = get_captype_utf8(dest_utf, langnum);
   } else {
     len = word.size();
     *captype = get_captype(word, csconv);
@@ -686,12 +688,13 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      u8_u16(workbuf, flags);
-      len = workbuf.size();
+      std::vector<w_char> w;
+      u8_u16(w, flags);
+      len = w.size();
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
-      memcpy(*result, &workbuf[0], len * sizeof(short));
+      memcpy(*result, &w[0], len * sizeof(short));
       break;
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
@@ -757,11 +760,12 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      u8_u16(workbuf, flags);
-      size_t len = workbuf.size();
+      std::vector<w_char> w;
+      u8_u16(w, flags);
+      size_t len = w.size();
       size_t origsize = result.size();
       result.resize(origsize + len);
-      memcpy(&result[origsize], &workbuf[0], len * sizeof(short));
+      memcpy(&result[origsize], &w[0], len * sizeof(short));
       break;
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
@@ -789,9 +793,10 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       s = (unsigned short)i;
       break;
     case FLAG_UNI: {
-      u8_u16(workbuf, f);
-      if (!workbuf.empty())
-          memcpy(&s, &workbuf[0], 1 * sizeof(short));
+      std::vector<w_char> w;
+      u8_u16(w, f);
+      if (!w.empty())
+          memcpy(&s, &w[0], 1 * sizeof(short));
       break;
     }
     default:
@@ -815,9 +820,8 @@ char* HashMgr::encode_flag(unsigned short f) const {
     ch = stream.str();
   } else if (flag_mode == FLAG_UNI) {
     const w_char* w_c = (const w_char*)&f;
-    workbuf.clear();
-    workbuf.push_back(*w_c);
-    u16_u8(ch, workbuf);
+    std::vector<w_char> w(w_c, w_c + 1);
+    u16_u8(ch, w);
   } else {
     ch.push_back((unsigned char)(f));
   }

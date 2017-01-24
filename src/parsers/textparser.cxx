@@ -81,7 +81,7 @@ int TextParser::is_wordchar(const char* w) {
   if (*w == '\0')
     return 0;
   if (utf8) {
-    wide::string wc;
+    std::vector<w_char> wc;
     unsigned short idx;
     u8_u16(wc, w);
     if (wc.empty())

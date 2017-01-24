@@ -96,8 +96,7 @@ class HashMgr {
   std::string lang;
   struct cs_info* csconv;
   std::string ignorechars;
-  wide::string ignorechars_utf16;
-  mutable wide::string workbuf;
+  std::vector<w_char> ignorechars_utf16;
   int numaliasf;  // flag vector `compression' with aliases
   unsigned short** aliasf;
   unsigned short* aliasflen;
