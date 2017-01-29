@@ -101,9 +101,12 @@ fi
 
 check_valgrind_log "good words"
 
+CR=$(printf "\r")
+
 # Tests bad words
 if test -f $TESTDIR/$NAME.wrong; then
-    hunspell -l $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong
+    hunspell -l $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong \
+    | tr -d $CR >$TEMPDIR/$NAME.wrong #strip carige return for mingw builds
     tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
     if ! cmp $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab >/dev/null; then
         echo "============================================="
@@ -121,7 +124,8 @@ check_valgrind_log "bad words"
 # Tests morphological analysis
 if test -f $TESTDIR/$NAME.morph; then
     sed 's/	$//' $TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
-    analyze $TESTDIR/$NAME.aff $TESTDIR/$NAME.dic $TEMPDIR/$NAME.good >$TEMPDIR/$NAME.morph
+    analyze $TESTDIR/$NAME.aff $TESTDIR/$NAME.dic $TEMPDIR/$NAME.good \
+    | tr -d $CR >$TEMPDIR/$NAME.morph #strip carige return for mingw builds
     if ! cmp $TEMPDIR/$NAME.morph $TESTDIR/$NAME.morph >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.morph. Bad analysis?"

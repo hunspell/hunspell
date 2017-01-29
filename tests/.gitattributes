@@ -1,4 +1,4 @@
-*.sug text eol=lf 
-*.good text
-*.wrong text
-*.morph text
+*.sug text eol=lf
+*.good text eol=lf
+*.wrong text eol=lf
+*.morph text eol=lf
