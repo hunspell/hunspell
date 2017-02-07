@@ -1707,14 +1707,17 @@ bool HunspellImpl::input_conv(const std::string& word, std::string& dest) {
 // return the beginning of the element (attr == NULL) or the attribute
 const char* HunspellImpl::get_xml_pos(const char* s, const char* attr) {
   const char* end = strchr(s, '>');
-  const char* p = s;
   if (attr == NULL)
     return end;
-  do {
+  const char* p = s;
+  while (1) {
     p = strstr(p, attr);
     if (!p || p >= end)
       return 0;
-  } while (*(p - 1) != ' ' && *(p - 1) != '\n');
+    if (*(p - 1) == ' ' || *(p - 1) == '\n')
+      break;
+    p += strlen(attr);
+  }
   return p + strlen(attr);
 }
 
