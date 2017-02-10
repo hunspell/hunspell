@@ -1664,7 +1664,7 @@ std::string HunspellImpl::get_xml_par(const char* par) {
   if (end == '>')
     end = '<';
   else if (end != '\'' && end != '"')
-    return 0;  // bad XML
+    return dest;  // bad XML
   for (par++; *par != '\0' && *par != end; ++par) {
     dest.push_back(*par);
   }
