@@ -2537,13 +2537,17 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   size_t ncap = 0;
   size_t nneutral = 0;
   size_t firstcap = 0;
-  for (size_t i = 0; i < word.size(); ++i) {
-    unsigned short idx = (word[i].h << 8) + word[i].l;
+
+  std::vector<w_char>::const_iterator it = word.begin();
+  std::vector<w_char>::const_iterator it_end = word.end();
+  while (it != it_end) {
+    unsigned short idx = (it->h << 8) + it->l;
     unsigned short lwridx = unicodetolower(idx, langnum);
     if (idx != lwridx)
       ncap++;
     if (unicodetoupper(idx, langnum) == lwridx)
       nneutral++;
+    ++it;
   }
   if (ncap) {
     unsigned short idx = (word[0].h << 8) + word[0].l;
