@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * The Original Code is Hunspell, based on MySpell.
@@ -40,7 +40,7 @@ void get_mozilla_directories(std::vector<std::string>& out);
 void get_libreoffice_directories(std::vector<std::string>& out);
 
 std::vector<std::pair<std::string, std::string>>
-	search_dirs_for_dicts(const std::vector<std::string>& dirs);
+        search_dirs_for_dicts(const std::vector<std::string>& dirs);
 
 }
 #endif

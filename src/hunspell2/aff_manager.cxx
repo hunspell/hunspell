@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.	If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2.	If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * The Original Code is Hunspell, based on MySpell.
@@ -80,13 +80,13 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 	//utf8 to ucs-2 converter. flags can be only in BPM
 	//wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
 	switch (t) {
-	case single_char:
+	case single_char_flag:
 		in >> s;
 		ret.resize(s.size());
 		transform(s.begin(), s.end(), ret.begin(),
 		          cast_lambda<unsigned char>());
 		break;
-	case double_char: {
+	case double_char_flag: {
 		in >> s;
 		auto i = s.begin();
 		auto e = s.end();
@@ -103,7 +103,7 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 		}
 		break;
 	}
-	case number:
+	case number_flag:
 		unsigned short flag;
 		if (in >> flag) {
 			ret.push_back(flag);
@@ -122,13 +122,13 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 			else {
 				//err, comma and no number after that
 				cerr << "Hunspell error: long flag, no number "
-				        "after comma\n";
+				     "after comma\n";
 				break;
 			}
 		}
 
 		break;
-	case utf_8:
+	case utf8_flag:
 		ret = cv.from_bytes(s);
 		break;
 	}
@@ -289,7 +289,7 @@ bool aff_data::parse(std::istream& in)
 	string line;
 	string command;
 	int line_number = 0;
-	flag_type = flag_type_t::single_char;
+	flag_type = single_char_flag;
 	while (getline(in, line)) {
 		line_number++;
 		istringstream ss(line);
@@ -341,9 +341,9 @@ bool aff_data::parse(std::istream& in)
 			string p;
 			ss >> p;
 			toupper_ascii(p);
-			if (p == "LONG") flag_type = double_char;
-			else if (p == "NUM") flag_type = number;
-			else if (p == "UTF-8") flag_type = utf_8;
+			if (p == "LONG") flag_type = double_char_flag;
+			else if (p == "NUM") flag_type = number_flag;
+			else if (p == "UTF-8") flag_type = utf8_flag;
 		}
 		else if (command == "AF") {
 			auto& vec = flag_aliases;

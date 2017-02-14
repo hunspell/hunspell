@@ -25,6 +25,7 @@ private:
 	(2) will call this with u8_u32 on the fly conversion iterator.
 	*/
 	template <class ConvIter>
+	spell_result
 	spell(ConvIter start, ConvIter end, const string& s);
 
 	/**
@@ -89,9 +90,9 @@ public:
 	 Do a conversion mbr -> u16 -> u8.
 	 Use mbrtoc16, codecvt<char16_t, char, mbstate_t>
 	 We can check if the the current locale is already utf-8 to skip this.
-	 
+
 	 Once we know we have a u8 string, just call (7).
-	 
+
 	 This should be the recomended way to interface with the command line
 	 utility. Before calling this function, one should call
 	 setlocale(LC_ALL, "") or locale::global(locale("")).

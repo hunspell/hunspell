@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.	If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2.	If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * The Original Code is Hunspell, based on MySpell.
@@ -94,7 +94,7 @@ inline bool read_to_slash(std::istream& in, std::string& out)
 }
 
 inline void parse_morhological_fields(std::istream& in,
-                                 std::vector<std::string>& vecOut)
+                                      std::vector<std::string>& vecOut)
 {
 	if (!in.good()) {
 		return;

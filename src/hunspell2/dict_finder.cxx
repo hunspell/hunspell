@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * The Original Code is Hunspell, based on MySpell.
@@ -67,9 +67,10 @@ OutIt get_default_search_directories(OutIt out)
 	array<string, 3> prefixes = {
 		home ? string(home)+"/.local/" : "/",
 		"/usr/local/",
-		"/usr/" };
+		"/usr/"
+	};
 	array<const char*, 3> dirs =
-		{ "share/hunspell", "share/myspell", "share/myspell/dicts" };
+	{ "share/hunspell", "share/myspell", "share/myspell/dicts" };
 	for (auto& dir: dirs) {
 		for (auto& prefix : prefixes) {
 			*out = prefix + dir;
@@ -114,10 +115,12 @@ struct Globber {
 	{
 		return glob(pattern.c_str());
 	}
-	char** begin() {
+	char** begin()
+	{
 		return globdata.gl_pathv;
 	}
-	char** end() {
+	char** end()
+	{
 		return begin() + globdata.gl_pathc;
 	}
 	template <class OutIt>
@@ -140,7 +143,8 @@ OutIt get_mozilla_directories(OutIt out)
 	//add Mozilla global directory
 	array<const char*, 2> dirs = {
 		"/usr/local/lib/firefox/dictionaries",
-		"/usr/lib/firefox/dictionaries" };
+		"/usr/lib/firefox/dictionaries"
+	};
 	struct stat dir_stat;
 	for(auto& dir: dirs) {
 		if (lstat(dir, &dir_stat) == 0) {
@@ -177,7 +181,8 @@ OutIt get_libreoffice_directories(OutIt out)
 	array<const char*, 3> prefixes = {
 		"/usr/local/lib/libreoffice",
 		"/usr/lib/libreoffice",
-		"/opt/libreoffice*" };
+		"/opt/libreoffice*"
+	};
 	for (auto& p: prefixes) {
 		Globber g(string(p) + "/share/extensions/dict-*");
 		out = g.copy_glob_paths(out);
@@ -216,14 +221,16 @@ struct Directory {
 	Directory(): dp(nullptr) {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
-	bool open(const string& dirname) {
+	bool open(const string& dirname)
+	{
 		if (dp) {
 			(void) closedir(dp);
 		}
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
-	void close() {
+	void close()
+	{
 		(void) closedir(dp);
 		dp = nullptr;
 	}
@@ -279,7 +286,8 @@ OutIt search_dir_for_dicts(const string& dir, OutIt out)
 }
 
 vector<pair<string, string>>
-search_dirs_for_dicts(const vector<string>& dirs) {
+                          search_dirs_for_dicts(const vector<string>& dirs)
+{
 
 	vector<pair<string, string>> v;
 	for(auto& dir: dirs) {

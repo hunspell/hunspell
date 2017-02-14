@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * The Original Code is Hunspell, based on MySpell.
@@ -34,12 +34,15 @@
 #include <istream>
 
 namespace hunspell {
-enum flag_type_t {single_char, double_char, number, utf_8};
 
+enum flag_type_t {
+	single_char_flag, double_char_flag, number_flag, utf8_flag
+};
 
 struct aff_data {
 	using string = std::string;
 	using u16string = std::u16string;
+	using istream = std::istream;
 	template <class T>
 	using vector = std::vector<T>;
 	template <class T, class U>
@@ -130,15 +133,15 @@ struct aff_data {
 	//methods
 	bool parse(std::istream& in);
 
-	u16string decode_flags(std::istream& in,
+	u16string decode_flags(istream& in,
 	                       utf8_to_ucs2_converter& cv) const;
 
-	//u16string decode_flags(std::istream& in);
+	//u16string decode_flags(istream& in);
 
-	char16_t decode_single_flag(std::istream& in,
+	char16_t decode_single_flag(istream& in,
 	                            utf8_to_ucs2_converter& cv) const;
 
-	//char16_t decode_single_flag(std::istream& in);
+	//char16_t decode_single_flag(istream& in);
 };
 
 }
