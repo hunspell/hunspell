@@ -27,11 +27,10 @@
 #include "aff_manager.hxx"
 
 #include "string_utils.hxx"
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
-#include <algorithm>
-
 
 namespace hunspell {
 
@@ -39,19 +38,18 @@ using namespace std;
 
 namespace {
 
-
 template <class T, class Func>
 void parse_vector_of_T(istream& in, const string& command,
-                       unordered_map<string, int>& counts,
-                       vector<T>& vec, Func parseLineFunc)
+                       unordered_map<string, int>& counts, vector<T>& vec,
+                       Func parseLineFunc)
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
-		//first line
+		// first line
 		int a;
 		in >> a;
 		if (!in || a < 0) {
-			a = 0; //err
+			a = 0; // err
 		}
 		counts[command] = a;
 	}
@@ -64,8 +62,8 @@ void parse_vector_of_T(istream& in, const string& command,
 		dat->second--;
 	}
 	else {
-		cerr << "Hunspell warning: extra entries of "
-		     << command << '\n';
+		cerr << "Hunspell warning: extra entries of " << command
+		     << '\n';
 	}
 }
 
@@ -77,8 +75,8 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 {
 	string s;
 	u16string ret;
-	//utf8 to ucs-2 converter. flags can be only in BPM
-	//wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
+	// utf8 to ucs-2 converter. flags can be only in BPM
+	// wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
 	switch (t) {
 	case single_char_flag:
 		in >> s;
@@ -93,9 +91,9 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 		if (s.size() & 1) {
 			--e;
 		}
-		for(; i!=e; i+=2) {
+		for (; i != e; i += 2) {
 			char16_t c1 = (unsigned char)*i;
-			char16_t c2 = (unsigned char)*(i+1);
+			char16_t c2 = (unsigned char)*(i + 1);
 			ret.push_back((c1 << 8) | c2);
 		}
 		if (i != s.end()) {
@@ -109,20 +107,20 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 			ret.push_back(flag);
 		}
 		else {
-			//err no flag at all
+			// err no flag at all
 			cerr << "Hunspell error: missing flag\n";
 			break;
 		}
-		//peek can set failbit
+		// peek can set failbit
 		while (in.good() && in.peek() == ',') {
 			in.get();
 			if (in >> flag) {
 				ret.push_back(flag);
 			}
 			else {
-				//err, comma and no number after that
+				// err, comma and no number after that
 				cerr << "Hunspell error: long flag, no number "
-				     "after comma\n";
+				        "after comma\n";
 				break;
 			}
 		}
@@ -137,16 +135,15 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 
 void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
                  unordered_map<string, pair<bool, int>>& cmd_affix,
-                 utf8_to_ucs2_converter& cv,
-                 aff_data& thiss)
+                 utf8_to_ucs2_converter& cv, aff_data& thiss)
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
 	if (f == 0) {
-		//err
+		// err
 		return;
 	}
 	char f1 = f & 0xff;
-	char f2 = (f>>8) & 0xff;
+	char f2 = (f >> 8) & 0xff;
 	command.push_back(f1);
 	command.push_back(f2);
 	auto dat = cmd_affix.find(command);
@@ -159,7 +156,7 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		ss >> cross_char >> cnt;
 		bool cross = cross_char == 'Y';
 		if (!ss || cnt < 0) {
-			cnt = 0; //err
+			cnt = 0; // err
 		}
 		cmd_affix[command] = make_pair(cross, cnt);
 	}
@@ -187,17 +184,15 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 		     << command.substr(0, 3) << '\n';
 	}
 }
-
 }
 
-u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv)
-const
+u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
 {
 	return hunspell::decode_flags(in, flag_type, cv);
 }
 
-char16_t aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv)
-const
+char16_t aff_data::decode_single_flag(istream& in,
+                                      utf8_to_ucs2_converter& cv) const
 {
 	auto flags = decode_flags(in, cv);
 	if (flags.size()) {
@@ -209,80 +204,71 @@ const
 bool aff_data::parse(std::istream& in)
 {
 	unordered_map<string, string*> command_strings = {
-		{"SET", &encoding},
-		{"LANG", &language_code},
-		{"IGNORE", &ignore_chars},
+	    {"SET", &encoding},        {"LANG", &language_code},
+	    {"IGNORE", &ignore_chars},
 
-		{"KEY", &keyboard_layout},
-		{"TRY", &try_chars},
+	    {"KEY", &keyboard_layout}, {"TRY", &try_chars},
 
-		{"WORDCHARS", &wordchars}
-	};
+	    {"WORDCHARS", &wordchars}};
 
 	unordered_map<string, bool*> command_bools = {
-		{"COMPLEXPREFIXES", &complex_prefixes},
+	    {"COMPLEXPREFIXES", &complex_prefixes},
 
+	    {"ONLYMAXDIFF", &only_max_diff},
+	    {"NOSPLITSUGS", &no_split_suggestions},
+	    {"SUGSWITHDOTS", &suggest_with_dots},
+	    {"FORBIDWARN", &forbid_warn},
 
-		{"ONLYMAXDIFF", &only_max_diff},
-		{"NOSPLITSUGS", &no_split_suggestions},
-		{"SUGSWITHDOTS", &suggest_with_dots},
-		{"FORBIDWARN", &forbid_warn},
+	    {"COMPOUNDMORESUFFIXES", &compound_more_suffixes},
+	    {"CHECKCOMPOUNDDUP", &compound_check_up},
+	    {"CHECKCOMPOUNDREP", &compound_check_rep},
+	    {"CHECKCOMPOUNDCASE", &compound_check_case},
+	    {"CHECKCOMPOUNDTRIPLE", &compound_check_triple},
+	    {"SIMPLIFIEDTRIPLE", &compound_simplified_triple},
 
-		{"COMPOUNDMORESUFFIXES", &compound_more_suffixes},
-		{"CHECKCOMPOUNDDUP", &compound_check_up},
-		{"CHECKCOMPOUNDREP", &compound_check_rep},
-		{"CHECKCOMPOUNDCASE", &compound_check_case},
-		{"CHECKCOMPOUNDTRIPLE", &compound_check_triple},
-		{"SIMPLIFIEDTRIPLE", &compound_simplified_triple},
-
-		{"FULLSTRIP", &fullstrip},
-		{"CHECKSHARPS", &checksharps}
-	};
+	    {"FULLSTRIP", &fullstrip},
+	    {"CHECKSHARPS", &checksharps}};
 
 	unordered_map<string, vector<string>*> command_vec_str = {
-		{"BREAK", &break_patterns},
-		{"MAP", &map_related_chars}, //maybe add special parsing code
-		{"COMPOUNDRULE", &compound_rules}
-	};
+	    {"BREAK", &break_patterns},
+	    {"MAP", &map_related_chars}, // maybe add special parsing code
+	    {"COMPOUNDRULE", &compound_rules}};
 
 	unordered_map<string, short*> command_shorts = {
-		{"MAXCPDSUGS", &max_compound_suggestions},
-		{"MAXNGRAMSUGS", &max_ngram_suggestions},
-		{"MAXDIFF", &max_diff_factor},
+	    {"MAXCPDSUGS", &max_compound_suggestions},
+	    {"MAXNGRAMSUGS", &max_ngram_suggestions},
+	    {"MAXDIFF", &max_diff_factor},
 
-		{"COMPOUNDMIN", &compoud_minimum},
-		{"COMPOUNDWORDMAX", &compound_word_max}
-	};
+	    {"COMPOUNDMIN", &compoud_minimum},
+	    {"COMPOUNDWORDMAX", &compound_word_max}};
 
-	unordered_map<string, vector<pair<string,string>>*> command_vec_pair = {
-		{"REP", &replacements},
-		{"PHONE", &phonetic_replacements},
-		{"ICONV", &input_conversion},
-		{"OCONV", &output_conversion}
-	};
+	unordered_map<string, vector<pair<string, string>>*> command_vec_pair =
+	    {{"REP", &replacements},
+	     {"PHONE", &phonetic_replacements},
+	     {"ICONV", &input_conversion},
+	     {"OCONV", &output_conversion}};
 
 	unordered_map<string, char16_t*> command_flag = {
-		{"NOSUGGEST", &nosuggest_flag},
-		{"WARN", &warn_flag},
+	    {"NOSUGGEST", &nosuggest_flag},
+	    {"WARN", &warn_flag},
 
-		{"COMPOUNDFLAG", &compound_flag},
-		{"COMPOUNDBEGIN", &compound_begin_flag},
-		{"COMPOUNDLAST", &compound_last_flag},
-		{"COMPOUNDMIDDLE", &compound_middle_flag},
-		{"ONLYINCOMPOUND", &compound_onlyin_flag},
-		{"COMPOUNDPERMITFLAG", &compound_permit_flag},
-		{"COMPOUNDFORBIDFLAG", &compound_forbid_flag},
-		{"COMPOUNDROOT", &compound_root_flag},
-		{"FORCEUCASE", &compound_force_uppercase},
+	    {"COMPOUNDFLAG", &compound_flag},
+	    {"COMPOUNDBEGIN", &compound_begin_flag},
+	    {"COMPOUNDLAST", &compound_last_flag},
+	    {"COMPOUNDMIDDLE", &compound_middle_flag},
+	    {"ONLYINCOMPOUND", &compound_onlyin_flag},
+	    {"COMPOUNDPERMITFLAG", &compound_permit_flag},
+	    {"COMPOUNDFORBIDFLAG", &compound_forbid_flag},
+	    {"COMPOUNDROOT", &compound_root_flag},
+	    {"FORCEUCASE", &compound_force_uppercase},
 
-		{"CIRCUMFIX", &circumfix_flag},
-		{"FORBIDDENWORD", &forbiddenword_flag},
-		{"KEEPCASE", &keepcase_flag},
-		{"NEEDAFFIX", &need_affix_flag},
-		{"SUBSTANDARD", &substandard_flag}
-	};
+	    {"CIRCUMFIX", &circumfix_flag},
+	    {"FORBIDDENWORD", &forbiddenword_flag},
+	    {"KEEPCASE", &keepcase_flag},
+	    {"NEEDAFFIX", &need_affix_flag},
+	    {"SUBSTANDARD", &substandard_flag}};
 
-	//keeps count for each vector
+	// keeps count for each vector
 	unordered_map<string, int> cmd_with_vec_cnt;
 	unordered_map<string, pair<bool, int>> cmd_affix;
 	utf8_to_ucs2_converter cv;
@@ -295,7 +281,7 @@ bool aff_data::parse(std::istream& in)
 		istringstream ss(line);
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
-			continue; //skip comment or empty lines
+			continue; // skip comment or empty lines
 		}
 		ss >> command;
 		toupper_ascii(command);
@@ -303,7 +289,6 @@ bool aff_data::parse(std::istream& in)
 		if (command == "PFX" || command == "SFX") {
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
 			parse_affix(ss, command, vec, cmd_affix, cv, *this);
-
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
@@ -323,45 +308,46 @@ bool aff_data::parse(std::istream& in)
 		}
 		else if (command_vec_str.count(command)) {
 			auto& vec = *command_vec_str[command];
-			auto func = [&](istream& in, string& p) {
-				in >> p;
-			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-			                  vec, func);
+			auto func = [&](istream& in, string& p) { in >> p; };
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			                  func);
 		}
 		else if (command_vec_pair.count(command)) {
 			auto& vec = *command_vec_pair[command];
 			auto func = [&](istream& in, pair<string, string>& p) {
 				in >> p.first >> p.second;
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-			                  vec, func);
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			                  func);
 		}
 		else if (command == "FLAG") {
 			string p;
 			ss >> p;
 			toupper_ascii(p);
-			if (p == "LONG") flag_type = double_char_flag;
-			else if (p == "NUM") flag_type = number_flag;
-			else if (p == "UTF-8") flag_type = utf8_flag;
+			if (p == "LONG")
+				flag_type = double_char_flag;
+			else if (p == "NUM")
+				flag_type = number_flag;
+			else if (p == "UTF-8")
+				flag_type = utf8_flag;
 		}
 		else if (command == "AF") {
 			auto& vec = flag_aliases;
 			auto func = [&](istream& inn, u16string& p) {
 				p = decode_flags(inn, cv);
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-			                  vec, func);
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			                  func);
 		}
 		else if (command == "AM") {
 			auto& vec = morphological_aliases;
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-			                  vec, parse_morhological_fields);
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			                  parse_morhological_fields);
 		}
 		else if (command == "CHECKCOMPOUNDPATTERN") {
 			auto& vec = compound_check_patterns;
-			auto func =
-			[&](istream& in, compound_check_pattern& p) {
+			auto func = [&](istream& in,
+			                compound_check_pattern& p) {
 				if (read_to_slash_or_space(in, p.end_chars)) {
 					p.end_flag = decode_single_flag(in, cv);
 				}
@@ -375,8 +361,8 @@ bool aff_data::parse(std::istream& in)
 				in >> p.replacement;
 				reset_failbit_istream(in);
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt,
-			                  vec, func);
+			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			                  func);
 		}
 		else if (command == "COMPOUNDSYLLABLE") {
 			ss >> compound_syllable_max >> compound_syllable_vowels;
@@ -392,5 +378,4 @@ bool aff_data::parse(std::istream& in)
 
 	return in.eof(); // success if we reached eof
 }
-
 }

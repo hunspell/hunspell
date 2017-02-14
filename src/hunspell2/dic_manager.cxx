@@ -27,10 +27,10 @@
 #include "dic_manager.hxx"
 
 #include "string_utils.hxx"
-#include <iostream>
-#include <sstream>
-#include <limits>
 #include <algorithm>
+#include <iostream>
+#include <limits>
+#include <sstream>
 
 namespace hunspell {
 
@@ -62,14 +62,14 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 		flags.clear();
 		morphs.clear();
 		if (line.find('/') == line.npos) {
-			//no slash, treat word until first space
+			// no slash, treat word until first space
 			ss >> word;
 			if (ss.fail()) {
-				//probably all whitespace
+				// probably all whitespace
 				continue;
 			}
 		}
-		else { //slash found, word untill slash
+		else { // slash found, word untill slash
 			read_to_slash(ss, word);
 			if (ss.fail() || word.empty()) {
 				continue;
@@ -80,12 +80,11 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 			else {
 				size_t flag_alias_idx;
 				ss >> flag_alias_idx;
-				if (ss.fail()
-				        || flag_alias_idx >
-				        aff.flag_aliases.size()) {
+				if (ss.fail() ||
+				    flag_alias_idx > aff.flag_aliases.size()) {
 					continue;
 				}
-				flags = aff.flag_aliases[flag_alias_idx-1];
+				flags = aff.flag_aliases[flag_alias_idx - 1];
 			}
 		}
 		parse_morhological_fields(ss, morphs);
@@ -95,8 +94,8 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 			vec.insert(vec.end(), morphs.begin(), morphs.end());
 		}
 	}
-	for (auto& wd: words) {
-		//sort unique flag vectors
+	for (auto& wd : words) {
+		// sort unique flag vectors
 		auto& vec = wd.second;
 		sort(vec.begin(), vec.end());
 		vec.erase(unique(vec.begin(), vec.end()), vec.end());

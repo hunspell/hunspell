@@ -26,17 +26,17 @@
 
 #include "dict_finder.hxx"
 
+#include <algorithm>
 #include <array>
 #include <iterator>
-#include <unordered_set>
-#include <algorithm>
-#include <utility>
 #include <sstream>
+#include <unordered_set>
+#include <utility>
 
-#include <sys/types.h>
 #include <dirent.h>
-#include <sys/stat.h>
 #include <glob.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 using namespace std;
 
@@ -54,24 +54,20 @@ OutIt split(const basic_string<CharT>& s, CharT sep, OutIt out)
 	return out;
 }
 
-template <class OutIt>
-OutIt get_default_search_directories(OutIt out)
+template <class OutIt> OutIt get_default_search_directories(OutIt out)
 {
 	*out = ".";
 	++out;
-	char * dicpath = getenv("DICPATH");
+	char* dicpath = getenv("DICPATH");
 	if (dicpath) {
 		out = split(string(dicpath), ':', out);
 	}
-	char * home = getenv("HOME");
-	array<string, 3> prefixes = {
-		home ? string(home)+"/.local/" : "/",
-		"/usr/local/",
-		"/usr/"
-	};
-	array<const char*, 3> dirs =
-	{ "share/hunspell", "share/myspell", "share/myspell/dicts" };
-	for (auto& dir: dirs) {
+	char* home = getenv("HOME");
+	array<string, 3> prefixes = {home ? string(home) + "/.local/" : "/",
+	                             "/usr/local/", "/usr/"};
+	array<const char*, 3> dirs = {"share/hunspell", "share/myspell",
+	                              "share/myspell/dicts"};
+	for (auto& dir : dirs) {
 		for (auto& prefix : prefixes) {
 			*out = prefix + dir;
 			++out;
@@ -98,66 +94,48 @@ vector<string> get_default_search_directories()
 struct Globber {
 	glob_t globdata;
 	int ret;
-	Globber(const char* pattern): globdata{0}
+	Globber(const char* pattern) : globdata{0}
 	{
 		ret = ::glob(pattern, 0, nullptr, &globdata);
 	}
-	Globber(const string& pattern): Globber(pattern.c_str())
-	{
-	}
+	Globber(const string& pattern) : Globber(pattern.c_str()) {}
 	int glob(const char* pattern)
 	{
 		globfree(&globdata);
 		ret = ::glob(pattern, 0, nullptr, &globdata);
 		return ret;
 	}
-	int glob(const string& pattern)
-	{
-		return glob(pattern.c_str());
-	}
-	char** begin()
-	{
-		return globdata.gl_pathv;
-	}
-	char** end()
-	{
-		return begin() + globdata.gl_pathc;
-	}
-	template <class OutIt>
-	OutIt copy_glob_paths(OutIt out)
+	int glob(const string& pattern) { return glob(pattern.c_str()); }
+	char** begin() { return globdata.gl_pathv; }
+	char** end() { return begin() + globdata.gl_pathc; }
+	template <class OutIt> OutIt copy_glob_paths(OutIt out)
 	{
 		if (ret == 0) {
 			out = copy(begin(), end(), out);
 		}
 		return out;
 	}
-	~Globber()
-	{
-		globfree(&globdata);
-	}
+	~Globber() { globfree(&globdata); }
 };
 
-template <class OutIt>
-OutIt get_mozilla_directories(OutIt out)
+template <class OutIt> OutIt get_mozilla_directories(OutIt out)
 {
-	//add Mozilla global directory
-	array<const char*, 2> dirs = {
-		"/usr/local/lib/firefox/dictionaries",
-		"/usr/lib/firefox/dictionaries"
-	};
+	// add Mozilla global directory
+	array<const char*, 2> dirs = {"/usr/local/lib/firefox/dictionaries",
+	                              "/usr/lib/firefox/dictionaries"};
 	struct stat dir_stat;
-	for(auto& dir: dirs) {
+	for (auto& dir : dirs) {
 		if (lstat(dir, &dir_stat) == 0) {
 			if (S_ISDIR(dir_stat.st_mode)) {
 				*out = dir;
 				++out;
 			}
-			//if SYMLINK do not add
+			// if SYMLINK do not add
 		}
 	}
 
-	//add Mozilla user directory
-	char * home = getenv("HOME");
+	// add Mozilla user directory
+	char* home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
@@ -173,22 +151,19 @@ void get_mozilla_directories(std::vector<std::string>& out)
 	get_mozilla_directories(back_inserter(out));
 }
 
-template <class OutIt>
-OutIt get_libreoffice_directories(OutIt out)
+template <class OutIt> OutIt get_libreoffice_directories(OutIt out)
 {
-	//add Libreoffice global directories
+	// add Libreoffice global directories
 
-	array<const char*, 3> prefixes = {
-		"/usr/local/lib/libreoffice",
-		"/usr/lib/libreoffice",
-		"/opt/libreoffice*"
-	};
-	for (auto& p: prefixes) {
+	array<const char*, 3> prefixes = {"/usr/local/lib/libreoffice",
+	                                  "/usr/lib/libreoffice",
+	                                  "/opt/libreoffice*"};
+	for (auto& p : prefixes) {
 		Globber g(string(p) + "/share/extensions/dict-*");
 		out = g.copy_glob_paths(out);
 	}
 
-	char * home = getenv("HOME");
+	char* home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
@@ -202,7 +177,7 @@ OutIt get_libreoffice_directories(OutIt out)
 
 	g.glob(lo_user_glob + "*.aff");
 	string path_str;
-	for (auto& path: g) {
+	for (auto& path : g) {
 		path_str = path;
 		path_str.erase(path_str.rfind('/'));
 		*out = std::move(path_str);
@@ -217,40 +192,35 @@ void get_libreoffice_directories(std::vector<std::string>& out)
 }
 
 struct Directory {
-	DIR *dp;
-	Directory(): dp(nullptr) {}
+	DIR* dp;
+	Directory() : dp(nullptr) {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
 	bool open(const string& dirname)
 	{
 		if (dp) {
-			(void) closedir(dp);
+			(void)closedir(dp);
 		}
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
 	void close()
 	{
-		(void) closedir(dp);
+		(void)closedir(dp);
 		dp = nullptr;
 	}
-	~Directory()
-	{
-		close();
-	}
-
+	~Directory() { close(); }
 };
 
-template <class OutIt>
-OutIt search_dir_for_dicts(const string& dir, OutIt out)
+template <class OutIt> OutIt search_dir_for_dicts(const string& dir, OutIt out)
 {
-	//DIR* dp = opendir(dir.c_str()); //wrapped in RAII class
-	Directory d; //this is the RAII class
+	// DIR* dp = opendir(dir.c_str()); //wrapped in RAII class
+	Directory d; // this is the RAII class
 	if (d.open(dir) == false) {
 		return out;
 	}
 	struct dirent ent;
-	struct dirent * ent_p = nullptr;
+	struct dirent* ent_p = nullptr;
 	unordered_set<string> dics;
 	string file_name;
 	while (readdir_r(d.dp, &ent, &ent_p) == 0 && ent_p) {
@@ -259,23 +229,23 @@ OutIt search_dir_for_dicts(const string& dir, OutIt out)
 		if (sz < 4) {
 			continue;
 		}
-		if (file_name.find(".dic", sz-4) != file_name.npos) {
+		if (file_name.find(".dic", sz - 4) != file_name.npos) {
 			dics.insert(file_name);
-			file_name.resize(sz-4);
+			file_name.resize(sz - 4);
 			file_name += ".aff";
 			if (dics.count(file_name)) {
-				file_name.resize(sz-4);
+				file_name.resize(sz - 4);
 				auto full_path = dir + '/' + file_name;
 				*out = make_pair(file_name, full_path);
 				out++;
 			}
 		}
-		else if (file_name.find(".aff", sz-4) != file_name.npos) {
+		else if (file_name.find(".aff", sz - 4) != file_name.npos) {
 			dics.insert(file_name);
-			file_name.resize(sz-4);
+			file_name.resize(sz - 4);
 			file_name += ".dic";
 			if (dics.count(file_name)) {
-				file_name.resize(sz-4);
+				file_name.resize(sz - 4);
 				auto full_path = dir + '/' + file_name;
 				*out = make_pair(file_name, full_path);
 				out++;
@@ -285,15 +255,13 @@ OutIt search_dir_for_dicts(const string& dir, OutIt out)
 	return out;
 }
 
-vector<pair<string, string>>
-                          search_dirs_for_dicts(const vector<string>& dirs)
+vector<pair<string, string>> search_dirs_for_dicts(const vector<string>& dirs)
 {
 
 	vector<pair<string, string>> v;
-	for(auto& dir: dirs) {
+	for (auto& dir : dirs) {
 		search_dir_for_dicts(dir, back_inserter(v));
 	}
 	return v;
 }
-
 }

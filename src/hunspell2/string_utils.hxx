@@ -27,22 +27,23 @@
 #ifndef HUNSPELL_STRING_UTILS_HXX
 #define HUNSPELL_STRING_UTILS_HXX
 
-#include <string>
-#include <vector>
+#include <codecvt>
 #include <istream>
 #include <locale>
-#include <codecvt>
+#include <string>
+#include <vector>
 
 #include <cctype>
 
 namespace hunspell {
 
 using utf8_to_ucs2_converter =
-    std::wstring_convert<std::codecvt_utf8<char16_t>,char16_t>;
+    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
 
 inline void toupper_ascii(std::string& s)
 {
-	for (auto& c: s) c = toupper(c);
+	for (auto& c : s)
+		c = toupper(c);
 }
 
 inline void reset_failbit_istream(std::istream& in)
@@ -50,10 +51,8 @@ inline void reset_failbit_istream(std::istream& in)
 	in.clear(in.rdstate() & ~in.failbit);
 }
 
-template <class To>
-struct cast_lambda {
-	template <class From>
-	To operator()(From& f) const
+template <class To> struct cast_lambda {
+	template <class From> To operator()(From& f) const
 	{
 		return static_cast<To>(f);
 	}
@@ -64,8 +63,8 @@ inline bool read_to_slash_or_space(std::istream& in, std::string& out)
 	in >> std::ws;
 	int c;
 	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof()
-	        && !isspace((char)c, in.getloc()) && c != '/') {
+	while ((c = in.get()) != std::istream::traits_type::eof() &&
+	       !isspace((char)c, in.getloc()) && c != '/') {
 		out.push_back(c);
 		readSomething = true;
 	}
@@ -81,8 +80,7 @@ inline bool read_to_slash(std::istream& in, std::string& out)
 	in >> std::ws;
 	int c;
 	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof()
-	        &&  c != '/') {
+	while ((c = in.get()) != std::istream::traits_type::eof() && c != '/') {
 		out.push_back(c);
 		readSomething = true;
 	}
@@ -106,6 +104,5 @@ inline void parse_morhological_fields(std::istream& in,
 	}
 	reset_failbit_istream(in);
 }
-
 }
 #endif

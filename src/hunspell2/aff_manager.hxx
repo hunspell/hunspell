@@ -28,25 +28,21 @@
 #define HUNSPELL_AFF_MANAGER_HXX
 
 #include "string_utils.hxx"
-#include <string>
-#include <vector>
-#include <utility>
 #include <istream>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace hunspell {
 
-enum flag_type_t {
-	single_char_flag, double_char_flag, number_flag, utf8_flag
-};
+enum flag_type_t { single_char_flag, double_char_flag, number_flag, utf8_flag };
 
 struct aff_data {
 	using string = std::string;
 	using u16string = std::u16string;
 	using istream = std::istream;
-	template <class T>
-	using vector = std::vector<T>;
-	template <class T, class U>
-	using pair = std::pair<T, U>;
+	template <class T> using vector = std::vector<T>;
+	template <class T, class U> using pair = std::pair<T, U>;
 
 	string encoding;
 	flag_type_t flag_type;
@@ -56,7 +52,7 @@ struct aff_data {
 	vector<u16string> flag_aliases;
 	vector<vector<string>> morphological_aliases;
 
-	//suggestion options
+	// suggestion options
 	string keyboard_layout;
 	string try_chars;
 	char16_t nosuggest_flag;
@@ -72,7 +68,7 @@ struct aff_data {
 	char16_t warn_flag;
 	bool forbid_warn;
 
-	//compouding options
+	// compouding options
 	vector<string> break_patterns;
 	vector<string> compound_rules;
 	short compoud_minimum;
@@ -105,7 +101,7 @@ struct aff_data {
 	string compound_syllable_vowels;
 	u16string compound_syllable_num;
 
-	//affix creation
+	// affix creation
 	struct affix {
 		char16_t flag;
 		bool cross_product;
@@ -118,7 +114,7 @@ struct aff_data {
 	vector<affix> prefixes;
 	vector<affix> suffixes;
 
-	//others
+	// others
 	char16_t circumfix_flag;
 	char16_t forbiddenword_flag;
 	bool fullstrip;
@@ -130,20 +126,18 @@ struct aff_data {
 	string wordchars;
 	bool checksharps;
 
-	//methods
+	// methods
 	bool parse(std::istream& in);
 
-	u16string decode_flags(istream& in,
-	                       utf8_to_ucs2_converter& cv) const;
+	u16string decode_flags(istream& in, utf8_to_ucs2_converter& cv) const;
 
-	//u16string decode_flags(istream& in);
+	// u16string decode_flags(istream& in);
 
 	char16_t decode_single_flag(istream& in,
 	                            utf8_to_ucs2_converter& cv) const;
 
-	//char16_t decode_single_flag(istream& in);
+	// char16_t decode_single_flag(istream& in);
 };
-
 }
 
 #endif

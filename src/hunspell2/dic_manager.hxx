@@ -28,32 +28,29 @@
 #define HUNSPELL_DIC_MANAGER_HXX
 
 #include "aff_manager.hxx"
-#include <string>
-#include <vector>
 #include <istream>
+#include <string>
 #include <unordered_map>
-
+#include <vector>
 
 namespace hunspell {
 
 struct dic_data {
-	//word and flag vector
-	//efficient for short flag vectors
-	//for long flag vectors like in Korean dict
-	//we should keep pointers to the string in the affix aliases vector
-	//for now we will leave it like this
+	// word and flag vector
+	// efficient for short flag vectors
+	// for long flag vectors like in Korean dict
+	// we should keep pointers to the string in the affix aliases vector
+	// for now we will leave it like this
 	std::unordered_map<std::string, std::u16string> words;
 
-	//word and morphological data
-	//we keep them separate because morph data is generally absent
+	// word and morphological data
+	// we keep them separate because morph data is generally absent
 	std::unordered_map<std::string, std::vector<std::string>> morph_data;
 
-
-	//methods
-	//parses the dic data to hashtable
+	// methods
+	// parses the dic data to hashtable
 	bool parse(std::istream& in, const aff_data& aff);
 };
-
 }
 
 #endif

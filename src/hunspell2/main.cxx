@@ -24,33 +24,31 @@
  * the Initial Developers. All Rights Reserved.
  */
 
-
 #include "aff_manager.hxx"
 #include "dic_manager.hxx"
 #include "dict_finder.hxx"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 
-
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
 	auto v = hunspell::get_default_search_directories();
 	hunspell::get_mozilla_directories(v);
 	hunspell::get_libreoffice_directories(v);
-	for (auto& a: v) {
+	for (auto& a : v) {
 		cout << a << endl;
 	}
 	auto dics = hunspell::search_dirs_for_dicts(v);
-	for (auto& a: dics) {
+	for (auto& a : dics) {
 		cout << a.first << '\t' << a.second << endl;
 	}
 	if (argc < 2) {
 		return 0;
 	}
 	string filename;
-	for (auto& a: dics) {
+	for (auto& a : dics) {
 		if (a.first == argv[1]) {
 			filename = a.second;
 			break;
@@ -67,21 +65,20 @@ int main(int argc, char * argv[])
 	dic.parse(dicstream, aff);
 	std::cout << aff.encoding << endl;
 	std::cout << aff.try_chars << endl;
-	for (auto& a: aff.compound_rules) {
+	for (auto& a : aff.compound_rules) {
 		cout << a << endl;
 	}
-	for (auto& a: aff.suffixes) {
-		cout << (char)a.flag << ' '
-		     << (a.cross_product ? 'Y' : 'N') << ' '
-		     << a.stripping << ' '
-		     << a.affix << (a.new_flags.size() ? "/ " : " ")
-		     << a.condition << endl;
+	for (auto& a : aff.suffixes) {
+		cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
+		     << ' ' << a.stripping << ' ' << a.affix
+		     << (a.new_flags.size() ? "/ " : " ") << a.condition
+		     << endl;
 	}
-	for (auto& wd: dic.words) {
+	for (auto& wd : dic.words) {
 		cout << wd.first;
 		if (wd.second.size()) {
 			cout << '/';
-			for (auto& flag: wd.second) {
+			for (auto& flag : wd.second) {
 				cout << flag << ',';
 			}
 		}

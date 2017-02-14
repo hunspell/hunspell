@@ -26,12 +26,11 @@
 
 #ifndef HUNSPELL_DIC_FINDER_HXX
 #define HUNSPELL_DIC_FINDER_HXX
-#include <vector>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace hunspell {
-
 
 std::vector<std::string> get_default_search_directories();
 
@@ -40,7 +39,6 @@ void get_mozilla_directories(std::vector<std::string>& out);
 void get_libreoffice_directories(std::vector<std::string>& out);
 
 std::vector<std::pair<std::string, std::string>>
-        search_dirs_for_dicts(const std::vector<std::string>& dirs);
-
+search_dirs_for_dicts(const std::vector<std::string>& dirs);
 }
 #endif
