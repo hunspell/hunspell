@@ -32,13 +32,13 @@
 
 namespace hunspell {
 
-std::vector<std::string> get_default_search_directories();
+auto get_default_search_directories() -> std::vector<std::string>;
 
-void get_mozilla_directories(std::vector<std::string>& out);
+auto get_mozilla_directories(std::vector<std::string>& out) -> void;
 
-void get_libreoffice_directories(std::vector<std::string>& out);
+auto get_libreoffice_directories(std::vector<std::string>& out) -> void;
 
-std::vector<std::pair<std::string, std::string>>
-search_dirs_for_dicts(const std::vector<std::string>& dirs);
+auto search_dirs_for_dicts(const std::vector<std::string>& dirs)
+    -> std::vector<std::pair<std::string, std::string>>;
 }
 #endif

@@ -43,7 +43,7 @@ using namespace std;
 namespace hunspell {
 
 template <class CharT, class OutIt>
-OutIt split(const basic_string<CharT>& s, CharT sep, OutIt out)
+auto split(const basic_string<CharT>& s, CharT sep, OutIt out) -> OutIt
 {
 	basic_istringstream<CharT> is(s);
 	basic_string<CharT> out_str;
@@ -54,7 +54,8 @@ OutIt split(const basic_string<CharT>& s, CharT sep, OutIt out)
 	return out;
 }
 
-template <class OutIt> OutIt get_default_search_directories(OutIt out)
+template <class OutIt>
+auto get_default_search_directories(OutIt out) -> OutIt
 {
 	*out = ".";
 	++out;
@@ -84,7 +85,7 @@ template <class OutIt> OutIt get_default_search_directories(OutIt out)
 	return out;
 }
 
-vector<string> get_default_search_directories()
+auto get_default_search_directories() -> vector<string>
 {
 	vector<string> v;
 	get_default_search_directories(back_inserter(v));
@@ -94,21 +95,25 @@ vector<string> get_default_search_directories()
 struct Globber {
 	glob_t globdata;
 	int ret;
-	Globber(const char* pattern) : globdata{0}
+	Globber(const char* pattern) : globdata{}
 	{
 		ret = ::glob(pattern, 0, nullptr, &globdata);
 	}
 	Globber(const string& pattern) : Globber(pattern.c_str()) {}
-	int glob(const char* pattern)
+	auto glob(const char* pattern) -> int
 	{
 		globfree(&globdata);
 		ret = ::glob(pattern, 0, nullptr, &globdata);
 		return ret;
 	}
-	int glob(const string& pattern) { return glob(pattern.c_str()); }
-	char** begin() { return globdata.gl_pathv; }
-	char** end() { return begin() + globdata.gl_pathc; }
-	template <class OutIt> OutIt copy_glob_paths(OutIt out)
+	auto glob(const string& pattern) -> int
+	{
+		return glob(pattern.c_str());
+	}
+	auto begin() -> char** { return globdata.gl_pathv; }
+	auto end() -> char** { return begin() + globdata.gl_pathc; }
+	template <class OutIt>
+	OutIt copy_glob_paths(OutIt out)
 	{
 		if (ret == 0) {
 			out = copy(begin(), end(), out);
@@ -118,7 +123,8 @@ struct Globber {
 	~Globber() { globfree(&globdata); }
 };
 
-template <class OutIt> OutIt get_mozilla_directories(OutIt out)
+template <class OutIt>
+auto get_mozilla_directories(OutIt out) -> OutIt
 {
 	// add Mozilla global directory
 	array<const char*, 2> dirs = {"/usr/local/lib/firefox/dictionaries",
@@ -146,12 +152,13 @@ template <class OutIt> OutIt get_mozilla_directories(OutIt out)
 	return out;
 }
 
-void get_mozilla_directories(std::vector<std::string>& out)
+auto get_mozilla_directories(std::vector<std::string>& out) -> void
 {
 	get_mozilla_directories(back_inserter(out));
 }
 
-template <class OutIt> OutIt get_libreoffice_directories(OutIt out)
+template <class OutIt>
+auto get_libreoffice_directories(OutIt out) -> OutIt
 {
 	// add Libreoffice global directories
 
@@ -186,7 +193,7 @@ template <class OutIt> OutIt get_libreoffice_directories(OutIt out)
 	return out;
 }
 
-void get_libreoffice_directories(std::vector<std::string>& out)
+auto get_libreoffice_directories(std::vector<std::string>& out) -> void
 {
 	get_libreoffice_directories(back_inserter(out));
 }
@@ -196,7 +203,7 @@ struct Directory {
 	Directory() : dp(nullptr) {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
-	bool open(const string& dirname)
+	auto open(const string& dirname) -> bool
 	{
 		if (dp) {
 			(void)closedir(dp);
@@ -204,7 +211,7 @@ struct Directory {
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
-	void close()
+	auto close() -> void
 	{
 		(void)closedir(dp);
 		dp = nullptr;
@@ -212,7 +219,8 @@ struct Directory {
 	~Directory() { close(); }
 };
 
-template <class OutIt> OutIt search_dir_for_dicts(const string& dir, OutIt out)
+template <class OutIt>
+auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 {
 	// DIR* dp = opendir(dir.c_str()); //wrapped in RAII class
 	Directory d; // this is the RAII class
@@ -255,7 +263,8 @@ template <class OutIt> OutIt search_dir_for_dicts(const string& dir, OutIt out)
 	return out;
 }
 
-vector<pair<string, string>> search_dirs_for_dicts(const vector<string>& dirs)
+auto search_dirs_for_dicts(const vector<string>& dirs)
+    -> vector<pair<string, string>>
 {
 
 	vector<pair<string, string>> v;

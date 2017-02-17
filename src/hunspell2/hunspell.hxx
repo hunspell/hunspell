@@ -27,26 +27,28 @@ class hunspell {
 	(2) will call this with u8_u32 on the fly conversion iterator.
 	*/
 	template <class ConvIter>
-	spell_result spell(ConvIter start, ConvIter end, const string& s);
+	auto spell(ConvIter start, ConvIter end, const string& s)
+	    -> spell_result;
 
 	/**
 	 (1) This should be called when the input and the dictionary
 	 are in the same encoding and that encoding is single byte encoding.
 	*/
-	spell_result spell_singlechar_input_singlechar_dict(const string& word);
+	auto spell_singlechar_input_singlechar_dict(const string& word)
+	    -> spell_result;
 
 	/**
 	 (2) This should be called when the input and the dictionary
 	 are in the same encoding and that encoding UTF-8.
 	*/
-	spell_result spell_u8_input_u8_dict(const string& word);
+	auto spell_u8_input_u8_dict(const string& word) -> spell_result;
 
 	/*
 	 (3) This should be called when the input is UTF-8 string
 	 and the dictionary is byte encoding. Lossy conversion should happend
 	 UTF-8 to single byte, and then (1) should be called.
 	*/
-	spell_result spell_u8_input_singlechar_dict(const string& word);
+	auto spell_u8_input_singlechar_dict(const string& word) -> spell_result;
 
 	/*
 	 (4) This should be called when the input is
@@ -77,7 +79,7 @@ class hunspell {
 	 Simply calls (1) or (2).
 	 This is the same as spell() in v1.
 	*/
-	spell_result spell(const string& word);
+	auto spell(const string& word) -> spell_result;
 
 	/**
 	 (6) Unknown narrow input (single byte or multi byte).
@@ -93,22 +95,23 @@ class hunspell {
 	 setlocale(LC_ALL, "") or locale::global(locale("")).
 	 If we use std::cin, we should imbue it with cin.imbue(locale())
 	*/
-	spell_result spell_narrow_input(const string& word);
+	auto spell_narrow_input(const string& word) -> spell_result;
 
 	/**
 	 (7) UTF-8 input. Will delegate either to (2) or (3).
 	*/
-	spell_result spell_u8_input(const string& word);
+	auto spell_u8_input(const string& word) -> spell_result;
 
       private:
 	/** (8) */
-	spell_result spell_u16_input_singlechar_dict(const u16string& word);
+	auto spell_u16_input_singlechar_dict(const u16string& word)
+	    -> spell_result;
 
 	/** (9) */
-	spell_result spell_u16_input_u8_dict(const u16string& word);
+	auto spell_u16_input_u8_dict(const u16string& word) -> spell_result;
 
       public:
 	/** (10) */
-	spell_result spell_u16_input(const u16string& word);
+	auto spell_u16_input(const u16string& word) -> spell_result;
 };
 }

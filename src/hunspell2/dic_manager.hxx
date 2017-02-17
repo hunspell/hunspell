@@ -49,7 +49,7 @@ struct dic_data {
 
 	// methods
 	// parses the dic data to hashtable
-	bool parse(std::istream& in, const aff_data& aff);
+	auto parse(std::istream& in, const aff_data& aff) -> bool;
 };
 }
 

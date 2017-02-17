@@ -36,7 +36,7 @@ namespace hunspell {
 
 using namespace std;
 
-bool dic_data::parse(std::istream& in, const aff_data& aff)
+auto dic_data::parse(std::istream& in, const aff_data& aff) -> bool
 {
 	size_t approximate_size;
 	if (in >> approximate_size) {
@@ -100,5 +100,6 @@ bool dic_data::parse(std::istream& in, const aff_data& aff)
 		sort(vec.begin(), vec.end());
 		vec.erase(unique(vec.begin(), vec.end()), vec.end());
 	}
+	return in.eof(); // success if we reached eof
 }
 }

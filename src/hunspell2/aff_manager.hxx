@@ -41,8 +41,10 @@ struct aff_data {
 	using string = std::string;
 	using u16string = std::u16string;
 	using istream = std::istream;
-	template <class T> using vector = std::vector<T>;
-	template <class T, class U> using pair = std::pair<T, U>;
+	template <class T>
+	using vector = std::vector<T>;
+	template <class T, class U>
+	using pair = std::pair<T, U>;
 
 	string encoding;
 	flag_type_t flag_type;
@@ -127,14 +129,15 @@ struct aff_data {
 	bool checksharps;
 
 	// methods
-	bool parse(std::istream& in);
+	auto parse(std::istream& in) -> bool;
 
-	u16string decode_flags(istream& in, utf8_to_ucs2_converter& cv) const;
+	auto decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
+	    -> u16string;
 
 	// u16string decode_flags(istream& in);
 
-	char16_t decode_single_flag(istream& in,
-	                            utf8_to_ucs2_converter& cv) const;
+	auto decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
+	    -> char16_t;
 
 	// char16_t decode_single_flag(istream& in);
 };

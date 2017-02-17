@@ -39,9 +39,9 @@ using namespace std;
 namespace {
 
 template <class T, class Func>
-void parse_vector_of_T(istream& in, const string& command,
+auto parse_vector_of_T(istream& in, const string& command,
                        unordered_map<string, int>& counts, vector<T>& vec,
-                       Func parseLineFunc)
+                       Func parseLineFunc) -> void
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
@@ -70,8 +70,8 @@ void parse_vector_of_T(istream& in, const string& command,
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-std::u16string decode_flags(std::istream& in, flag_type_t t,
-                            utf8_to_ucs2_converter& cv)
+auto decode_flags(std::istream& in, flag_type_t t, utf8_to_ucs2_converter& cv)
+    -> u16string
 {
 	string s;
 	u16string ret;
@@ -133,9 +133,9 @@ std::u16string decode_flags(std::istream& in, flag_type_t t,
 	return ret;
 }
 
-void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
+auto parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
                  unordered_map<string, pair<bool, int>>& cmd_affix,
-                 utf8_to_ucs2_converter& cv, aff_data& thiss)
+                 utf8_to_ucs2_converter& cv, aff_data& thiss) -> void
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
 	if (f == 0) {
@@ -186,13 +186,14 @@ void parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 }
 }
 
-u16string aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
+auto aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
+    -> u16string
 {
 	return hunspell::decode_flags(in, flag_type, cv);
 }
 
-char16_t aff_data::decode_single_flag(istream& in,
-                                      utf8_to_ucs2_converter& cv) const
+auto aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
+    -> char16_t
 {
 	auto flags = decode_flags(in, cv);
 	if (flags.size()) {
@@ -201,7 +202,7 @@ char16_t aff_data::decode_single_flag(istream& in,
 	return 0;
 }
 
-bool aff_data::parse(std::istream& in)
+auto aff_data::parse(std::istream& in) -> bool
 {
 	unordered_map<string, string*> command_strings = {
 	    {"SET", &encoding},        {"LANG", &language_code},

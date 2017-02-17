@@ -3,3 +3,4 @@ IndentWidth: 8
 UseTab: ForIndentation
 BreakBeforeBraces: Stroustrup
 PointerAlignment: Left
+AlwaysBreakTemplateDeclarations: true

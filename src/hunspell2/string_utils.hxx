@@ -51,8 +51,10 @@ inline void reset_failbit_istream(std::istream& in)
 	in.clear(in.rdstate() & ~in.failbit);
 }
 
-template <class To> struct cast_lambda {
-	template <class From> To operator()(From& f) const
+template <class To>
+struct cast_lambda {
+	template <class From>
+	To operator()(From& f) const
 	{
 		return static_cast<To>(f);
 	}
