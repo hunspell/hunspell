@@ -33,10 +33,28 @@
 #include <unordered_set>
 #include <utility>
 
+#if !defined(_WIN32) && (defined(__unix__) || defined(__unix) ||               \
+                         (defined(__APPLE__) && defined(__MACH__)))
+#include <unistd.h>
+#ifdef _POSIX_VERSION
 #include <dirent.h>
 #include <glob.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#endif
+
+#elif defined(__MINGW32__)
+// Windows with Mingw. _WIN32 is also defined
+// mingw unistd.h does not define _POSIX_VERSION, as expected
+#include <dirent.h>
+#include <glob.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#elif defined(_WIN32)
+// windows with non Mingw, usually MSVC
+// #include <windows.h> // not the most pleasent header 
+#endif
 
 using namespace std;
 
@@ -64,6 +82,7 @@ auto get_default_search_directories(OutIt out) -> OutIt
 		out = split(string(dicpath), ':', out);
 	}
 	char* home = getenv("HOME");
+#if defined(_POSIX_VERSION)
 	array<string, 3> prefixes = {home ? string(home) + "/.local/" : "/",
 	                             "/usr/local/", "/usr/"};
 	array<const char*, 3> dirs = {"share/hunspell", "share/myspell",
@@ -74,14 +93,18 @@ auto get_default_search_directories(OutIt out) -> OutIt
 			++out;
 		}
 	}
+#endif
+#if defined(__APPLE__) && defined(__MACH__)
 	string osx = "/Library/Spelling";
 	if (home) {
-		*out = home + osx;
-		++out;
+		*out++ = home + osx;
 	}
-	*out = osx;
-	++out;
-
+	*out++ = osx;
+#endif
+#if defined(_WIN32)
+	*out++ = "%LOCALAPPDATA%/hunspell";
+	*out++ = "%PROGRAMDATA%/hunspell";
+#endif
 	return out;
 }
 
@@ -92,28 +115,31 @@ auto get_default_search_directories() -> vector<string>
 	return v;
 }
 
-struct Globber {
+#if defined(_POSIX_VERSION) || defined(__MINGW32__)
+class Globber {
+private:
 	glob_t globdata;
 	int ret;
+public:
 	Globber(const char* pattern) : globdata{}
 	{
 		ret = ::glob(pattern, 0, nullptr, &globdata);
 	}
 	Globber(const string& pattern) : Globber(pattern.c_str()) {}
-	auto glob(const char* pattern) -> int
+	auto glob(const char* pattern) -> bool
 	{
 		globfree(&globdata);
 		ret = ::glob(pattern, 0, nullptr, &globdata);
-		return ret;
+		return ret == 0;
 	}
-	auto glob(const string& pattern) -> int
+	auto glob(const string& pattern) -> bool
 	{
 		return glob(pattern.c_str());
 	}
 	auto begin() -> char** { return globdata.gl_pathv; }
 	auto end() -> char** { return begin() + globdata.gl_pathc; }
 	template <class OutIt>
-	OutIt copy_glob_paths(OutIt out)
+	auto copy_glob_paths(OutIt out) -> OutIt
 	{
 		if (ret == 0) {
 			out = copy(begin(), end(), out);
@@ -122,10 +148,23 @@ struct Globber {
 	}
 	~Globber() { globfree(&globdata); }
 };
+#else
+//unimplemented
+class Globber {
+	Globber(const char* pattern) {}
+	Globber(const string& pattern) {}
+	auto glob(const char* pattern) -> bool {return false;}
+	auto begin() -> char** { return nullptr; }
+	auto end() -> char** { return nullptr; }
+	template <class OutIt>
+	auto copy_glob_paths(OutIt out) -> OutIt {return out;}
+};
+#endif
 
 template <class OutIt>
 auto get_mozilla_directories(OutIt out) -> OutIt
 {
+#ifdef _POSIX_VERSION
 	// add Mozilla global directory
 	array<const char*, 2> dirs = {"/usr/local/lib/firefox/dictionaries",
 	                              "/usr/lib/firefox/dictionaries"};
@@ -133,26 +172,36 @@ auto get_mozilla_directories(OutIt out) -> OutIt
 	for (auto& dir : dirs) {
 		if (lstat(dir, &dir_stat) == 0) {
 			if (S_ISDIR(dir_stat.st_mode)) {
-				*out = dir;
-				++out;
+				*out++ = dir;
 			}
 			// if SYMLINK do not add
 		}
 	}
+#elif defined(_WIN32)
+	// the bellow code should cover the majority of cases
+	// otherwise we should query the registry
+	*out++ "%PROGRAMFILES%/Firefox/dictionaries";
+	*out++ "%PROGRAMFILES(x86)%/Firefox/dictionaries";
+#endif
 
+	string moz;
+#ifdef _POSIX_VERSION
 	// add Mozilla user directory
 	char* home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
-	string moz = home;
+	moz = home;
 	moz += "/.mozilla/firefox/*/extensions/*/dictionaries";
+#elif defined(_WIN32)
+	moz = "%APPDATA%/Mozilla/Firefox/Profiles/*/extensions/*/dictionaries";
+#endif
 	Globber g(moz);
-	g.copy_glob_paths(out);
+	out = g.copy_glob_paths(out);
 	return out;
 }
 
-auto get_mozilla_directories(std::vector<std::string>& out) -> void
+auto get_mozilla_directories(vector<string>& out) -> void
 {
 	get_mozilla_directories(back_inserter(out));
 }
