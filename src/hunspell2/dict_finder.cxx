@@ -296,9 +296,16 @@ auto get_libreoffice_directories(std::vector<std::string>& out) -> void
 	get_libreoffice_directories(back_inserter(out));
 }
 
-struct Directory {
-	DIR* dp;
-	Directory() : dp(nullptr) {}
+#if defined(_POSIX_VERSION) || defined(__MINGW32__)
+class Directory {
+	DIR* dp = nullptr;
+#ifdef _POSIX_VERSION
+	struct dirent ent;
+#endif
+	struct dirent* ent_p = nullptr;
+
+      public:
+	Directory() {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
 	auto open(const string& dirname) -> bool
@@ -309,6 +316,15 @@ struct Directory {
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
+	auto next() -> bool
+	{
+#ifdef _POSIX_VERSION
+		return readdir_r(dp, &ent, &ent_p) == 0 && ent_p;
+#else
+		return (ent_p = readdir(dp));
+#endif
+	}
+	auto entry_name() -> const char* { return ent_p->d_name; }
 	auto close() -> void
 	{
 		(void)closedir(dp);
@@ -316,28 +332,30 @@ struct Directory {
 	}
 	~Directory() { close(); }
 };
+#else
+struct Directory()
+{
+	Directory() {}
+	Directory(const Directory& d) = delete;
+	void operator=(const Directory& d) = delete;
+	auto open(const string& dirname)->bool { return false; }
+	auto next()->bool { return false; }
+	auto entry_name()->const char* { return nullptr; }
+	auto close() {}
+}
+#endif
 
 template <class OutIt>
 auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 {
-	// DIR* dp = opendir(dir.c_str()); //wrapped in RAII class
-	Directory d; // this is the RAII class
+	Directory d;
 	if (d.open(dir) == false) {
 		return out;
 	}
-	struct dirent ent;
-	struct dirent* ent_p = nullptr;
 	unordered_set<string> dics;
 	string file_name;
-#ifdef _POSIX_VERSION
-	while (readdir_r(d.dp, &ent, &ent_p) == 0 && ent_p) {
-		file_name = ent_p->d_name;
-#elif defined(__MINGW32__)
-	while (ent_p = readdir(d.dp)) {
-		file_name = ent_p->d_name;
-#else
-	while (0) {
-#endif
+	while (d.next()) {
+		file_name = d.entry_name();
 		auto sz = file_name.size();
 		if (sz < 4) {
 			continue;
