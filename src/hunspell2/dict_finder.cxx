@@ -43,17 +43,17 @@
 #include <sys/types.h>
 #endif
 
-#elif defined(__MINGW32__)
-// Windows with Mingw. _WIN32 is also defined
-// mingw unistd.h does not define _POSIX_VERSION, as expected
-#include <dirent.h>
-#include <glob.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+const char PATHSEP = ':';
 
 #elif defined(_WIN32)
-// windows with non Mingw, usually MSVC
-// #include <windows.h> // not the most pleasent header 
+
+#ifdef __MINGW32__
+#include <dirent.h>
+//#include <glob.h> //not present in mingw-w64. present in vanilla mingw
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif //__MINGW32__
+
 #endif
 
 using namespace std;
@@ -72,17 +72,23 @@ auto split(const basic_string<CharT>& s, CharT sep, OutIt out) -> OutIt
 	return out;
 }
 
+#ifdef _WIN32
+const char PATHSEP = ';';
+#else
+const char PATHSEP = ':';
+#endif
+
 template <class OutIt>
 auto get_default_search_directories(OutIt out) -> OutIt
 {
-	*out = ".";
-	++out;
+	*out++ = ".";
 	char* dicpath = getenv("DICPATH");
 	if (dicpath) {
-		out = split(string(dicpath), ':', out);
+		out = split(string(dicpath), PATHSEP, out);
 	}
+	*out++ = "/mingw64/share/hunspell";
 	char* home = getenv("HOME");
-#if defined(_POSIX_VERSION)
+#ifdef _POSIX_VERSION
 	array<string, 3> prefixes = {home ? string(home) + "/.local/" : "/",
 	                             "/usr/local/", "/usr/"};
 	array<const char*, 3> dirs = {"share/hunspell", "share/myspell",
@@ -101,9 +107,14 @@ auto get_default_search_directories(OutIt out) -> OutIt
 	}
 	*out++ = osx;
 #endif
-#if defined(_WIN32)
-	*out++ = "%LOCALAPPDATA%/hunspell";
-	*out++ = "%PROGRAMDATA%/hunspell";
+#ifdef _WIN32
+	array<char*, 2> winpaths = {getenv("LOCALAPPDATA"),
+	                            getenv("PROGRAMDATA")};
+	for (auto& p : winpaths) {
+		if (p) {
+			*out++ = string(p) + "/hunspell";
+		}
+	}
 #endif
 	return out;
 }
@@ -115,12 +126,13 @@ auto get_default_search_directories() -> vector<string>
 	return v;
 }
 
-#if defined(_POSIX_VERSION) || defined(__MINGW32__)
+#ifdef _POSIX_VERSION
 class Globber {
-private:
+      private:
 	glob_t globdata;
 	int ret;
-public:
+
+      public:
 	Globber(const char* pattern) : globdata{}
 	{
 		ret = ::glob(pattern, 0, nullptr, &globdata);
@@ -149,15 +161,19 @@ public:
 	~Globber() { globfree(&globdata); }
 };
 #else
-//unimplemented
-class Globber {
+// unimplemented
+struct Globber {
 	Globber(const char* pattern) {}
 	Globber(const string& pattern) {}
-	auto glob(const char* pattern) -> bool {return false;}
+	auto glob(const char* pattern) -> bool { return false; }
+	auto glob(const string& pattern) -> bool { return false; }
 	auto begin() -> char** { return nullptr; }
 	auto end() -> char** { return nullptr; }
 	template <class OutIt>
-	auto copy_glob_paths(OutIt out) -> OutIt {return out;}
+	auto copy_glob_paths(OutIt out) -> OutIt
+	{
+		return out;
+	}
 };
 #endif
 
@@ -165,7 +181,7 @@ template <class OutIt>
 auto get_mozilla_directories(OutIt out) -> OutIt
 {
 #ifdef _POSIX_VERSION
-	// add Mozilla global directory
+	// add Mozilla linux global directory
 	array<const char*, 2> dirs = {"/usr/local/lib/firefox/dictionaries",
 	                              "/usr/lib/firefox/dictionaries"};
 	struct stat dir_stat;
@@ -177,27 +193,36 @@ auto get_mozilla_directories(OutIt out) -> OutIt
 			// if SYMLINK do not add
 		}
 	}
-#elif defined(_WIN32)
-	// the bellow code should cover the majority of cases
-	// otherwise we should query the registry
-	*out++ "%PROGRAMFILES%/Firefox/dictionaries";
-	*out++ "%PROGRAMFILES(x86)%/Firefox/dictionaries";
-#endif
 
-	string moz;
-#ifdef _POSIX_VERSION
-	// add Mozilla user directory
+	// add Mozilla linux user directory
 	char* home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
-	moz = home;
+	string moz = home;
 	moz += "/.mozilla/firefox/*/extensions/*/dictionaries";
-#elif defined(_WIN32)
-	moz = "%APPDATA%/Mozilla/Firefox/Profiles/*/extensions/*/dictionaries";
-#endif
 	Globber g(moz);
 	out = g.copy_glob_paths(out);
+
+#elif defined(_WIN32)
+	// add Mozilla windows global directory
+	array<char*, 2> winpaths = {getenv("PROGRAMFILES"),
+	                            getenv("PROGRAMFILES(x86)")};
+	for (auto& p : winpaths) {
+		if (p) {
+			*out++ = string(p) + "/Mozilla Firefox/dictionaries";
+		}
+	}
+	// add Mozilla windows local directory
+	char* home = getenv("APPDATA");
+	if (home == nullptr) {
+		return out;
+	}
+	string moz = home;
+	moz += "/Mozilla/Firefox/Profiles/*/extensions/*/dictionaries";
+	Globber g(moz);
+	out = g.copy_glob_paths(out);
+#endif
 	return out;
 }
 
@@ -209,8 +234,9 @@ auto get_mozilla_directories(vector<string>& out) -> void
 template <class OutIt>
 auto get_libreoffice_directories(OutIt out) -> OutIt
 {
-	// add Libreoffice global directories
-
+	string lo_user_glob;
+#ifdef _POSIX_VERSION
+	// add Libreoffice linux global directories
 	array<const char*, 3> prefixes = {"/usr/local/lib/libreoffice",
 	                                  "/usr/lib/libreoffice",
 	                                  "/opt/libreoffice*"};
@@ -219,15 +245,38 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 		out = g.copy_glob_paths(out);
 	}
 
+	// add Libreoffice linux local
+
 	char* home = getenv("HOME");
 	if (home == nullptr) {
 		return out;
 	}
-
-	string lo_user_glob = home;
+	lo_user_glob = home;
 	lo_user_glob += "/.config/libreoffice/?/user/uno_packages/cache"
 	                "/uno_packages/*/*.oxt/";
+#elif defined(_WIN32)
+	// add Libreoffice windows global directories
+	array<char*, 2> prefixes = {getenv("PROGRAMFILES"),
+	                            getenv("PROGRAMFILES(x86)")};
+	for (auto& p : prefixes) {
+		if (p == nullptr) {
+			continue;
+		}
+		Globber g(string(p) + "Libre Office ?/share/extensions/dict-*");
+		out = g.copy_glob_paths(out);
+	}
 
+	char* home = getenv("APPDATA");
+	if (home == nullptr) {
+		return out;
+	}
+	lo_user_glob = home;
+	lo_user_glob += "/libreoffice/?/user/uno_packages/cache"
+	                "/uno_packages/*/*.oxt/";
+#else
+	return out;
+#endif
+	// finish adding LO user directory dicts (linux and windows)
 	Globber g(lo_user_glob + "dictionaries");
 	out = g.copy_glob_paths(out);
 
@@ -236,7 +285,7 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 	for (auto& path : g) {
 		path_str = path;
 		path_str.erase(path_str.rfind('/'));
-		*out = std::move(path_str);
+		*out = path_str;
 		++out;
 	}
 	return out;
@@ -280,8 +329,15 @@ auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 	struct dirent* ent_p = nullptr;
 	unordered_set<string> dics;
 	string file_name;
+#ifdef _POSIX_VERSION
 	while (readdir_r(d.dp, &ent, &ent_p) == 0 && ent_p) {
 		file_name = ent_p->d_name;
+#elif defined(__MINGW32__)
+	while (ent_p = readdir(d.dp)) {
+		file_name = ent_p->d_name;
+#else
+	while (0) {
+#endif
 		auto sz = file_name.size();
 		if (sz < 4) {
 			continue;
