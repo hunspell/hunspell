@@ -129,27 +129,27 @@ auto get_default_search_directories() -> vector<string>
 #ifdef _POSIX_VERSION
 class Globber {
       private:
-	glob_t globdata;
+	glob_t g;
 	int ret;
 
       public:
-	Globber(const char* pattern) : globdata{}
+	Globber(const char* pattern) : g{}
 	{
-		ret = ::glob(pattern, 0, nullptr, &globdata);
+		ret = ::glob(pattern, 0, nullptr, &g);
 	}
 	Globber(const string& pattern) : Globber(pattern.c_str()) {}
 	auto glob(const char* pattern) -> bool
 	{
-		globfree(&globdata);
-		ret = ::glob(pattern, 0, nullptr, &globdata);
+		globfree(&g);
+		ret = ::glob(pattern, 0, nullptr, &g);
 		return ret == 0;
 	}
 	auto glob(const string& pattern) -> bool
 	{
 		return glob(pattern.c_str());
 	}
-	auto begin() -> char** { return globdata.gl_pathv; }
-	auto end() -> char** { return begin() + globdata.gl_pathc; }
+	auto begin() -> const char* const* { return g.gl_pathv; }
+	auto end() -> const char* const* { return begin() + g.gl_pathc; }
 	template <class OutIt>
 	auto copy_glob_paths(OutIt out) -> OutIt
 	{
@@ -158,7 +158,7 @@ class Globber {
 		}
 		return out;
 	}
-	~Globber() { globfree(&globdata); }
+	~Globber() { globfree(&g); }
 };
 #else
 // unimplemented
