@@ -624,6 +624,18 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
         return false;
       return true;
     }
+
+    // output conversion
+    if (root) {
+      rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+      if (rl) {
+        std::string wspace;
+        if (rl->conv(*root, wspace)) {
+          *root = wspace;
+        }
+      }
+    }
+
     return true;
   }
 
@@ -1438,7 +1450,18 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         result.push_back('+');  // XXX SPEC. MORPHCODE
         cat_result(result, pSMgr->suggest_morph(scw.substr(n)));
       }
-      return line_tok(result, MSEP_REC);
+      slst = line_tok(result, MSEP_REC);
+      // output conversion
+      rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+      if (rl) {
+        for (size_t j = 0; rl && j < slst.size(); ++j) {
+          std::string wspace;
+          if (rl->conv(slst[j], wspace)) {
+            slst[j] = wspace;
+          }
+        }
+      }
+      return slst;
     }
   }
   // END OF LANG_hu section
@@ -1506,7 +1529,18 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       else
         reverseword(result);
     }
-    return line_tok(result, MSEP_REC);
+    slst = line_tok(result, MSEP_REC);
+    // output conversion
+    rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+    if (rl) {
+      for (size_t j = 0; rl && j < slst.size(); ++j) {
+        std::string wspace;
+        if (rl->conv(slst[j], wspace)) {
+          slst[j] = wspace;
+        }
+      }
+    }
+    return slst;
   }
 
   // compound word with dash (HU) I18n
@@ -1525,6 +1559,16 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
+          // output conversion
+          rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+          if (rl) {
+            for (size_t j = 0; rl && j < slst.size(); ++j) {
+              std::string wspace;
+              if (rl->conv(slst[j], wspace)) {
+                slst[j] = wspace;
+              }
+            }
+          }
           return slst;
         }
       }
@@ -1539,7 +1583,18 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         if (!st.empty()) {
           result.append(st);
         }
-        return line_tok(result, MSEP_REC);
+        slst = line_tok(result, MSEP_REC);
+        // output conversion
+        rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+        if (rl) {
+          for (size_t j = 0; rl && j < slst.size(); ++j) {
+            std::string wspace;
+            if (rl->conv(slst[j], wspace)) {
+              slst[j] = wspace;
+            }
+          }
+        }
+        return slst;
       }
     } else {
       // first word ending with dash: word- XXX ???
@@ -1557,7 +1612,18 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         if (!st.empty()) {
           result.append(st);
         }
-        return line_tok(result, MSEP_REC);
+        slst = line_tok(result, MSEP_REC);
+        // output conversion
+        rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+        if (rl) {
+          for (size_t j = 0; rl && j < slst.size(); ++j) {
+            std::string wspace;
+            if (rl->conv(slst[j], wspace)) {
+              slst[j] = wspace;
+            }
+          }
+        }
+        return slst;
       }
     }
     // affixed number in correct word
@@ -1588,7 +1654,18 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
           if (!st.empty()) {
             result.append(st);
           }
-          return line_tok(result, MSEP_REC);
+          slst = line_tok(result, MSEP_REC);
+          // output conversion
+          rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+          if (rl) {
+            for (size_t j = 0; rl && j < slst.size(); ++j) {
+              std::string wspace;
+              if (rl->conv(slst[j], wspace)) {
+                slst[j] = wspace;
+              }
+            }
+          }
+          return slst;
         }
       }
     }
