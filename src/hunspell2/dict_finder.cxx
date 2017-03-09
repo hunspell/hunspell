@@ -338,11 +338,11 @@ struct Directory()
 	Directory() {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
-	auto open(const string& dirname)->bool { return false; }
-	auto next()->bool { return false; }
-	auto entry_name()->const char* { return nullptr; }
-	auto close() {}
-}
+	auto open(const string& dirname) -> bool { return false; }
+	auto next() -> bool { return false; }
+	auto entry_name() -> const char* { return nullptr; }
+	auto close() -> void {}
+};
 #endif
 
 template <class OutIt>

@@ -14,6 +14,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gettext; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link gettext --force; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then autoreconf --install --force --verbose && ./configure && make && make check; fi
@@ -21,7 +22,12 @@ script:
 
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
     - autoconf
     - automake
     - autopoint
+    - gcc-5
+    - g++-5
+    - clang
