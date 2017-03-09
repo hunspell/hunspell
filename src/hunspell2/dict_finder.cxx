@@ -333,7 +333,7 @@ class Directory {
 	~Directory() { close(); }
 };
 #else
-struct Directory()
+struct Directory
 {
 	Directory() {}
 	Directory(const Directory& d) = delete;
