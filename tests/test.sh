@@ -121,6 +121,22 @@ fi
 
 check_valgrind_log "bad words"
 
+# Tests good words' root
+if test -f $TESTDIR/$NAME.root; then
+    hunspell $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good | grep -a '^+ ' | \
+        sed 's/^+ //' >$TEMPDIR/$NAME.root
+    if ! cmp $TEMPDIR/$NAME.root $TESTDIR/$NAME.root >/dev/null; then
+        echo "============================================="
+        echo "Fail in $NAME.root. Bad root?"
+        diff $TESTDIR/$NAME.root $TEMPDIR/$NAME.root
+        rm -f $TEMPDIR/$NAME.root
+        exit 1
+    fi
+    #rm -f $TEMPDIR/$NAME.root
+fi
+
+check_valgrind_log "root"
+
 # Tests morphological analysis
 if test -f $TESTDIR/$NAME.morph; then
     sed 's/	$//' $TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
