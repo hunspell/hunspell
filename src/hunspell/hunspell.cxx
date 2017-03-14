@@ -625,18 +625,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
       return true;
     }
 
-    // output conversion
-    if (root) {
-      rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-      if (rl) {
-        std::string wspace;
-        if (rl->conv(*root, wspace)) {
-          *root = wspace;
-        }
-      }
-    }
-
-    return true;
+    goto success;
   }
 
   // recursive breaking at break points
@@ -664,14 +653,14 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
 
       if (wordbreak[j][0] == '^' &&
           scw.compare(0, plen - 1, wordbreak[j], 1, plen -1) == 0 && spell(scw.substr(plen - 1)))
-        return true;
+        goto success;
 
       if (wordbreak[j][plen - 1] == '$' &&
           scw.compare(wl - plen + 1, plen - 1, wordbreak[j], 0, plen - 1) == 0) {
         std::string suffix(scw.substr(wl - plen + 1));
         scw.resize(wl - plen + 1);
         if (spell(scw))
-          return true;
+          goto success;
         scw.append(suffix);
       }
     }
@@ -687,7 +676,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
         scw.resize(found);
         // examine 2 sides of the break point
         if (spell(scw))
-          return true;
+          goto success;
         scw.append(suffix);
 
         // LANG_hu: spec. dash rule
@@ -695,7 +684,8 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
           suffix = scw.substr(found + 1);
           scw.resize(found + 1);
           if (spell(scw))
-            return true;  // check the first part with dash
+            goto success;  // check the first part with dash
+          
           scw.append(suffix);
         }
         // end of LANG specific region
@@ -704,6 +694,20 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
   }
 
   return false;
+
+success:
+  // output conversion
+  if (root) {
+    rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+    if (rl) {
+      std::string wspace;
+      if (rl->conv(*root, wspace)) {
+        *root = wspace;
+      }
+    }
+  }
+
+  return true;
 }
 
 struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::string* root) {
@@ -1451,17 +1455,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         cat_result(result, pSMgr->suggest_morph(scw.substr(n)));
       }
       slst = line_tok(result, MSEP_REC);
-      // output conversion
-      rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-      if (rl) {
-        for (size_t j = 0; rl && j < slst.size(); ++j) {
-          std::string wspace;
-          if (rl->conv(slst[j], wspace)) {
-            slst[j] = wspace;
-          }
-        }
-      }
-      return slst;
+      goto success;
     }
   }
   // END OF LANG_hu section
@@ -1530,17 +1524,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         reverseword(result);
     }
     slst = line_tok(result, MSEP_REC);
-    // output conversion
-    rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-    if (rl) {
-      for (size_t j = 0; rl && j < slst.size(); ++j) {
-        std::string wspace;
-        if (rl->conv(slst[j], wspace)) {
-          slst[j] = wspace;
-        }
-      }
-    }
-    return slst;
+    goto success;
   }
 
   // compound word with dash (HU) I18n
@@ -1559,17 +1543,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
-          // output conversion
-          rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-          if (rl) {
-            for (size_t j = 0; rl && j < slst.size(); ++j) {
-              std::string wspace;
-              if (rl->conv(slst[j], wspace)) {
-                slst[j] = wspace;
-              }
-            }
-          }
-          return slst;
+          goto success;
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
@@ -1584,17 +1558,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
           result.append(st);
         }
         slst = line_tok(result, MSEP_REC);
-        // output conversion
-        rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-        if (rl) {
-          for (size_t j = 0; rl && j < slst.size(); ++j) {
-            std::string wspace;
-            if (rl->conv(slst[j], wspace)) {
-              slst[j] = wspace;
-            }
-          }
-        }
-        return slst;
+        goto success;
       }
     } else {
       // first word ending with dash: word- XXX ???
@@ -1613,17 +1577,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
           result.append(st);
         }
         slst = line_tok(result, MSEP_REC);
-        // output conversion
-        rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-        if (rl) {
-          for (size_t j = 0; rl && j < slst.size(); ++j) {
-            std::string wspace;
-            if (rl->conv(slst[j], wspace)) {
-              slst[j] = wspace;
-            }
-          }
-        }
-        return slst;
+        goto success;
       }
     }
     // affixed number in correct word
@@ -1655,18 +1609,20 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
             result.append(st);
           }
           slst = line_tok(result, MSEP_REC);
-          // output conversion
-          rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-          if (rl) {
-            for (size_t j = 0; rl && j < slst.size(); ++j) {
-              std::string wspace;
-              if (rl->conv(slst[j], wspace)) {
-                slst[j] = wspace;
-              }
-            }
-          }
-          return slst;
+          goto success;
         }
+      }
+    }
+  }
+
+success:
+  // output conversion
+  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  if (rl) {
+    for (size_t j = 0; rl && j < slst.size(); ++j) {
+      std::string wspace;
+      if (rl->conv(slst[j], wspace)) {
+        slst[j] = wspace;
       }
     }
   }
