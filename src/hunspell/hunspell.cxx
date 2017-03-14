@@ -1420,6 +1420,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   }
 
   std::string result;
+  size_t dash_pos;
 
   size_t n = 0;
   // test numbers
@@ -1529,8 +1530,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
 
   // compound word with dash (HU) I18n
   // LANG_hu section: set dash information for suggestions
-
-  size_t dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
+  dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
   if (dash_pos != std::string::npos) {
     int nresult = 0;
 
