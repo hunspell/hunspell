@@ -101,6 +101,7 @@ morph.test \
 fullstrip.test \
 iconv.test \
 oconv.test \
+oconv2.test \
 encoding.test \
 korean.test \
 opentaal_forbiddenword1.test \
@@ -605,6 +606,13 @@ oconv.dic \
 oconv.good \
 oconv.sug \
 oconv.test \
+oconv.wrong \
+oconv2.aff \
+oconv2.dic \
+oconv2.good \
+oconv2.morph \
+oconv2.root \
+oconv2.test \
 oconv.wrong \
 encoding.aff \
 encoding.dic \
