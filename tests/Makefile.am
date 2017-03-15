@@ -100,6 +100,7 @@ morph.test \
 1975530.test \
 fullstrip.test \
 iconv.test \
+iconv2.test \
 oconv.test \
 encoding.test \
 korean.test \
@@ -600,6 +601,10 @@ iconv.aff \
 iconv.dic \
 iconv.good \
 iconv.test \
+iconv2.aff \
+iconv2.dic \
+iconv2.good \
+iconv2.test \
 oconv.aff \
 oconv.dic \
 oconv.good \

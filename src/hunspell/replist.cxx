@@ -109,12 +109,13 @@ int RepList::find(const char* word) {
       p2 = m - 1;
     else if (c > 0)
       p1 = m + 1;
-    else {      // scan back for a longer match
-      for (p1 = m - 1; p1 >= 0; --p1)
+    else {      // scan forward for a longer match
+      for (p1 = m + 1; p1 <= p2; ++p1) {
         if (!strncmp(word, dat[p1]->pattern.c_str(), dat[p1]->pattern.size()))
           m = p1;
-        else if (dat[p1]->pattern.size() < dat[m]->pattern.size())
-          break;
+        else
+          break;  // not matched; longer match can't be after this
+      }
       return m;
     }
   }
@@ -169,20 +170,11 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   // sort to the right place in the list
   int i;
   for (i = pos - 1; i > 0; i--) {
-    int c = strncmp(r->pattern.c_str(), dat[i-1]->pattern.c_str(), dat[i-1]->pattern.size());
-    if (c > 0)
+    if (strcmp(r->pattern.c_str(), dat[i - 1]->pattern.c_str()) < 0) {
+      dat[i] = dat[i - 1];
+    } else
       break;
-    else if (c == 0) { // subpatterns match. Patterns can't be identical since would catch earlier
-      for (int j = i - 2; j > 0 && !strncmp(dat[i-1]->pattern.c_str(), dat[j]->pattern.c_str(), dat[i-1]->pattern.size()); --j)
-        if (dat[j]->pattern.size() > r->pattern.size() ||
-              (dat[j]->pattern.size() == r->pattern.size() && strncmp(dat[j]->pattern.c_str(), r->pattern.c_str(), r->pattern.size()) > 0)) {
-          i = j;
-          break;
-        }
-      break;
-    }
   }
-  memmove(dat + i + 1, dat + i, (pos - i - 1) * sizeof(replentry *));
   dat[i] = r;
   return 0;
 }
