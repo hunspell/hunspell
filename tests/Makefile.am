@@ -116,6 +116,7 @@ opentaal_cpdpat2.test \
 onlyincompound2.test \
 forceucase.test \
 nepali.test \
+hu.test \
 warn.test
 
 # infixes.test
@@ -687,6 +688,10 @@ nepali.aff \
 nepali.dic \
 nepali.good \
 nepali.test \
+hu.aff \
+hu.dic \
+hu.good \
+hu.test \
 warn.aff \
 warn.dic \
 warn.good \
