@@ -98,10 +98,13 @@ public:
   std::vector<std::string> stem(const std::string& word);
   std::vector<std::string> stem(const std::vector<std::string>& morph);
   std::vector<std::string> analyze(const std::string& word);
+  std::vector<std::string> analyze_internal(const std::string& word);
   int get_langnum() const;
   bool input_conv(const std::string& word, std::string& dest);
   bool spell(const std::string& word, int* info = NULL, std::string* root = NULL);
+  bool spell_internal(const std::string& word, int* info = NULL, std::string* root = NULL);
   std::vector<std::string> suggest(const std::string& word);
+  std::vector<std::string> suggest_internal(const std::string& word);
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const std::string& get_dict_encoding() const;
@@ -415,6 +418,21 @@ bool Hunspell::spell(const std::string& word, int* info, std::string* root) {
 }
 
 bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) {
+  bool r = spell_internal(word, info, root);
+  if (r && root) {
+    // output conversion
+    RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+    if (rl) {
+      std::string wspace;
+      if (rl->conv(*root, wspace)) {
+        *root = wspace;
+      }
+    }
+  }
+  return r;
+}
+
+bool HunspellImpl::spell_internal(const std::string& word, int* info, std::string* root) {
   struct hentry* rv = NULL;
 
   int info2 = 0;
@@ -624,8 +642,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
         return false;
       return true;
     }
-
-    goto success;
+    return true;
   }
 
   // recursive breaking at break points
@@ -653,14 +670,14 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
 
       if (wordbreak[j][0] == '^' &&
           scw.compare(0, plen - 1, wordbreak[j], 1, plen -1) == 0 && spell(scw.substr(plen - 1)))
-        goto success;
+        return true;
 
       if (wordbreak[j][plen - 1] == '$' &&
           scw.compare(wl - plen + 1, plen - 1, wordbreak[j], 0, plen - 1) == 0) {
         std::string suffix(scw.substr(wl - plen + 1));
         scw.resize(wl - plen + 1);
         if (spell(scw))
-          goto success;
+          return true;
         scw.append(suffix);
       }
     }
@@ -676,7 +693,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
         scw.resize(found);
         // examine 2 sides of the break point
         if (spell(scw))
-          goto success;
+          return true;
         scw.append(suffix);
 
         // LANG_hu: spec. dash rule
@@ -684,8 +701,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
           suffix = scw.substr(found + 1);
           scw.resize(found + 1);
           if (spell(scw))
-            goto success;  // check the first part with dash
-          
+            return true;  // check the first part with dash
           scw.append(suffix);
         }
         // end of LANG specific region
@@ -694,20 +710,6 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
   }
 
   return false;
-
-success:
-  // output conversion
-  if (root) {
-    rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-    if (rl) {
-      std::string wspace;
-      if (rl->conv(*root, wspace)) {
-        *root = wspace;
-      }
-    }
-  }
-
-  return true;
 }
 
 struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::string* root) {
@@ -849,6 +851,22 @@ std::vector<std::string> Hunspell::suggest(const std::string& word) {
 }
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
+  std::vector<std::string> slst;
+  slst = suggest_internal(word);
+  // output conversion
+  RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  if (rl) {
+    for (size_t i = 0; rl && i < slst.size(); ++i) {
+      std::string wspace;
+      if (rl->conv(slst[i], wspace)) {
+        slst[i] = wspace;
+      }
+    }
+  }
+  return slst;
+}
+
+std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word) {
   std::vector<std::string> slst;
 
   int onlycmpdsug = 0;
@@ -1166,15 +1184,6 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   }
   slst.resize(l);
 
-  // output conversion
-  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-  for (size_t j = 0; rl && j < slst.size(); ++j) {
-    std::string wspace;
-    if (rl->conv(slst[j], wspace)) {
-      slst[j] = wspace;
-    }
-  }
-
   return slst;
 }
 
@@ -1381,6 +1390,22 @@ std::vector<std::string> Hunspell::analyze(const std::string& word) {
 
 std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   std::vector<std::string> slst;
+  slst = analyze_internal(word);
+  // output conversion
+  RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  if (rl) {
+    for (size_t i = 0; rl && i < slst.size(); ++i) {
+      std::string wspace;
+      if (rl->conv(slst[i], wspace)) {
+        slst[i] = wspace;
+      }
+    }
+  }
+  return slst;
+}
+
+std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word) {
+  std::vector<std::string> slst;
   if (!pSMgr || m_HMgrs.empty())
     return slst;
   if (utf8) {
@@ -1420,7 +1445,6 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   }
 
   std::string result;
-  size_t dash_pos;
 
   size_t n = 0;
   // test numbers
@@ -1455,8 +1479,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         result.push_back('+');  // XXX SPEC. MORPHCODE
         cat_result(result, pSMgr->suggest_morph(scw.substr(n)));
       }
-      slst = line_tok(result, MSEP_REC);
-      goto success;
+      return line_tok(result, MSEP_REC);
     }
   }
   // END OF LANG_hu section
@@ -1524,13 +1547,13 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
       else
         reverseword(result);
     }
-    slst = line_tok(result, MSEP_REC);
-    goto success;
+    return line_tok(result, MSEP_REC);
   }
 
   // compound word with dash (HU) I18n
   // LANG_hu section: set dash information for suggestions
-  dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
+
+  size_t dash_pos = langnum == LANG_hu ? scw.find('-') : std::string::npos;
   if (dash_pos != std::string::npos) {
     int nresult = 0;
 
@@ -1543,7 +1566,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
-          goto success;
+          return slst;
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
@@ -1557,8 +1580,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         if (!st.empty()) {
           result.append(st);
         }
-        slst = line_tok(result, MSEP_REC);
-        goto success;
+        return line_tok(result, MSEP_REC);
       }
     } else {
       // first word ending with dash: word- XXX ???
@@ -1576,8 +1598,7 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
         if (!st.empty()) {
           result.append(st);
         }
-        slst = line_tok(result, MSEP_REC);
-        goto success;
+        return line_tok(result, MSEP_REC);
       }
     }
     // affixed number in correct word
@@ -1608,21 +1629,8 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
           if (!st.empty()) {
             result.append(st);
           }
-          slst = line_tok(result, MSEP_REC);
-          goto success;
+          return line_tok(result, MSEP_REC);
         }
-      }
-    }
-  }
-
-success:
-  // output conversion
-  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-  if (rl) {
-    for (size_t j = 0; rl && j < slst.size(); ++j) {
-      std::string wspace;
-      if (rl->conv(slst[j], wspace)) {
-        slst[j] = wspace;
       }
     }
   }

@@ -112,7 +112,7 @@ if test -f $TESTDIR/$NAME.wrong; then
         echo "============================================="
         echo "Fail in $NAME.wrong. Bad words recognised as good:"
         tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
-        diff $TEMPDIR/$NAME.wrong.detab $TEMPDIR/$NAME.wrong | grep '^<' | sed 's/^..//'
+        diff -u $TEMPDIR/$NAME.wrong.detab $TEMPDIR/$NAME.wrong | grep '^<' | sed 's/^..//'
         rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
         exit 1
     fi
@@ -123,16 +123,17 @@ check_valgrind_log "bad words"
 
 # Tests good words' root
 if test -f $TESTDIR/$NAME.root; then
+    # Extract the root words of the affixed words, after '+'
     hunspell $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good | grep -a '^+ ' | \
         sed 's/^+ //' >$TEMPDIR/$NAME.root
     if ! cmp $TEMPDIR/$NAME.root $TESTDIR/$NAME.root >/dev/null; then
         echo "============================================="
-        echo "Fail in $NAME.root. Bad root?"
-        diff $TESTDIR/$NAME.root $TEMPDIR/$NAME.root
+        echo "Fail in $NAME.root. Bad prefix or suffix?"
+        diff -u $TESTDIR/$NAME.root $TEMPDIR/$NAME.root
         rm -f $TEMPDIR/$NAME.root
         exit 1
     fi
-    #rm -f $TEMPDIR/$NAME.root
+    rm -f $TEMPDIR/$NAME.root
 fi
 
 check_valgrind_log "root"
@@ -145,7 +146,7 @@ if test -f $TESTDIR/$NAME.morph; then
     if ! cmp $TEMPDIR/$NAME.morph $TESTDIR/$NAME.morph >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.morph. Bad analysis?"
-        diff $TESTDIR/$NAME.morph $TEMPDIR/$NAME.morph | grep '^<' | sed 's/^..//'
+        diff -u $TESTDIR/$NAME.morph $TEMPDIR/$NAME.morph | grep '^<' | sed 's/^..//'
         rm -f $TEMPDIR/$NAME.morph
         exit 1
     fi
@@ -161,7 +162,7 @@ if test -f $TESTDIR/$NAME.sug; then
     if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.sug. Bad suggestion?"
-        diff $TESTDIR/$NAME.sug $TEMPDIR/$NAME.sug
+        diff -u $TESTDIR/$NAME.sug $TEMPDIR/$NAME.sug
         rm -f $TEMPDIR/$NAME.sug
         exit 1
     fi
