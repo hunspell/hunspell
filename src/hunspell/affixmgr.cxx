@@ -1290,8 +1290,8 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
     // search every occurence of the pattern in the word
     while ((r = strstr(r, reptable[i].pattern.c_str())) != NULL) {
       std::string candidate(word);
-      size_t type = r == word ? 1 : 0;
-      if (r - word + reptable[i].pattern.size() == lenp)
+      size_t type = r == word && langnum != LANG_hu ? 1 : 0;
+      if (r - word + reptable[i].pattern.size() == lenp && langnum != LANG_hu)
         type += 2;
       candidate.replace(r - word, lenp, reptable[i].outstrings[type]);
       if (candidate_check(candidate.c_str(), candidate.size()))
