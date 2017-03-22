@@ -102,24 +102,20 @@ replentry* RepList::item(int n) {
 int RepList::find(const char* word) {
   int p1 = 0;
   int p2 = pos - 1;
+  int ret = -1;
   while (p1 <= p2) {
-    int m = (p1 + p2) / 2;
+    int m = ((unsigned)p1 + (unsigned)p2) >> 1;
     int c = strncmp(word, dat[m]->pattern.c_str(), dat[m]->pattern.size());
     if (c < 0)
       p2 = m - 1;
     else if (c > 0)
       p1 = m + 1;
-    else {      // scan forward for a longer match
-      for (p1 = m + 1; p1 <= p2; ++p1) {
-        if (!strncmp(word, dat[p1]->pattern.c_str(), dat[p1]->pattern.size()))
-          m = p1;
-        else
-          break;  // not matched; longer match can't be after this
-      }
-      return m;
+    else {      // scan in the right half for a longer match
+      ret = m;
+      p1 = m + 1;
     }
   }
-  return -1;
+  return ret;
 }
 
 std::string RepList::replace(const char* word, int ind, bool atstart) {
