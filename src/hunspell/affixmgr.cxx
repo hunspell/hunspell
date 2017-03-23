@@ -1509,15 +1509,14 @@ inline int AffixMgr::candidate_check(const char* word, int len) {
 }
 
 // calculate number of syllable for compound-checking
-// (full word or in the first len characters)
-short AffixMgr::get_syllable(const std::string& word, int len) {
+short AffixMgr::get_syllable(const std::string& word) {
   if (cpdmaxsyllable == 0)
     return 0;
 
   short num = 0;
 
   if (!utf8) {
-    for (size_t i = 0; i < word.size() && (len == 0 || i < len); ++i) {
+    for (size_t i = 0; i < word.size(); ++i) {
       if (std::binary_search(cpdvowels.begin(), cpdvowels.end(),
                              word[i])) {
         ++num;
@@ -1526,7 +1525,7 @@ short AffixMgr::get_syllable(const std::string& word, int len) {
   } else if (!cpdvowels_utf16.empty()) {
     std::vector<w_char> w;
     u8_u16(w, word);
-    for (size_t i = 0; i < w.size() && (len == 0 || i < len); ++i) {
+    for (size_t i = 0; i < w.size(); ++i) {
       if (std::binary_search(cpdvowels_utf16.begin(),
                              cpdvowels_utf16.end(),
                              w[i])) {
@@ -1817,7 +1816,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           // LANG_hu section: spec. Hungarian rule
           if (langnum == LANG_hu) {
             // calculate syllable number of the word
-            numsyllable += get_syllable(st, i);
+            numsyllable += get_syllable(st.substr(i));
             // + 1 word, if syllable number of the prefix > 1 (hungarian
             // convention)
             if (pfx && (get_syllable(pfx->getKey()) > 1))
@@ -2052,6 +2051,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               rv = compound_check(st.substr(i), wordnum + 1,
                                   numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
+
               if (rv && !checkcpdtable.empty() &&
                   ((scpd == 0 &&
                     cpdpat_check(word.c_str(), i, rv_first, rv, affixed)) ||
@@ -2382,7 +2382,7 @@ int AffixMgr::compound_check_morph(const char* word,
         // LANG_hu section: spec. Hungarian rule
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(st, i);
+          numsyllable += get_syllable(st.substr(i));
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
           // convention)
