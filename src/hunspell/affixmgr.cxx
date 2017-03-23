@@ -1816,7 +1816,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           // LANG_hu section: spec. Hungarian rule
           if (langnum == LANG_hu) {
             // calculate syllable number of the word
-            numsyllable += get_syllable(st.substr(i));
+            numsyllable += get_syllable(st.substr(0, i));
             // + 1 word, if syllable number of the prefix > 1 (hungarian
             // convention)
             if (pfx && (get_syllable(pfx->getKey()) > 1))
@@ -1901,7 +1901,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  (compoundend && TESTAFF(rv->astr, compoundend, rv->alen))) &&
                 (((cpdwordmax == -1) || (wordnum + 1 < cpdwordmax)) ||
                  ((cpdmaxsyllable != 0) &&
-                  (numsyllable + get_syllable(std::string(HENTRY_WORD(rv), rv->clen)) <=
+                  (numsyllable + get_syllable(std::string(HENTRY_WORD(rv), rv->blen)) <=
                    cpdmaxsyllable))) &&
                 (
                     // test CHECKCOMPOUNDPATTERN
@@ -2382,7 +2382,7 @@ int AffixMgr::compound_check_morph(const char* word,
         // LANG_hu section: spec. Hungarian rule
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(st.substr(i));
+          numsyllable += get_syllable(st.substr(0, i));
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
           // convention)
