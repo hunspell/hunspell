@@ -15,3 +15,9 @@ COMPOUNDWORDMAX 2
 # allow more words in a compound, than COMPOUNDWORDMAX,
 # if syllable count of the compound is 6 or less
 COMPOUNDSYLLABLE 6 aáeéiíoóöőuúüű
+
+# test case for commit 1fada01 "fix other regression in compounding"
+REP 1
+REP kor _kor
+
+CHECKCOMPOUNDREP
