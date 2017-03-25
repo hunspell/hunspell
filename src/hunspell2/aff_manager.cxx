@@ -1,4 +1,4 @@
-/* Copyright 2016 Dimitrij Mijoski
+/* Copyright 2016-2017 Dimitrij Mijoski
  *
  * This file is part of Hunspell-2.
  *
@@ -15,13 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Hunspell-2.	If not, see <http://www.gnu.org/licenses/>.
  *
- *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell 2 is based on Hunspell v1 and MySpell.
+ * Hunspell v1 is Copyright (C) 2002-2017 Németh László
+ * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
 #include "aff_manager.hxx"
