@@ -1,3 +1,16 @@
+2017-03-25 Dimitrij Mijoski <dmjpp at hotm>:
+	* Version 1.6.1
+	* Library changes:
+	*   Performance improvements in suggest()
+	*   Fixes regressions for Hungarian related to compounding.
+	*   Fixes regressions for Korean related to ICONV.
+	* Command line tool:
+	*   Added Tajik translation 
+	*   Fix regarding serching of OOo dicts installed in user folder
+	* Manpages:
+	*   Fix microsoft-cp1251 to cp1251. Dicts should not use the first.
+	*   Typos.
+	
 2016-12-22 Dimitrij Mijoski <dmjpp at hotm>:
 	* Version 1.6.0
 	* Changes in the library:

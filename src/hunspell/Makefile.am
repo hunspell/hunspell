@@ -12,7 +12,7 @@ libhunspell_1_6_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
 		                w_char.hxx atypes.hxx csutil.hxx htypes.hxx
 
 libhunspell_1_6_la_DEPENDENCIES=utf_info.cxx
-libhunspell_1_6_la_LDFLAGS=-no-undefined
+libhunspell_1_6_la_LDFLAGS=-no-undefined -version-info 0:1:0
 
 AM_CXXFLAGS=$(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL
 
