@@ -116,7 +116,7 @@ http://hunspell.github.io/
 Usage
 =====
 
-The src/tools dictionary contains ten executables after compiling:
+The src/tools directory contains ten executables after compiling:
 
 - affixcompress: dictionary generation from large (millions of words)
   vocabularies
