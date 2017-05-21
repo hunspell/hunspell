@@ -1,7 +1,7 @@
 About Hunspell
 ==============
 
-NOTICE: Verison 2 is in the works. For contributing see
+NOTICE: Version 2 is in the works. For contributing see
 [version 2 specification][v2spec] and the folder `src/hunspell2`.
 
 [v2spec]: https://github.com/hunspell/hunspell/wiki/Version-2-Specification
@@ -37,7 +37,7 @@ Compiling on Unix/Linux and others
 	autoreconf -vfi
 	./configure
 	make
-	make install    #if neccesary prefix with sudo
+	make install    #if necessary prefix with sudo
 	ldconfig        #not needed on windows, on linux sudo may be needed
 
 For dictionary development, use the --with-warnings option of configure.
