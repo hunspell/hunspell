@@ -1,0 +1,22 @@
+#
+# Display the number of contributors active in the past six months, per organization
+#
+# git log --no-merges --pretty='%aN <%aE>' --since '6 months ago' | sort | uniq | git -c mailmap.file=.organizationmap check-mailmap --stdin | sort | uniq -c | sort -rn | nl
+#     1       5 FLOSS Contributor <contact@floss.cc>
+#     2       2 Red Hat <contact@redhat.com>
+#
+# Display the number of commits in the past six months, per organization
+#
+# git log --no-merges --pretty='%aN <%aE>' --since '6 months ago' | git -c mailmap.file=.organizationmap check-mailmap --stdin | sort | uniq -c | sort -rn | nl
+#     1     408 Red Hat <contact@redhat.com>
+#     2      19 FLOSS Contributor <contact@floss.cc>
+#
+# This is the primary source of information for https://www.wikidata.org/wiki/Q176291
+#
+FLOSS Contributor <contact@floss.cc> Dimitrij Mijoski <dmjpp@hotmail.com>
+FLOSS Contributor <contact@floss.cc> Felix Kaiser <felix.kaiser@fxkr.net>
+FLOSS Contributor <contact@floss.cc> Martin Hosken <martin_hosken@sil.org>
+FLOSS Contributor <contact@floss.cc> Martin Pluskal <martin@pluskal.org>
+FLOSS Contributor <contact@floss.cc> Raúl Benencia <rul@kalgan.cc>
+Red Hat <contact@redhat.com> Caolán McNamara <caolanm@redhat.com>
+Red Hat <contact@redhat.com> Stephan Bergmann <sbergman@redhat.com>
