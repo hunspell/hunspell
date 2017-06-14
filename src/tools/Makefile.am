@@ -1,6 +1,6 @@
 bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
 
-INCLUDES=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
+AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
 hzip_SOURCES=hzip.cxx
 hunzip_SOURCES=hunzip.cxx

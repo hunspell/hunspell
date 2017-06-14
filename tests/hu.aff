@@ -1,0 +1,23 @@
+SET UTF-8
+LANG hu_HU
+
+# words with flag Y can form compound words
+COMPOUNDFLAG Y
+
+# min. word length in compounds:
+# allow 2-letter words
+COMPOUNDMIN 2
+
+# max. word count in compounds
+COMPOUNDWORDMAX 2
+
+# exception for Hungarian:
+# allow more words in a compound, than COMPOUNDWORDMAX,
+# if syllable count of the compound is 6 or less
+COMPOUNDSYLLABLE 6 aáeéiíoóöőuúüű
+
+# test case for commit 1fada01 "fix other regression in compounding"
+REP 1
+REP kor _kor
+
+CHECKCOMPOUNDREP

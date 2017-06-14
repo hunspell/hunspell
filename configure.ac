@@ -4,19 +4,17 @@
 m4_pattern_allow
 
 AC_PREREQ(2.59)
-AC_INIT([hunspell],[1.6.0],[nemeth@numbertext.org])
-
+AC_INIT([hunspell],[1.6.1],[nemeth@numbertext.org])
+AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_SUBST(XFAILED)
-
-AM_INIT_AUTOMAKE(hunspell, 1.6.0)
+AC_USE_SYSTEM_EXTENSIONS
+AM_INIT_AUTOMAKE
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
-
-AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CXX

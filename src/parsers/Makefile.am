@@ -1,5 +1,5 @@
 
-INCLUDES=-I${top_builddir}/src/hunspell
+AM_CPPFLAGS=-I${top_builddir}/src/hunspell
 
 noinst_LIBRARIES=libparsers.a
 libparsers_a_SOURCES=firstparser.cxx xmlparser.cxx \
