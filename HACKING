@@ -2,6 +2,8 @@ To bump a release
 
 1. edit...
   a) ./configure.ac
+  b) ./msvc/Hunspell.rc
+  c) ./msvc/config.h
 and convert release string X.Y.Z/X,Y,Z to the next version
 
 2. autoconf && ./configure && make
