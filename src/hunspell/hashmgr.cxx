@@ -193,7 +193,7 @@ int HashMgr::add_word(const std::string& in_word,
 
     if (!ignorechars.empty()) {
       if (utf8) {
-        wcl = remove_ignored_chars_utf(*word_copy, ignorechars_utf16);
+        wcl = int(remove_ignored_chars_utf(*word_copy, ignorechars_utf16));
       } else {
         remove_ignored_chars(*word_copy, ignorechars);
       }
@@ -201,7 +201,7 @@ int HashMgr::add_word(const std::string& in_word,
 
     if (complexprefixes) {
       if (utf8)
-        wcl = reverseword_utf(*word_copy);
+        wcl = int(reverseword_utf(*word_copy));
       else
         reverseword(*word_copy);
 
@@ -222,7 +222,7 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   bool upcasehomonym = false;
-  int descl = desc ? (aliasm ? sizeof(char*) : desc->size() + 1) : 0;
+  int descl = desc ? (aliasm ? sizeof(char*) : int(desc->size() + 1)) : 0;
   // variable-length hash record with word and optional fields
   struct hentry* hp =
       (struct hentry*)malloc(sizeof(struct hentry) + word->size() + descl);
@@ -366,7 +366,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::ve
     len = u8_u16(workbuf, word);
     *captype = get_captype_utf8(workbuf, langnum);
   } else {
-    len = word.size();
+    len = int(word.size());
     *captype = get_captype(word, csconv);
   }
   return len;
@@ -637,7 +637,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   }
   switch (flag_mode) {
     case FLAG_LONG: {  // two-character flags (1x2yZz -> 1x 2y Zz)
-      len = flags.size();
+      len = int(flags.size());
       if (len % 2 == 1)
         HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n",
                          af->getlinenum());
@@ -693,7 +693,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
     case FLAG_UNI: {  // UTF-8 characters
       std::vector<w_char> w;
       u8_u16(w, flags);
-      len = w.size();
+      len = int(w.size());
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
@@ -702,7 +702,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
       unsigned short* dest;
-      len = flags.size();
+      len = int(flags.size());
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;

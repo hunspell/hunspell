@@ -1291,7 +1291,7 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
       if (r - word + reptable[i].pattern.size() == lenp && langnum != LANG_hu)
         type += 2;
       candidate.replace(r - word, lenp, reptable[i].outstrings[type]);
-      if (candidate_check(candidate.c_str(), candidate.size()))
+      if (candidate_check(candidate.c_str(), int(candidate.size())))
         return 1;
       ++r;  // search for the next letter
     }
@@ -1419,7 +1419,7 @@ int AffixMgr::defcpd_check(hentry*** words,
           int wend = (defcpdtable[i][pp + 1] == '?') ? wp : wnum;
           ok2 = 1;
           pp += 2;
-          btinfo[bt].btpp = pp;
+          btinfo[bt].btpp = short(pp);
           btinfo[bt].btwp = wp;
           while (wp <= wend) {
             if (!(*words)[wp]->alen ||
@@ -1584,7 +1584,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   int checked_prefix;
 
-  setcminmax(&cmin, &cmax, word.c_str(), len);
+  setcminmax(&cmin, &cmax, word.c_str(), int(len));
 
   st.assign(word);
 
@@ -1620,20 +1620,20 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             break;  // break simplified checkcompoundpattern loop
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern);
           soldi = i;
-          i += checkcpdtable[scpd - 1].pattern.size();
+          i += int(checkcpdtable[scpd - 1].pattern.size());
           st.replace(i, std::string::npos, checkcpdtable[scpd - 1].pattern2);
           st.replace(i + checkcpdtable[scpd - 1].pattern2.size(), std::string::npos,
                  word.substr(soldi + checkcpdtable[scpd - 1].pattern3.size()));
 
-          oldlen = len;
+          oldlen = int(len);
           len += checkcpdtable[scpd - 1].pattern.size() +
                  checkcpdtable[scpd - 1].pattern2.size() -
                  checkcpdtable[scpd - 1].pattern3.size();
           oldcmin = cmin;
           oldcmax = cmax;
-          setcminmax(&cmin, &cmax, st.c_str(), len);
+          setcminmax(&cmin, &cmax, st.c_str(), int(len));
 
-          cmax = len - cpdmin + 1;
+          cmax = int(len) - cpdmin + 1;
         }
 
         ch = st[i];
@@ -1911,7 +1911,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2, rv->alen))) {
               // forbid compound word, if it is a non compound word with typical
               // fault
-              if (checkcompoundrep && cpdrep_check(word.c_str(), len))
+              if (checkcompoundrep && cpdrep_check(word.c_str(), int(len)))
                 return NULL;
               return rv_first;
             }
@@ -1923,18 +1923,18 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             sfx = NULL;
             sfxflag = FLAG_NULL;
             rv = (compoundflag && !onlycpdrule)
-                     ? affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundflag,
+                     ? affix_check((word.c_str() + i), int(strlen(word.c_str() + i)), compoundflag,
                                    IN_CPD_END)
                      : NULL;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = NULL;
               pfx = NULL;
-              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend,
+              rv = affix_check((word.c_str() + i), int(strlen(word.c_str() + i)), compoundend,
                                IN_CPD_END);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
-              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
+              rv = affix_check((word.c_str() + i), int(strlen(word.c_str() + i)), 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
@@ -1989,7 +1989,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               if (sfxappnd) {
                 std::string tmp(sfxappnd);
                 reverseword(tmp);
-                numsyllable -= get_syllable(tmp) + sfxextra;
+                numsyllable -= short(get_syllable(tmp) + sfxextra);
               }
 
               // + 1 word, if syllable number of the prefix > 1 (hungarian
@@ -2035,7 +2035,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 ((!checkcompounddup || (rv != rv_first)))) {
               // forbid compound word, if it is a non compound word with typical
               // fault
-              if (checkcompoundrep && cpdrep_check(word.c_str(), len))
+              if (checkcompoundrep && cpdrep_check(word.c_str(), int(len)))
                 return NULL;
               return rv_first;
             }
@@ -2063,7 +2063,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               // fault
               if (checkcompoundrep || forbiddenword) {
 
-                if (checkcompoundrep && cpdrep_check(word.c_str(), len))
+                if (checkcompoundrep && cpdrep_check(word.c_str(), int(len)))
                   return NULL;
 
                 // check first part
@@ -2079,7 +2079,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   if (forbiddenword) {
                     struct hentry* rv2 = lookup(word.c_str());
                     if (!rv2)
-                      rv2 = affix_check(word.c_str(), len);
+                      rv2 = affix_check(word.c_str(), int(len));
                     if (rv2 && rv2->astr &&
                         TESTAFF(rv2->astr, forbiddenword, rv2->alen) &&
                         (strncmp(rv2->word, st.c_str(), i + rv->blen) == 0)) {
@@ -2492,24 +2492,24 @@ int AffixMgr::compound_check_morph(const char* word,
         sfxflag = FLAG_NULL;
 
         if (compoundflag && !onlycpdrule)
-          rv = affix_check((word + i), strlen(word + i), compoundflag);
+          rv = affix_check((word + i), int(strlen(word + i)), compoundflag);
         else
           rv = NULL;
 
         if (!rv && compoundend && !onlycpdrule) {
           sfx = NULL;
           pfx = NULL;
-          rv = affix_check((word + i), strlen(word + i), compoundend);
+          rv = affix_check((word + i), int(strlen(word + i)), compoundend);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
-          rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
+          rv = affix_check((word + i), int(strlen(word + i)), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
-              m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+              m = affix_check_morph((word + i), int(strlen(word + i)), compoundflag);
             if (m.empty() && compoundend) {
-              m = affix_check_morph((word + i), strlen(word + i), compoundend);
+              m = affix_check_morph((word + i), int(strlen(word + i)), compoundend);
             }
             result.append(presult);
             if (!m.empty()) {
@@ -2552,7 +2552,7 @@ int AffixMgr::compound_check_morph(const char* word,
           if (sfxappnd) {
             std::string tmp(sfxappnd);
             reverseword(tmp);
-            numsyllable -= get_syllable(tmp) + sfxextra;
+            numsyllable -= short(get_syllable(tmp) + sfxextra);
           }
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
@@ -2597,9 +2597,9 @@ int AffixMgr::compound_check_morph(const char* word,
             ((!checkcompounddup || (rv != rv_first)))) {
           std::string m;
           if (compoundflag)
-            m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+            m = affix_check_morph((word + i), int(strlen(word + i)), compoundflag);
           if (m.empty() && compoundend) {
-            m = affix_check_morph((word + i), strlen(word + i), compoundend);
+            m = affix_check_morph((word + i), int(strlen(word + i)), compoundend);
           }
           result.append(presult);
           if (!m.empty()) {
@@ -2618,7 +2618,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         // perhaps second word is a compound word (recursive call)
         if ((wordnum + 2 < maxwordnum) && (ok == 0)) {
-          compound_check_morph((word + i), strlen(word + i), wordnum + 1,
+          compound_check_morph((word + i), int(strlen(word + i)), wordnum + 1,
                                numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                result, &presult);
         } else {
@@ -3255,7 +3255,7 @@ std::string AffixMgr::morphgen(const char* ts,
           std::string newword = sptr->add(ts, wl);
           if (!newword.empty()) {
             std::string newword2 =
-                morphgen(newword.c_str(), newword.size(), sptr->getCont(),
+                morphgen(newword.c_str(), int(newword.size()), sptr->getCont(),
                          sptr->getContLen(), stemmorph, targetmorph, 1);
 
             if (!newword2.empty()) {
@@ -3362,7 +3362,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               (!cptr->getKeyLen() ||
                ((badl > cptr->getKeyLen()) &&
                 (strncmp(cptr->getKey(), bad, cptr->getKeyLen()) == 0)))) {
-            int l1 = strlen(wlst[j].word);
+            int l1 = int(strlen(wlst[j].word));
             std::string newword = cptr->add(wlst[j].word, l1);
             if (!newword.empty()) {
               if (nh < maxn) {
@@ -4687,7 +4687,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             reverse_condition(chunk);
           }
           if (!entry->strip.empty() && chunk != "." &&
-              redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
+              redundant_condition(at, entry->strip.c_str(), int(entry->strip.size()), chunk.c_str(),
                                   af->getlinenum()))
             chunk = ".";
           if (at == 'S') {
@@ -4778,7 +4778,7 @@ int AffixMgr::redundant_condition(char ft,
                                   int stripl,
                                   const char* cond,
                                   int linenum) {
-  int condl = strlen(cond);
+  int condl = int(strlen(cond));
   int i;
   int j;
   int neg;
@@ -4880,7 +4880,7 @@ std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
         if ((*suff) == ptr->getFlag()) {
           std::string nw(root_word);
           nw.append(ptr->getAffix());
-          hentry* ht = ptr->checkword(nw.c_str(), nw.size(), 0, NULL, 0, 0, 0);
+          hentry* ht = ptr->checkword(nw.c_str(), int(nw.size()), 0, NULL, 0, 0, 0);
           if (ht) {
             slst.push_back(nw);
           }

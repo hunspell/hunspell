@@ -243,7 +243,7 @@ size_t HunspellImpl::cleanword2(std::string& dest,
 
   // now strip off any trailing periods (recording their presence)
   *pabbrev = 0;
-  int nl = strlen(q);
+  int nl = int(strlen(q));
   while ((nl > 0) && (*(q + nl - 1) == '.')) {
     nl--;
     (*pabbrev)++;
@@ -256,7 +256,7 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   }
 
   dest.append(q, nl);
-  nl = dest.size();
+  nl = int(dest.size());
   if (utf8) {
     u8_u16(dest_utf, dest);
     *pcaptype = get_captype_utf8(dest_utf, langnum);
@@ -280,7 +280,7 @@ void HunspellImpl::cleanword(std::string& dest,
 
   // now strip off any trailing periods (recording their presence)
   *pabbrev = 0;
-  int nl = strlen((const char*)q);
+  int nl = int(strlen((const char*)q));
   while ((nl > 0) && (*(q + nl - 1) == '.')) {
     nl--;
     (*pabbrev)++;
@@ -359,7 +359,7 @@ int HunspellImpl::mkallsmall2(std::string& u8, std::vector<w_char>& u16) {
   } else {
     ::mkallsmall(u8, csconv);
   }
-  return u8.size();
+  return int(u8.size());
 }
 
 // convert UTF-8 sharp S codes to latin 1
@@ -708,11 +708,11 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       remove_ignored_chars(w2, ignoredchars);
     }
     word = w2.c_str();
-    len = w2.size();
+    len = int(w2.size());
     usebuffer = true;
   } else {
     word = w.c_str();
-    len = w.size();
+    len = int(w.size());
   }
 
   if (!len)
@@ -1285,7 +1285,7 @@ int HunspellImpl::mkinitcap2(std::string& u8, std::vector<w_char>& u16) {
   } else {
     ::mkinitcap(u8, csconv);
   }
-  return u8.size();
+  return int(u8.size());
 }
 
 int HunspellImpl::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
@@ -1295,7 +1295,7 @@ int HunspellImpl::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
   } else {
     ::mkinitsmall(u8, csconv);
   }
-  return u8.size();
+  return int(u8.size());
 }
 
 int Hunspell::add(const std::string& word) {
@@ -1833,7 +1833,7 @@ namespace {
       for (size_t i = 0; i < items.size(); ++i)
         (*slst)[i] = mystrdup(items[i].c_str());
     }
-    return items.size();
+    return int(items.size());
   }
 }
 
@@ -2004,7 +2004,7 @@ std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_wo
   } else
     word = root_word.c_str();
 
-  len = strlen(word);
+  len = int(strlen(word));
 
   if (!len)
     return slst;
