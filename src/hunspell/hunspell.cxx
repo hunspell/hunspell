@@ -83,7 +83,7 @@
 
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
 
-class HunspellImpl
+class LIBHUNSPELL_DLL_EXPORTED HunspellImpl
 {
 public:
   HunspellImpl(const char* affpath, const char* dpath, const char* key);

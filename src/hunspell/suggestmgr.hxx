@@ -96,7 +96,7 @@
 
 enum { LCS_UP, LCS_LEFT, LCS_UPLEFT };
 
-class SuggestMgr {
+class LIBHUNSPELL_DLL_EXPORTED SuggestMgr {
  private:
   SuggestMgr(const SuggestMgr&);
   SuggestMgr& operator=(const SuggestMgr&);

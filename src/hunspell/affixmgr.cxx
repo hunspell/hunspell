@@ -4398,7 +4398,7 @@ void AffixMgr::reverse_condition(std::string& piece) {
   }
 }
 
-class entries_container {
+class LIBHUNSPELL_DLL_EXPORTED entries_container {
   std::vector<AffEntry*> entries;
   AffixMgr* m_mgr;
   char m_at;

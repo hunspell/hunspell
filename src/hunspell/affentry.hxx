@@ -77,7 +77,7 @@
 
 /* A Prefix Entry  */
 
-class PfxEntry : public AffEntry {
+class LIBHUNSPELL_DLL_EXPORTED PfxEntry : public AffEntry {
  private:
   PfxEntry(const PfxEntry&);
   PfxEntry& operator=(const PfxEntry&);
@@ -141,7 +141,7 @@ class PfxEntry : public AffEntry {
 
 /* A Suffix Entry */
 
-class SfxEntry : public AffEntry {
+class LIBHUNSPELL_DLL_EXPORTED SfxEntry : public AffEntry {
  private:
   SfxEntry(const SfxEntry&);
   SfxEntry& operator=(const SfxEntry&);
