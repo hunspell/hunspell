@@ -268,7 +268,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
     ++u8;
   }
 
-  return dest.size();
+  return int(dest.size());
 }
 
 namespace {
@@ -496,19 +496,19 @@ void uniqlist(std::vector<std::string>& list) {
 namespace {
 unsigned char cupper(const struct cs_info* csconv, int nIndex) {
   if (nIndex < 0 || nIndex > 255)
-    return nIndex;
+    return (unsigned char)(nIndex & 0xff);
   return csconv[nIndex].cupper;
 }
 
 unsigned char clower(const struct cs_info* csconv, int nIndex) {
   if (nIndex < 0 || nIndex > 255)
-    return nIndex;
+    return (unsigned char)(nIndex & 0xff);
   return csconv[nIndex].clower;
 }
 
 unsigned char ccase(const struct cs_info* csconv, int nIndex) {
   if (nIndex < 0 || nIndex > 255)
-    return nIndex;
+    return (unsigned char)(nIndex & 0xff);
   return csconv[nIndex].ccase;
 }
 }

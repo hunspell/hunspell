@@ -394,7 +394,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   if (strcmp(denc, "UTF-8") == 0) {
     const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
     wordchars_utf16 = &vec_wordchars_utf16[0];
-    wordchars_utf16_len = vec_wordchars_utf16.size();
+    wordchars_utf16_len = int(vec_wordchars_utf16.size());
     io_utf8 = 1;
   } else {
     std::string casechars = get_casechars(denc);
@@ -635,6 +635,7 @@ static bool secure_filename(const char* filename) {
 
 char* mymkdtemp(char *templ) {
 #ifdef WIN32
+  (void)templ;
   char *odftmpdir = tmpnam(NULL);
   if (!odftmpdir) {
     return NULL;
@@ -663,7 +664,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   TextParser* parser = get_parser(format, extension, pMS[0]);
   char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
 
-  bool bZippedOdf = is_zipped_odf(parser, extension);
+  bool bZippedOdf = is_zipped_odf(parser, extension) != 0;
   // access content.xml of ODF
   if (bZippedOdf) {
     odftmpdir = mymkdtemp(tmpdirtemplate);
@@ -918,7 +919,7 @@ nextline:
               }
               fflush(stdout);
             } else {
-              int byte_offset = parser->get_tokenpos() + pos;
+              int byte_offset = int(parser->get_tokenpos() + pos);
               int char_offset = 0;
               if (strcmp(io_enc, "UTF-8") == 0) {
                 for (int i = 0; i < byte_offset; i++) {
@@ -957,7 +958,7 @@ nextline:
               }
               fflush(stdout);
             } else {
-              int byte_offset = parser->get_tokenpos() + pos;
+              int byte_offset = int(parser->get_tokenpos() + pos);
               int char_offset = 0;
               if (strcmp(io_enc, "UTF-8") == 0) {
                 for (int i = 0; i < byte_offset; i++) {
@@ -1743,7 +1744,7 @@ char* search(char* begin, char* name, const char* ext) {
       end++;
     char* res = NULL;
     if (name) {
-      res = exist2(begin, end - begin, name, ext);
+      res = exist2(begin, int(end - begin), name, ext);
     } else {
 #if !defined(WIN32) || defined(__MINGW32__)
       listdicpath(begin, end - begin);
