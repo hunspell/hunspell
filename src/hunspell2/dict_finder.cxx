@@ -39,8 +39,6 @@
 #include <sys/types.h>
 #endif
 
-const char PATHSEP = ':';
-
 #elif defined(_WIN32)
 
 #ifdef __MINGW32__
@@ -85,10 +83,10 @@ auto get_default_search_directories(OutIt out) -> OutIt
 	*out++ = "/mingw64/share/hunspell";
 	char* home = getenv("HOME");
 #ifdef _POSIX_VERSION
-	array<string, 3> prefixes = {home ? string(home) + "/.local/" : "/",
-	                             "/usr/local/", "/usr/"};
-	array<const char*, 3> dirs = {"share/hunspell", "share/myspell",
-	                              "share/myspell/dicts"};
+	array<string, 3> prefixes = {home ? string(home) + "/.local" : "",
+	                             "/usr/local", "/usr"};
+	array<const char*, 3> dirs = {"/share/hunspell", "/share/myspell",
+	                              "/share/myspell/dicts"};
 	for (auto& dir : dirs) {
 		for (auto& prefix : prefixes) {
 			*out = prefix + dir;
