@@ -19,8 +19,7 @@ AC_SUBST(HUNSPELL_VERSION_MINOR)
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_LIBTOOL
-AC_LIBTOOL_WIN32_DLL
+LT_INIT
 
 # Checks for libraries.
 
