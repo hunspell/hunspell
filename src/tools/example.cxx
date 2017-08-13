@@ -41,8 +41,6 @@
 
 #include "hunspell.hxx"
 
-extern char* mystrdup(const char* s);
-
 using namespace std;
 
 int main(int argc, char** argv) {

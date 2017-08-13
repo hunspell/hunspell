@@ -348,6 +348,7 @@ int parse_aff_file(FILE* afflst) {
               }
                 fprintf(stderr, "   affix: %s %d, strip: %s %d\n", nptr->appnd,
                         nptr->appndl, nptr->strip, nptr->stripl);
+                // no break
               default:
                 break;
             }
