@@ -267,10 +267,11 @@ std::string chenc(const std::string& st, const char* enc1, const char* enc2) {
     size_t res;
     while ((res = iconv(conv, &source, &c1, &dest, &c2)) == size_t(-1)) {
       if (errno == E2BIG) {
-        ssize_t destoff = dest - const_cast<char*>(&out[0]);
-        out.resize(out.size() + (c2 += c1));
-
-        dest = const_cast<char*>(&out[0]) + destoff;
+        //c2 is zero or close to zero
+        size_t next_start = out.size() - c2;
+        c2 += c1;
+        out.resize(out.size() + c2);
+        dest = &out[next_start];
       } else
         break;
     }
