@@ -243,7 +243,7 @@ static const char* fix_encoding_name(const char* enc) {
 #endif
 
 /* change character encoding */
-std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
+std::string chenc(const std::string& st, const char* enc1, const char* enc2) {
 #ifndef HAVE_ICONV
   (void)enc1;
   (void)enc2;
@@ -258,7 +258,7 @@ std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
   std::string out(st.size(), std::string::value_type());
   size_t c1(st.size());
   size_t c2(out.size());
-  ICONV_CONST char* source = &st[0];
+  ICONV_CONST char* source = (ICONV_CONST char*) &st[0];
   char* dest = &out[0];
   iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
   if (conv == (iconv_t)-1) {
@@ -267,9 +267,11 @@ std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
     size_t res;
     while ((res = iconv(conv, &source, &c1, &dest, &c2)) == size_t(-1)) {
       if (errno == E2BIG) {
-        out.resize(out.size() + (c2 += c1));
-
-        dest = const_cast<char*>(&out[0]) + out.size() - c2;
+        //c2 is zero or close to zero
+        size_t next_start = out.size() - c2;
+        c2 += c1;
+        out.resize(out.size() + c2);
+        dest = &out[next_start];
       } else
         break;
     }
@@ -278,7 +280,7 @@ std::string& chenc(std::string& st, const char* enc1, const char* enc2) {
     }
     iconv_close(conv);
     out.resize(dest - &out[0]);
-    st = out;
+    return out;
   }
 
   return st;
@@ -507,8 +509,7 @@ void log(char* message) {
 #endif
 
 int putdic(const std::string& in_word, Hunspell* pMS) {
-  std::string word(in_word);
-  chenc(word, ui_enc, dic_enc[0]);
+  std::string word = chenc(in_word, ui_enc, dic_enc[0]);
 
   std::string buf;
   pMS->input_conv(word.c_str(), buf);
@@ -565,7 +566,7 @@ int save_privdic(const std::string& filename, const std::string& filename2, std:
   if (!dic)
     return 0;
   for (size_t i = 0; i < w.size(); ++i) {
-    chenc(w[i], io_enc, ui_enc);
+    w[i] = chenc(w[i], io_enc, ui_enc);
     fprintf(dic, "%s\n", w[i].c_str());
   }
   fclose(dic);
@@ -595,8 +596,7 @@ char* scanline(char* message) {
 // check words in the dictionaries (and set first checked dictionary)
 bool check(Hunspell** pMS, int* d, const std::string& token, int* info, std::string* root) {
   for (int i = 0; i < dmax; ++i) {
-    std::string buf(token);
-    chenc(buf, io_enc, dic_enc[*d]);
+    std::string buf = chenc(token, io_enc, dic_enc[*d]);
     mystrrep(buf, ENTITY_APOS, "'");
     if (checkapos && buf.find('\'') != std::string::npos)
       return false;
@@ -937,7 +937,7 @@ nextline:
                 fprintf(stdout, "%s", chenc(wlst[0], dic_enc[d], io_enc).c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
-                fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], io_enc).c_str());
+                  fprintf(stdout, ", %s", chenc(wlst[j], dic_enc[d], io_enc).c_str());
               }
               fprintf(stdout, "\n");
               fflush(stdout);
@@ -1194,8 +1194,7 @@ void dialogscreen(TextParser* parser,
 }
 
 std::string lower_first_char(const std::string& token, const char* ioenc, int langnum) {
-  std::string utf8str(token);
-  chenc(utf8str, ioenc, "UTF-8");
+  std::string utf8str = chenc(token, ioenc, "UTF-8");
   std::vector<w_char> u;
   u8_u16(u, utf8str);
   if (!u.empty()) {
@@ -1206,8 +1205,7 @@ std::string lower_first_char(const std::string& token, const char* ioenc, int la
   }
   std::string scratch;
   u16_u8(scratch, u);
-  chenc(scratch, "UTF-8", ioenc);
-  return scratch;
+  return chenc(scratch, "UTF-8", ioenc);
 }
 
 // for terminal interface
@@ -1532,13 +1530,13 @@ int interactive_line(TextParser* parser,
       std::vector<std::string> wlst;
       dialogscreen(parser, token, filename, info, wlst);  // preview
       refresh();
-      std::string buf(token);
-      wlst = pMS[d]->suggest(mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'").c_str());
+      std::string dicbuf = chenc(token, io_enc, dic_enc[d]);
+      wlst = pMS[d]->suggest(mystrrep(dicbuf, ENTITY_APOS, "'").c_str());
       if (wlst.empty()) {
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
       } else {
         for (size_t j = 0; j < wlst.size(); ++j) {
-          chenc(wlst[j], dic_enc[d], io_enc);
+          wlst[j] = chenc(wlst[j], dic_enc[d], io_enc);
         }
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
       }

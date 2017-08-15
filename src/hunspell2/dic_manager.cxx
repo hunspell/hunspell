@@ -47,7 +47,6 @@ auto dic_data::parse(std::istream& in, const aff_data& aff) -> bool
 	string morph;
 	vector<string> morphs;
 	u16string flags;
-	int line_number = 0;
 	istringstream ss;
 	utf8_to_ucs2_converter cv;
 	while (getline(in, line)) {

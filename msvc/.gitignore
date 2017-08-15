@@ -1,0 +1,11 @@
+Makefile
+/Debug/
+/Release/
+/Backup*/
+/x64/
+/*.db
+/*.user
+*.sdf
+*.opensdf
+*.suo
+UpgradeLog.htm
