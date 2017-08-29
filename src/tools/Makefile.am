@@ -1,4 +1,4 @@
-bin_PROGRAMS=analyze bulkcheck bulkverify chmorph hunspell munch unmunch hzip hunzip
+bin_PROGRAMS=analyze bulkcheck chmorph hunspell munch unmunch hzip hunzip
 
 AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
@@ -21,9 +21,6 @@ analyze_LDADD = ../hunspell/libhunspell-1.6.la
 
 bulkcheck_SOURCES=bulkcheck.cxx
 bulkcheck_LDADD = ../hunspell/libhunspell-1.6.la
-
-bulkverify_SOURCES=bulkverify.cxx
-bulkverify_LDADD = ../hunspell/libhunspell-1.6.la
 
 chmorph_SOURCES=chmorph.cxx
 chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.6.la
