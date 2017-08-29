@@ -140,8 +140,14 @@ int main(int argc, char** argv) {
 
   float per_nospace = 100.0 * num_nospace / num;
   float per_correct = 100.0 * num_correct / num;
-  float per_correct_space = 100.0 * num_correct_space / num_space;
-  float per_correct_nospace = 100.0 * num_correct_nospace / num_nospace;
+  float per_correct_space = 100.0;
+  if (num_space != 0) {
+    per_correct_space = 100.0 * num_correct_space / num_space;
+  }
+  float per_correct_nospace = 100.0;
+  if (num_nospace != 0) {
+    per_correct_nospace = 100.0 * num_correct_nospace / num_nospace;
+  }
 
   float per_space = 100.0 - per_nospace;
   float per_incorrect = 100.0 - per_correct;
