@@ -1,8 +1,8 @@
 The issues can be of three types (put an X between the brackets):
 
-- [] Bug reports
-- [] Change request or feature request
-- [] Others, questions
+- [ ] Bug reports
+- [ ] Change request or feature request
+- [ ] Others, questions
 
 # Reporting bugs
 
@@ -10,7 +10,7 @@ When reporting a bug you must tell us the state of your system and the
 steps to reproduce the bug. For the state please specify the following:
 
 | key                               | value |
-+-----------------------------------+-------+
+|-----------------------------------|-------|
 | OS, distro, version             = |       |
 | Hunspell version                = |       |
 | Dictionary,package name,version = |       |
