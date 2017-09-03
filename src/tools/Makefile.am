@@ -1,4 +1,4 @@
-bin_PROGRAMS=analyze bulkcheck chmorph hunspell munch unmunch hzip hunzip
+bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
 
 AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
@@ -25,6 +25,6 @@ bulkcheck_LDADD = ../hunspell/libhunspell-1.6.la
 chmorph_SOURCES=chmorph.cxx
 chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.6.la
 
-noinst_PROGRAMS=example
+noinst_PROGRAMS=example bulkcheck 
 
 dist_bin_SCRIPTS=makealias affixcompress wordforms ispellaff2myspell wordlist2hunspell

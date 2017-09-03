@@ -1,3 +1,55 @@
+2017-09-03: Hunspell 1.6.2 release:
+  - Library changes: no. Same as 1.6.1.
+  - Command line tool:
+      - Added German translation
+      - Fixed bug with wrong output encoding, not respecting system locale.
+
+2017-03-25: Hunspell 1.6.1 release:
+  - Library changes:
+      - Performance improvements in suggest()
+      - Fixes regressions for Hungarian related to compounding.
+      - Fixes regressions for Korean related to ICONV.
+  - Command line tool:
+      - Added Tajik translation 
+      - Fix regarding serching of OOo dicts installed in user folder
+  - Manpages:
+      - Fix microsoft-cp1251 to cp1251. Dicts should not use the first.
+      - Typos.
+  
+2016-12-22: Hunspell 1.6.0 release:
+  - Library changes:
+      - Performance improvement in ngsuggest(), suggestions should be faster.
+      - Revert MAXWORDLEN to 100 as in 1.3.3 for performance reasons.
+      - MAXWORDLEN can be set during build time with -D defines.
+      - Fix crash when word with 102 consecutive X is spelled.
+  - Command line tool:
+      - -D shows all loaded dictionares insted of only the first.
+      - -D properly lists all available dictionaries on Windows.
+
+2016-11-30: Hunspell 1.5.4 release:
+  - Fixes the command COMPOUNDSYLLABLE used in Hungarian dictionary.
+
+2016-11-28: Hunspell 1.5.3 release:
+  - Removed a #include from hunspell.hxx that was creating trouble
+
+2016-11-27: Hunspell 1.5.2 release:
+  - Reverted full backward compatibility with 1.4 public API, again
+
+2016-11-27: Hunspell 1.5.1 release:
+  - Reverted full backward compatibility with 1.4 public API
+
+2016-11-18: Hunspell 1.5.0 release:
+  - Lot of stability fixes
+  - Fixed compilation errors on various systems (Windows, FreeBSD)
+  - Small performance improvement compared to 1.4.0
+  - The C++ API is updated to use modern C++ types (string, vector).
+    Backward compatibility is kept for most of the functions except for
+    the following:
+      - get_wordchars();
+      - get_version();
+      - input_conv(string, string);
+      - removed get_csconv();
+
 2016-04-15: Hunspell 1.4.0 release:
   - various abi changes due to moving away from char* to std::string
 

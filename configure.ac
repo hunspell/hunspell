@@ -4,7 +4,7 @@
 m4_pattern_allow
 
 AC_PREREQ(2.59)
-AC_INIT([hunspell],[1.6.1],[nemeth@numbertext.org])
+AC_INIT([hunspell],[1.6.2],[nemeth@numbertext.org])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
