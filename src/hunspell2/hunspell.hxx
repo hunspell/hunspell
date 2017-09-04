@@ -73,6 +73,9 @@ class hunspell {
 	// spell_result spell_narrow_input_u8_dict(const string& word);
 
       public:
+	hunspell() {}
+	hunspell(const string& dict) {}
+
 	/**
 	 (5) This should be called when the input and the dictionary
 	 are in the same encoding which can be single byte or UTF-8.
@@ -95,7 +98,10 @@ class hunspell {
 	 setlocale(LC_ALL, "") or locale::global(locale("")).
 	 If we use std::cin, we should imbue it with cin.imbue(locale())
 	*/
-	auto spell_narrow_input(const string& word) -> spell_result;
+	auto spell_narrow_input(const string& word) -> spell_result
+	{
+		return good_word;
+	}
 
 	/**
 	 (7) UTF-8 input. Will delegate either to (2) or (3).

@@ -3,7 +3,7 @@
 noinst_PROGRAMS=hun2
 
 AM_CXXFLAGS = -std=c++11
-hun2_SOURCES=\
-aff_manager.cxx  dic_manager.hxx  hunspell.hxx \
-aff_manager.hxx  dict_finder.cxx  main.cxx \
-dic_manager.cxx  dict_finder.hxx  string_utils.hxx
+hun2_SOURCES=aff_manager.cxx aff_manager.hxx dic_manager.cxx \
+dic_manager.hxx dict_finder.cxx dict_finder.hxx hunspell.hxx \
+main.cxx string_utils.hxx
+

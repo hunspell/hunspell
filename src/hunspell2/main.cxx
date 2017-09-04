@@ -23,6 +23,8 @@
 #include "aff_manager.hxx"
 #include "dic_manager.hxx"
 #include "dict_finder.hxx"
+#include "hunspell.hxx"
+#include <clocale>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -34,60 +36,94 @@
 #endif
 
 using namespace std;
+using namespace hunspell;
 
-struct args_t {
-	unordered_map<char, string> options;
-	vector<string> operands;
+enum Mode {
+	DEFAULT_MODE,
+	PIPE_MODE,
+	CURSES_MODE,
+	MISSPELLED_WORDS_MODE,
+	MISSPELLED_LINES_MODE,
+	CORRECT_WORDS_MODE,
+	CORRECT_LINES_MODE,
+	LIST_DICTIONARIES_MODE
 };
 
-auto parse_args(int argc, char* argv[]) -> args_t
+struct Args_t {
+	Mode mode = DEFAULT_MODE;
+	string dictionary;
+	vector<string> other_dicts;
+	vector<string> files;
+	Args_t() {}
+	Args_t(int argc, char* argv[]) { parse_args(argc, argv); }
+	auto parse_args(int argc, char* argv[]) -> void;
+};
+
+auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
 // usage
 // hunspell -d dict [-l|-G]
 // hunspell [-D]
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
-	unordered_map<char, string> ret;
 	int c;
 	int errflg = 0;
-	while ((c = getopt(argc, argv, ":d:DGl")) != -1) {
+	bool lines = false;
+	while ((c = getopt(argc, argv, ":d:DGLl")) != -1) {
 		switch (c) {
 		case 'd':
-			ret[c] = optarg;
+			if (dictionary.empty()) {
+				dictionary = optarg;
+			}
+			else {
+				other_dicts.emplace_back(optarg);
+			}
 			break;
 		case 'D':
+			mode = LIST_DICTIONARIES_MODE;
+			break;
 		case 'G':
+			if (lines)
+				mode = CORRECT_LINES_MODE;
+			else
+				mode = CORRECT_WORDS_MODE;
+			break;
 		case 'l':
-			ret[c];
+			if (lines)
+				mode = MISSPELLED_LINES_MODE;
+			else
+				mode = MISSPELLED_WORDS_MODE;
+			break;
+		case 'L':
+			lines = true;
+			if (mode == MISSPELLED_WORDS_MODE)
+				mode = MISSPELLED_LINES_MODE;
+			else if (mode == CORRECT_WORDS_MODE)
+				mode = CORRECT_LINES_MODE;
 			break;
 		case ':': /* -d without operand */
-			ret[c] += optopt;
 			cerr << "Option -" << (char)optopt
 			     << " requires an operand\n";
 			errflg++;
 			break;
 		case '?':
-			ret[c] += optopt;
 			cerr << "Unrecognized option: '-" << (char)optopt
 			     << "'\n";
 			errflg++;
 			break;
 		}
 	}
-	return {ret, vector<string>(argv + optind, argv + argc)};
-#else
-	return {};
+	files.insert(files.end(), argv + optind, argv + argc);
 #endif
 }
 
 int main(int argc, char* argv[])
 {
-	auto args1 = parse_args(argc, argv);
-	auto& args = args1.options;
+	auto args = Args_t(argc, argv);
 	auto v = hunspell::get_default_search_directories();
 	hunspell::get_mozilla_directories(v);
 	hunspell::get_libreoffice_directories(v);
 	auto dics = hunspell::search_dirs_for_dicts(v);
-	if (args.empty() || args.count('D')) {
+	if (args.mode == LIST_DICTIONARIES_MODE) {
 		for (auto& a : v) {
 			cout << a << endl;
 		}
@@ -97,12 +133,12 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	if (args.count('d') == 0) {
+	if (args.dictionary.empty()) {
 		return 0;
 	}
 	string filename;
 	for (auto& a : dics) {
-		if (a.first == args['d']) {
+		if (a.first == args.dictionary) {
 			filename = a.second;
 			break;
 		}
@@ -110,43 +146,31 @@ int main(int argc, char* argv[])
 	if (filename.empty()) {
 		return 1;
 	}
-	/*
+
 	locale::global(locale(""));
 	cin.imbue(locale());
+	setlocale(LC_ALL, "");
 	hunspell::hunspell dic(filename);
 	string word;
-	if (args.count('l')) {
-	        while (cin >> word) {
-	                auto res = dic.spell_narrow_input(word);
-	                switch (res) {
-	                case bad_word:
-	                        cout << word << '\n';
-	                }
-	        }
+
+	while (cin >> word) {
+		auto res = dic.spell_narrow_input(word);
+		switch (res) {
+		case bad_word:
+			cout << '&' << endl;
+			break;
+		case good_word:
+			cout << '*' << endl;
+			break;
+		case affixed_good_word:
+			cout << '+' << endl;
+			break;
+		case compound_good_word:
+			cout << '-' << endl;
+			break;
+		}
 	}
-	else if (args.count('G')) {
-	        while (cin >> word) {
-	                auto res = dic.spell_narrow_input(word);
-	                switch (res) {
-	                case bad_word:
-	                        break;
-	                default:
-	                        cout << word << '\n';
-	                }
-	        }
-	}
-	else {
-	        while (cin >> word) {
-	                auto res = dic.spell_narrow_input(word);
-	                switch (res) {
-	                case bad_word:
-	                case good_word:
-	                case affixed_good_word:
-	                case compound_good_word:
-	                }
-	        }
-	}
-	*/
+	/*
 	ifstream affstream(filename + ".aff");
 	ifstream dicstream(filename + ".dic");
 	hunspell::aff_data aff;
@@ -156,23 +180,24 @@ int main(int argc, char* argv[])
 	std::cout << aff.encoding << endl;
 	std::cout << aff.try_chars << endl;
 	for (auto& a : aff.compound_rules) {
-		cout << a << endl;
+	        cout << a << endl;
 	}
 	for (auto& a : aff.suffixes) {
-		cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
-		     << ' ' << a.stripping << ' ' << a.affix
-		     << (a.new_flags.size() ? "/ " : " ") << a.condition;
-		cout << endl;
+	        cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
+	             << ' ' << a.stripping << ' ' << a.affix
+	             << (a.new_flags.size() ? "/ " : " ") << a.condition;
+	        cout << endl;
 	}
 	for (auto& wd : dic.words) {
-		cout << wd.first;
-		if (wd.second.size()) {
-			cout << '/';
-			for (auto& flag : wd.second) {
-				cout << flag << ',';
-			}
-		}
-		cout << endl;
+	        cout << wd.first;
+	        if (wd.second.size()) {
+	                cout << '/';
+	                for (auto& flag : wd.second) {
+	                        cout << flag << ',';
+	                }
+	        }
+	        cout << endl;
 	}
+	*/
 	return 0;
 }
