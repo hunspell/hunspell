@@ -71,3 +71,9 @@ hunspell-*.tar.gz
 
 #QtCreator
 /Makefile.am.user
+
+# http://cppcheck.sourceforge.net/
+/cppcheck
+
+# https://vim.sourceforge.io/
+.?*.swp
