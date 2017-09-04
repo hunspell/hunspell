@@ -10,6 +10,7 @@
 /py-compile
 /test-driver
 /ylwrap
+/INSTALL
 
 # http://www.gnu.org/software/autoconf
 

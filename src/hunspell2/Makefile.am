@@ -1,4 +1,6 @@
-bin_PROGRAMS=hun2
+# this will be noinst until ready for release
+# then should be bin
+noinst_PROGRAMS=hun2
 
 AM_CXXFLAGS = -std=c++11
 hun2_SOURCES=\
