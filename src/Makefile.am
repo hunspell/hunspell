@@ -1,1 +1,1 @@
-SUBDIRS=hunspell parsers tools
+SUBDIRS=hunspell parsers tools hunspell2
