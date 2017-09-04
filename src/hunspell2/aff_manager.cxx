@@ -28,7 +28,7 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace hunspell {
+namespace Hunspell {
 
 using namespace std;
 
@@ -66,7 +66,7 @@ auto parse_vector_of_T(istream& in, const string& command,
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-auto decode_flags(std::istream& in, flag_type_t t, utf8_to_ucs2_converter& cv)
+auto decode_flags(std::istream& in, Flag_type_t t, utf8_to_ucs2_converter& cv)
     -> u16string
 {
 	string s;
@@ -74,13 +74,13 @@ auto decode_flags(std::istream& in, flag_type_t t, utf8_to_ucs2_converter& cv)
 	// utf8 to ucs-2 converter. flags can be only in BPM
 	// wstring_convert<codecvt_utf8<char16_t>,char16_t> cv;
 	switch (t) {
-	case single_char_flag:
+	case SINGLE_CHAR_FLAG:
 		in >> s;
 		ret.resize(s.size());
 		transform(s.begin(), s.end(), ret.begin(),
 		          cast_lambda<unsigned char>());
 		break;
-	case double_char_flag: {
+	case DOUBLE_CHAR_FLAG: {
 		in >> s;
 		auto i = s.begin();
 		auto e = s.end();
@@ -97,7 +97,7 @@ auto decode_flags(std::istream& in, flag_type_t t, utf8_to_ucs2_converter& cv)
 		}
 		break;
 	}
-	case number_flag:
+	case NUMBER_FLAG:
 		unsigned short flag;
 		if (in >> flag) {
 			ret.push_back(flag);
@@ -122,16 +122,16 @@ auto decode_flags(std::istream& in, flag_type_t t, utf8_to_ucs2_converter& cv)
 		}
 
 		break;
-	case utf8_flag:
+	case UTF8_FLAG:
 		ret = cv.from_bytes(s);
 		break;
 	}
 	return ret;
 }
 
-auto parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
+auto parse_affix(istream& ss, string& command, vector<Aff_data::affix>& vec,
                  unordered_map<string, pair<bool, int>>& cmd_affix,
-                 utf8_to_ucs2_converter& cv, aff_data& thiss) -> void
+                 utf8_to_ucs2_converter& cv, Aff_data& thiss) -> void
 {
 	char16_t f = thiss.decode_single_flag(ss, cv);
 	if (f == 0) {
@@ -182,13 +182,13 @@ auto parse_affix(istream& ss, string& command, vector<aff_data::affix>& vec,
 }
 }
 
-auto aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
+auto Aff_data::decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
     -> u16string
 {
-	return hunspell::decode_flags(in, flag_type, cv);
+	return Hunspell::decode_flags(in, flag_type, cv);
 }
 
-auto aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
+auto Aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
     -> char16_t
 {
 	auto flags = decode_flags(in, cv);
@@ -198,7 +198,7 @@ auto aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
 	return 0;
 }
 
-auto aff_data::parse(std::istream& in) -> bool
+auto Aff_data::parse(std::istream& in) -> bool
 {
 	unordered_map<string, string*> command_strings = {
 	    {"SET", &encoding},        {"LANG", &language_code},
@@ -272,7 +272,7 @@ auto aff_data::parse(std::istream& in) -> bool
 	string line;
 	string command;
 	int line_number = 0;
-	flag_type = single_char_flag;
+	flag_type = SINGLE_CHAR_FLAG;
 	while (getline(in, line)) {
 		line_number++;
 		istringstream ss(line);
@@ -322,11 +322,11 @@ auto aff_data::parse(std::istream& in) -> bool
 			ss >> p;
 			toupper_ascii(p);
 			if (p == "LONG")
-				flag_type = double_char_flag;
+				flag_type = DOUBLE_CHAR_FLAG;
 			else if (p == "NUM")
-				flag_type = number_flag;
+				flag_type = NUMBER_FLAG;
 			else if (p == "UTF-8")
-				flag_type = utf8_flag;
+				flag_type = UTF8_FLAG;
 		}
 		else if (command == "AF") {
 			auto& vec = flag_aliases;

@@ -68,3 +68,6 @@ a.out
 hunspell-*.tar.gz
 
 /doxygen/
+
+#QtCreator
+/Makefile.am.user

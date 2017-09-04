@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-namespace hunspell {
+namespace Hunspell {
 
 auto get_default_search_directories() -> std::vector<std::string>;
 

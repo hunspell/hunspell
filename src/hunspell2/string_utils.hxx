@@ -31,7 +31,7 @@
 
 #include <cctype>
 
-namespace hunspell {
+namespace Hunspell {
 
 using utf8_to_ucs2_converter =
     std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;

@@ -29,11 +29,11 @@
 #include <utility>
 #include <vector>
 
-namespace hunspell {
+namespace Hunspell {
 
-enum flag_type_t { single_char_flag, double_char_flag, number_flag, utf8_flag };
+enum Flag_type_t { SINGLE_CHAR_FLAG, DOUBLE_CHAR_FLAG, NUMBER_FLAG, UTF8_FLAG };
 
-struct aff_data {
+struct Aff_data {
 	using string = std::string;
 	using u16string = std::u16string;
 	using istream = std::istream;
@@ -43,7 +43,7 @@ struct aff_data {
 	using pair = std::pair<T, U>;
 
 	string encoding;
-	flag_type_t flag_type;
+	Flag_type_t flag_type;
 	bool complex_prefixes;
 	string language_code;
 	string ignore_chars;

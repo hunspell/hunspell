@@ -28,11 +28,11 @@
 #include <limits>
 #include <sstream>
 
-namespace hunspell {
+namespace Hunspell {
 
 using namespace std;
 
-auto dic_data::parse(std::istream& in, const aff_data& aff) -> bool
+auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 {
 	size_t approximate_size;
 	if (in >> approximate_size) {

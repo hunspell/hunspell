@@ -29,9 +29,9 @@
 #include <unordered_map>
 #include <vector>
 
-namespace hunspell {
+namespace Hunspell {
 
-struct dic_data {
+struct Dic_data {
 	// word and flag vector
 	// efficient for short flag vectors
 	// for long flag vectors like in Korean dict
@@ -45,7 +45,7 @@ struct dic_data {
 
 	// methods
 	// parses the dic data to hashtable
-	auto parse(std::istream& in, const aff_data& aff) -> bool;
+	auto parse(std::istream& in, const Aff_data& aff) -> bool;
 };
 }
 

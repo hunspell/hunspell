@@ -1,15 +1,15 @@
 #include <string>
 
-namespace hunspell {
+namespace Hunspell {
 
-enum spell_result {
+enum Spell_result {
 	bad_word,
 	good_word,
 	affixed_good_word,
 	compound_good_word
 };
 
-class hunspell {
+class Dictionary {
 
       public:
 	using string = std::string;
@@ -28,27 +28,27 @@ class hunspell {
 	*/
 	template <class ConvIter>
 	auto spell(ConvIter start, ConvIter end, const string& s)
-	    -> spell_result;
+	    -> Spell_result;
 
 	/**
 	 (1) This should be called when the input and the dictionary
 	 are in the same encoding and that encoding is single byte encoding.
 	*/
 	auto spell_singlechar_input_singlechar_dict(const string& word)
-	    -> spell_result;
+	    -> Spell_result;
 
 	/**
 	 (2) This should be called when the input and the dictionary
 	 are in the same encoding and that encoding UTF-8.
 	*/
-	auto spell_u8_input_u8_dict(const string& word) -> spell_result;
+	auto spell_u8_input_u8_dict(const string& word) -> Spell_result;
 
 	/*
 	 (3) This should be called when the input is UTF-8 string
 	 and the dictionary is byte encoding. Lossy conversion should happend
 	 UTF-8 to single byte, and then (1) should be called.
 	*/
-	auto spell_u8_input_singlechar_dict(const string& word) -> spell_result;
+	auto spell_u8_input_singlechar_dict(const string& word) -> Spell_result;
 
 	/*
 	 (4) This should be called when the input is
@@ -73,8 +73,8 @@ class hunspell {
 	// spell_result spell_narrow_input_u8_dict(const string& word);
 
       public:
-	hunspell() {}
-	hunspell(const string& dict) {}
+	Dictionary() {}
+	Dictionary(const string& dict) {}
 
 	/**
 	 (5) This should be called when the input and the dictionary
@@ -82,7 +82,7 @@ class hunspell {
 	 Simply calls (1) or (2).
 	 This is the same as spell() in v1.
 	*/
-	auto spell(const string& word) -> spell_result;
+	auto spell(const string& word) -> Spell_result;
 
 	/**
 	 (6) Unknown narrow input (single byte or multi byte).
@@ -98,7 +98,7 @@ class hunspell {
 	 setlocale(LC_ALL, "") or locale::global(locale("")).
 	 If we use std::cin, we should imbue it with cin.imbue(locale())
 	*/
-	auto spell_narrow_input(const string& word) -> spell_result
+	auto spell_narrow_input(const string& word) -> Spell_result
 	{
 		return good_word;
 	}
@@ -106,18 +106,18 @@ class hunspell {
 	/**
 	 (7) UTF-8 input. Will delegate either to (2) or (3).
 	*/
-	auto spell_u8_input(const string& word) -> spell_result;
+	auto spell_u8_input(const string& word) -> Spell_result;
 
       private:
 	/** (8) */
 	auto spell_u16_input_singlechar_dict(const u16string& word)
-	    -> spell_result;
+	    -> Spell_result;
 
 	/** (9) */
-	auto spell_u16_input_u8_dict(const u16string& word) -> spell_result;
+	auto spell_u16_input_u8_dict(const u16string& word) -> Spell_result;
 
       public:
 	/** (10) */
-	auto spell_u16_input(const u16string& word) -> spell_result;
+	auto spell_u16_input(const u16string& word) -> Spell_result;
 };
 }

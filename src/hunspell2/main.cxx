@@ -36,7 +36,7 @@
 #endif
 
 using namespace std;
-using namespace hunspell;
+using namespace Hunspell;
 
 enum Mode {
 	DEFAULT_MODE,
@@ -119,10 +119,10 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 int main(int argc, char* argv[])
 {
 	auto args = Args_t(argc, argv);
-	auto v = hunspell::get_default_search_directories();
-	hunspell::get_mozilla_directories(v);
-	hunspell::get_libreoffice_directories(v);
-	auto dics = hunspell::search_dirs_for_dicts(v);
+	auto v = Hunspell::get_default_search_directories();
+	Hunspell::get_mozilla_directories(v);
+	Hunspell::get_libreoffice_directories(v);
+	auto dics = Hunspell::search_dirs_for_dicts(v);
 	if (args.mode == LIST_DICTIONARIES_MODE) {
 		for (auto& a : v) {
 			cout << a << endl;
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
 	locale::global(locale(""));
 	cin.imbue(locale());
 	setlocale(LC_ALL, "");
-	hunspell::hunspell dic(filename);
+	Hunspell::Dictionary dic(filename);
 	string word;
 
 	while (cin >> word) {

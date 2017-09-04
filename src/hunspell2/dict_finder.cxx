@@ -52,7 +52,7 @@
 
 using namespace std;
 
-namespace hunspell {
+namespace Hunspell {
 
 template <class CharT, class OutIt>
 auto split(const basic_string<CharT>& s, CharT sep, OutIt out) -> OutIt
