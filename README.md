@@ -24,7 +24,7 @@ Main features of Hunspell spell checker and morphological analyzer:
   - Max. 65535 affix classes and twofold affix stripping (for
     agglutinative languages, like Azeri, Basque, Estonian, Finnish,
     Hungarian, Turkish, etc.)
-  - Support complex compoundings (for example, Hungarian and German)
+  - Support complex compounds (for example, Hungarian and German)
   - Support language specific features (for example, special casing of
     Azeri and Turkish dotted i, or German sharp s)
   - Handle conditional affixes, circumfixes, fogemorphemes, forbidden
@@ -34,9 +34,13 @@ Main features of Hunspell spell checker and morphological analyzer:
 
 # Compiling on GNU/Linux and Unixes
 
-First intall the following dependencies with your package manager:
+First install the following dependencies with your package manager:
 
     autoconf automake autopoint libtool g++
+    
+For some distributions, it is also advisable to install:
+
+    build-essential
 
 Then run the following commands:
 
@@ -59,6 +63,11 @@ Optional developer packages:
     --with-readline)
   - locale and gettext (but you can also use the --with-included-gettext
     configure parameter)
+  - thunderbird TODO?
+
+Only for this, install the appropriate selection of
+
+    libncurses5-dev libreadline-dev gettext-base? thunderbird-dev 
 
 # Compiling on Windows
 
@@ -191,6 +200,6 @@ Aspell dictionaries (need some conversion):
 Conversion steps: see relevant feature request at
 http://hunspell.github.io/ .
 
-László Németh,  
+László Németh,
 nemeth at numbertext org
 
