@@ -74,7 +74,7 @@ class Dictionary {
 
       public:
 	Dictionary() {}
-	Dictionary(const string& dict) {}
+	explicit Dictionary(const string& dict) {}
 
 	/**
 	 (5) This should be called when the input and the dictionary
