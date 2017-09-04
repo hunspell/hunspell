@@ -54,6 +54,7 @@ struct Args_t {
 	string dictionary;
 	vector<string> other_dicts;
 	vector<string> files;
+	bool error = false;
 	Args_t() {}
 	Args_t(int argc, char* argv[]) { parse_args(argc, argv); }
 	auto parse_args(int argc, char* argv[]) -> void;
@@ -62,11 +63,11 @@ struct Args_t {
 auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
 // usage
-// hunspell -d dict [-l|-G]
-// hunspell [-D]
+// hunspell [-a] [-d dict_NAME]... file_name...
+// hunspell -l|-G [-L] [-d dict_NAME]... file_name...
+// hunspell -D
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
-	int errflg = 0;
 	bool lines = false;
 	while ((c = getopt(argc, argv, ":d:DGLl")) != -1) {
 		switch (c) {
@@ -79,15 +80,21 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 			}
 			break;
 		case 'D':
+			if (mode != DEFAULT_MODE)
+				error = 1;
 			mode = LIST_DICTIONARIES_MODE;
 			break;
 		case 'G':
+			if (mode != DEFAULT_MODE)
+				error = 1;
 			if (lines)
 				mode = CORRECT_LINES_MODE;
 			else
 				mode = CORRECT_WORDS_MODE;
 			break;
 		case 'l':
+			if (mode != DEFAULT_MODE)
+				error = 1;
 			if (lines)
 				mode = MISSPELLED_LINES_MODE;
 			else
@@ -99,26 +106,39 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 				mode = MISSPELLED_LINES_MODE;
 			else if (mode == CORRECT_WORDS_MODE)
 				mode = CORRECT_LINES_MODE;
+			else if (mode != DEFAULT_MODE)
+				error = 1;
 			break;
 		case ':': /* -d without operand */
 			cerr << "Option -" << (char)optopt
 			     << " requires an operand\n";
-			errflg++;
+			error = 1;
 			break;
 		case '?':
 			cerr << "Unrecognized option: '-" << (char)optopt
 			     << "'\n";
-			errflg++;
+			error = 1;
 			break;
 		}
 	}
 	files.insert(files.end(), argv + optind, argv + argc);
+	if (lines && mode == DEFAULT_MODE) {
+		//in v1 this defaults to MISSPELLED_LINES_MODE
+		//we will make it error here
+		error = 1;
+	}
+	if (error) {
+		cerr << "Invalid arguments" << endl;
+	}
 #endif
 }
 
 int main(int argc, char* argv[])
 {
 	auto args = Args_t(argc, argv);
+	if (args.error) {
+		return 1;
+	}
 	auto v = Hunspell::get_default_search_directories();
 	Hunspell::get_mozilla_directories(v);
 	Hunspell::get_libreoffice_directories(v);
@@ -134,6 +154,7 @@ int main(int argc, char* argv[])
 	}
 
 	if (args.dictionary.empty()) {
+		//try and load default dictionary
 		return 0;
 	}
 	string filename;
@@ -144,6 +165,8 @@ int main(int argc, char* argv[])
 		}
 	}
 	if (filename.empty()) {
+		cerr << "Dictionary " << args.dictionary
+		     << " not found." << endl;
 		return 1;
 	}
 
