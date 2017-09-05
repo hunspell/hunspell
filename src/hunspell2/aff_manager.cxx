@@ -274,18 +274,17 @@ auto Aff_data::parse(std::istream& in) -> bool
 	int line_number = 0;
 	istringstream ss;
 
-	auto loc = locale("C"); // quick fix
-	in.imbue(loc);
+	// Must be "C" locale, otherwise istream >> int might fail
+	// due to thousands separator. "C" locale has no such seprator
+	// We kinda assume C locale is US-ASCII which should not be a problem.
+	in.imbue(locale::classic());
+	ss.imbue(locale::classic());
 
 	flag_type = SINGLE_CHAR_FLAG;
 	while (getline(in, line)) {
 		line_number++;
 		ss.str(line);
 		ss.clear();
-
-		ss.imbue(loc); // quick fix
-		// in >> int fails without C locale, investigate
-
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
 			continue; // skip comment or empty lines

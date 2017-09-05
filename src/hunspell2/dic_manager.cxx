@@ -34,29 +34,35 @@ using namespace std;
 
 auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 {
+	size_t line_number = 1;
 	size_t approximate_size;
+	istringstream ss;
+	string line;
 
-	auto loc = locale("C"); // quick fix
-	in.imbue(loc);
-
-	if (in >> approximate_size) {
+	// locale must be "C", see note in Aff_data::parse()
+	in.imbue(locale::classic());
+	ss.imbue(locale::classic());
+	if (!getline(in, line)) {
+		return false;
+	}
+	ss.str(line);
+	if (ss >> approximate_size) {
 		words.reserve(approximate_size);
-		in.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 	else {
 		return false;
 	}
-	string line;
+
 	string word;
 	string morph;
 	vector<string> morphs;
 	u16string flags;
-	istringstream ss;
+
 	utf8_to_ucs2_converter cv;
 
-	ss.imbue(loc);
 
 	while (getline(in, line)) {
+		line_number++;
 		ss.str(line);
 		ss.clear();
 		word.clear();
