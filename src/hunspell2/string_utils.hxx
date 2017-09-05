@@ -33,6 +33,43 @@
 
 namespace Hunspell {
 
+template <class CharT, class CharOrStr, class OutIt>
+OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
+{
+	using size_type = typename std::basic_string<CharT>::size_type;
+	size_type sz = s.size();
+	size_type i1 = 0;
+	size_type i2;
+	do {
+		i2 = s.find(sep, i1);
+		*out++ = s.substr(i1, i2 - i1);
+		i1 = i2 + 1;
+		// i2 gets s.npos after the last separator
+		// lenth of i2-i1 will always go past the end
+		// yet that is defined
+	} while (i2 != s.npos);
+	return out;
+}
+
+template <class CharT, class CharOrStr, class OutIt>
+OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
+                      OutIt out)
+{
+	using size_type = typename std::basic_string<CharT>::size_type;
+	size_type sz = s.size();
+	size_type i1 = 0;
+	size_type i2;
+	do {
+		i2 = s.find_first_of(sep, i1);
+		*out++ = s.substr(i1, i2 - i1);
+		i1 = i2 + 1;
+		// i2 gets s.npos after the last separator
+		// lenth of i2-i1 will always go past the end
+		// yet that is defined
+	} while (i2 != s.npos);
+	return out;
+}
+
 using utf8_to_ucs2_converter =
     std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
 

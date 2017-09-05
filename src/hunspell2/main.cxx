@@ -163,43 +163,36 @@ int main(int argc, char* argv[])
 	if (args.fail()) {
 		return 1;
 	}
-	auto v = Hunspell::get_default_search_directories();
-	Hunspell::get_mozilla_directories(v);
-	Hunspell::get_libreoffice_directories(v);
-	auto dics = Hunspell::search_dirs_for_dicts(v);
-	if (args.mode == LIST_DICTIONARIES_MODE) {
-		for (auto& a : v) {
-			cout << a << endl;
-		}
-		for (auto& a : dics) {
-			cout << a.first << '\t' << a.second << endl;
-		}
-		return 0;
-	}
 
-	if (args.dictionary.empty()) {
-		// try and load default dictionary
-		return 0;
-	}
-	string filename;
-	for (auto& a : dics) {
-		if (a.first == args.dictionary) {
-			filename = a.second;
-			break;
+	locale::global(locale(""));
+	cin.imbue(locale());
+	setlocale(LC_ALL, "");
+
+	auto f = Finder();
+	f.add_default_directories();
+	f.add_libreoffice_directories();
+	f.add_mozilla_directories();
+	f.search_dictionaries();
+	auto filename = f.get_dictionary(args.dictionary);
+	if (args.mode == LIST_DICTIONARIES_MODE) {
+		cout << "SEARCH PATHS:\n";
+		for (auto& a : f.get_all_directories()) {
+			cout << a << '\n';
 		}
+		cout << "AVAILABLE DICTIONARIES:\n";
+		for (auto& a : f.get_all_dictionaries()) {
+			cout << a.first << '\t' << a.second << '\n';
+		}
+		cout << "LOADED DICTIONARY:\n" << filename << endl;
+		return 0;
 	}
 	if (filename.empty()) {
 		cerr << "Dictionary " << args.dictionary << " not found."
 		     << endl;
 		return 1;
 	}
-
-	locale::global(locale(""));
-	cin.imbue(locale());
-	setlocale(LC_ALL, "");
 	Hunspell::Dictionary dic(filename);
 	string word;
-
 	while (cin >> word) {
 		auto res = dic.spell_narrow_input(word);
 		switch (res) {

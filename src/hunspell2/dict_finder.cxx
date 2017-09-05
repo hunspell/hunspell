@@ -21,6 +21,7 @@
  */
 
 #include "dict_finder.hxx"
+#include "string_utils.hxx"
 
 #include <algorithm>
 #include <array>
@@ -53,18 +54,6 @@
 using namespace std;
 
 namespace Hunspell {
-
-template <class CharT, class OutIt>
-auto split(const basic_string<CharT>& s, CharT sep, OutIt out) -> OutIt
-{
-	basic_istringstream<CharT> is(s);
-	basic_string<CharT> out_str;
-	while (getline(is, out_str, sep)) {
-		*out = out_str;
-		++out;
-	}
-	return out;
-}
 
 #ifdef _WIN32
 const char PATHSEP = ';';
@@ -112,11 +101,9 @@ auto get_default_search_directories(OutIt out) -> OutIt
 	return out;
 }
 
-auto get_default_search_directories() -> vector<string>
+auto Finder::add_default_directories() -> void
 {
-	vector<string> v;
-	get_default_search_directories(back_inserter(v));
-	return v;
+	get_default_search_directories(back_inserter(directories));
 }
 
 #ifdef _POSIX_VERSION
@@ -219,9 +206,9 @@ auto get_mozilla_directories(OutIt out) -> OutIt
 	return out;
 }
 
-auto get_mozilla_directories(vector<string>& out) -> void
+auto Finder::add_mozilla_directories() -> void
 {
-	get_mozilla_directories(back_inserter(out));
+	get_mozilla_directories(back_inserter(directories));
 }
 
 template <class OutIt>
@@ -284,9 +271,9 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 	return out;
 }
 
-auto get_libreoffice_directories(std::vector<std::string>& out) -> void
+auto Finder::add_libreoffice_directories() -> void
 {
-	get_libreoffice_directories(back_inserter(out));
+	get_libreoffice_directories(back_inserter(directories));
 }
 
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
@@ -368,14 +355,39 @@ auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 	return out;
 }
 
-auto search_dirs_for_dicts(const vector<string>& dirs)
-    -> vector<pair<string, string>>
+auto Finder::search_dictionaries() -> void
 {
-
-	vector<pair<string, string>> v;
-	for (auto& dir : dirs) {
-		search_dir_for_dicts(dir, back_inserter(v));
+	for (auto& dir : directories) {
+		search_dir_for_dicts(dir, back_inserter(dictionaries));
 	}
-	return v;
+}
+
+auto Finder::get_dictionary(const string& dict) const -> string
+{
+// first check if it is a path
+#ifdef _WIN32
+	auto separators = "\\/";
+#else
+	auto separators = '/';
+#endif
+	if (dict.find_first_of(separators) != dict.npos) {
+		// a path
+		auto sz = dict.size();
+		if (sz < 4)
+			return "";
+		if (dict.find(".dic", sz - 4) == dict.npos &&
+		    dict.find(".aff", sz - 4) == dict.npos)
+			return "";
+		return dict.substr(0, sz - 4);
+	}
+	else {
+		// search list
+		for (auto& a : dictionaries) {
+			if (a.first == dict) {
+				return a.second;
+			}
+		}
+	}
+	return "";
 }
 }
