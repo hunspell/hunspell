@@ -46,7 +46,10 @@ enum Mode {
 	MISSPELLED_LINES_MODE,
 	CORRECT_WORDS_MODE,
 	CORRECT_LINES_MODE,
-	LIST_DICTIONARIES_MODE
+	LIST_DICTIONARIES_MODE,
+	LINES_MODE,
+	HELP_MODE,
+	ERROR_MODE
 };
 
 struct Args_t {
@@ -54,10 +57,11 @@ struct Args_t {
 	string dictionary;
 	vector<string> other_dicts;
 	vector<string> files;
-	bool error = false;
+
 	Args_t() {}
 	Args_t(int argc, char* argv[]) { parse_args(argc, argv); }
 	auto parse_args(int argc, char* argv[]) -> void;
+	auto fail() -> bool { return mode == ERROR_MODE; }
 };
 
 auto Args_t::parse_args(int argc, char* argv[]) -> void
@@ -68,66 +72,86 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 // hunspell -D
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
-	bool lines = false;
-	while ((c = getopt(argc, argv, ":d:DGLl")) != -1) {
+	// The program can run in various modes depending on the
+	// command line options. mode is FSM state, this while loop is FSM.
+	while ((c = getopt(argc, argv, ":d:aDGLlh")) != -1) {
 		switch (c) {
 		case 'd':
-			if (dictionary.empty()) {
+			if (dictionary.empty())
 				dictionary = optarg;
-			}
-			else {
+			else
 				other_dicts.emplace_back(optarg);
-			}
+
+			break;
+		case 'a':
+			if (mode == DEFAULT_MODE)
+				mode = PIPE_MODE;
+			else
+				mode = ERROR_MODE;
+
 			break;
 		case 'D':
-			if (mode != DEFAULT_MODE)
-				error = 1;
-			mode = LIST_DICTIONARIES_MODE;
+			if (mode == DEFAULT_MODE)
+				mode = LIST_DICTIONARIES_MODE;
+			else
+				mode = ERROR_MODE;
+
 			break;
 		case 'G':
-			if (mode != DEFAULT_MODE)
-				error = 1;
-			if (lines)
+			if (mode == DEFAULT_MODE)
+				mode = CORRECT_WORDS_MODE;
+			else if (mode == LINES_MODE)
 				mode = CORRECT_LINES_MODE;
 			else
-				mode = CORRECT_WORDS_MODE;
+				mode = ERROR_MODE;
+
 			break;
 		case 'l':
-			if (mode != DEFAULT_MODE)
-				error = 1;
-			if (lines)
+			if (mode == DEFAULT_MODE)
+				mode = MISSPELLED_WORDS_MODE;
+			else if (mode == LINES_MODE)
 				mode = MISSPELLED_LINES_MODE;
 			else
-				mode = MISSPELLED_WORDS_MODE;
+				mode = ERROR_MODE;
+
 			break;
 		case 'L':
-			lines = true;
-			if (mode == MISSPELLED_WORDS_MODE)
+			if (mode == DEFAULT_MODE)
+				mode = LINES_MODE;
+			else if (mode == MISSPELLED_WORDS_MODE)
 				mode = MISSPELLED_LINES_MODE;
 			else if (mode == CORRECT_WORDS_MODE)
 				mode = CORRECT_LINES_MODE;
-			else if (mode != DEFAULT_MODE)
-				error = 1;
+			else
+				mode = ERROR_MODE;
+
 			break;
-		case ':': /* -d without operand */
+		case 'h':
+			if (mode == DEFAULT_MODE)
+				mode = HELP_MODE;
+			else
+				mode = ERROR_MODE;
+
+			break;
+		case ':':
 			cerr << "Option -" << (char)optopt
 			     << " requires an operand\n";
-			error = 1;
+			mode = ERROR_MODE;
 			break;
 		case '?':
 			cerr << "Unrecognized option: '-" << (char)optopt
 			     << "'\n";
-			error = 1;
+			mode = ERROR_MODE;
 			break;
 		}
 	}
 	files.insert(files.end(), argv + optind, argv + argc);
-	if (lines && mode == DEFAULT_MODE) {
-		//in v1 this defaults to MISSPELLED_LINES_MODE
-		//we will make it error here
-		error = 1;
+	if (mode == LINES_MODE) {
+		// in v1 this defaults to MISSPELLED_LINES_MODE
+		// we will make it error here
+		mode = ERROR_MODE;
 	}
-	if (error) {
+	if (mode == ERROR_MODE) {
 		cerr << "Invalid arguments" << endl;
 	}
 #endif
@@ -136,7 +160,7 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 int main(int argc, char* argv[])
 {
 	auto args = Args_t(argc, argv);
-	if (args.error) {
+	if (args.fail()) {
 		return 1;
 	}
 	auto v = Hunspell::get_default_search_directories();
@@ -154,7 +178,7 @@ int main(int argc, char* argv[])
 	}
 
 	if (args.dictionary.empty()) {
-		//try and load default dictionary
+		// try and load default dictionary
 		return 0;
 	}
 	string filename;
@@ -165,8 +189,8 @@ int main(int argc, char* argv[])
 		}
 	}
 	if (filename.empty()) {
-		cerr << "Dictionary " << args.dictionary
-		     << " not found." << endl;
+		cerr << "Dictionary " << args.dictionary << " not found."
+		     << endl;
 		return 1;
 	}
 

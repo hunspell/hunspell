@@ -80,7 +80,6 @@ auto get_default_search_directories(OutIt out) -> OutIt
 	if (dicpath) {
 		out = split(string(dicpath), PATHSEP, out);
 	}
-	*out++ = "/mingw64/share/hunspell";
 	char* home = getenv("HOME");
 #ifdef _POSIX_VERSION
 	array<string, 3> prefixes = {home ? string(home) + "/.local" : "",
@@ -293,9 +292,6 @@ auto get_libreoffice_directories(std::vector<std::string>& out) -> void
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 class Directory {
 	DIR* dp = nullptr;
-#ifdef _POSIX_VERSION
-	struct dirent ent;
-#endif
 	struct dirent* ent_p = nullptr;
 
       public:
@@ -310,14 +306,7 @@ class Directory {
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
-	auto next() -> bool
-	{
-#ifdef _POSIX_VERSION
-		return readdir_r(dp, &ent, &ent_p) == 0 && ent_p;
-#else
-		return (ent_p = readdir(dp));
-#endif
-	}
+	auto next() -> bool { return (ent_p = readdir(dp)); }
 	auto entry_name() -> const char* { return ent_p->d_name; }
 	auto close() -> void
 	{
