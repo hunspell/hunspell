@@ -164,8 +164,8 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	locale::global(locale(""));
-	cin.imbue(locale());
+	// locale::global(locale(""));
+	cin.imbue(locale(""));
 	setlocale(LC_ALL, "");
 
 	auto f = Finder();

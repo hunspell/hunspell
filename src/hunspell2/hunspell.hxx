@@ -77,12 +77,14 @@ class Dictionary {
 	// spell_result spell_narrow_input_u8_dict(const string& word);
 
       public:
-	Dictionary():
-	        // we explicity do value init so content is zeroed
-	        aff_data(), dic_data()
-	{}
-	explicit Dictionary(const string& dict_file_path):
-	        aff_data(), dic_data()
+	Dictionary()
+	    : // we explicity do value init so content is zeroed
+	      aff_data(),
+	      dic_data()
+	{
+	}
+	explicit Dictionary(const string& dict_file_path)
+	    : aff_data(), dic_data()
 	{
 		std::ifstream aff_file(dict_file_path + ".aff");
 		std::ifstream dic_file(dict_file_path + ".dic");
@@ -114,7 +116,7 @@ class Dictionary {
 	*/
 	auto spell_narrow_input(const string& word) -> Spell_result
 	{
-		//this just for mocking ATM
+		// this just for mocking ATM
 		if (dic_data.words.count(word))
 			return good_word;
 		return bad_word;

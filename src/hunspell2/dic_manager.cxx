@@ -35,6 +35,10 @@ using namespace std;
 auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 {
 	size_t approximate_size;
+
+	auto loc = locale("C"); // quick fix
+	in.imbue(loc);
+
 	if (in >> approximate_size) {
 		words.reserve(approximate_size);
 		in.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -49,6 +53,9 @@ auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 	u16string flags;
 	istringstream ss;
 	utf8_to_ucs2_converter cv;
+
+	ss.imbue(loc);
+
 	while (getline(in, line)) {
 		ss.str(line);
 		ss.clear();

@@ -272,16 +272,26 @@ auto Aff_data::parse(std::istream& in) -> bool
 	string line;
 	string command;
 	int line_number = 0;
+	istringstream ss;
+
+	auto loc = locale("C"); // quick fix
+	in.imbue(loc);
+
 	flag_type = SINGLE_CHAR_FLAG;
 	while (getline(in, line)) {
 		line_number++;
-		istringstream ss(line);
+		ss.str(line);
+		ss.clear();
+
+		ss.imbue(loc); // quick fix
+		// in >> int fails without C locale, investigate
+
 		ss >> ws;
 		if (ss.eof() || ss.peek() == '#') {
 			continue; // skip comment or empty lines
 		}
 		ss >> command;
-		toupper_ascii(command);
+		toupper(command, ss.getloc());
 		ss >> ws;
 		if (command == "PFX" || command == "SFX") {
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
@@ -291,7 +301,7 @@ auto Aff_data::parse(std::istream& in) -> bool
 			auto& str = *command_strings[command];
 			ss >> str;
 			if (&str == &encoding) {
-				toupper_ascii(str);
+				toupper(str, ss.getloc());
 			}
 		}
 		else if (command_bools.count(command)) {
@@ -320,7 +330,7 @@ auto Aff_data::parse(std::istream& in) -> bool
 		else if (command == "FLAG") {
 			string p;
 			ss >> p;
-			toupper_ascii(p);
+			toupper(p, ss.getloc());
 			if (p == "LONG")
 				flag_type = DOUBLE_CHAR_FLAG;
 			else if (p == "NUM")
