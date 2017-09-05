@@ -1,4 +1,7 @@
-#include <string>
+#include "aff_manager.hxx"
+#include "dic_manager.hxx"
+
+#include <fstream>
 
 namespace Hunspell {
 
@@ -10,10 +13,11 @@ enum Spell_result {
 };
 
 class Dictionary {
-
-      public:
 	using string = std::string;
 	using u16string = std::u16string;
+
+	Aff_data aff_data;
+	Dic_data dic_data;
 
       private:
 	/* (0)
@@ -73,8 +77,18 @@ class Dictionary {
 	// spell_result spell_narrow_input_u8_dict(const string& word);
 
       public:
-	Dictionary() {}
-	explicit Dictionary(const string& dict) {}
+	Dictionary():
+	        // we explicity do value init so content is zeroed
+	        aff_data(), dic_data()
+	{}
+	explicit Dictionary(const string& dict_file_path):
+	        aff_data(), dic_data()
+	{
+		std::ifstream aff_file(dict_file_path + ".aff");
+		std::ifstream dic_file(dict_file_path + ".dic");
+		aff_data.parse(aff_file);
+		dic_data.parse(dic_file, aff_data);
+	}
 
 	/**
 	 (5) This should be called when the input and the dictionary
@@ -100,7 +114,10 @@ class Dictionary {
 	*/
 	auto spell_narrow_input(const string& word) -> Spell_result
 	{
-		return good_word;
+		//this just for mocking ATM
+		if (dic_data.words.count(word))
+			return good_word;
+		return bad_word;
 	}
 
 	/**
