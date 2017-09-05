@@ -1,0 +1,7 @@
+# http://cppcheck.sourceforge.net/
+/cppcheck*.txt
+/cppcheck*.xml
+
+# https://bitbucket.org/verateam/vera/
+/vera++.txt
+/vera++.xml
