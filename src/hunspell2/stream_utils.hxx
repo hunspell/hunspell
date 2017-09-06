@@ -36,56 +36,55 @@ namespace Hunspell {
 
 inline void reset_failbit_istream(std::istream& in)
 {
-        in.clear(in.rdstate() & ~in.failbit);
+	in.clear(in.rdstate() & ~in.failbit);
 }
 
 inline bool read_to_slash_or_space(std::istream& in, std::string& out)
 {
-        in >> std::ws;
-        int c;
-        bool readSomething = false;
-        while ((c = in.get()) != std::istream::traits_type::eof() &&
-               !isspace((char)c, in.getloc()) && c != '/') {
-                out.push_back(c);
-                readSomething = true;
-        }
-        bool slash = c == '/';
-        if (readSomething || slash) {
-                reset_failbit_istream(in);
-        }
-        return slash;
+	in >> std::ws;
+	int c;
+	bool readSomething = false;
+	while ((c = in.get()) != std::istream::traits_type::eof() &&
+	       !isspace((char)c, in.getloc()) && c != '/') {
+		out.push_back(c);
+		readSomething = true;
+	}
+	bool slash = c == '/';
+	if (readSomething || slash) {
+		reset_failbit_istream(in);
+	}
+	return slash;
 }
 
 inline bool read_to_slash(std::istream& in, std::string& out)
 {
-        in >> std::ws;
-        int c;
-        bool readSomething = false;
-        while ((c = in.get()) != std::istream::traits_type::eof() && c != '/') {
-                out.push_back(c);
-                readSomething = true;
-        }
-        bool slash = c == '/';
-        if (readSomething || slash) {
-                reset_failbit_istream(in);
-        }
-        return slash;
+	in >> std::ws;
+	int c;
+	bool readSomething = false;
+	while ((c = in.get()) != std::istream::traits_type::eof() && c != '/') {
+		out.push_back(c);
+		readSomething = true;
+	}
+	bool slash = c == '/';
+	if (readSomething || slash) {
+		reset_failbit_istream(in);
+	}
+	return slash;
 }
 
 inline void parse_morhological_fields(std::istream& in,
                                       std::vector<std::string>& vecOut)
 {
-        if (!in.good()) {
-                return;
-        }
+	if (!in.good()) {
+		return;
+	}
 
-        std::string morph;
-        while (in >> morph) {
-                vecOut.push_back(morph);
-        }
-        reset_failbit_istream(in);
+	std::string morph;
+	while (in >> morph) {
+		vecOut.push_back(morph);
+	}
+	reset_failbit_istream(in);
 }
-
 }
 
 #endif // STREAM_UTILS_HXX

@@ -31,6 +31,7 @@
 #include <codecvt>
 #include <istream>
 #include <locale>
+#include <string>
 
 namespace Hunspell {
 
@@ -39,11 +40,14 @@ using utf8_to_ucs2_converter =
 
 inline void toupper(std::string& s, const std::locale& loc /* = std::locale()*/)
 {
-        for (auto& c : s)
-                c = std::toupper(c, loc);
+	for (auto& c : s)
+		c = std::toupper(c, loc);
 }
 
+unsigned char utf8_low_level(unsigned char state, char in, char32_t* out,
+                             bool* too_short_err);
 
+bool validate_utf8(const std::string& s);
 }
 
 #endif // LOCALE_UTILS_HXX

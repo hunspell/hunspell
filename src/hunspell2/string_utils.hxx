@@ -78,7 +78,5 @@ struct cast_lambda {
 		return static_cast<To>(f);
 	}
 };
-
-
 }
 #endif
