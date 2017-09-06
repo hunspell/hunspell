@@ -48,8 +48,9 @@ enum Mode {
 	CORRECT_LINES_MODE,
 	LIST_DICTIONARIES_MODE,
 	LINES_MODE,
-	HELP_MODE,
-	ERROR_MODE
+    HELP_MODE,
+    VERSION_MODE,
+    ERROR_MODE
 };
 
 struct Args_t {
@@ -70,11 +71,14 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 // hunspell [-a] [-d dict_NAME]... file_name...
 // hunspell -l|-G [-L] [-d dict_NAME]... file_name...
 // hunspell -D
+// hunspell -h
+// hunspell -v
+//TODO support --help
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	while ((c = getopt(argc, argv, ":d:aDGLlh")) != -1) {
+    while ((c = getopt(argc, argv, ":d:aDGLlhv")) != -1) {
 		switch (c) {
 		case 'd':
 			if (dictionary.empty())
@@ -126,14 +130,21 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 				mode = ERROR_MODE;
 
 			break;
-		case 'h':
-			if (mode == DEFAULT_MODE)
-				mode = HELP_MODE;
-			else
-				mode = ERROR_MODE;
+        case 'h':
+            if (mode == DEFAULT_MODE)
+                mode = HELP_MODE;
+            else
+                mode = ERROR_MODE;
 
-			break;
-		case ':':
+            break;
+        case 'v':
+            if (mode == DEFAULT_MODE)
+                mode = VERSION_MODE;
+            else
+                mode = ERROR_MODE;
+
+            break;
+        case ':':
 			cerr << "Option -" << (char)optopt
 			     << " requires an operand\n";
 			mode = ERROR_MODE;
@@ -175,9 +186,6 @@ int main(int argc, char* argv[])
 	f.search_dictionaries();
 	auto filename = f.get_dictionary(args.dictionary);
     if (args.mode == HELP_MODE) {
-        // hunspell [-a] [-d dict_NAME]... file_name...
-        // hunspell -l|-G [-L] [-d dict_NAME]... file_name...
-        // hunspell -D
         cout << "Usage: hunspell [OPTION]... [FILE]..." << endl;
         cout << "Check spelling of each FILE. Without FILE, check standard input." << endl;
         cout << endl;
@@ -194,8 +202,22 @@ int main(int argc, char* argv[])
         cout << endl;
         cout << "Bug reports: http://hunspell.github.io/" << endl;
         return 0;
+    } else if (args.mode == VERSION_MODE) {
+        cout << "Hunspell " << "2.0.0" << endl;//FIXME should get version via API from library
+//TODO        cout << gettext("\nCopyright (C) 2002-2014 L\303\241szl\303\263 "
+//                "N\303\251meth. License: MPL/GPL/LGPL.\n\n"
+//                "Based on OpenOffice.org's Myspell library.\n"
+//                "Myspell's copyright (C) Kevin Hendricks, 2001-2002, "
+//                "License: BSD.") << endl;
+//TODO cout << endl;
+//TODO cout << gettext("This is free software; see the source for "
+//                        "copying conditions.  There is NO\n"
+//                        "warranty; not even for MERCHANTABILITY or "
+//                        "FITNESS FOR A PARTICULAR PURPOSE,\n"
+//                        "to the extent permitted by law.") << endl;
+        return 0;
     } else if (args.mode == LIST_DICTIONARIES_MODE) {
-		cout << "SEARCH PATHS:\n";
+        cout << "SEARCH PATHS:\n";
 		for (auto& a : f.get_all_directories()) {
 			cout << a << '\n';
 		}
