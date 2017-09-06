@@ -60,7 +60,6 @@ auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 
 	utf8_to_ucs2_converter cv;
 
-
 	while (getline(in, line)) {
 		line_number++;
 		ss.str(line);

@@ -73,7 +73,7 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
 using utf8_to_ucs2_converter =
     std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
 
-inline void toupper(std::string& s, const std::locale& loc/* = std::locale()*/)
+inline void toupper(std::string& s, const std::locale& loc /* = std::locale()*/)
 {
 	for (auto& c : s)
 		c = std::toupper(c, loc);
