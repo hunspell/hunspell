@@ -20,16 +20,16 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
+/**
+ * @file string_utils.hxx
+ * @brief String algorithms not dependent on locale.
+ */
+
 #ifndef HUNSPELL_STRING_UTILS_HXX
 #define HUNSPELL_STRING_UTILS_HXX
 
-#include <codecvt>
-#include <istream>
-#include <locale>
 #include <string>
 #include <vector>
-
-#include <cctype>
 
 namespace Hunspell {
 
@@ -70,20 +70,6 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
 	return out;
 }
 
-using utf8_to_ucs2_converter =
-    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
-
-inline void toupper(std::string& s, const std::locale& loc /* = std::locale()*/)
-{
-	for (auto& c : s)
-		c = std::toupper(c, loc);
-}
-
-inline void reset_failbit_istream(std::istream& in)
-{
-	in.clear(in.rdstate() & ~in.failbit);
-}
-
 template <class To>
 struct cast_lambda {
 	template <class From>
@@ -93,51 +79,6 @@ struct cast_lambda {
 	}
 };
 
-inline bool read_to_slash_or_space(std::istream& in, std::string& out)
-{
-	in >> std::ws;
-	int c;
-	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof() &&
-	       !isspace((char)c, in.getloc()) && c != '/') {
-		out.push_back(c);
-		readSomething = true;
-	}
-	bool slash = c == '/';
-	if (readSomething || slash) {
-		reset_failbit_istream(in);
-	}
-	return slash;
-}
 
-inline bool read_to_slash(std::istream& in, std::string& out)
-{
-	in >> std::ws;
-	int c;
-	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof() && c != '/') {
-		out.push_back(c);
-		readSomething = true;
-	}
-	bool slash = c == '/';
-	if (readSomething || slash) {
-		reset_failbit_istream(in);
-	}
-	return slash;
-}
-
-inline void parse_morhological_fields(std::istream& in,
-                                      std::vector<std::string>& vecOut)
-{
-	if (!in.good()) {
-		return;
-	}
-
-	std::string morph;
-	while (in >> morph) {
-		vecOut.push_back(morph);
-	}
-	reset_failbit_istream(in);
-}
 }
 #endif

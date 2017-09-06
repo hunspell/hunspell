@@ -23,6 +23,7 @@
 #include "dic_manager.hxx"
 
 #include "string_utils.hxx"
+#include "stream_utils.hxx"
 #include <algorithm>
 #include <iostream>
 #include <limits>

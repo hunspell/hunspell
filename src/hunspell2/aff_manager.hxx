@@ -23,7 +23,7 @@
 #ifndef HUNSPELL_AFF_MANAGER_HXX
 #define HUNSPELL_AFF_MANAGER_HXX
 
-#include "string_utils.hxx"
+#include "locale_utils.hxx"
 #include <istream>
 #include <string>
 #include <utility>
