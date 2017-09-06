@@ -26,7 +26,7 @@ fi
 #   Requires dictionary.
 
 TST='incomplete option'
-ARG=-
+ARG='-'
 echo 'Test: '$TST
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
@@ -71,7 +71,7 @@ else
 fi
 
 TST='non-ASCII invalid option'
-ARG=-ĳ
+ARG='-ĳ'
 echo 'Test: '$TST
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
@@ -98,7 +98,7 @@ fi
 
 TST='list dictionaries'
 echo 'Test: '$TST
-ARG=-D
+ARG='-D'
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
 COR=0
@@ -117,7 +117,7 @@ fi
 
 TST='non-existing system dictionary'
 echo 'Test: '$TST
-ARG=-d\ xy
+ARG='-d xy'
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
 COR=1
@@ -136,7 +136,7 @@ fi
 
 TST='no-existing non-ASCII system dictionary'
 echo 'Test: '$TST
-ARG=-d\ ĳn
+ARG='-d ĳn'
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
 COR=1
@@ -155,7 +155,7 @@ fi
 
 TST='non-existing system dictionary'
 echo 'Test: '$TST
-ARG=-d\ /usr/share/hunspell/xy
+ARG='-d /usr/share/hunspell/xy'
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
 COR=1
@@ -172,8 +172,9 @@ else
     echo '  Passed'
 fi
 
+TST='non-existing non-ASCII system dictionary'
 echo 'Test: '$TST
-ARG=-d\ /usr/share/hunspell/ĳn
+ARG='-d /usr/share/hunspell/ĳn'
 EXE=$BIN\ $ARG
 echo '  Command: '$EXE
 COR=1
@@ -190,23 +191,68 @@ else
     echo '  Passed'
 fi
 
-#echo 'Test: '$TST
-#ARG=-d\ en_US\ test-en_US.txt
-#EXE=$BIN\ $ARG
-#echo '  Command: '$EXE
-#COR=0
-#OUT=`$EXE 2>/tmp/stderr`
-#ERR=`cat /tmp/stderr`
-#echo '  Stdout: '$OUT
-#echo '  Stderr: '$ERR
-#$EXE 2>/dev/null >/dev/null
-#if [ $? != $COR ]; then
-#    FAILED=$((FAILED+1))
-#    echo '  Failed'
-#else
-#    PASSED=$((PASSED+1))
-#    echo '  Passed'
-#fi
+TST='existing system dictionary and correct stdin'
+echo 'Test: '$TST
+ARG='-d en_US'
+INP='echo chair |'
+EXE=$INP\ $BIN\ $ARG
+echo '  Command: '$EXE
+COR=0
+OUT=`$EXE 2>/tmp/stderr`
+ERR=`cat /tmp/stderr`
+echo '  Stdout: '$OUT
+echo '  Stderr: '$ERR
+$EXE 2>/dev/null >/dev/null
+if [ $? != $COR ]; then
+    FAILED=$((FAILED+1))
+    echo '  Failed'
+else
+    PASSED=$((PASSED+1))
+    echo '  Passed'
+fi
+#FIXME Not capturing * from stdout, need to move to other testing
+
+TST='existing system dictionary and incorrect stdin'
+echo 'Test: '$TST
+ARG='-d en_US'
+INP='echo chiar |'
+EXE=$INP\ $BIN\ $ARG
+echo '  Command: '$EXE
+COR=0
+OUT=`$EXE 2>/tmp/stderr`
+ERR=`cat /tmp/stderr`
+echo '  Stdout: '$OUT
+echo '  Stderr: '$ERR
+$EXE 2>/dev/null >/dev/null
+if [ $? != $COR ]; then
+    FAILED=$((FAILED+1))
+    echo '  Failed'
+else
+    PASSED=$((PASSED+1))
+    echo '  Passed'
+fi
+#FIXME Not capturing & from stdout, need to move to other testing
+
+TST='existing system dictionary and correct and incorrect stdin'
+echo 'Test: '$TST
+ARG='-d en_US'
+INP="echo -e 'chair\nchiar' |"
+EXE=$INP\ $BIN\ $ARG
+echo '  Command: '$EXE
+COR=0
+OUT=`$EXE 2>/tmp/stderr`
+ERR=`cat /tmp/stderr`
+echo '  Stdout: '$OUT
+echo '  Stderr: '$ERR
+$EXE 2>/dev/null >/dev/null
+if [ $? != $COR ]; then
+    FAILED=$((FAILED+1))
+    echo '  Failed'
+else
+    PASSED=$((PASSED+1))
+    echo '  Passed'
+fi
+#FIXME Not capturing *\n& from stdout, need to move to other testing
 
 echo 'Tests failed: '$FAILED
 echo 'Tests passed: '$PASSED

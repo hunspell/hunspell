@@ -6,24 +6,25 @@
 
 cd ..
 
+# omitting config.h
+
 ls \
-config.h \
 src/hunspell2/*.hxx src/hunspell2/*.cxx \
 src/parsers/*.hxx src/parsers/*.cxx \
 src/tools/*.cxx \
 | grep -v hunspell.cxx \
 | vera++ \
--P max-line-length=80 \
+-p vera++.profile \
 -s \
 -o checks/vera++.txt
 
 ls \
-config.h \
 src/hunspell2/*.hxx src/hunspell2/*.cxx \
 src/parsers/*.hxx src/parsers/*.cxx \
 src/tools/*.cxx \
 | grep -v hunspell.cxx \
 | vera++ \
+-p vera++.profile \
 -P max-line-length=80 \
 -s \
 -x checks/vera++.xml
