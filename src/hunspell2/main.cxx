@@ -70,9 +70,7 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 // usage
 // hunspell [-a] [-d dict_NAME]... file_name...
 // hunspell -l|-G [-L] [-d dict_NAME]... file_name...
-// hunspell -D
-// hunspell -h
-// hunspell -v
+// hunspell -D|-h|-v
 // TODO support --help
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
@@ -186,48 +184,25 @@ int main(int argc, char* argv[])
 	f.search_dictionaries();
 	auto filename = f.get_dictionary(args.dictionary);
 	if (args.mode == HELP_MODE) {
-		cout << "Usage: hunspell [OPTION]... [FILE]..." << endl;
-		cout << "Check spelling of each FILE. Without FILE, check "
-		        "standard input."
+		cout << "Usage: hunspell [OPTION]... [FILE]...\n"
+		        "Check spelling of each FILE. Without FILE, check\n"
+		        "standard input.\n\n"
+		        "  -d di_CT    use di_CT dictionary. You can specify\n"
+		        "              -d multiple times. \n"
+		        "  -D	       show available dictionaries\n"
+		        "  TODO\n"
+		        "  -h          display this help and exit\n"
+		        "Example: hunspell -d en_US file.txt    # interactive "
+		        "spelling\n"
+		        "Bug reports: http://hunspell.github.io/"
 		     << endl;
-		cout << endl;
-		// note there are tab characters used below
-		cout << "TODO" << endl;
-		cout << "  -d d[,d2,...]	use d (d2 etc.) dictionaries"
-		     << endl;
-		cout << "  -D		show available dictionaries" << endl;
-		cout << "TODO" << endl;
-		cout << "  -h, --help	display this help and exit" << endl;
-		cout << endl;
-		// note there are only spaces used below
-		cout << "Example: hunspell -d en_US file.txt    # interactive "
-		        "spelling"
-		     << endl;
-		cout << "TODO" << endl;
-		cout << endl;
-		cout << "Bug reports: http://hunspell.github.io/" << endl;
 		return 0;
 	}
 	else if (args.mode == VERSION_MODE) {
 		cout << "Hunspell "
 		     << "2.0.0"
 		     << endl; // FIXME should get version via API from library
-		// TODO        cout << gettext("\nCopyright (C) 2002-2014
-		// L\303\241szl\303\263 "
-		//                "N\303\251meth. License: MPL/GPL/LGPL.\n\n"
-		//                "Based on OpenOffice.org's Myspell library.\n"
-		//                "Myspell's copyright (C) Kevin Hendricks,
-		//                2001-2002, "
-		//                "License: BSD.") << endl;
-		// TODO cout << endl;
-		// TODO cout << gettext("This is free software; see the source
-		// for "
-		//                        "copying conditions.  There is NO\n"
-		//                        "warranty; not even for
-		//                        MERCHANTABILITY or "
-		//                        "FITNESS FOR A PARTICULAR PURPOSE,\n"
-		//                        "to the extent permitted by law.") <<
-		//                        endl;
+		// TODO print copyright and licence, LGPL v3
 		return 0;
 	}
 	else if (args.mode == LIST_DICTIONARIES_MODE) {
