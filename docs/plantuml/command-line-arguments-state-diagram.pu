@@ -29,6 +29,7 @@ DEFAULT_MODE --> VERSION_MODE : -v
 DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
 
 LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
+LINES_MODE : is intermediate mode
 
 ERROR_MODE --> [*]
 

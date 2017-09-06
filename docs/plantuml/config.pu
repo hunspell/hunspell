@@ -109,16 +109,16 @@ skinparam objectFontStyle bold
 skinparam objectArrowFontStyle bold
 skinparam objectAttributeFontStyle bold
 
-skinparam activityBackgroundColor #009688
-skinparam usecaseBackgroundColor #009688
-skinparam actorBackgroundColor #009688
-skinparam sequenceParticipantBackgroundColor #009688
-skinparam classBackgroundColor #009688
-skinparam noteBackgroundColor #009688
-skinparam componentBackgroundColor #009688
-skinparam interfaceBackgroundColor #009688
-skinparam stateBackgroundColor #009688
-skinparam objectBackgroundColor #009688
+skinparam activityBackgroundColor #2A7AE2
+skinparam usecaseBackgroundColor #2A7AE2
+skinparam actorBackgroundColor #2A7AE2
+skinparam sequenceParticipantBackgroundColor #2A7AE2
+skinparam classBackgroundColor #2A7AE2
+skinparam noteBackgroundColor #2A7AE2
+skinparam componentBackgroundColor #2A7AE2
+skinparam interfaceBackgroundColor #2A7AE2
+skinparam stateBackgroundColor #2A7AE2
+skinparam objectBackgroundColor #2A7AE2
 
 skinparam titleFontColor #black
 skinparam activityArrowColor #black
