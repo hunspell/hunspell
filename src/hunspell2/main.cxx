@@ -174,7 +174,27 @@ int main(int argc, char* argv[])
 	f.add_mozilla_directories();
 	f.search_dictionaries();
 	auto filename = f.get_dictionary(args.dictionary);
-	if (args.mode == LIST_DICTIONARIES_MODE) {
+    if (args.mode == HELP_MODE) {
+        // hunspell [-a] [-d dict_NAME]... file_name...
+        // hunspell -l|-G [-L] [-d dict_NAME]... file_name...
+        // hunspell -D
+        cout << "Usage: hunspell [OPTION]... [FILE]..." << endl;
+        cout << "Check spelling of each FILE. Without FILE, check standard input." << endl;
+        cout << endl;
+        // note there are tab characters used below
+        cout << "TODO" << endl;
+        cout << "  -d d[,d2,...]	use d (d2 etc.) dictionaries" << endl;
+        cout << "  -D		show available dictionaries" << endl;
+        cout << "TODO" << endl;
+        cout << "  -h, --help	display this help and exit" << endl;
+        cout << endl;
+        // note there are only spaces used below
+        cout << "Example: hunspell -d en_US file.txt    # interactive spelling" << endl;
+        cout << "TODO" << endl;
+        cout << endl;
+        cout << "Bug reports: http://hunspell.github.io/" << endl;
+        return 0;
+    } else if (args.mode == LIST_DICTIONARIES_MODE) {
 		cout << "SEARCH PATHS:\n";
 		for (auto& a : f.get_all_directories()) {
 			cout << a << '\n';
@@ -185,41 +205,16 @@ int main(int argc, char* argv[])
 		}
 		cout << "LOADED DICTIONARY:\n" << filename << endl;
 		return 0;
-	}
-	if (filename.empty()) {
-		cerr << "Dictionary " << args.dictionary << " not found."
-		     << endl;
-		return 1;
-	}
-	Hunspell::Dictionary dic(filename);
-	string word;
-    if (args.files.empty()) {
-        while (cin >> word) {
-            auto res = dic.spell_narrow_input(word);
-            switch (res) {
-            case bad_word:
-                cout << '&' << endl;
-                break;
-            case good_word:
-                cout << '*' << endl;
-                break;
-            case affixed_good_word:
-                cout << '+' << endl;
-                break;
-            case compound_good_word:
-                cout << '-' << endl;
-                break;
-            }
+    } else if (args.mode == DEFAULT_MODE) {
+        if (filename.empty()) {
+            cerr << "Dictionary " << args.dictionary << " not found."
+                 << endl;
+            return 1;
         }
-    } else {
-        for (vector<string>::iterator file_name = args.files.begin(); file_name < args.files.end(); ++file_name) {
-            ifstream input_file(file_name->c_str());
-            if (!input_file.is_open()) {
-              cerr << "Can't open " << file_name->c_str() << endl;
-              return 1;
-            }
-            while (getline(input_file, word)) {
-                //TODO below is only temporary for development purposes
+        Hunspell::Dictionary dic(filename);
+        string word;
+        if (args.files.empty()) {
+            while (cin >> word) {
                 auto res = dic.spell_narrow_input(word);
                 switch (res) {
                 case bad_word:
@@ -234,6 +229,32 @@ int main(int argc, char* argv[])
                 case compound_good_word:
                     cout << '-' << endl;
                     break;
+                }
+            }
+        } else {
+            for (vector<string>::iterator file_name = args.files.begin(); file_name < args.files.end(); ++file_name) {
+                ifstream input_file(file_name->c_str());
+                if (!input_file.is_open()) {
+                  cerr << "Can't open " << file_name->c_str() << endl;
+                  return 1;
+                }
+                while (getline(input_file, word)) {
+                    //TODO below is only temporary for development purposes
+                    auto res = dic.spell_narrow_input(word);
+                    switch (res) {
+                    case bad_word:
+                        cout << '&' << endl;
+                        break;
+                    case good_word:
+                        cout << '*' << endl;
+                        break;
+                    case affixed_good_word:
+                        cout << '+' << endl;
+                        break;
+                    case compound_good_word:
+                        cout << '-' << endl;
+                        break;
+                    }
                 }
             }
         }
