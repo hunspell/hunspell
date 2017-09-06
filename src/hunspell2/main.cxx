@@ -193,23 +193,51 @@ int main(int argc, char* argv[])
 	}
 	Hunspell::Dictionary dic(filename);
 	string word;
-	while (cin >> word) {
-		auto res = dic.spell_narrow_input(word);
-		switch (res) {
-		case bad_word:
-			cout << '&' << endl;
-			break;
-		case good_word:
-			cout << '*' << endl;
-			break;
-		case affixed_good_word:
-			cout << '+' << endl;
-			break;
-		case compound_good_word:
-			cout << '-' << endl;
-			break;
-		}
-	}
+    if (args.files.empty()) {
+        while (cin >> word) {
+            auto res = dic.spell_narrow_input(word);
+            switch (res) {
+            case bad_word:
+                cout << '&' << endl;
+                break;
+            case good_word:
+                cout << '*' << endl;
+                break;
+            case affixed_good_word:
+                cout << '+' << endl;
+                break;
+            case compound_good_word:
+                cout << '-' << endl;
+                break;
+            }
+        }
+    } else {
+        for (vector<string>::iterator file_name = args.files.begin(); file_name < args.files.end(); ++file_name) {
+            ifstream input_file(file_name->c_str());
+            if (!input_file.is_open()) {
+              cerr << "Can't open " << file_name->c_str() << endl;
+              return 1;
+            }
+            while (getline(input_file, word)) {
+                //TODO below is only temporary for development purposes
+                auto res = dic.spell_narrow_input(word);
+                switch (res) {
+                case bad_word:
+                    cout << '&' << endl;
+                    break;
+                case good_word:
+                    cout << '*' << endl;
+                    break;
+                case affixed_good_word:
+                    cout << '+' << endl;
+                    break;
+                case compound_good_word:
+                    cout << '-' << endl;
+                    break;
+                }
+            }
+        }
+    }
 	/*
 	ifstream affstream(filename + ".aff");
 	ifstream dicstream(filename + ".dic");
