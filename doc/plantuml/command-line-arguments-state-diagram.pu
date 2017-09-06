@@ -24,6 +24,8 @@ CORRECT_WORDS_MODE --> CORRECT_LINES_MODE : -L
 
 DEFAULT_MODE --> HELP_MODE : -h
 
+DEFAULT_MODE --> VERSION_MODE : -v
+
 DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
 
 LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
