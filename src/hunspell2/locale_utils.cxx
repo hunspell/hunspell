@@ -105,7 +105,7 @@ auto decode_utf8(const string& s) -> u32string
 	unsigned char state = 0;
 	char32_t cp = 0;
 	bool err;
-	constexpr unsigned char QW_MARK = '?';
+	constexpr auto REP_CH = U'\uFFFD';
 	u32string ret(s.size(), 0);
 
 	auto i = ret.begin();
@@ -113,24 +113,24 @@ auto decode_utf8(const string& s) -> u32string
 	for (auto& c : s) {
 		state = utf8_low_level(state, c, &cp, &err);
 		if (err) {
-			*i++ = QW_MARK;
+			*i++ = REP_CH;
 		}
 		if (state == 0) {
 			*i++ = cp;
 			cp = 0;
 		}
 		else if (state == 4) {
-			*i++ = QW_MARK;
+			*i++ = REP_CH;
 			cp = 0;
 		}
 	}
 	if (state != 0 && state != 4)
-		*i++ = QW_MARK;
+		*i++ = REP_CH;
 	ret.erase(i, ret.end());
 	return ret;
 }
 
-auto is_ascii(char c) -> bool { return c >= 0 && c <= 127; }
+auto is_ascii(char c) -> bool { return unsigned char(c) <= 127; }
 
 auto is_all_ascii(const string& s) -> bool
 {
