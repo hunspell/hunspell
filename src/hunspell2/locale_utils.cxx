@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <type_traits>
 
 #ifdef _MSC_VER
 #include <intrin.h>
@@ -129,13 +130,47 @@ auto decode_utf8(const string& s) -> u32string
 	return ret;
 }
 
+auto is_ascii(char c) -> bool { return c >= 0 && c <= 127; }
+
+auto is_all_ascii(const string& s) -> bool
+{
+	return all_of(s.begin(), s.end(), is_ascii);
+}
+
+auto ascii_to_ucs2_skip_invalid(const string& s) -> u16string
+{
+	u16string ret(s.size(), 0);
+	auto i = ret.begin();
+	i = copy_if(s.begin(), s.end(), i, is_bmp);
+	ret.erase(i, ret.end());
+	return ret;
+}
+
+template <class CharT>
+auto widen_latin1(char c) -> CharT
+{
+	return (unsigned char)c;
+}
+
+auto latin1_to_ucs2(const string& s) -> u16string
+{
+	u16string ret(s.size(), 0);
+	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char16_t>);
+}
+
+auto latin1_to_u32(const string& s) -> u32string
+{
+	u32string ret(s.size(), 0);
+	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char32_t>);
+}
+
 auto is_bmp(char32_t c) -> bool { return c <= 0xFFFF; }
 
-auto is_non_bmp(char32_t c) -> bool { return c > 0xFFFF; }
+// auto is_non_bmp(char32_t c) -> bool { return c > 0xFFFF; }
 
-auto has_non_bmp_chars(const u32string& s) -> bool
+auto is_all_bmp(const u32string& s) -> bool
 {
-	return any_of(s.begin(), s.end(), is_non_bmp);
+	return all_of(s.begin(), s.end(), is_bmp);
 }
 
 auto u32_to_ucs2_skip_non_bmp(const u32string& s) -> u16string

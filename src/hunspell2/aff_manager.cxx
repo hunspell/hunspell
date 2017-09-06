@@ -67,19 +67,40 @@ auto parse_vector_of_T(istream& in, const string& command,
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-auto decode_flags(istream& in, Flag_type_t t) -> u16string
+auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 {
 	string s;
 	u16string ret;
+	const auto err_message = "Warning, bytes above 127 in UTF-8 "
+	                         "stream can not be treated alone as "
+	                         "flags. "
+	                         "Please update dictionary to use"
+	                         "FLAG UTF-8. Skipping such bytes/flags.";
 	switch (t) {
 	case SINGLE_CHAR_FLAG:
 		in >> s;
-		ret.resize(s.size());
-		transform(s.begin(), s.end(), ret.begin(),
-		          cast_lambda<unsigned char>());
+		if (is_stream_u8) {
+			if (!is_all_ascii(s)) {
+				cerr << err_message << endl;
+				// This error will be triggered in Hungarian.
+				// Version 1 passed this, it just read a
+				// single byte even if the stream utf-8.
+				// Hungarian dictionary explited this
+				// bug/feature, resulting it's file to be
+				// mixed utf-8 and latin2.
+				// In v2 we will make it explicit bug.
+			}
+			ret = ascii_to_ucs2_skip_invalid(s);
+		}
+		else {
+			ret = latin1_to_ucs2(s);
+		}
 		break;
 	case DOUBLE_CHAR_FLAG: {
 		in >> s;
+		if (is_stream_u8 && !is_all_ascii(s)) {
+			cerr << err_message << endl;
+		}
 		auto i = s.begin();
 		auto e = s.end();
 		if (s.size() & 1) {
@@ -88,6 +109,11 @@ auto decode_flags(istream& in, Flag_type_t t) -> u16string
 		for (; i != e; i += 2) {
 			char16_t c1 = (unsigned char)*i;
 			char16_t c2 = (unsigned char)*(i + 1);
+
+			if (is_stream_u8)
+				if (!is_ascii(*i) || !is_ascii(*(i + 1)))
+					continue; // skiping non ascii
+
 			ret.push_back((c1 << 8) | c2);
 		}
 		if (i != s.end()) {
@@ -122,7 +148,7 @@ auto decode_flags(istream& in, Flag_type_t t) -> u16string
 		break;
 	case UTF8_FLAG: {
 		auto u32flags = decode_utf8(s);
-		if (has_non_bmp_chars(u32flags)) {
+		if (!is_all_bmp(u32flags)) {
 			cerr << "Flags must be in BMP. Skipping non-BMP"
 			     << endl;
 		}
@@ -188,7 +214,7 @@ auto parse_affix(istream& ss, string& command, vector<Aff_data::affix>& vec,
 
 auto Aff_data::decode_flags(istream& in) const -> u16string
 {
-	return Hunspell::decode_flags(in, flag_type);
+	return Hunspell::decode_flags(in, flag_type, encoding == "UTF-8");
 }
 
 auto Aff_data::decode_single_flag(istream& in) const -> char16_t
@@ -287,6 +313,8 @@ auto Aff_data::parse(istream& in) -> bool
 
 		if (encoding == "UTF-8" && !validate_utf8(line)) {
 			cerr << "Invalid utf in aff file" << endl;
+			// Hungarian will triger this, contains mixed
+			// utf-8 and latin2. See note in decode_flags().
 		}
 
 		ss.str(line);

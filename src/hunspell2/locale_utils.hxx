@@ -35,19 +35,28 @@
 
 namespace Hunspell {
 
-auto inline toupper(std::string& s, const std::locale& loc) -> void
+template <class CharT>
+auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void
 {
-	for (auto& c : s)
-		c = std::toupper(c, loc);
+	auto& f = std::use_facet<std::ctype<char>>(loc);
+	f.toupper(&s[0], &s[s.size()]);
 }
 
 auto utf8_low_level(unsigned char state, char in, char32_t* out,
                     bool* too_short_err) -> unsigned char;
 auto validate_utf8(const std::string& s) -> bool;
 auto decode_utf8(const std::string& s) -> std::u32string;
+
+auto is_ascii(char c) -> bool;
+auto is_all_ascii(const std::string& s) -> bool;
+auto ascii_to_ucs2_skip_invalid(const std::string& s) -> std::u16string;
+
+auto latin1_to_ucs2(const std::string& s) -> std::u16string;
+auto latin1_to_u32(const std::string& s) -> std::u32string;
+
 auto is_bmp(char32_t c) -> bool;
-auto is_non_bmp(char32_t c) -> bool;
-auto has_non_bmp_chars(const std::u32string& s) -> bool;
+// auto is_non_bmp(char32_t c) -> bool;
+auto is_all_bmp(const std::u32string& s) -> bool;
 auto u32_to_ucs2_skip_non_bmp(const std::u32string& s) -> std::u16string;
 }
 
