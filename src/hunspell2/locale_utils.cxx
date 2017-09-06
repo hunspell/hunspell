@@ -34,7 +34,7 @@ namespace Hunspell {
 using namespace std;
 
 namespace {
-const unsigned char shift[] = {0, 6, 0, 0, 0, /**/ 0, 0, 0, 0};
+// const unsigned char shift[] = {0, 6, 0, 0, 0, /**/ 0, 0, 0, 0};
 const unsigned char mask[] = {0xff,      0x3f, 0x1f, 0x0f, 0x07,
                               /**/ 0x03, 0x01, 0x00, 0x00};
 const unsigned char next_state[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
@@ -104,24 +104,28 @@ auto decode_utf8(const string& s) -> u32string
 	unsigned char state = 0;
 	char32_t cp = 0;
 	bool err;
-	u32string ret;
-	const unsigned char QW = '?';
+	constexpr unsigned char QW_MARK = '?';
+	u32string ret(s.size(), 0);
+
+	auto i = ret.begin();
+
 	for (auto& c : s) {
 		state = utf8_low_level(state, c, &cp, &err);
 		if (err) {
-			ret.push_back(QW);
+			*i++ = QW_MARK;
 		}
 		if (state == 0) {
-			ret.push_back(cp);
+			*i++ = cp;
 			cp = 0;
 		}
 		else if (state == 4) {
-			ret.push_back(QW);
+			*i++ = QW_MARK;
 			cp = 0;
 		}
 	}
 	if (state != 0 && state != 4)
-		ret.push_back(QW);
+		*i++ = QW_MARK;
+	ret.erase(i, ret.end());
 	return ret;
 }
 
@@ -136,8 +140,10 @@ auto has_non_bmp_chars(const u32string& s) -> bool
 
 auto u32_to_ucs2_skip_non_bmp(const u32string& s) -> u16string
 {
-	u16string ret;
-	copy_if(s.begin(), s.end(), back_inserter(ret), is_bmp);
+	u16string ret(s.size(), 0);
+	auto i = ret.begin();
+	i = copy_if(s.begin(), s.end(), i, is_bmp);
+	ret.erase(i, ret.end());
 	return ret;
 }
 }
