@@ -37,7 +37,7 @@ Main features of Hunspell spell checker and morphological analyzer:
 First install the following dependencies with your package manager:
 
     autoconf automake autopoint libtool g++
-    
+
 For some distributions, it is also advisable to install:
 
     build-essential
@@ -63,11 +63,10 @@ Optional developer packages:
     --with-readline)
   - locale and gettext (but you can also use the --with-included-gettext
     configure parameter)
-  - thunderbird TODO?
 
 Only for this, install the appropriate selection of
 
-    libncurses5-dev libreadline-dev gettext-base? thunderbird-dev 
+    libncurses5-dev libreadline-dev
 
 # Compiling on Windows
 
@@ -99,12 +98,20 @@ Cygwin1.dll.
 
 # Debugging
 
+It is recomended to install a debug build of the standard library:
+
+    libstdc++6-6-dbg
+
 For debugging we need to create a debug build and then we need to start
 `gdb`.
 
-    make clean
-    make CXXFLAGS='-g -O0'
+    ./configure CXXFLAGS='-g -O0'
+    make
     libtool --mode=execute gdb src/tools/hunspell
+
+You can also pass the `CXXFLAGS` directly to `make` without calling
+`./configure`, but we don't recommend this way during long development
+sessions.
 
 # Testing
 
@@ -200,6 +207,5 @@ Aspell dictionaries (need some conversion):
 Conversion steps: see relevant feature request at
 http://hunspell.github.io/ .
 
-László Németh,
-nemeth at numbertext org
+László Németh, nemeth at numbertext org
 
