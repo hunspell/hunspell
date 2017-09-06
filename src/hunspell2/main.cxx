@@ -283,8 +283,8 @@ int main(int argc, char* argv[])
 	aff.parse(affstream);
 	hunspell::dic_data dic;
 	dic.parse(dicstream, aff);
-	std::cout << aff.encoding << endl;
-	std::cout << aff.try_chars << endl;
+	cout << aff.encoding << endl;
+	cout << aff.try_chars << endl;
 	for (auto& a : aff.compound_rules) {
 	        cout << a << endl;
 	}

@@ -30,7 +30,6 @@ namespace Hunspell {
 
 class Finder {
 	using string = std::string;
-	using istream = std::istream;
 	template <class T>
 	using vector = std::vector<T>;
 	template <class T, class U>

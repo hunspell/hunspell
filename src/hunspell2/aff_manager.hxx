@@ -125,7 +125,7 @@ struct Aff_data {
 	bool checksharps;
 
 	// methods
-	auto parse(std::istream& in) -> bool;
+	auto parse(istream& in) -> bool;
 
 	auto decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
 	    -> u16string;

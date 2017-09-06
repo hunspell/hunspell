@@ -32,7 +32,7 @@ namespace Hunspell {
 
 using namespace std;
 
-auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
+auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 {
 	size_t line_number = 1;
 	size_t approximate_size;

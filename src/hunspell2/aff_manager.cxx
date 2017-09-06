@@ -66,7 +66,7 @@ auto parse_vector_of_T(istream& in, const string& command,
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-auto decode_flags(std::istream& in, Flag_type_t t, utf8_to_ucs2_converter& cv)
+auto decode_flags(istream& in, Flag_type_t t, utf8_to_ucs2_converter& cv)
     -> u16string
 {
 	string s;
@@ -198,7 +198,7 @@ auto Aff_data::decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
 	return 0;
 }
 
-auto Aff_data::parse(std::istream& in) -> bool
+auto Aff_data::parse(istream& in) -> bool
 {
 	unordered_map<string, string*> command_strings = {
 	    {"SET", &encoding},        {"LANG", &language_code},
