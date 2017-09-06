@@ -1,0 +1,33 @@
+@startuml
+!include config.pu
+
+title Hunspell - Command-line Arguments
+
+[*] --> DEFAULT_MODE
+
+DEFAULT_MODE --> DEFAULT_MODE : -d\nwith\noperand
+DEFAULT_MODE --> ERROR_MODE : -d\nwithout\noperand
+
+DEFAULT_MODE --> PIPE_MODE : -a
+
+DEFAULT_MODE --> LIST_DICTIONARIES_MODE : -D
+
+DEFAULT_MODE --> CORRECT_WORDS_MODE : -G
+LINES_MODE --> CORRECT_LINES_MODE : -G
+
+DEFAULT_MODE --> MISSPELLED_WORDS_MODE : -l
+LINES_MODE --> MISSPELLED_LINES_MODE : -l
+
+DEFAULT_MODE --> LINES_MODE : -L
+MISSPELLED_WORDS_MODE --> MISSPELLED_LINES_MODE : -L
+CORRECT_WORDS_MODE --> CORRECT_LINES_MODE : -L
+
+DEFAULT_MODE --> HELP_MODE : -h
+
+DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
+
+LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
+
+ERROR_MODE --> [*]
+
+@enduml
