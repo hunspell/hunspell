@@ -22,6 +22,7 @@
 
 #include "locale_utils.hxx"
 
+#include <algorithm>
 #include <limits>
 
 #ifdef _MSC_VER
@@ -43,8 +44,8 @@ const unsigned char next_state[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 4, 1, 2, 3, 4, 4, 4, 4}};
 }
 
-unsigned char utf8_low_level(unsigned char state, char in, char32_t* out,
-                             bool* too_short_err)
+auto utf8_low_level(unsigned char state, char in, char32_t* out,
+                    bool* too_short_err) -> unsigned char
 {
 
 	unsigned cc = (unsigned char)in; // do not delete the cast
@@ -82,16 +83,61 @@ unsigned char utf8_low_level(unsigned char state, char in, char32_t* out,
 	return next_state[state][clz];
 }
 
-bool validate_utf8(const std::string& s)
+auto validate_utf8(const std::string& s) -> bool
 {
 	unsigned char state = 0;
 	char32_t cp = 0;
 	bool err;
 	for (auto& c : s) {
 		state = utf8_low_level(state, c, &cp, &err);
+		if (state == 0) {
+			cp = 0;
+		}
 		if (err || state == 4)
 			return false;
 	}
 	return state == 0;
+}
+
+auto decode_utf8(const string& s) -> u32string
+{
+	unsigned char state = 0;
+	char32_t cp = 0;
+	bool err;
+	u32string ret;
+	const unsigned char QW = '?';
+	for (auto& c : s) {
+		state = utf8_low_level(state, c, &cp, &err);
+		if (err) {
+			ret.push_back(QW);
+		}
+		if (state == 0) {
+			ret.push_back(cp);
+			cp = 0;
+		}
+		else if (state == 4) {
+			ret.push_back(QW);
+			cp = 0;
+		}
+	}
+	if (state != 0 && state != 4)
+		ret.push_back(QW);
+	return ret;
+}
+
+auto is_bmp(char32_t c) -> bool { return c <= 0xFFFF; }
+
+auto is_non_bmp(char32_t c) -> bool { return c > 0xFFFF; }
+
+auto has_non_bmp_chars(const u32string& s) -> bool
+{
+	return any_of(s.begin(), s.end(), is_non_bmp);
+}
+
+auto u32_to_ucs2_skip_non_bmp(const u32string& s) -> u16string
+{
+	u16string ret;
+	copy_if(s.begin(), s.end(), back_inserter(ret), is_bmp);
+	return ret;
 }
 }

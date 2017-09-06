@@ -35,19 +35,20 @@
 
 namespace Hunspell {
 
-using utf8_to_ucs2_converter =
-    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
-
-inline void toupper(std::string& s, const std::locale& loc /* = std::locale()*/)
+auto inline toupper(std::string& s, const std::locale& loc) -> void
 {
 	for (auto& c : s)
 		c = std::toupper(c, loc);
 }
 
-unsigned char utf8_low_level(unsigned char state, char in, char32_t* out,
-                             bool* too_short_err);
-
-bool validate_utf8(const std::string& s);
+auto utf8_low_level(unsigned char state, char in, char32_t* out,
+                    bool* too_short_err) -> unsigned char;
+auto validate_utf8(const std::string& s) -> bool;
+auto decode_utf8(const std::string& s) -> std::u32string;
+auto is_bmp(char32_t c) -> bool;
+auto is_non_bmp(char32_t c) -> bool;
+auto has_non_bmp_chars(const std::u32string& s) -> bool;
+auto u32_to_ucs2_skip_non_bmp(const std::u32string& s) -> std::u16string;
 }
 
 #endif // LOCALE_UTILS_HXX

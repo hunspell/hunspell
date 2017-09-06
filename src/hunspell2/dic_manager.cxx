@@ -46,6 +46,9 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 	if (!getline(in, line)) {
 		return false;
 	}
+	if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+		cerr << "Invalid utf in dic file" << endl;
+	}
 	ss.str(line);
 	if (ss >> approximate_size) {
 		words.reserve(approximate_size);
@@ -59,8 +62,6 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 	vector<string> morphs;
 	u16string flags;
 
-	utf8_to_ucs2_converter cv;
-
 	while (getline(in, line)) {
 		line_number++;
 		ss.str(line);
@@ -69,6 +70,10 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 		morph.clear();
 		flags.clear();
 		morphs.clear();
+
+		if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+			cerr << "Invalid utf in dic file" << endl;
+		}
 		if (line.find('/') == line.npos) {
 			// no slash, treat word until first space
 			ss >> word;
@@ -83,7 +88,7 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 				continue;
 			}
 			if (aff.flag_aliases.empty()) {
-				flags = aff.decode_flags(ss, cv);
+				flags = aff.decode_flags(ss);
 			}
 			else {
 				size_t flag_alias_idx;

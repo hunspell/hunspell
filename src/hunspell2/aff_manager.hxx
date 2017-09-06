@@ -127,13 +127,11 @@ struct Aff_data {
 	// methods
 	auto parse(istream& in) -> bool;
 
-	auto decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
-	    -> u16string;
+	auto decode_flags(istream& in) const -> u16string;
 
 	// u16string decode_flags(istream& in);
 
-	auto decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
-	    -> char16_t;
+	auto decode_single_flag(istream& in) const -> char16_t;
 
 	// char16_t decode_single_flag(istream& in);
 };
