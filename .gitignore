@@ -67,10 +67,15 @@ a.out
 
 hunspell-*.tar.gz
 
+# https://www.stack.nl/~dimitri/doxygen/
+
 /doxygen/
+/Doxyfile.bak
 
 #QtCreator
+
 /Makefile.am.user
 
 # https://vim.sourceforge.io/
+
 .?*.swp

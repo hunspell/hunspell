@@ -61,6 +61,12 @@ const char PATHSEP = ';';
 const char PATHSEP = ':';
 #endif
 
+/*!
+ * Gets the default search directories.
+ *
+ * \param out a vector to which append default search directories.
+ * \return The vector with appended default search directories.
+ */
 template <class OutIt>
 auto get_default_search_directories(OutIt out) -> OutIt
 {
@@ -157,6 +163,12 @@ struct Globber {
 };
 #endif
 
+/*!
+ * Gets the Mozilla directories.
+ *
+ * \param out a vector to which append Mozilla directories.
+ * \return The vector with appended Mozilla directories.
+ */
 template <class OutIt>
 auto get_mozilla_directories(OutIt out) -> OutIt
 {
@@ -211,6 +223,12 @@ auto Finder::add_mozilla_directories() -> void
 	get_mozilla_directories(back_inserter(directories));
 }
 
+/*!
+ * Gets the LibreOffice directories.
+ *
+ * \param out a vector to which append LibreOffice directories.
+ * \return The vector with appended LibreOffice directories.
+ */
 template <class OutIt>
 auto get_libreoffice_directories(OutIt out) -> OutIt
 {

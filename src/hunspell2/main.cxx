@@ -166,6 +166,9 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 #endif
 }
 
+/*!
+ * Prints help information to standard output.
+ */
 auto print_help() -> void
 {
 	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
@@ -183,6 +186,9 @@ auto print_help() -> void
 	     << endl;
 }
 
+/*!
+ * Prints the version number to standard output.
+ */
 auto print_version() -> void
 {
 	cout << "Hunspell "
@@ -203,6 +209,12 @@ auto list_dictionaries(Finder& f) -> void
 	}
 }
 
+/*!
+ * Handles the operation mode.
+ *
+ * \param args an object with the parsed command line arguments.
+ * \return The int with application return value.
+ */
 auto handle_mode(Args_t& args) -> int
 {
 	switch (args.mode) {
@@ -338,6 +350,7 @@ auto handle_mode(Args_t& args) -> int
 	}
 	*/
 }
+
 int main(int argc, char* argv[])
 {
 	auto args = Args_t(argc, argv);

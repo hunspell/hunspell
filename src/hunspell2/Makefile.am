@@ -1,6 +1,6 @@
 # this will be noinst until ready for release
 # then should be bin
-noinst_PROGRAMS=hun2
+noinst_PROGRAMS=hun2 string_utils_test
 
 AM_CXXFLAGS = -std=c++11
 hun2_SOURCES=aff_manager.cxx aff_manager.hxx dic_manager.cxx \
@@ -8,3 +8,4 @@ dic_manager.hxx dict_finder.cxx dict_finder.hxx hunspell.hxx \
 locale_utils.hxx locale_utils.cxx main.cxx stream_utils.hxx  \
 string_utils.hxx
 
+string_utils_test_SOURCES=string_utils_test.cxx string_utils.hxx
