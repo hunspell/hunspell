@@ -33,13 +33,13 @@
 
 namespace Hunspell {
 
-/*!
+/**
  * Splits string on seprator.
  *
  * \param s a string to split.
- * \param sep a separator to split on.
- * \param out a vector to which append separated strings.
- * \return The vector with appended separated strings.
+ * \param sep char or string that acts as separator to split on.
+ * \param out start of the output range to which append separated strings.
+ * \return Iterator that indicates the end of the output range.
  */
 template <class CharT, class CharOrStr, class OutIt>
 OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
