@@ -48,17 +48,17 @@ const unsigned char next_state[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
 auto utf8_low_level(unsigned char state, char in, char32_t* out,
                     bool* too_short_err) -> unsigned char
 {
-
 	unsigned cc = (unsigned char)in; // do not delete the cast
-	constexpr auto to_shift = numeric_limits<unsigned>::digits - 8;
 #ifdef __GNUC__
-	unsigned cc_shifted = cc << to_shift;
+	unsigned cc_shifted = cc << numeric_limits<unsigned>::digits - 8;
 	int clz = __builtin_clz(~cc_shifted); // gcc only.
 #elif _MSC_VER
-	unsigned long cc_shifted = cc << to_shift;
-	unsigned long clz;
+	using ulong = unsigned long;
+	ulong ccc = cc;
+	ulong cc_shifted = ccc << numeric_limits<ulong>::digits - 8;
+	ulong clz;
 	BitScanReverse(&clz, ~cc_shifted);
-	clz = numeric_limits<unsigned long>::digits - 1 - clz;
+	clz = numeric_limits<ulong>::digits - 1 - clz;
 #else
 	int clz;
 	// note the operator presedence
@@ -130,7 +130,7 @@ auto decode_utf8(const string& s) -> u32string
 	return ret;
 }
 
-auto is_ascii(char c) -> bool { return unsigned char(c) <= 127; }
+auto is_ascii(char c) -> bool { return (unsigned char)c <= 127; }
 
 auto is_all_ascii(const string& s) -> bool
 {
