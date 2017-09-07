@@ -36,7 +36,7 @@ Main features of Hunspell spell checker and morphological analyzer:
 
 First install the following dependencies with your package manager:
 
-    autoconf automake autopoint libtool g++
+    autoconf automake autopoint libtool g++ clang-format
 
 For some distributions, it is also advisable to install:
 

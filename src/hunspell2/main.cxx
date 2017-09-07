@@ -166,65 +166,80 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 #endif
 }
 
-int main(int argc, char* argv[])
+auto print_help() -> void
 {
-	auto args = Args_t(argc, argv);
-	if (args.fail()) {
-		return 1;
-	}
+	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
+	        "Check spelling of each FILE. Without FILE, check\n"
+	        "standard input.\n\n"
+	        "  -d di_CT    use di_CT dictionary. You can specify\n"
+	        "              -d multiple times. \n"
+	        "  -D	       show available dictionaries\n"
+	        "  TODO\n"
+	        "  -h          display this help and exit\n"
+	        "  -v          print version number\n"
+	        "Example: hunspell -d en_US file.txt    # interactive "
+	        "spelling\n"
+	        "Bug reports: http://hunspell.github.io/"
+	     << endl;
+}
 
-	// locale::global(locale(""));
-	cin.imbue(locale(""));
-	setlocale(LC_ALL, "");
+auto print_version() -> void
+{
+	cout << "Hunspell "
+	     << "2.0.0" << endl; // FIXME should get version via API from
+	                         // library or (better?) from config.h
+	                         // TODO print copyright and licence, LGPL v3
+}
+
+auto list_dictionaries(Finder& f) -> void
+{
+	cout << "SEARCH PATHS:\n";
+	for (auto& a : f.get_all_directories()) {
+		cout << a << '\n';
+	}
+	cout << "AVAILABLE DICTIONARIES:\n";
+	for (auto& a : f.get_all_dictionaries()) {
+		cout << a.first << '\t' << a.second << '\n';
+	}
+}
+
+auto handle_mode(Args_t& args) -> int
+{
+	switch (args.mode) {
+	case ERROR_MODE:
+		return 1;
+	case HELP_MODE:
+		print_help();
+		return 0;
+	case VERSION_MODE:
+		print_version();
+		return 0;
+	}
 
 	auto f = Finder();
 	f.add_default_directories();
 	f.add_libreoffice_directories();
 	f.add_mozilla_directories();
 	f.search_dictionaries();
+
+	switch (args.mode) {
+	case LIST_DICTIONARIES_MODE:
+		list_dictionaries(f);
+		return 0;
+	}
+
 	auto filename = f.get_dictionary(args.dictionary);
-	if (args.mode == HELP_MODE) {
-		cout << "Usage: hunspell [OPTION]... [FILE]...\n"
-		        "Check spelling of each FILE. Without FILE, check\n"
-		        "standard input.\n\n"
-		        "  -d di_CT    use di_CT dictionary. You can specify\n"
-		        "              -d multiple times. \n"
-		        "  -D	       show available dictionaries\n"
-		        "  TODO\n"
-		        "  -h          display this help and exit\n"
-		        "Example: hunspell -d en_US file.txt    # interactive "
-		        "spelling\n"
-		        "Bug reports: http://hunspell.github.io/"
+	if (filename.empty()) {
+		cerr << "Dictionary " << args.dictionary << " not found."
 		     << endl;
-		return 0;
+		return 1;
 	}
-	else if (args.mode == VERSION_MODE) {
-		cout << "Hunspell "
-		     << "2.0.0"
-		     << endl; // FIXME should get version via API from library
-		// TODO print copyright and licence, LGPL v3
-		return 0;
-	}
-	else if (args.mode == LIST_DICTIONARIES_MODE) {
-		cout << "SEARCH PATHS:\n";
-		for (auto& a : f.get_all_directories()) {
-			cout << a << '\n';
-		}
-		cout << "AVAILABLE DICTIONARIES:\n";
-		for (auto& a : f.get_all_dictionaries()) {
-			cout << a.first << '\t' << a.second << '\n';
-		}
-		cout << "LOADED DICTIONARY:\n" << filename << endl;
-		return 0;
-	}
-	else if (args.mode == DEFAULT_MODE) {
-		if (filename.empty()) {
-			cerr << "Dictionary " << args.dictionary
-			     << " not found." << endl;
-			return 1;
-		}
-		Hunspell::Dictionary dic(filename);
-		string word;
+	cout << "LOADED DICTIONARY:\n" << filename << endl;
+
+	Hunspell::Dictionary dic(filename); // FIXME
+	string word;
+	switch (args.mode) {
+	case DEFAULT_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
 				auto res = dic.spell_narrow_input(word);
@@ -275,7 +290,24 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
+		return 0;
+	case PIPE_MODE:
+		// TODO
+		return 0;
+	case MISSPELLED_WORDS_MODE:
+		// TODO
+		return 0;
+	case CORRECT_WORDS_MODE:
+		// TODO
+		return 0;
+	case MISSPELLED_LINES_MODE:
+		// TODO
+		return 0;
+	case CORRECT_LINES_MODE:
+		// TODO
+		return 0;
 	}
+
 	/*
 	ifstream affstream(filename + ".aff");
 	ifstream dicstream(filename + ".dic");
@@ -305,5 +337,17 @@ int main(int argc, char* argv[])
 	        cout << endl;
 	}
 	*/
-	return 0;
+}
+int main(int argc, char* argv[])
+{
+	auto args = Args_t(argc, argv);
+	if (args.fail()) {
+		return 1;
+	}
+
+	// locale::global(locale(""));
+	cin.imbue(locale(""));
+	setlocale(LC_ALL, "");
+
+	return handle_mode(args);
 }
