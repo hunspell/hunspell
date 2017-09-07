@@ -45,7 +45,6 @@ template <class CharT, class CharOrStr, class OutIt>
 OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
 {
 	using size_type = typename std::basic_string<CharT>::size_type;
-	size_type sz = s.size();
 	size_type i1 = 0;
 	size_type i2;
 	do {
@@ -64,7 +63,6 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
                       OutIt out)
 {
 	using size_type = typename std::basic_string<CharT>::size_type;
-	size_type sz = s.size();
 	size_type i1 = 0;
 	size_type i2;
 	do {

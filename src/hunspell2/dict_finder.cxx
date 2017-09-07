@@ -61,8 +61,12 @@ namespace Hunspell {
 
 #ifdef _WIN32
 const char PATHSEP = ';';
+const char DIRSEP = '\\';
+const auto SEPARATORS = "\\/";
 #else
 const char PATHSEP = ':';
+const char DIRSEP = '/';
+const auto SEPARATORS = "/";
 #endif
 
 /*!
@@ -104,7 +108,7 @@ auto get_default_search_directories(OutIt out) -> OutIt
 	                            getenv("PROGRAMDATA")};
 	for (auto& p : winpaths) {
 		if (p) {
-			*out++ = string(p) + "/hunspell";
+			*out++ = string(p) + "\\hunspell";
 		}
 	}
 #endif
@@ -116,7 +120,59 @@ auto Finder::add_default_directories() -> void
 	get_default_search_directories(back_inserter(directories));
 }
 
-#if defined(_POSIX_VERSION)
+#ifdef _WIN32
+class FileListerWindows {
+	struct _finddata_t data = {};
+	intptr_t handle = -1;
+	bool goodbit = false;
+
+      public:
+	FileListerWindows() {}
+	FileListerWindows(const char* pattern) { first(pattern); }
+	FileListerWindows(const string& pattern) { first(pattern); }
+
+	FileListerWindows(const FileListerWindows& d) = delete;
+	void operator=(const FileListerWindows& d) = delete;
+
+	auto first(const char* pattern) -> bool
+	{
+		close();
+		handle = _findfirst(pattern, &data);
+		goodbit = handle != -1;
+		return goodbit;
+	}
+	auto first(const string& pattern) -> bool
+	{
+		return first(pattern.c_str());
+	}
+
+	auto name() const -> const char* { return data.name; }
+	auto good() const -> bool { return goodbit; }
+	auto next() -> bool
+	{
+		goodbit = _findnext(handle, &data) == 0;
+		return goodbit;
+	}
+	auto close() -> void
+	{
+		if (handle == -1)
+			return;
+		_findclose(handle);
+		handle = -1;
+		goodbit = false;
+	}
+	auto list_all() -> vector<string>
+	{
+		vector<string> ret;
+		for (; good(); next()) {
+			ret.emplace_back(name());
+		}
+		return ret;
+	}
+};
+#endif
+
+#if defined(_POSIX_VERSION) || defined(__MINGW32__)
 class Directory {
 	DIR* dp = nullptr;
 	struct dirent* ent_p = nullptr;
@@ -134,7 +190,7 @@ class Directory {
 		return dp;
 	}
 	auto next() -> bool { return (ent_p = readdir(dp)); }
-	auto entry_name() -> const char* { return ent_p->d_name; }
+	auto entry_name() const -> const char* { return ent_p->d_name; }
 	auto close() -> void
 	{
 		(void)closedir(dp);
@@ -144,78 +200,29 @@ class Directory {
 };
 #elif defined(_WIN32)
 class Directory {
-	struct _finddata_t data = {};
-	intptr_t handle = -1;
+	FileListerWindows fl;
 	bool first = true;
 
       public:
 	Directory() {}
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
-	auto open(const string& dirname, bool append_asterisk = true) -> bool
+	auto open(const string& dirname) -> bool
 	{
-		if (handle != -1) {
-			(void)_findclose(handle);
-		}
-		auto dir2 = dirname;
-		if (append_asterisk)
-			dir2 += "\\*";
-		handle = _findfirst(dir2.c_str(), &data);
+		fl.first(dirname + "\\*");
 		first = true;
-		return handle != -1;
+		return fl.good();
 	}
 	auto next() -> bool
 	{
-		if (first) {
+		if (first)
 			first = false;
-			return handle != -1;
-		}
-		return _findnext(handle, &data) == 0;
+		else
+			fl.next();
+		return fl.good();
 	}
-	auto entry_name() -> const char* { return data.name; }
-	auto close() -> void
-	{
-		(void)_findclose(handle);
-		handle = -1;
-	}
-	~Directory() { close(); }
-};
-class Directory2 {
-	WIN32_FIND_DATA data = {};
-	HANDLE handle = INVALID_HANDLE_VALUE;
-	bool first = true;
-
-      public:
-	Directory2() {}
-	Directory2(const Directory& d) = delete;
-	void operator=(const Directory& d) = delete;
-	auto open(const string& dirname, bool append_asterisk = true) -> bool
-	{
-		if (handle != INVALID_HANDLE_VALUE) {
-			(void)FindClose(handle);
-		}
-		auto dir2 = dirname;
-		if (append_asterisk)
-			dir2 += "\\*";
-		handle = FindFirstFile(dir2.c_str(), &data);
-		first = true;
-		return handle != INVALID_HANDLE_VALUE;
-	}
-	auto next() -> bool
-	{
-		if (first) {
-			first = false;
-			return handle != INVALID_HANDLE_VALUE;
-		}
-		return FindNextFile(handle, &data);
-	}
-	auto entry_name() -> const char* { return data.cFileName; }
-	auto close() -> void
-	{
-		(void)FindClose(handle);
-		handle = INVALID_HANDLE_VALUE;
-	}
-	~Directory2() { close(); }
+	auto entry_name() const -> const char* { return fl.name(); }
+	auto close() -> void { fl.close(); }
 };
 #else
 struct Directory {
@@ -224,7 +231,7 @@ struct Directory {
 	void operator=(const Directory& d) = delete;
 	auto open(const string& dirname) -> bool { return false; }
 	auto next() -> bool { return false; }
-	auto entry_name() -> const char* { return nullptr; }
+	auto entry_name() const -> const char* { return nullptr; }
 	auto close() -> void {}
 };
 #endif
@@ -232,14 +239,11 @@ struct Directory {
 #ifdef _POSIX_VERSION
 class Globber {
       private:
-	glob_t g;
-	int ret;
+	glob_t g = {};
+	int ret = 1;
 
       public:
-	Globber(const char* pattern) : g{}
-	{
-		ret = ::glob(pattern, 0, nullptr, &g);
-	}
+	Globber(const char* pattern) { ret = ::glob(pattern, 0, nullptr, &g); }
 	Globber(const string& pattern) : Globber(pattern.c_str()) {}
 	auto glob(const char* pattern) -> bool
 	{
@@ -273,23 +277,33 @@ class Globber {
 	auto glob(const char* pattern) -> bool { return glob(string(pattern)); }
 	auto glob(const string& pattern) -> bool
 	{
-		if (pattern.empty() || pattern[0] == '\\' || pattern[0] == '/')
+		data.clear();
+
+		if (pattern.empty())
+			return false;
+		auto first_two = pattern.substr(0, 2);
+		if (first_two == "\\\\" || first_two == "//" ||
+		    first_two == "\\/" || first_two == "//")
 			return false;
 
-		data.clear();
 		auto q1 = vector<string>();
 		auto q2 = q1;
-		auto v = vector<string>();
+		auto v = q1;
+
 		split_on_any_of(pattern, "\\/", back_inserter(v));
 		auto i = v.begin();
 		if (i == v.end())
 			return false;
 
-		Directory d;
+		FileListerWindows fl;
 
 		if (i->find_first_of(':') != i->npos) {
 			// absolute path
 			q1.push_back(*i++);
+		}
+		else if (pattern[0] == '\\' || pattern[0] == '/') {
+			// relative to drive
+			q1.push_back("");
 		}
 		else {
 			// relative
@@ -299,14 +313,15 @@ class Globber {
 			if (i->empty())
 				continue;
 			for (auto& q1e : q1) {
-				auto p = q1e + "\\" + *i;
+				auto p = q1e + DIRSEP + *i;
 				// cout << "P " << p << endl;
-				d.open(p, false);
-				while (d.next()) {
-					if (d.entry_name() == string(".") ||
-					    d.entry_name() == string(".."))
+				fl.first(p.c_str());
+				for (; fl.good(); fl.next()) {
+
+					if (fl.name() == string(".") ||
+					    fl.name() == string(".."))
 						continue;
-					auto n = q1e + '\\' + d.entry_name();
+					auto n = q1e + DIRSEP + fl.name();
 					q2.push_back(n);
 					// cout << "Q2 " << n << endl;
 				}
@@ -382,7 +397,7 @@ auto get_mozilla_directories(OutIt out) -> OutIt
 	                            getenv("PROGRAMFILES(x86)")};
 	for (auto& p : winpaths) {
 		if (p) {
-			*out++ = string(p) + "/Mozilla Firefox/dictionaries";
+			*out++ = string(p) + "\\Mozilla Firefox\\dictionaries";
 		}
 	}
 	// add Mozilla windows local directory
@@ -391,7 +406,7 @@ auto get_mozilla_directories(OutIt out) -> OutIt
 		return out;
 	}
 	string moz = home;
-	moz += "/Mozilla/Firefox/Profiles/*/extensions/*/dictionaries";
+	moz += "\\Mozilla\\Firefox\\Profiles\\*\\extensions\\*\\dictionaries";
 	Globber g(moz);
 	out = g.copy_glob_paths(out);
 #endif
@@ -440,7 +455,8 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 		if (p == nullptr) {
 			continue;
 		}
-		Globber g(string(p) + "/LibreOffice ?/share/extensions/dict-*");
+		Globber g(string(p) +
+		          "\\LibreOffice ?\\share\\extensions\\dict-*");
 		out = g.copy_glob_paths(out);
 	}
 
@@ -449,20 +465,20 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 		return out;
 	}
 	lo_user_glob = home;
-	lo_user_glob += "/libreoffice/?/user/uno_packages/cache"
-	                "/uno_packages/*/*.oxt/";
+	lo_user_glob += "\\libreoffice\\?\\user\\uno_packages\\cache"
+	                "\\uno_packages\\*\\*.oxt\\";
 #else
 	return out;
 #endif
 	// finish adding LO user directory dicts (linux and windows)
-	Globber g(lo_user_glob + "dictionaries");
+	Globber g(lo_user_glob + "dict*");
 	out = g.copy_glob_paths(out);
 
 	g.glob(lo_user_glob + "*.aff");
 	string path_str;
 	for (auto& path : g) {
 		path_str = path;
-		path_str.erase(path_str.rfind('/'));
+		path_str.erase(path_str.rfind(DIRSEP));
 		*out = path_str;
 		++out;
 	}
@@ -495,7 +511,7 @@ auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 			file_name += ".aff";
 			if (dics.count(file_name)) {
 				file_name.resize(sz - 4);
-				auto full_path = dir + '/' + file_name;
+				auto full_path = dir + DIRSEP + file_name;
 				*out = make_pair(file_name, full_path);
 				out++;
 			}
@@ -506,7 +522,7 @@ auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt
 			file_name += ".dic";
 			if (dics.count(file_name)) {
 				file_name.resize(sz - 4);
-				auto full_path = dir + '/' + file_name;
+				auto full_path = dir + DIRSEP + file_name;
 				*out = make_pair(file_name, full_path);
 				out++;
 			}
@@ -524,13 +540,8 @@ auto Finder::search_dictionaries() -> void
 
 auto Finder::get_dictionary(const string& dict) const -> string
 {
-// first check if it is a path
-#ifdef _WIN32
-	auto separators = "\\/";
-#else
-	auto separators = '/';
-#endif
-	if (dict.find_first_of(separators) != dict.npos) {
+	// first check if it is a path
+	if (dict.find_first_of(SEPARATORS) != dict.npos) {
 		// a path
 		auto sz = dict.size();
 		if (sz < 4)
