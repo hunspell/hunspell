@@ -287,30 +287,14 @@ class Globber {
 
 		Directory d;
 
-		string drive = "";
-		string first = *i;
-		bool abs = first.find_first_of(':') != first.npos;
-		if (abs) {
+		if (i->find_first_of(':') != i->npos) {
 			// absolute path
-			first += '\\';
-			drive = first;
-			++i;
-			if (i != v.end())
-				first += *i;
-			else
-				return false;
+			q1.push_back(*i++);
 		}
-
-		d.open(first, false);
-
-		// cout << "START " << first << endl;
-
-		while (d.next()) {
-			auto n = drive + d.entry_name();
-			q1.push_back(n);
-			// cout << "Q1 " << n << endl;
+		else {
+			// relative
+			q1.push_back(".");
 		}
-		++i;
 		for (; i != v.end(); ++i) {
 			if (i->empty())
 				continue;
@@ -319,6 +303,9 @@ class Globber {
 				// cout << "P " << p << endl;
 				d.open(p, false);
 				while (d.next()) {
+					if (d.entry_name() == string(".") ||
+					    d.entry_name() == string(".."))
+						continue;
 					auto n = q1e + '\\' + d.entry_name();
 					q2.push_back(n);
 					// cout << "Q2 " << n << endl;
