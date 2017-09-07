@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <array>
+#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <unordered_set>
@@ -41,6 +42,9 @@
 #endif
 
 #elif defined(_WIN32)
+
+#include <io.h>
+#include <windows.h>
 
 #ifdef __MINGW32__
 #include <dirent.h>
@@ -112,6 +116,119 @@ auto Finder::add_default_directories() -> void
 	get_default_search_directories(back_inserter(directories));
 }
 
+#if defined(_POSIX_VERSION)
+class Directory {
+	DIR* dp = nullptr;
+	struct dirent* ent_p = nullptr;
+
+      public:
+	Directory() {}
+	Directory(const Directory& d) = delete;
+	void operator=(const Directory& d) = delete;
+	auto open(const string& dirname) -> bool
+	{
+		if (dp) {
+			(void)closedir(dp);
+		}
+		dp = opendir(dirname.c_str());
+		return dp;
+	}
+	auto next() -> bool { return (ent_p = readdir(dp)); }
+	auto entry_name() -> const char* { return ent_p->d_name; }
+	auto close() -> void
+	{
+		(void)closedir(dp);
+		dp = nullptr;
+	}
+	~Directory() { close(); }
+};
+#elif defined(_WIN32)
+class Directory {
+	struct _finddata_t data = {};
+	intptr_t handle = -1;
+	bool first = true;
+
+      public:
+	Directory() {}
+	Directory(const Directory& d) = delete;
+	void operator=(const Directory& d) = delete;
+	auto open(const string& dirname, bool append_asterisk = true) -> bool
+	{
+		if (handle != -1) {
+			(void)_findclose(handle);
+		}
+		auto dir2 = dirname;
+		if (append_asterisk)
+			dir2 += "\\*";
+		handle = _findfirst(dir2.c_str(), &data);
+		first = true;
+		return handle != -1;
+	}
+	auto next() -> bool
+	{
+		if (first) {
+			first = false;
+			return handle != -1;
+		}
+		return _findnext(handle, &data) == 0;
+	}
+	auto entry_name() -> const char* { return data.name; }
+	auto close() -> void
+	{
+		(void)_findclose(handle);
+		handle = -1;
+	}
+	~Directory() { close(); }
+};
+class Directory2 {
+	WIN32_FIND_DATA data = {};
+	HANDLE handle = INVALID_HANDLE_VALUE;
+	bool first = true;
+
+      public:
+	Directory2() {}
+	Directory2(const Directory& d) = delete;
+	void operator=(const Directory& d) = delete;
+	auto open(const string& dirname, bool append_asterisk = true) -> bool
+	{
+		if (handle != INVALID_HANDLE_VALUE) {
+			(void)FindClose(handle);
+		}
+		auto dir2 = dirname;
+		if (append_asterisk)
+			dir2 += "\\*";
+		handle = FindFirstFile(dir2.c_str(), &data);
+		first = true;
+		return handle != INVALID_HANDLE_VALUE;
+	}
+	auto next() -> bool
+	{
+		if (first) {
+			first = false;
+			return handle != INVALID_HANDLE_VALUE;
+		}
+		return FindNextFile(handle, &data);
+	}
+	auto entry_name() -> const char* { return data.cFileName; }
+	auto close() -> void
+	{
+		(void)FindClose(handle);
+		handle = INVALID_HANDLE_VALUE;
+	}
+	~Directory2() { close(); }
+};
+#else
+struct Directory {
+	Directory() {}
+	Directory(const Directory& d) = delete;
+	void operator=(const Directory& d) = delete;
+	auto open(const string& dirname) -> bool { return false; }
+	auto next() -> bool { return false; }
+	auto entry_name() -> const char* { return nullptr; }
+	auto close() -> void {}
+};
+#endif
+
 #ifdef _POSIX_VERSION
 class Globber {
       private:
@@ -145,6 +262,82 @@ class Globber {
 		return out;
 	}
 	~Globber() { globfree(&g); }
+};
+#elif defined(_WIN32)
+class Globber {
+	vector<string> data;
+
+      public:
+	Globber(const char* pattern) { glob(pattern); }
+	Globber(const string& pattern) { glob(pattern); }
+	auto glob(const char* pattern) -> bool { return glob(string(pattern)); }
+	auto glob(const string& pattern) -> bool
+	{
+		if (pattern.empty() || pattern[0] == '\\' || pattern[0] == '/')
+			return false;
+
+		data.clear();
+		auto q1 = vector<string>();
+		auto q2 = q1;
+		auto v = vector<string>();
+		split_on_any_of(pattern, "\\/", back_inserter(v));
+		auto i = v.begin();
+		if (i == v.end())
+			return false;
+
+		Directory d;
+
+		string drive = "";
+		string first = *i;
+		bool abs = first.find_first_of(':') != first.npos;
+		if (abs) {
+			// absolute path
+			first += '\\';
+			drive = first;
+			++i;
+			if (i != v.end())
+				first += *i;
+			else
+				return false;
+		}
+
+		d.open(first, false);
+
+		// cout << "START " << first << endl;
+
+		while (d.next()) {
+			auto n = drive + d.entry_name();
+			q1.push_back(n);
+			// cout << "Q1 " << n << endl;
+		}
+		++i;
+		for (; i != v.end(); ++i) {
+			if (i->empty())
+				continue;
+			for (auto& q1e : q1) {
+				auto p = q1e + "\\" + *i;
+				// cout << "P " << p << endl;
+				d.open(p, false);
+				while (d.next()) {
+					auto n = q1e + '\\' + d.entry_name();
+					q2.push_back(n);
+					// cout << "Q2 " << n << endl;
+				}
+			}
+			q1.clear();
+			q1.swap(q2);
+		}
+		data.insert(data.end(), q1.begin(), q1.end());
+		return true;
+	}
+	auto begin() -> vector<string>::iterator { return data.begin(); }
+	auto end() -> vector<string>::iterator { return data.end(); }
+	template <class OutIt>
+	auto copy_glob_paths(OutIt out) -> OutIt
+	{
+		out = copy(begin(), end(), out);
+		return out;
+	}
 };
 #else
 // unimplemented
@@ -260,7 +453,7 @@ auto get_libreoffice_directories(OutIt out) -> OutIt
 		if (p == nullptr) {
 			continue;
 		}
-		Globber g(string(p) + "Libre Office ?/share/extensions/dict-*");
+		Globber g(string(p) + "/LibreOffice ?/share/extensions/dict-*");
 		out = g.copy_glob_paths(out);
 	}
 
@@ -293,44 +486,6 @@ auto Finder::add_libreoffice_directories() -> void
 {
 	get_libreoffice_directories(back_inserter(directories));
 }
-
-#if defined(_POSIX_VERSION) || defined(__MINGW32__)
-class Directory {
-	DIR* dp = nullptr;
-	struct dirent* ent_p = nullptr;
-
-      public:
-	Directory() {}
-	Directory(const Directory& d) = delete;
-	void operator=(const Directory& d) = delete;
-	auto open(const string& dirname) -> bool
-	{
-		if (dp) {
-			(void)closedir(dp);
-		}
-		dp = opendir(dirname.c_str());
-		return dp;
-	}
-	auto next() -> bool { return (ent_p = readdir(dp)); }
-	auto entry_name() -> const char* { return ent_p->d_name; }
-	auto close() -> void
-	{
-		(void)closedir(dp);
-		dp = nullptr;
-	}
-	~Directory() { close(); }
-};
-#else
-struct Directory {
-	Directory() {}
-	Directory(const Directory& d) = delete;
-	void operator=(const Directory& d) = delete;
-	auto open(const string& dirname) -> bool { return false; }
-	auto next() -> bool { return false; }
-	auto entry_name() -> const char* { return nullptr; }
-	auto close() -> void {}
-};
-#endif
 
 template <class OutIt>
 auto search_dir_for_dicts(const string& dir, OutIt out) -> OutIt

@@ -77,14 +77,5 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
 	} while (i2 != s.npos);
 	return out;
 }
-
-template <class To>
-struct cast_lambda {
-	template <class From>
-	To operator()(From& f) const
-	{
-		return static_cast<To>(f);
-	}
-};
 }
 #endif

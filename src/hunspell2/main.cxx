@@ -359,7 +359,7 @@ int main(int argc, char* argv[])
 	}
 
 	// locale::global(locale(""));
-	cin.imbue(locale(""));
+	// cin.imbue(locale(""));
 	setlocale(LC_ALL, "");
 
 	return handle_mode(args);
