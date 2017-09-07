@@ -50,12 +50,12 @@ auto utf8_low_level(unsigned char state, char in, char32_t* out,
 {
 	unsigned cc = (unsigned char)in; // do not delete the cast
 #ifdef __GNUC__
-	unsigned cc_shifted = cc << numeric_limits<unsigned>::digits - 8;
+	unsigned cc_shifted = cc << (numeric_limits<unsigned>::digits - 8);
 	int clz = __builtin_clz(~cc_shifted); // gcc only.
 #elif _MSC_VER
 	using ulong = unsigned long;
 	ulong ccc = cc;
-	ulong cc_shifted = ccc << numeric_limits<ulong>::digits - 8;
+	ulong cc_shifted = ccc << (numeric_limits<ulong>::digits - 8);
 	ulong clz;
 	BitScanReverse(&clz, ~cc_shifted);
 	clz = numeric_limits<ulong>::digits - 1 - clz;
@@ -156,12 +156,14 @@ auto latin1_to_ucs2(const string& s) -> u16string
 {
 	u16string ret(s.size(), 0);
 	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char16_t>);
+	return ret;
 }
 
 auto latin1_to_u32(const string& s) -> u32string
 {
 	u32string ret(s.size(), 0);
 	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char32_t>);
+	return ret;
 }
 
 auto is_bmp(char32_t c) -> bool { return c <= 0xFFFF; }
