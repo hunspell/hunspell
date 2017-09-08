@@ -1773,7 +1773,7 @@ int main(int argc, char** argv) {
 #endif
 
 #ifdef HAVE_READLINE
-  rl_set_key("", rl_escape, rl_get_keymap());
+  rl_set_key("\x1b\x1b", rl_escape, rl_get_keymap());
   rl_bind_key('\t', rl_insert);
 #endif
 

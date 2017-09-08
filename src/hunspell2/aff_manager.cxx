@@ -72,29 +72,24 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 	string s;
 	u16string ret;
 	const auto err_message = "Warning, bytes above 127 in UTF-8 "
-	                         "stream can not be treated alone as "
-	                         "flags. "
-	                         "Please update dictionary to use"
-	                         "FLAG UTF-8. Skipping such bytes/flags.";
+	                         "stream should not be treated alone as "
+	                         "flags. Please update dictionary to use"
+	                         "FLAG UTF-8 and make the file valid UTF-8.";
 	switch (t) {
 	case SINGLE_CHAR_FLAG:
 		in >> s;
-		if (is_stream_u8) {
-			if (!is_all_ascii(s)) {
-				cerr << err_message << endl;
-				// This error will be triggered in Hungarian.
-				// Version 1 passed this, it just read a
-				// single byte even if the stream utf-8.
-				// Hungarian dictionary explited this
-				// bug/feature, resulting it's file to be
-				// mixed utf-8 and latin2.
-				// In v2 we will make it explicit bug.
-			}
-			ret = ascii_to_ucs2_skip_invalid(s);
+		if (is_stream_u8 && !is_all_ascii(s)) {
+			cerr << err_message << endl;
+			// This error will be triggered in Hungarian.
+			// Version 1 passed this, it just read a
+			// single byte even if the stream utf-8.
+			// Hungarian dictionary explited this
+			// bug/feature, resulting it's file to be
+			// mixed utf-8 and latin2.
+			// In v2 we will make this to work, with
+			// a warning.
 		}
-		else {
-			ret = latin1_to_ucs2(s);
-		}
+		ret = latin1_to_ucs2(s);
 		break;
 	case DOUBLE_CHAR_FLAG: {
 		in >> s;
@@ -109,11 +104,6 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 		for (; i != e; i += 2) {
 			char16_t c1 = (unsigned char)*i;
 			char16_t c2 = (unsigned char)*(i + 1);
-
-			if (is_stream_u8)
-				if (!is_ascii(*i) || !is_ascii(*(i + 1)))
-					continue; // skiping non ascii
-
 			ret.push_back((c1 << 8) | c2);
 		}
 		if (i != s.end()) {
