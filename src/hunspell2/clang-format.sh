@@ -1,1 +1,1 @@
-clang-format -style=file -i *.cxx *.hxx
+clang-format -style=file -i *.[ch]xx
