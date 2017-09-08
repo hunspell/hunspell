@@ -35,11 +35,11 @@ namespace Hunspell {
 using namespace std;
 
 #ifdef __GNUC__
-#define likely(expr)    __builtin_expect(!!(expr), 1)
-#define unlikely(expr)  __builtin_expect(!!(expr), 0)
+#define likely(expr) __builtin_expect(!!(expr), 1)
+#define unlikely(expr) __builtin_expect(!!(expr), 0)
 #else
-#define likely(expr)    (expr)
-#define unlikely(expr)  (expr)
+#define likely(expr) (expr)
+#define unlikely(expr) (expr)
 #endif
 
 namespace {
@@ -53,8 +53,8 @@ const unsigned char next_state[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 4, 1, 2, 3, 4, 4, 4, 4}};
 }
 
-auto utf8_low_level(unsigned char state, char in, char32_t* out,
-                    bool* too_short_err) -> unsigned char
+auto inline utf8_low_level(unsigned char state, char in, char32_t* out,
+                           bool* too_short_err) -> unsigned char
 {
 	unsigned cc = (unsigned char)in; // do not delete the cast
 #ifdef __GNUC__
@@ -84,11 +84,12 @@ auto utf8_low_level(unsigned char state, char in, char32_t* out,
 	else
 		clz = 5;
 #endif
+	//*out = (*out << shift[clz]) | (cc & mask[clz]);
 	if (clz == 1)
 		*out <<= 6;
 	*out |= cc & mask[clz];
-	//*out = (*out << shift[clz]) | (cc & mask[clz]);
-	*too_short_err = state >= 1 && state <= 3 && clz != 1;
+	// if (state & 3) equivalent to state >=1 && state <= 3
+	*too_short_err = (state & 3) && clz != 1;
 	return next_state[state][clz];
 }
 
@@ -129,7 +130,7 @@ auto decode_utf8(const string& s) -> u32string
 			cp = 0;
 		}
 	}
-	if (unlikely(state != 0 && state != 4))
+	if (unlikely(state & 3))
 		*i++ = REP_CH;
 	ret.erase(i, ret.end());
 	return ret;
