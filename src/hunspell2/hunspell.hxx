@@ -100,20 +100,22 @@ class Dictionary {
 	*/
 	auto spell(const string& word) -> Spell_result;
 
-    /**
-	 (6) Unknown narrow input (single byte or multi byte).
-	 Use current C locale and mbrtoc16 to convert it to known.
-	 Do a conversion mbr -> u16 -> u8.
-	 Use mbrtoc16, codecvt<char16_t, char, mbstate_t>
-	 We can check if the the current locale is already utf-8 to skip this.
+	/**
+	     (6) Unknown narrow input (single byte or multi byte).
+	     Use current C locale and mbrtoc16 to convert it to known.
+	     Do a conversion mbr -> u16 -> u8.
+	     Use mbrtoc16, codecvt<char16_t, char, mbstate_t>
+	     We can check if the the current locale is already utf-8 to skip
+	   this.
 
-	 Once we know we have a u8 string, just call (7).
+	     Once we know we have a u8 string, just call (7).
 
-	 This should be the recomended way to interface with the command line
-	 utility. Before calling this function, one should call
-	 setlocale(LC_ALL, "") or locale::global(locale("")).
-	 If we use std::cin, we should imbue it with cin.imbue(locale())
-	*/
+	     This should be the recomended way to interface with the command
+	   line
+	     utility. Before calling this function, one should call
+	     setlocale(LC_ALL, "") or locale::global(locale("")).
+	     If we use std::cin, we should imbue it with cin.imbue(locale())
+	    */
 	auto spell_narrow_input(const string& word) -> Spell_result
 	{
 		// this just for mocking ATM
