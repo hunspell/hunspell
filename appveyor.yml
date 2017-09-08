@@ -2,7 +2,7 @@ environment:
   matrix:
   - MSYSTEM: MINGW64
     BASH_PATH: C:\msys64\usr\bin\bash
-  - BASH_PATH: c:\cygwin\bin\bash
+#  - BASH_PATH: c:\cygwin\bin\bash
 
 build_script:
 - cmd: '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make && make check"'
