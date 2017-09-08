@@ -34,6 +34,14 @@ namespace Hunspell {
 
 using namespace std;
 
+#ifdef __GNUC__
+#define likely(expr)    __builtin_expect(!!(expr), 1)
+#define unlikely(expr)  __builtin_expect(!!(expr), 0)
+#else
+#define likely(expr)    (expr)
+#define unlikely(expr)  (expr)
+#endif
+
 namespace {
 // const unsigned char shift[] = {0, 6, 0, 0, 0, /**/ 0, 0, 0, 0};
 const unsigned char mask[] = {0xff,      0x3f, 0x1f, 0x0f, 0x07,
@@ -91,10 +99,7 @@ auto validate_utf8(const std::string& s) -> bool
 	bool err;
 	for (auto& c : s) {
 		state = utf8_low_level(state, c, &cp, &err);
-		if (state == 0) {
-			cp = 0;
-		}
-		if (err || state == 4)
+		if (unlikely(err || state == 4))
 			return false;
 	}
 	return state == 0;
@@ -112,19 +117,19 @@ auto decode_utf8(const string& s) -> u32string
 
 	for (auto& c : s) {
 		state = utf8_low_level(state, c, &cp, &err);
-		if (err) {
+		if (unlikely(err)) {
 			*i++ = REP_CH;
 		}
-		if (state == 0) {
+		if (likely(state == 0)) {
 			*i++ = cp;
 			cp = 0;
 		}
-		else if (state == 4) {
+		else if (unlikely(state == 4)) {
 			*i++ = REP_CH;
 			cp = 0;
 		}
 	}
-	if (state != 0 && state != 4)
+	if (unlikely(state != 0 && state != 4))
 		*i++ = REP_CH;
 	ret.erase(i, ret.end());
 	return ret;
