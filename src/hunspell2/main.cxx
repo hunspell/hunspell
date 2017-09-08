@@ -274,13 +274,11 @@ auto handle_mode(Args_t& args) -> int
 			}
 		}
 		else {
-			for (vector<string>::iterator file_name =
-			         args.files.begin();
-			     file_name < args.files.end(); ++file_name) {
-				ifstream input_file(file_name->c_str());
+			for (auto& file_name : args.files) {
+				ifstream input_file(file_name.c_str());
 				if (!input_file.is_open()) {
 					cerr << "Can't open "
-					     << file_name->c_str() << endl;
+					     << file_name.c_str() << endl;
 					return 1;
 				}
 				while (getline(input_file, word)) {
@@ -326,13 +324,11 @@ auto handle_mode(Args_t& args) -> int
 			}
 		}
 		else {
-			for (vector<string>::iterator file_name =
-			         args.files.begin();
-			     file_name < args.files.end(); ++file_name) {
-				ifstream input_file(file_name->c_str());
+			for (auto& file_name : args.files) {
+				ifstream input_file(file_name.c_str());
 				if (!input_file.is_open()) {
 					cerr << "Can't open "
-					     << file_name->c_str() << endl;
+					     << file_name.c_str() << endl;
 					return 1;
 				}
 				while (getline(input_file, word)) {
