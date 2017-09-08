@@ -106,5 +106,6 @@ AC_CONFIG_FILES([Makefile
 		 src/tools/Makefile
 		 src/hunspell2/Makefile
                  tests/Makefile
-                 tests/suggestiontest/Makefile])
+                 tests/suggestiontest/Makefile
+                 tests/hun2/Makefile])
 AC_OUTPUT

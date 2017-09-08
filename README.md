@@ -113,6 +113,9 @@ You can also pass the `CXXFLAGS` directly to `make` without calling
 `./configure`, but we don't recommend this way during long development
 sessions.
 
+If you like to develop and debug with an IDE, see documentation at
+https://github.com/hunspell/hunspell/wiki/IDE-Setup
+
 # Testing
 
 Testing Hunspell (see tests in tests/ subdirectory):

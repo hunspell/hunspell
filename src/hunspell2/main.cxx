@@ -246,9 +246,11 @@ auto handle_mode(Args_t& args) -> int
 		     << endl;
 		return 1;
 	}
-	cout << "LOADED DICTIONARY:\n" << filename << endl;
+	cerr << "LOADED DICTIONARY:\n"
+         << filename << endl; //TODO only for development
 
-	Hunspell::Dictionary dic(filename); // FIXME
+    Hunspell::Dictionary dic(filename); // FIXME
+    //TODO also get filename(s) from other_dicts and process these too
 	string word;
 	switch (args.mode) {
 	case DEFAULT_MODE:
@@ -307,8 +309,51 @@ auto handle_mode(Args_t& args) -> int
 		// TODO
 		return 0;
 	case MISSPELLED_WORDS_MODE:
-		// TODO
-		return 0;
+        if (args.files.empty()) {
+            while (cin >> word) {
+                auto res = dic.spell_narrow_input(word);
+                switch (res) {
+                case bad_word:
+                    cout << word << endl;
+                    break;
+                case good_word:
+                    break;
+                case affixed_good_word:
+                    break;
+                case compound_good_word:
+                    break;
+                }
+            }
+        }
+        else {
+            for (vector<string>::iterator file_name =
+                     args.files.begin();
+                 file_name < args.files.end(); ++file_name) {
+                ifstream input_file(file_name->c_str());
+                if (!input_file.is_open()) {
+                    cerr << "Can't open "
+                         << file_name->c_str() << endl;
+                    return 1;
+                }
+                while (getline(input_file, word)) {
+                    // TODO below is only temporary for
+                    // development purposes
+                    auto res = dic.spell_narrow_input(word);
+                    switch (res) {
+                    case bad_word:
+                        cout << word << endl;
+                        break;
+                    case good_word:
+                        break;
+                    case affixed_good_word:
+                        break;
+                    case compound_good_word:
+                        break;
+                    }
+                }
+            }
+        }
+        return 0;
 	case CORRECT_WORDS_MODE:
 		// TODO
 		return 0;

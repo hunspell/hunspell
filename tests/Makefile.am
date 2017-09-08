@@ -1,6 +1,6 @@
 ## Process this file with automake to create Makefile.in
 
-SUBDIRS = suggestiontest
+SUBDIRS = suggestiontest hun2
 
 XFAIL_TESTS = @XFAILED@
 
