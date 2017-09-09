@@ -35,19 +35,17 @@ class Finder {
 	template <class T, class U>
 	using pair = std::pair<T, U>;
 
-	vector<string> directories;
+	vector<string> paths;
 	vector<pair<string, string>> dictionaries;
 
       public:
-	auto add_default_directories() -> void;
-	auto add_mozilla_directories() -> void;
-	auto add_libreoffice_directories() -> void;
+	auto add_default_paths() -> void;
+	auto add_mozilla_paths() -> void;
+	auto add_libreoffice_paths() -> void;
+	auto add_apacheopenoffice_paths() -> void;
 	auto search_dictionaries() -> void;
 
-	auto get_all_directories() const -> const vector<string>&
-	{
-		return directories;
-	}
+	auto get_all_paths() const -> const vector<string>& { return paths; }
 	auto get_all_dictionaries() const -> const vector<pair<string, string>>&
 	{
 		return dictionaries;

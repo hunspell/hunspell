@@ -65,6 +65,13 @@ struct Args_t {
 	auto fail() -> bool { return mode == ERROR_MODE; }
 };
 
+/**
+ * Parses command line arguments and result is stored in mode, dictionary,
+ * other_dicts and files.
+ *
+ * \param argc the total number of command line arguments.
+ * \param argv all the individual command linen arguments.
+ */
 auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
 // usage
@@ -82,7 +89,10 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 			if (dictionary.empty())
 				dictionary = optarg;
 			else
-				other_dicts.emplace_back(optarg);
+				cerr << "WARNING: Detected not yet supported "
+				        "other dictionary "
+				     << optarg << endl;
+			other_dicts.emplace_back(optarg);
 
 			break;
 		case 'a':
@@ -144,12 +154,12 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 			break;
 		case ':':
 			cerr << "Option -" << (char)optopt
-			     << " requires an operand\n";
+			     << " requires an operand" << endl;
 			mode = ERROR_MODE;
 			break;
 		case '?':
-			cerr << "Unrecognized option: '-" << (char)optopt
-			     << "'\n";
+			cerr << "Unrecognized option: '-" << (char)optopt << "'"
+			     << endl;
 			mode = ERROR_MODE;
 			break;
 		}
@@ -192,20 +202,40 @@ auto print_help() -> void
 auto print_version() -> void
 {
 	cout << "Hunspell "
-	     << "2.0.0" << endl; // FIXME should get version via API from
-	                         // library or (better?) from config.h
-	                         // TODO print copyright and licence, LGPL v3
+	     << "2.0.0" << endl;
+	// FIXME should get version via API from library or (better?) from
+	// config.h
+	// TODO print copyright and licence, LGPL v3
 }
 
+/**
+ * Lists dictionary paths and available dictionaries on the system to standard
+ * output.
+ *
+ * \param f a finder for search paths and located dictionary.
+ */
 auto list_dictionaries(Finder& f) -> void
 {
-	cout << "SEARCH PATHS:\n";
-	for (auto& a : f.get_all_directories()) {
-		cout << a << '\n';
+	if (f.get_all_paths().empty()) {
+		cout << "No search paths available" << endl;
 	}
-	cout << "AVAILABLE DICTIONARIES:\n";
-	for (auto& a : f.get_all_dictionaries()) {
-		cout << a.first << '\t' << a.second << '\n';
+	else {
+		cout << "Search paths:" << endl;
+		for (auto& p : f.get_all_paths()) {
+			cout << p << endl;
+		}
+	}
+
+	// Even if no search paths are available, still report on available
+	// dictionaries.
+	if (f.get_all_dictionaries().empty()) {
+		cout << "No dictionaries available" << endl;
+	}
+	else {
+		cout << "Available dictionaries:" << endl;
+		for (auto& d : f.get_all_dictionaries()) {
+			cout << d.first << '\t' << d.second << endl;
+		}
 	}
 }
 
@@ -229,9 +259,10 @@ auto handle_mode(Args_t& args) -> int
 	}
 
 	auto f = Finder();
-	f.add_default_directories();
-	f.add_libreoffice_directories();
-	f.add_mozilla_directories();
+	f.add_default_paths();
+	f.add_libreoffice_paths();
+	f.add_mozilla_paths();
+	f.add_apacheopenoffice_paths();
 	f.search_dictionaries();
 
 	switch (args.mode) {
@@ -246,8 +277,7 @@ auto handle_mode(Args_t& args) -> int
 		     << endl;
 		return 1;
 	}
-	cerr << "LOADED DICTIONARY:\n"
-	     << filename << endl; // TODO only for development
+	cerr << "INFO: Loaded dictionary " << filename << endl;
 
 	Hunspell::Dictionary dic(filename); // FIXME
 	// TODO also get filename(s) from other_dicts and process these too
@@ -332,8 +362,6 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
-					// TODO below is only temporary for
-					// development purposes
 					auto res = dic.spell_narrow_input(word);
 					switch (res) {
 					case bad_word:
@@ -351,7 +379,50 @@ auto handle_mode(Args_t& args) -> int
 		}
 		return 0;
 	case CORRECT_WORDS_MODE:
-		// TODO
+		if (args.files.empty()) {
+			while (cin >> word) {
+				auto res = dic.spell_narrow_input(word);
+				switch (res) {
+				case bad_word:
+					break;
+				case good_word:
+					cout << word << endl;
+					break;
+				case affixed_good_word:
+					cout << word << endl;
+					break;
+				case compound_good_word:
+					cout << word << endl;
+					break;
+				}
+			}
+		}
+		else {
+			for (auto& file_name : args.files) {
+				ifstream input_file(file_name.c_str());
+				if (!input_file.is_open()) {
+					cerr << "Can't open "
+					     << file_name.c_str() << endl;
+					return 1;
+				}
+				while (getline(input_file, word)) {
+					auto res = dic.spell_narrow_input(word);
+					switch (res) {
+					case bad_word:
+						break;
+					case good_word:
+						cout << word << endl;
+						break;
+					case affixed_good_word:
+						cout << word << endl;
+						break;
+					case compound_good_word:
+						cout << word << endl;
+						break;
+					}
+				}
+			}
+		}
 		return 0;
 	case MISSPELLED_LINES_MODE:
 		// TODO
