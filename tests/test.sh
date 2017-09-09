@@ -66,7 +66,7 @@ fi
 
 TESTDIR=.
 TEMPDIR=$TESTDIR/testSubDir
-NAME=$(basename "$1" .test)
+NAME=$(basename "$1" .dic)
 shift
 
 ENCODING=UTF-8 #io encoding passed with -i
