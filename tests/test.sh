@@ -134,8 +134,8 @@ in_file="$in_dict.good"
 expected_file="$in_dict.morph"
 
 if [[ -f $expected_file ]]; then
-    in=$(sed 's/	$//' "$in_file")
-    out=$(analyze $in_dict.aff $in_dict.dic <(echo "$in") \
+    #in=$(sed 's/	$//' "$in_file") #passes without this.
+    out=$(analyze $in_dict.aff $in_dict.dic $in_file \
           | tr -d "$CR") #strip carige return for mingw builds
     expected=$(<$expected_file)
     if [[ "$out" != "$expected" ]]; then
