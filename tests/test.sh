@@ -96,15 +96,13 @@ fi
 
 # Tests good words
 if test -f $TESTDIR/$NAME.good; then
-    hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
-    if test -s $TEMPDIR/$NAME.good; then
+    out=$(hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME < $TESTDIR/$NAME.good)
+    if [ $out != "" ]; then
         echo "============================================="
         echo "Fail in $NAME.good. Good words recognised as wrong:"
-        cat $TEMPDIR/$NAME.good
-        rm -f $TEMPDIR/$NAME.good
+        echo "$out"
         exit 1
     fi
-    rm -f $TEMPDIR/$NAME.good
 fi
 
 check_valgrind_log "good words"
@@ -113,18 +111,19 @@ CR=$(printf "\r")
 
 # Tests bad words
 if test -f $TESTDIR/$NAME.wrong; then
-    hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong \
-    | tr -d $CR >$TEMPDIR/$NAME.wrong #strip carige return for mingw builds
-    tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
-    if ! cmp $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab >/dev/null; then
+    out=$(hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong \
+	    | tr -d $CR) #strip carige return for mingw builds
+    in_detab=$(tr -d $'\t' <$TESTDIR/$NAME.wrong)
+    if [ "$out" != "$in_detab" ] >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.wrong. Bad words recognised as good:"
-        tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
+	echo "$out" > $TEMPDIR/$NAME.wrong 
+        tr -d $'\t' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
         diff $TEMPDIR/$NAME.wrong.detab $TEMPDIR/$NAME.wrong | grep '^<' | sed 's/^..//'
-        rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
+        # rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
         exit 1
     fi
-    rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
+    # rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
 fi
 
 check_valgrind_log "bad words"
