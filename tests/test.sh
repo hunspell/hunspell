@@ -39,13 +39,13 @@
 #
 # ***** END LICENSE BLOCK *****
 
-# set -x
+# set -x # uncomment for debugging
 
 export LC_ALL="C"
 
 function check_valgrind_log () {
-if [ "$VALGRIND" != "" ]; then
-  if [ -f $TEMPDIR/test.pid* ]; then
+if [[ "$VALGRIND" != "" ]]; then
+  if [[ -f $TEMPDIR/test.pid* ]]; then
     log=`ls $TEMPDIR/test.pid*`
     if ! grep -q 'ERROR SUMMARY: 0 error' $log; then
         echo "Fail in $NAME $1 checking detected by Valgrind"
@@ -70,7 +70,7 @@ NAME=$(basename "$1" .dic)
 shift
 
 ENCODING=UTF-8 #io encoding passed with -i
-if [ "$1" == "-i" -a -n "$2" ]; then
+if [[ "$1" == "-i" && -n "$2" ]]; then
 	ENCODING=$2
 	shift 2
 fi
@@ -84,9 +84,9 @@ shopt -s expand_aliases
 alias hunspell='../libtool --mode=execute -dlopen ../src/hunspell/.libs/libhunspell*.la ../src/tools/hunspell'
 alias analyze='../libtool --mode=execute -dlopen ../src/hunspell/.libs/libhunspell*.la ../src/tools/analyze'
 
-if [ "$VALGRIND" != "" ]; then
+if [[ "$VALGRIND" != "" ]]; then
   rm -f $TEMPDIR/test.pid*
-  if [ ! -d $TEMPDIR/badlogs ]; then
+  if [[ ! -d $TEMPDIR/badlogs ]]; then
     mkdir $TEMPDIR/badlogs
   fi
 
@@ -94,10 +94,16 @@ if [ "$VALGRIND" != "" ]; then
   alias analyze='../libtool --mode=execute -dlopen ../src/hunspell/.libs/libhunspell*.la valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid ../src/tools/analyze'
 fi
 
+CR=$(printf "\r")
+in_dict="$TESTDIR/$NAME"
+
 # Tests good words
-if test -f $TESTDIR/$NAME.good; then
-    out=$(hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME < $TESTDIR/$NAME.good)
-    if [ $out != "" ]; then
+in_file="$in_dict.good"
+
+if [[ -f $in_file ]]; then
+    out=$(hunspell -l -i $ENCODING $* -d $in_dict < $in_file \
+          | tr -d "$CR")
+    if [[ $out != "" ]]; then
         echo "============================================="
         echo "Fail in $NAME.good. Good words recognised as wrong:"
         echo "$out"
@@ -107,56 +113,56 @@ fi
 
 check_valgrind_log "good words"
 
-CR=$(printf "\r")
-
 # Tests bad words
-if test -f $TESTDIR/$NAME.wrong; then
-    out=$(hunspell -l -i $ENCODING $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong \
-	    | tr -d $CR) #strip carige return for mingw builds
-    in_detab=$(tr -d $'\t' <$TESTDIR/$NAME.wrong)
-    if [ "$out" != "$in_detab" ] >/dev/null; then
+in_file="$in_dict.wrong"
+
+if [[ -f $in_file ]]; then
+    out=$(hunspell -G -i $ENCODING $* -d $in_dict < "$in_file" \
+	  | tr -d "$CR") #strip carige return for mingw builds
+    if [[ "$out" != "" ]] >/dev/null; then
         echo "============================================="
         echo "Fail in $NAME.wrong. Bad words recognised as good:"
-	echo "$out" > $TEMPDIR/$NAME.wrong 
-        tr -d $'\t' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
-        diff $TEMPDIR/$NAME.wrong.detab $TEMPDIR/$NAME.wrong | grep '^<' | sed 's/^..//'
-        # rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
+	echo "$out"
         exit 1
     fi
-    # rm -f $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab
 fi
 
 check_valgrind_log "bad words"
 
 # Tests morphological analysis
-if test -f $TESTDIR/$NAME.morph; then
-    sed 's/	$//' $TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
-    analyze $TESTDIR/$NAME.aff $TESTDIR/$NAME.dic $TEMPDIR/$NAME.good \
-    | tr -d $CR >$TEMPDIR/$NAME.morph #strip carige return for mingw builds
-    if ! cmp $TEMPDIR/$NAME.morph $TESTDIR/$NAME.morph >/dev/null; then
+in_file="$in_dict.good"
+expected_file="$in_dict.morph"
+
+if [[ -f $expected_file ]]; then
+    in=$(sed 's/	$//' "$in_file")
+    out=$(analyze $in_dict.aff $in_dict.dic <(echo "$in") \
+          | tr -d "$CR") #strip carige return for mingw builds
+    echo "$out" >> $TEMPDIR/$NAME.haha
+    expected=$(<$expected_file)
+    if [[ "$out" != "$expected" ]]; then
         echo "============================================="
         echo "Fail in $NAME.morph. Bad analysis?"
-        diff $TESTDIR/$NAME.morph $TEMPDIR/$NAME.morph | grep '^<' | sed 's/^..//'
-        rm -f $TEMPDIR/$NAME.morph
+        diff $expected_file <(echo "$out")  | grep '^<' | sed 's/^..//'
         exit 1
     fi
-    rm -f $TEMPDIR/$NAME.{morph,good}
 fi
 
 check_valgrind_log "morphological analysis"
 
 # Tests suggestions
-if test -f $TESTDIR/$NAME.sug; then
-    hunspell -i $ENCODING $* -a -d $TESTDIR/$NAME <$TESTDIR/$NAME.wrong | grep -a '^&' | \
-        sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug 
-    if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
+in_file=$in_dict.wrong
+expected_file=$in_dict.sug
+
+if [[ -f $expected_file ]]; then
+    out=$(hunspell -i $ENCODING $* -a -d $in_dict <$in_file | grep -a '^&' | \
+        sed 's/^[^:]*: //')
+    expected=$(<$expected_file) 
+    if [[ "$out" != "$expected" ]]; then
         echo "============================================="
         echo "Fail in $NAME.sug. Bad suggestion?"
-        diff $TESTDIR/$NAME.sug $TEMPDIR/$NAME.sug
-        rm -f $TEMPDIR/$NAME.sug
+        diff $expected_file <(echo "$out")
         exit 1
     fi
-    rm -f $TEMPDIR/$NAME.sug
 fi
 
 check_valgrind_log "suggestion"
