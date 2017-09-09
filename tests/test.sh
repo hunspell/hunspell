@@ -137,7 +137,6 @@ if [[ -f $expected_file ]]; then
     in=$(sed 's/	$//' "$in_file")
     out=$(analyze $in_dict.aff $in_dict.dic <(echo "$in") \
           | tr -d "$CR") #strip carige return for mingw builds
-    echo "$out" >> $TEMPDIR/$NAME.haha
     expected=$(<$expected_file)
     if [[ "$out" != "$expected" ]]; then
         echo "============================================="

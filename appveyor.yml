@@ -5,4 +5,4 @@ environment:
 #  - BASH_PATH: c:\cygwin\bin\bash
 
 build_script:
-- cmd: '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make && make check"'
+- cmd: '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make && make check; cat tests/test-suite.log"'
