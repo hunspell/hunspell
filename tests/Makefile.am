@@ -9,7 +9,7 @@ DIC_LOG_COMPILER = ./test.sh
 
 TESTS =	\
 affixes.dic \
-condition.dic \
+condition.test \
 condition_utf.dic \
 base.dic \
 base_utf.dic \
@@ -19,8 +19,8 @@ allcaps2.dic \
 allcaps3.dic \
 keepcase.dic \
 i58202.dic \
-map.dic \
-rep.dic \
+map.test \
+rep.test \
 sug.dic \
 sugutf.dic \
 phone.dic \
@@ -52,7 +52,7 @@ zeroaffix.dic \
 utf8.dic \
 utf8_bom.dic \
 utf8_bom2.dic \
-utf8_nonbmp.dic \
+utf8_nonbmp.test \
 compoundflag.dic \
 compoundrule.dic \
 compoundrule2.dic \
@@ -68,29 +68,29 @@ compoundaffix3.dic \
 checkcompounddup.dic \
 checkcompoundtriple.dic \
 simplifiedtriple.dic \
-checkcompoundrep.dic \
-checkcompoundcase2.dic \
+checkcompoundrep.test \
+checkcompoundcase2.test \
 checkcompoundcaseutf.dic \
-checkcompoundpattern.dic \
+checkcompoundpattern.test \
 checkcompoundpattern2.dic \
 checkcompoundpattern3.dic \
 checkcompoundpattern4.dic \
 utfcompound.dic \
-checksharps.dic \
+checksharps.test \
 checksharpsutf.dic \
 germancompounding.dic \
 germancompoundingold.dic \
 i35725.dic \
 i53643.dic \
-i54633.dic \
-i54980.dic \
+i54633.test \
+i54980.test \
 maputf.dic \
 reputf.dic \
 ignore.dic \
 ignoreutf.dic \
 1592880.dic \
 1695964.dic \
-1463589.dic \
+1463589.test \
 1463589_utf.dic \
 IJ.dic \
 i68568.dic \
@@ -105,7 +105,7 @@ fullstrip.dic \
 iconv.dic \
 iconv2.dic \
 oconv.dic \
-encoding.dic \
+encoding.test \
 korean.dic \
 opentaal_forbiddenword1.dic \
 opentaal_forbiddenword2.dic \

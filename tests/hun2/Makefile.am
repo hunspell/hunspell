@@ -14,7 +14,7 @@ XFAIL_TESTS = @XFAILED@
 TESTS =	\
 simple.test \
 simplenonascii.test \
-string_utils_test
+$(check_PROGRAMS)
 
 distclean-local:
 	-rm -rf testSubDir
