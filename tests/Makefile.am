@@ -72,13 +72,13 @@ checkcompoundrep.test \
 checkcompoundcase2.test \
 checkcompoundcaseutf.dic \
 checkcompoundpattern.test \
-checkcompoundpattern2.dic \
-checkcompoundpattern3.dic \
-checkcompoundpattern4.dic \
+checkcompoundpattern2.test \
+checkcompoundpattern3.test \
+checkcompoundpattern4.test \
 utfcompound.dic \
 checksharps.test \
 checksharpsutf.dic \
-germancompounding.dic \
+germancompounding.test \
 germancompoundingold.dic \
 i35725.dic \
 i53643.dic \
@@ -598,4 +598,9 @@ checksharps.test  \
 i54633.test  \
 i54980.test  \
 1463589.test  \
-encoding.test
+encoding.test \
+checkcompoundcase.test \
+checkcompoundpattern2.test \
+checkcompoundpattern3.test \
+checkcompoundpattern4.test \
+germancompounding.test
