@@ -37,4 +37,3 @@ addons:
     - autopoint
     - gcc-5
     - g++-5
-    - googletest
