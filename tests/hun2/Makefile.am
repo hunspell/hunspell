@@ -4,10 +4,13 @@ override PACKAGE_STRING = Hunspell 2.0.0
 
 XFAIL_TESTS = @XFAILED@
 
+TEST_EXTENSIONS = .dic
+DIC_LOG_COMPILER = ./test.sh
+
 TESTS =	\
-simple.test \
-simplenonascii.test \
-$(check_PROGRAMS)
+simple.dic \
+simpleline.dic \
+simplenonascii.dic
 
 distclean-local:
 	-rm -rf testSubDir
@@ -18,9 +21,11 @@ simple.aff \
 simple.dic \
 simple.good \
 simple.wrong \
-simple.test \
+simpleline.aff \
+simpleline.dic \
+simpleline.good \
+simpleline.wrong \
 simplenonascii.aff \
 simplenonascii.dic \
 simplenonascii.good \
-simplenonascii.wrong \
-simplenonascii.test
+simplenonascii.wrong

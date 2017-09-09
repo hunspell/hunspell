@@ -24,6 +24,7 @@
 #include "dic_manager.hxx"
 #include "dict_finder.hxx"
 #include "hunspell.hxx"
+#include "string_utils.hxx"
 #include <clocale>
 #include <fstream>
 #include <iostream>
@@ -56,6 +57,7 @@ enum Mode {
 struct Args_t {
 	Mode mode = DEFAULT_MODE;
 	string dictionary;
+	string encoding = "UTF-8";
 	vector<string> other_dicts;
 	vector<string> files;
 
@@ -77,13 +79,14 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 // usage
 // hunspell [-a] [-d dict_NAME]... file_name...
 // hunspell -l|-G [-L] [-d dict_NAME]... file_name...
+// hunspell -i enc
 // hunspell -D|-h|-v
 // TODO support --help
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	while ((c = getopt(argc, argv, ":d:aDGLlhv")) != -1) {
+	while ((c = getopt(argc, argv, ":d:i:aDGHLOP::Xlhtv")) != -1) {
 		switch (c) {
 		case 'd':
 			if (dictionary.empty())
@@ -93,6 +96,45 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 				        "other dictionary "
 				     << optarg << endl;
 			other_dicts.emplace_back(optarg);
+
+			break;
+		case 'i':
+			encoding = optarg;
+
+			break;
+		case 'H':
+			cerr << "ERROR: Deprecated option \"-H\" HTML input "
+			        "file format"
+			     << endl;
+			mode = ERROR_MODE;
+
+			break;
+		case 'O':
+			cerr << "ERROR: Deprecated option \"-O\" OpenDocument "
+			        "(ODF or Flat ODF) input file format"
+			     << endl;
+			mode = ERROR_MODE;
+
+			break;
+		case 'P':
+			cerr << "ERROR: Deprecated option \"-P\" set password "
+			        "for encrypted dictionaries"
+			     << endl;
+			mode = ERROR_MODE;
+
+			break;
+		case 't':
+			cerr << "ERROR: Deprecated option \"-t\" TeX/LaTeX "
+			        "input file format"
+			     << endl;
+			mode = ERROR_MODE;
+
+			break;
+		case 'X':
+			cerr << "ERROR: Deprecated option \"-X\" XML input "
+			        "file format"
+			     << endl;
+			mode = ERROR_MODE;
 
 			break;
 		case 'a':
@@ -188,6 +230,10 @@ auto print_help() -> void
 	        "              -d multiple times. \n"
 	        "  -D	       show available dictionaries\n"
 	        "  TODO\n"
+	        "  -i enc      input encoding\n"
+	        "  -l          print only misspelled words or lines\n"
+	        "  -G          print only correct words or lines\n"
+	        "  -L          lines mode\n"
 	        "  -h          display this help and exit\n"
 	        "  -v          print version number\n"
 	        "Example: hunspell -d en_US file.txt    # interactive "
@@ -203,8 +249,7 @@ auto print_version() -> void
 {
 	cout << "Hunspell "
 	     << "2.0.0" << endl;
-	// FIXME should get version via API from library or (better?) from
-	// config.h
+	// FIXME should get version via API or (better?) from config.h
 	// TODO print copyright and licence, LGPL v3
 }
 
@@ -281,6 +326,7 @@ auto handle_mode(Args_t& args) -> int
 
 	Hunspell::Dictionary dic(filename); // FIXME
 	// TODO also get filename(s) from other_dicts and process these too
+	string line;
 	string word;
 	switch (args.mode) {
 	case DEFAULT_MODE:
@@ -334,23 +380,14 @@ auto handle_mode(Args_t& args) -> int
 		}
 		return 0;
 	case PIPE_MODE:
-		// TODO
+		// TODO (Once implemented here, re-add < in tests/hun2/test.sh)
 		return 0;
 	case MISSPELLED_WORDS_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
 				auto res = dic.spell_narrow_input(word);
-				switch (res) {
-				case bad_word:
+				if (res == bad_word)
 					cout << word << endl;
-					break;
-				case good_word:
-					break;
-				case affixed_good_word:
-					break;
-				case compound_good_word:
-					break;
-				}
 			}
 		}
 		else {
@@ -363,17 +400,8 @@ auto handle_mode(Args_t& args) -> int
 				}
 				while (getline(input_file, word)) {
 					auto res = dic.spell_narrow_input(word);
-					switch (res) {
-					case bad_word:
+					if (res == bad_word)
 						cout << word << endl;
-						break;
-					case good_word:
-						break;
-					case affixed_good_word:
-						break;
-					case compound_good_word:
-						break;
-					}
 				}
 			}
 		}
@@ -382,19 +410,8 @@ auto handle_mode(Args_t& args) -> int
 		if (args.files.empty()) {
 			while (cin >> word) {
 				auto res = dic.spell_narrow_input(word);
-				switch (res) {
-				case bad_word:
-					break;
-				case good_word:
+				if (res != bad_word)
 					cout << word << endl;
-					break;
-				case affixed_good_word:
-					cout << word << endl;
-					break;
-				case compound_good_word:
-					cout << word << endl;
-					break;
-				}
 			}
 		}
 		else {
@@ -407,28 +424,97 @@ auto handle_mode(Args_t& args) -> int
 				}
 				while (getline(input_file, word)) {
 					auto res = dic.spell_narrow_input(word);
-					switch (res) {
-					case bad_word:
-						break;
-					case good_word:
+					if (res != bad_word)
 						cout << word << endl;
-						break;
-					case affixed_good_word:
-						cout << word << endl;
-						break;
-					case compound_good_word:
-						cout << word << endl;
-						break;
-					}
 				}
 			}
 		}
 		return 0;
 	case MISSPELLED_LINES_MODE:
-		// TODO
+		if (args.files.empty()) {
+			while (cin >> line) {
+				auto words = vector<string>();
+				split(line, ' ', back_inserter(words));
+				// TODO Replace later with parser.
+				for (auto& w : words) {
+					auto res = dic.spell_narrow_input(w);
+					if (res == bad_word) {
+						cout << line << endl;
+						break;
+					}
+				}
+			}
+		}
+		else {
+			for (auto& file_name : args.files) {
+				ifstream input_file(file_name.c_str());
+				if (!input_file.is_open()) {
+					cerr << "Can't open "
+					     << file_name.c_str() << endl;
+					return 1;
+				}
+				while (getline(input_file, line)) {
+					auto words = vector<string>();
+					split(line, ' ', back_inserter(words));
+					// TODO Replace later with parser.
+					for (auto& w : words) {
+						auto res =
+						    dic.spell_narrow_input(w);
+						if (res == bad_word) {
+							cout << line << endl;
+							break;
+						}
+					}
+				}
+			}
+		}
 		return 0;
 	case CORRECT_LINES_MODE:
-		// TODO
+		if (args.files.empty()) {
+			while (cin >> line) {
+				auto words = vector<string>();
+				split(line, ' ',
+				      back_inserter(words)); // TODO Replace
+				                             // later with
+				                             // parser.
+				bool correct = true;
+				for (auto& w : words) {
+					auto res = dic.spell_narrow_input(w);
+					if (res == bad_word) {
+						correct = false;
+						break;
+					}
+				}
+				if (correct)
+					cout << line << endl;
+			}
+		}
+		else {
+			for (auto& file_name : args.files) {
+				ifstream input_file(file_name.c_str());
+				if (!input_file.is_open()) {
+					cerr << "Can't open "
+					     << file_name.c_str() << endl;
+					return 1;
+				}
+				while (getline(input_file, line)) {
+					auto words = vector<string>();
+					split(line, ' ', back_inserter(words));
+					// TODO Replace later with parser.
+					bool correct = true;
+					for (auto& w : words) {
+						auto res =
+						    dic.spell_narrow_input(w);
+						if (res == bad_word) {
+							correct = false;
+							break;
+						}
+					}
+					if (correct)
+						cout << line << endl;
+				}
+			}
+		}
 		return 0;
 	}
 

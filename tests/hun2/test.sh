@@ -64,8 +64,19 @@ fi
 
 TESTDIR=.
 TEMPDIR=$TESTDIR/testSubDir
-NAME="$1"
+NAME=$(basename "$1" .dic)
 shift
+
+ENCODING=UTF-8 #io encoding passed with -i
+if [ "$1" == "-i" -a -n "$2" ]; then
+	ENCODING=$2
+	shift 2
+fi
+
+LINES=
+if [ `echo $NAME|grep -c "line"` != "0" ]; then
+    LINES="-L"
+fi
 
 if [ ! -d $TEMPDIR ]; then
   mkdir $TEMPDIR
@@ -86,7 +97,7 @@ fi
 
 # Tests good words
 if test -f $TESTDIR/$NAME.good; then
-    hunspell -l $* -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
+    hunspell -l $LINES -i $ENCODING $* -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.good >$TEMPDIR/$NAME.good
     if test -s $TEMPDIR/$NAME.good; then
         echo "============================================="
         echo "Fail in $NAME.good. Good words recognised as wrong:"
@@ -103,7 +114,7 @@ CR=$(printf "\r")
 
 # Tests bad words
 if test -f $TESTDIR/$NAME.wrong; then
-    hunspell -l $* -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.wrong \
+    hunspell -l $LINES -i $ENCODING $* -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.wrong \
     | tr -d $CR >$TEMPDIR/$NAME.wrong #strip carige return for mingw builds
     tr -d '	' <$TESTDIR/$NAME.wrong >$TEMPDIR/$NAME.wrong.detab
     if ! cmp $TEMPDIR/$NAME.wrong $TEMPDIR/$NAME.wrong.detab >/dev/null; then
@@ -121,7 +132,7 @@ check_valgrind_log "bad words"
 
 # Tests suggestions
 if test -f $TESTDIR/$NAME.sug; then
-    hunspell $* -a -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.wrong | grep -a '^&' | \
+    hunspell $* -a -i $ENCODING $* -d $TESTDIR/$NAME.dic $TESTDIR/$NAME.wrong | grep -a '^&' | \
         sed 's/^[^:]*: //' >$TEMPDIR/$NAME.sug 
     if ! cmp $TEMPDIR/$NAME.sug $TESTDIR/$NAME.sug >/dev/null; then
         echo "============================================="

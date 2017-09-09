@@ -604,7 +604,7 @@ auto search_path_for_dicts(const string& dir, OutIt out) -> OutIt
 	unordered_set<string> dics;
 	string file_name;
 	while (d.next()) { // TODO Ideally process file names in alphabetical
-	                   // order, output is now:
+		           // order, output is now:
 		// nl_BE	/usr/share/hunspell/nl_BE
 		// en_US	/usr/share/hunspell/en_US
 		// nl_NL	/usr/share/hunspell/nl_NL

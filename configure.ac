@@ -4,7 +4,7 @@
 m4_pattern_allow
 
 AC_PREREQ(2.59)
-AC_INIT([hunspell],[1.6.2],[nemeth@numbertext.org])
+AC_INIT([hunspell],[1.6.2],[https://github.com/hunspell/hunspell/issues],,[https://hunspell.github.io])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
@@ -107,5 +107,6 @@ AC_CONFIG_FILES([Makefile
 		 src/hunspell2/Makefile
                  tests/Makefile
                  tests/suggestiontest/Makefile
+                 tests/unit2/Makefile
                  tests/hun2/Makefile])
 AC_OUTPUT
