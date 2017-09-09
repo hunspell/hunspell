@@ -4,6 +4,9 @@ SUBDIRS = suggestiontest hun2
 
 XFAIL_TESTS = @XFAILED@
 
+TEST_EXTENSIONS = .test
+TEST_LOG_COMPILER = ./test.sh
+
 TESTS =	\
 affixes.test \
 condition.test \
