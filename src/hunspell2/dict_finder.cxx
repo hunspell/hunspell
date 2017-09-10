@@ -543,13 +543,7 @@ auto Finder::get_dictionary(const string& dict) const -> string
 	// first check if it is a path
 	if (dict.find_first_of(SEPARATORS) != dict.npos) {
 		// a path
-		auto sz = dict.size();
-		if (sz < 4)
-			return "";
-		if (dict.find(".dic", sz - 4) == dict.npos &&
-		    dict.find(".aff", sz - 4) == dict.npos)
-			return "";
-		return dict.substr(0, sz - 4);
+		return dict;
 	}
 	else {
 		// search list
