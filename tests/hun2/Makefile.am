@@ -5,18 +5,18 @@ override PACKAGE_STRING = Hunspell 2.0.0
 XFAIL_TESTS = @XFAILED@
 
 TEST_EXTENSIONS = .dic
-DIC_LOG_COMPILER = ./test.sh
+AM_TESTS_ENVIRONMENT = HUNSPELL=../../src/hunspell2/hun2; export HUNSPELL;
+DIC_LOG_COMPILER = ../test.sh
 
 TESTS =	\
 simple.dic \
 simpleline.dic \
 simplenonascii.dic
 
-distclean-local:
+clean-local:
 	-rm -rf testSubDir
         
 EXTRA_DIST = \
-test.sh \
 simple.aff \
 simple.dic \
 simple.good \
