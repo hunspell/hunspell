@@ -123,7 +123,7 @@ nepali.dic \
 hu.dic \
 warn.dic
 
-distclean-local:
+clean-local:
 	-rm -rf testSubDir
         
 EXTRA_DIST = \
