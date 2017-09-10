@@ -27,6 +27,7 @@ DEFAULT_MODE --> HELP_MODE : -h
 DEFAULT_MODE --> VERSION_MODE : -v
 
 DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
+DEFAULT_MODE --> ERROR_MODE : deprecated\n-H -O -P -t -X
 
 LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
 LINES_MODE : is intermediate mode
