@@ -68,6 +68,8 @@ if [[ "$VALGRIND" != "" ]]; then
 	alias analyze='"$LIBTOOL" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$ANALYZE"'
 fi
 
+CR=$(printf "\r")
+
 in_dict="$TESTDIR/$NAME"
 
 # Tests good words
@@ -75,7 +77,7 @@ in_file="$in_dict.good"
 
 if [[ -f $in_file ]]; then
 	out=$(hunspell -l -i $ENCODING $* -d $in_dict < $in_file \
-	      | tr -d $'\r')
+	      | tr -d "$CR")
 	if [[ $out != "" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.good. Good words recognised as wrong:"
@@ -91,7 +93,7 @@ in_file="$in_dict.wrong"
 
 if [[ -f $in_file ]]; then
 	out=$(hunspell -G -i $ENCODING $* -d $in_dict < "$in_file" \
-	      | tr -d $'\r') #strip carige return for mingw builds
+	      | tr -d "$CR") #strip carige return for mingw builds
 	if [[ "$out" != "" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.wrong. Bad words recognised as good:"
@@ -109,7 +111,7 @@ expected_file="$in_dict.morph"
 if [[ -f $expected_file ]]; then
 	#in=$(sed 's/	$//' "$in_file") #passes without this.
 	out=$(analyze $in_dict.aff $in_dict.dic $in_file \
-	      | tr -d $'\r') #strip carige return for mingw builds
+	      | tr -d "$CR") #strip carige return for mingw builds
 	expected=$(<$expected_file)
 	if [[ "$out" != "$expected" ]]; then
 		echo "============================================="
