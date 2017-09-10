@@ -10,7 +10,6 @@ DIC_LOG_COMPILER = ../test.sh
 
 TESTS =	\
 simple.dic \
-simpleline.dic \
 simplenonascii.dic
 
 clean-local:
@@ -21,10 +20,6 @@ simple.aff \
 simple.dic \
 simple.good \
 simple.wrong \
-simpleline.aff \
-simpleline.dic \
-simpleline.good \
-simpleline.wrong \
 simplenonascii.aff \
 simplenonascii.dic \
 simplenonascii.good \
