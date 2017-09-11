@@ -27,7 +27,7 @@ install:
 #  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
-  - autoreconf -i && ./configure && make && make check; fi
+  - autoreconf -i && ./configure && make && make check
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
 # might be needed for future
 addons:
