@@ -42,10 +42,8 @@ auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void
 	f.toupper(&s[0], &s[s.size()]);
 }
 
-auto utf8_low_level(unsigned char state, char in, char32_t* out,
-                    bool* too_short_err) -> unsigned char;
-auto validate_utf8(const std::string& s) -> bool;
 auto decode_utf8(const std::string& s) -> std::u32string;
+auto validate_utf8(const std::string& s) -> bool;
 
 auto is_ascii(char c) -> bool;
 auto is_all_ascii(const std::string& s) -> bool;

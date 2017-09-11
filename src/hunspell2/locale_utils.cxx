@@ -44,29 +44,37 @@ using namespace std;
 
 namespace {
 // const unsigned char shift[] = {0, 6, 0, 0, 0, /**/ 0, 0, 0, 0};
-const unsigned char mask[] = {0xff,      0x3f, 0x1f, 0x0f, 0x07,
-                              /**/ 0x03, 0x01, 0x00, 0x00};
+const unsigned char mask[] = {0xff, 0x3f, 0x1f, 0x0f, 0x07, /**/
+                              0x03, 0x01, 0x00, 0x00};
+
+// for decoding
 const unsigned char next_state[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 0, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 1, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 2, 1, 2, 3, 4, 4, 4, 4},
                                        {0, 4, 1, 2, 3, 4, 4, 4, 4}};
-}
 
-auto inline utf8_low_level(unsigned char state, char in, char32_t* out,
-                           bool* too_short_err) -> unsigned char
+// for validating
+const unsigned char next_state2[][9] = {{0, 4, 1, 2, 3, 4, 4, 4, 4},
+                                        {4, 0, 4, 4, 4, 4, 4, 4, 4},
+                                        {4, 1, 4, 4, 4, 4, 4, 4, 4},
+                                        {4, 2, 4, 4, 4, 4, 4, 4, 4},
+                                        {4, 4, 4, 4, 4, 4, 4, 4, 4}};
+
+auto inline count_leading_ones(unsigned char c)
 {
-	unsigned cc = (unsigned char)in; // do not delete the cast
 #ifdef __GNUC__
+	unsigned cc = c;
 	unsigned cc_shifted = cc << (numeric_limits<unsigned>::digits - 8);
-	int clz = __builtin_clz(~cc_shifted); // gcc only.
+	return __builtin_clz(~cc_shifted); // gcc only.
 #elif _MSC_VER
 	using ulong = unsigned long;
-	ulong ccc = cc;
-	ulong cc_shifted = ccc << (numeric_limits<ulong>::digits - 8);
+	ulong cc = c;
+	ulong cc_shifted = cc << (numeric_limits<ulong>::digits - 8);
 	ulong clz;
 	BitScanReverse(&clz, ~cc_shifted);
 	clz = numeric_limits<ulong>::digits - 1 - clz;
+	return clz;
 #else
 	int clz;
 	// note the operator presedence
@@ -83,27 +91,54 @@ auto inline utf8_low_level(unsigned char state, char in, char32_t* out,
 		clz = 4;
 	else
 		clz = 5;
+	return clz;
 #endif
-	//*out = (*out << shift[clz]) | (cc & mask[clz]);
-	if (clz == 1)
-		*out <<= 6;
-	*out |= cc & mask[clz];
-	// if (state & 3) equivalent to state >=1 && state <= 3
-	*too_short_err = (state & 3) && clz != 1;
-	return next_state[state][clz];
+}
 }
 
-auto validate_utf8(const std::string& s) -> bool
+/**
+ * @brief Finite state transducer used for decoding UTF-8 stream.
+ *
+ * Formally, the state is a pair (state, cp) and
+ * output is a triplet (is_cp_ready, out_cp, too_short_error).
+ * This function mutates the state and returns that third element of the output.
+ *
+ * Initial state is (0, 0).
+ *
+ *  - is_cp_ready <=> state == 0 so we do not return it since it is
+ *    directly derived from the UPDATED state (after the call).
+ *  - out_cp = cp for states 0 to 3, otherwise it is FFFD.
+ *    We do not return out_cp for same reason.
+ *
+ * We only return too_short_err.
+ *
+ * If too_short_err is true, we should generally emit FFFD in the output
+ * stream. Then we check the state.
+ * Whenever it goes to state = 0, emit out_cp = cp,   reset cp = 0.
+ * Whenever it goes to state = 4, emit out_cp = FFFD, reset cp = 0.
+ *
+ * At the end of the input stream, we should check if the state is 1, 2 or 3
+ * which indicates that too_short_err happend. FFFD should be emitted.
+ *
+ * @param state In out parametar, first part of the state pair.
+ * @param cp In out parametar, the code point in the state pair.
+ * @param in Input byte.
+ * @return true if too short sequence error happend. False otherwise.
+ */
+auto inline utf8_decode_dfst(unsigned char& state, char32_t& cp,
+                             unsigned char in) -> bool
 {
-	unsigned char state = 0;
-	char32_t cp = 0;
-	bool err;
-	for (auto& c : s) {
-		state = utf8_low_level(state, c, &cp, &err);
-		if (unlikely(err || state == 4))
-			return false;
-	}
-	return state == 0;
+	char32_t cc = in; // do not delete the cast
+	auto clz = count_leading_ones(in);
+	//*cp = (*cp << shift[clz]) | (cc & mask[clz]);
+	if (clz == 1)
+		cp <<= 6;
+	cp |= cc & mask[clz];
+
+	//(state & 3)!=0 <=> state >=1 && state <= 3
+	auto too_short_err = (state & 3) && clz != 1;
+	state = next_state[state][clz];
+	return too_short_err;
 }
 
 auto decode_utf8(const string& s) -> u32string
@@ -117,11 +152,11 @@ auto decode_utf8(const string& s) -> u32string
 	auto i = ret.begin();
 
 	for (auto& c : s) {
-		state = utf8_low_level(state, c, &cp, &err);
+		err = utf8_decode_dfst(state, cp, c);
 		if (unlikely(err)) {
 			*i++ = REP_CH;
 		}
-		if (likely(state == 0)) {
+		if (state == 0) {
 			*i++ = cp;
 			cp = 0;
 		}
@@ -134,6 +169,23 @@ auto decode_utf8(const string& s) -> u32string
 		*i++ = REP_CH;
 	ret.erase(i, ret.end());
 	return ret;
+}
+
+auto inline utf8_validate_dfa(unsigned char state, char in) -> unsigned char
+{
+	auto clz = count_leading_ones(in);
+	return next_state2[state][clz];
+}
+
+auto validate_utf8(const std::string& s) -> bool
+{
+	unsigned char state = 0;
+	for (auto& c : s) {
+		state = utf8_validate_dfa(state, c);
+		if (unlikely(state == 4))
+			return false;
+	}
+	return state == 0;
 }
 
 auto is_ascii(char c) -> bool { return (unsigned char)c <= 127; }
