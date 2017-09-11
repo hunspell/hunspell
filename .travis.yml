@@ -19,7 +19,7 @@ install:
       brew install gettext;
       brew link gettext --force;
       brew install cppunit;
-      aclocal --print-ac-dir
+      aclocal --print-ac-dir;
     fi
 
 before_script:
