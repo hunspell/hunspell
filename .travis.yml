@@ -19,7 +19,25 @@ install:
       brew install gettext;
       brew link gettext --force;
       brew install cppunit;
-      brew link cppunit --force;
+      brew ls --verbose cppunit;
+      echo "TEST 1";
+      ls /usr/share/aclocal;
+      brew unlink cppunit;
+      brew link cppunit --dry-run;
+      brew link cppunit;
+      echo "TEST 2";
+      ls /usr/share/aclocal/cp*;
+      echo "TEST 3";
+      ls /usr/local/share/aclocal/cp*;
+      brew link automake --force --overwrite
+      brew link autoconf --force --overwrite
+      echo "TEST 5";
+      ls -l /usr/share/aclocal/cp*;
+      echo "TEST 6";
+      ls -l /usr/local/share/aclocal/cp*;
+      stat $(which autoconf);
+      stat $(which automake);
+      echo "path=$PATH"
     fi
 
 before_script:
