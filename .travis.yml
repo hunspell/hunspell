@@ -29,15 +29,15 @@ install:
       ls /usr/share/aclocal/cp*;
       echo "TEST 3";
       ls /usr/local/share/aclocal/cp*;
-      brew link automake --force --overwrite
-      brew link autoconf --force --overwrite
+      brew link automake --force --overwrite;
+      brew link autoconf --force --overwrite;
       echo "TEST 5";
       ls -l /usr/share/aclocal/cp*;
       echo "TEST 6";
       ls -l /usr/local/share/aclocal/cp*;
       stat $(which autoconf);
       stat $(which automake);
-      echo "path=$PATH"
+      echo "path=$PATH";
     fi
 
 before_script:
