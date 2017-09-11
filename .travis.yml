@@ -18,6 +18,7 @@ install:
       test "$CXX" = "g++" && brew install gcc5;
       brew install gettext;
       brew link gettext --force;
+      brew install cppunit;
     fi
 
 before_script:
