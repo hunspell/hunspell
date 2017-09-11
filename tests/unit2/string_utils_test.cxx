@@ -1,26 +1,66 @@
 #include <iostream>
 
-#include <string_utils.hxx>
+#include "../../src/hunspell2/string_utils.hxx"
+
+#include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/ui/text/TestRunner.h>
 
 using namespace std;
 using namespace Hunspell;
 
-int main()
+class StringUtilsTest : public CppUnit::TestFixture {
+	CPPUNIT_TEST_SUITE(StringUtilsTest);
+	CPPUNIT_TEST(split_Semicolon);
+	CPPUNIT_TEST(splitAnyOf_DotSemicolonCarotSlashDoublequote);
+	CPPUNIT_TEST_SUITE_END();
+
+      private:
+	vector<string> exp;
+
+      public:
+	//    StringUtilsTest()
+	//    {
+	//    }
+
+	auto setUp() -> void
+	{
+		exp = vector<string>{"", "abc", "", "qwe", "zxc", ""};
+	}
+
+	//  auto tearDown() -> void
+	//  {
+	//  }
+
+	auto split_Semicolon() -> void
+	{
+		auto in = string(";abc;;qwe;zxc;");
+		auto out = vector<string>();
+		split(in, ';', back_inserter(out));
+		CPPUNIT_ASSERT(exp == out);
+	}
+
+	auto splitAnyOf_DotSemicolonCarotSlashDoublequote() -> void
+	{
+		auto in = string("^abc;.qwe/zxc/");
+		auto out = vector<string>();
+		split_on_any_of(in, ".;^/", back_inserter(out));
+		CPPUNIT_ASSERT(exp == out);
+	}
+};
+CPPUNIT_TEST_SUITE_REGISTRATION(StringUtilsTest);
+
+int main(int argc, char* argv[])
 {
-	auto in = string(";abc;;qwe;zxc;");
-	auto out = vector<string>();
-	auto expected = vector<string>{"", "abc", "", "qwe", "zxc", ""};
-	split(in, ';', back_inserter(out));
+	CppUnit::TextUi::TestRunner runner;
+	CppUnit::TestFactoryRegistry& registry =
+	    CppUnit::TestFactoryRegistry::getRegistry();
+	runner.addTest(registry.makeTest());
 
-	if (out != expected)
-		return 1;
+	// Change the default outputter to a compiler error format outputter
+	runner.setOutputter(
+	    new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
 
-	in = string("^abc;.qwe/zxc/");
-	out = vector<string>();
-	split_on_any_of(in, ".;^/", back_inserter(out));
-
-	if (out != expected)
-		return 1;
-
-	return 0;
+	return !runner.run();
 }
