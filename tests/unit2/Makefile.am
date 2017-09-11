@@ -2,8 +2,8 @@ override PACKAGE_STRING = Hunspell 2.0.0
 
 XFAIL_TESTS = @XFAILED@
 
-AM_CXXFLAGS = -std=c++14 -I$(top_srcdir)/src/hunspell2
-LDADD=-lcppunit -ldl
+AM_CXXFLAGS = -std=c++14 -I$(top_srcdir)/src/hunspell2 $(CPPUNIT_CFLAGS)
+LDADD = $(CPPUNIT_LIBS)
 
 check_PROGRAMS=locale_utils_test string_utils_test
 # Next line is needed to build executable from Qt Creator.
