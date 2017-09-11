@@ -19,7 +19,6 @@ install:
       brew install gettext;
       brew link gettext --force;
       brew install cppunit;
-      brew link cppunit --force;
     fi
 
 before_script:
