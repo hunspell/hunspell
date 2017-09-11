@@ -48,8 +48,9 @@ enum Mode {
 	CORRECT_WORDS_MODE,
 	CORRECT_LINES_MODE,
 	LIST_DICTIONARIES_MODE,
-	LINES_MODE,
-	HELP_MODE,
+    LINES_MODE,
+    BEFORE_TAB_MODE,
+    HELP_MODE,
 	VERSION_MODE,
 	ERROR_MODE
 };
@@ -226,9 +227,10 @@ auto print_help() -> void
 	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
 	        "standard input.\n\n"
-	        "  -d di_CT    use di_CT dictionary. You can specify\n"
+            "  -1          check only first field in lines (delimiter = tabulator)\n";
+            "  -d di_CT    use di_CT dictionary. You can specify\n"
 	        "              -d multiple times. \n"
-	        "  -D	       show available dictionaries\n"
+            "  -D          show available dictionaries\n"
 	        "  TODO\n"
 	        "  -i enc      input encoding\n"
 	        "  -l          print only misspelled words or lines\n"
@@ -301,7 +303,19 @@ auto handle_mode(Args_t& args) -> int
 	case VERSION_MODE:
 		print_version();
 		return 0;
-	}
+    case DEFAULT_MODE:
+        break; // prevents warning with clang
+    case PIPE_MODE:
+        break; // prevents warning with clang
+    case MISSPELLED_WORDS_MODE:
+        break; // prevents warning with clang
+    case CORRECT_WORDS_MODE:
+        break; // prevents warning with clang
+    case MISSPELLED_LINES_MODE:
+        break; // prevents warning with clang
+    case CORRECT_LINES_MODE:
+        break; // prevents warning with clang
+    }
 
 	auto f = Finder();
 	f.add_default_paths();
