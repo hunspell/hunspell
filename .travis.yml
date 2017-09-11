@@ -17,8 +17,8 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       test "$CXX" = "g++" && brew install gcc5;
       brew install gettext;
-      brew link gettext --force;
       brew install cppunit;
+      brew link gettext --force;
     fi
 
 before_script:
