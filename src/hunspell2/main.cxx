@@ -48,9 +48,8 @@ enum Mode {
 	CORRECT_WORDS_MODE,
 	CORRECT_LINES_MODE,
 	LIST_DICTIONARIES_MODE,
-    LINES_MODE,
-    BEFORE_TAB_MODE,
-    HELP_MODE,
+	LINES_MODE,
+	HELP_MODE,
 	VERSION_MODE,
 	ERROR_MODE
 };
@@ -58,6 +57,7 @@ enum Mode {
 struct Args_t {
 	Mode mode = DEFAULT_MODE;
 	string dictionary;
+	bool first_of_tsv = false;
 	string encoding = "UTF-8";
 	vector<string> other_dicts;
 	vector<string> files;
@@ -87,8 +87,12 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	while ((c = getopt(argc, argv, ":d:i:aDGHLOP::Xlhtv")) != -1) {
+	while ((c = getopt(argc, argv, ":d:i:1aDGHLOP::Xlhtv")) != -1) {
 		switch (c) {
+		case '1':
+			first_of_tsv = true;
+
+			break;
 		case 'd':
 			if (dictionary.empty())
 				dictionary = optarg;
@@ -227,10 +231,12 @@ auto print_help() -> void
 	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
 	        "standard input.\n\n"
-            "  -1          check only first field in lines (delimiter = tabulator)\n";
-            "  -d di_CT    use di_CT dictionary. You can specify\n"
+	        "  -1          check only first field in lines (delimiter = "
+	        "tabulator)\n"
+	        "              (-1 is not supported in line modes)\n"
+	        "  -d di_CT    use di_CT dictionary. You can specify\n"
 	        "              -d multiple times. \n"
-            "  -D          show available dictionaries\n"
+	        "  -D          show available dictionaries\n"
 	        "  TODO\n"
 	        "  -i enc      input encoding\n"
 	        "  -l          print only misspelled words or lines\n"
@@ -303,19 +309,19 @@ auto handle_mode(Args_t& args) -> int
 	case VERSION_MODE:
 		print_version();
 		return 0;
-    case DEFAULT_MODE:
-        break; // prevents warning with clang
-    case PIPE_MODE:
-        break; // prevents warning with clang
-    case MISSPELLED_WORDS_MODE:
-        break; // prevents warning with clang
-    case CORRECT_WORDS_MODE:
-        break; // prevents warning with clang
-    case MISSPELLED_LINES_MODE:
-        break; // prevents warning with clang
-    case CORRECT_LINES_MODE:
-        break; // prevents warning with clang
-    }
+	case DEFAULT_MODE:
+		break; // prevents warning with clang
+	case PIPE_MODE:
+		break; // prevents warning with clang
+	case MISSPELLED_WORDS_MODE:
+		break; // prevents warning with clang
+	case CORRECT_WORDS_MODE:
+		break; // prevents warning with clang
+	case MISSPELLED_LINES_MODE:
+		break; // prevents warning with clang
+	case CORRECT_LINES_MODE:
+		break; // prevents warning with clang
+	}
 
 	auto f = Finder();
 	f.add_default_paths();
@@ -346,6 +352,11 @@ auto handle_mode(Args_t& args) -> int
 	case DEFAULT_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
+				if (args.first_of_tsv) {
+					auto out = vector<string>();
+					split(word, '\t', back_inserter(out));
+					word = out.front();
+				}
 				auto res = dic.spell_narrow_input(word);
 				switch (res) {
 				case bad_word:
@@ -372,6 +383,12 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
+					if (args.first_of_tsv) {
+						auto out = vector<string>();
+						split(word, '\t',
+						      back_inserter(out));
+						word = out.front();
+					}
 					// TODO below is only temporary for
 					// development purposes
 					auto res = dic.spell_narrow_input(word);
@@ -399,6 +416,11 @@ auto handle_mode(Args_t& args) -> int
 	case MISSPELLED_WORDS_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
+				if (args.first_of_tsv) {
+					auto out = vector<string>();
+					split(word, '\t', back_inserter(out));
+					word = out.front();
+				}
 				auto res = dic.spell_narrow_input(word);
 				if (res == bad_word)
 					cout << word << endl;
@@ -413,6 +435,12 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
+					if (args.first_of_tsv) {
+						auto out = vector<string>();
+						split(word, '\t',
+						      back_inserter(out));
+						word = out.front();
+					}
 					auto res = dic.spell_narrow_input(word);
 					if (res == bad_word)
 						cout << word << endl;
@@ -423,6 +451,11 @@ auto handle_mode(Args_t& args) -> int
 	case CORRECT_WORDS_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
+				if (args.first_of_tsv) {
+					auto out = vector<string>();
+					split(word, '\t', back_inserter(out));
+					word = out.front();
+				}
 				auto res = dic.spell_narrow_input(word);
 				if (res != bad_word)
 					cout << word << endl;
@@ -437,6 +470,12 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
+					if (args.first_of_tsv) {
+						auto out = vector<string>();
+						split(word, '\t',
+						      back_inserter(out));
+						word = out.front();
+					}
 					auto res = dic.spell_narrow_input(word);
 					if (res != bad_word)
 						cout << word << endl;
