@@ -22,7 +22,7 @@ AC_PROG_CC
 LT_INIT
 
 # Checks for libraries.
-AM_PATH_CPPUNIT(1.9.6)
+PKG_CHECK_MODULES([CPPUNIT], [cppunit >= 1.9.6])
 
 # Checks for header files.
 

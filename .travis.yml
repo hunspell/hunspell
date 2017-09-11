@@ -19,34 +19,15 @@ install:
       brew install gettext;
       brew link gettext --force;
       brew install cppunit;
-      brew ls --verbose cppunit;
-      echo "TEST 1";
-      ls /usr/share/aclocal;
-      brew unlink cppunit;
-      brew link cppunit --dry-run;
-      brew link cppunit;
-      echo "TEST 2";
-      ls /usr/share/aclocal/cp*;
-      echo "TEST 3";
-      ls /usr/local/share/aclocal/cp*;
-      brew link automake --force --overwrite;
-      brew link autoconf --force --overwrite;
-      echo "TEST 5";
-      ls -l /usr/share/aclocal/cp*;
-      echo "TEST 6";
-      ls -l /usr/local/share/aclocal/cp*;
-      stat $(which autoconf);
-      stat $(which automake);
-      echo "path=$PATH";
+      aclocal --print-ac-dir
     fi
 
 before_script:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then autoreconf -vfi && ./configure && make && make check; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -vfi && ./configure && make; fi
-
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then autoreconf -i && ./configure && make && make check; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ];   then autoreconf -i && ./configure && make && make check; fi
 addons:
   apt:
     sources:
