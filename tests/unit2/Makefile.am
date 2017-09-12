@@ -2,6 +2,8 @@ override PACKAGE_STRING = Hunspell 2.0.0
 
 XFAIL_TESTS = @XFAILED@
 
+# Next line prevents warning that file is in subdirectory.
+AUTOMAKE_OPTIONS = subdir-objects
 AM_CXXFLAGS = -std=c++14 -I$(top_srcdir)/src/hunspell2
 # Next line may need -ldl to link properly.
 AM_LDFLAGS = -lcppunit
