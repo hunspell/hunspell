@@ -92,14 +92,16 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
  * \return The string that has been split off.
  */
 template <class CharT, class CharOrStr>
-std::basic_string<CharT> split_first(const std::basic_string<CharT>& s, CharOrStr sep)
+std::basic_string<CharT> split_first(const std::basic_string<CharT>& s,
+                                     CharOrStr sep)
 {
-    using size_type = typename std::basic_string<CharT>::size_type;
-    size_type index;
-    index = s.find(sep);
-    if (index != s.npos);
-        return s.substr(0, index);
-    return s;
+	using size_type = typename std::basic_string<CharT>::size_type;
+	size_type index;
+	index = s.find(sep);
+	if (index != s.npos)
+		;
+	return s.substr(0, index);
+	return s;
 }
 }
 #endif
