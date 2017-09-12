@@ -15,19 +15,22 @@ before_install:
 
 install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      test "$CXX" = "g++" && brew install gcc5;
       brew install gettext;
       brew install cppunit;
       brew link gettext --force;
     fi
-
+# Don't use real gcc on OS X, problems arise when
+# Hunspell built with gcc is linked with cppunit built with clang.
+# Homebrew builds are build with clang
 before_script:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  - if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      export CXX="g++-5" CC="gcc-5";
+    fi
 
 script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then autoreconf -vfi && ./configure && make && make check; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -vfi && ./configure && make; fi
-
+  - autoreconf -i && ./configure && make && make check
+#  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
+# might be needed for future
 addons:
   apt:
     sources:
