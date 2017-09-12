@@ -80,4 +80,20 @@ hunspell-*.tar.gz
 
 .?*.swp
 
+# TODO need a section to be mvoed to
 /personal-build-and-test.sh
+/personal-reconfigure.sh
+
+# found during configuring
+/confdefs.h
+/confinc
+/confmf
+/configure.tmp
+/conftest
+/conftest.sh
+/conftest.c
+/conftest.cpp
+/conftest.err
+/conftest.er1
+# following might be /conf??????/
+/confqd6eAO/

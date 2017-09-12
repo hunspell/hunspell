@@ -1,23 +1,56 @@
+# Please, leave the comments in this file as it is a lot of work to fine tune.
+
 override PACKAGE_STRING = Hunspell 2.0.0
 
 XFAIL_TESTS = @XFAILED@
 
-# Next line prevents warning that file is in subdirectory.
+# Next setting is needed for dependencies on files in other directories.
+# It prevents errors such as:
+#     ... fatal error: opening dependency file .deps/../../src/hunspell2/xyz.Tpo: No such file or directory
 AUTOMAKE_OPTIONS = subdir-objects
-AM_CXXFLAGS = -std=c++14 -I$(top_srcdir)/src/hunspell2 $(CPPUNIT_CFLAGS)
+
+# The -I argument is needed to have initial top-level make working.
+# It prevents errors such as:
+#     xyz.o: In function `CppUnit::AutoRegisterSuite<LocaleUtilsTest>::~AutoRegisterSuite()':
+#     /usr/include/cppunit/extensions/AutoRegisterSuite.h:50: undefined reference to `CppUnit::TestFactoryRegistry::isValid()'"
+AM_CXXFLAGS = -std=c++14 -I../../src/hunspell2 $(CPPUNIT_CFLAGS)
+
 LDADD = $(CPPUNIT_LIBS)
 
-check_PROGRAMS=locale_utils_test string_utils_test
-# Next line is needed to build executable from Qt Creator.
-noinst_PROGRAMS=locale_utils_test string_utils_test
+check_PROGRAMS = \
+locale_utils_test \
+string_utils_test
 
-locale_utils_test_SOURCES=locale_utils_test.cxx \
-$(top_srcdir)/src/hunspell2/locale_utils.hxx \
-$(top_srcdir)/src/hunspell2/locale_utils.cxx
-
-string_utils_test_SOURCES=string_utils_test.cxx \
-$(top_srcdir)/src/hunspell2/string_utils.hxx
+# Next setting is needed to build executables from Qt Creator.
+noinst_PROGRAMS = $(check_PROGRAMS)
 
 
-TESTS =	\
-$(check_PROGRAMS)
+
+# Rebuilding locale_utils_test can be tested with:
+#     touch ../../src/hunspell2/locale_utils.hxx && make
+#     touch ../../src/hunspell2/locale_utils.cxx && make
+locale_utils_test_SOURCES = locale_utils_test.cxx
+# Next setting has $(CPPUNIT_LIBS) in order to link without errors.
+#     xyz.o: In function `CppUnit::AutoRegisterSuite<LocaleUtilsTest>::~AutoRegisterSuite()':
+#     /usr/include/cppunit/extensions/AutoRegisterSuite.h:50: undefined reference to `CppUnit::TestFactoryRegistry::isValid()'"
+locale_utils_test_LDADD = ../../src/hunspell2/locale_utils.o $(CPPUNIT_LIBS)
+
+
+
+# NOTE: older rules for locale_utils_test are below. Because of
+# AUTOMAKE_OPTIONS = subdir-objects they do work in the same way and even
+# result in the object files and executables of the same size and no
+# object files for source files from other directories. and proper rebuiling.
+##locale_utils_test_SOURCES = \
+##../../src/hunspell2/locale_utils.cxx \
+##locale_utils_test.cxx
+
+
+
+# Rebuilding string_utils_test can be tested with:
+#     touch ../../src/hunspell2/string_utils.hxx && make
+string_utils_test_SOURCES = string_utils_test.cxx
+
+
+
+TESTS =	$(check_PROGRAMS)

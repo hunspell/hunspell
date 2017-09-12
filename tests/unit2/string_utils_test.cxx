@@ -14,6 +14,7 @@ class StringUtilsTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(StringUtilsTest);
 	CPPUNIT_TEST(split_Semicolon);
 	CPPUNIT_TEST(splitAnyOf_DotSemicolonCarotSlashDoublequote);
+	CPPUNIT_TEST(splitFirst_Tab);
 	CPPUNIT_TEST_SUITE_END();
 
       private:
@@ -47,6 +48,28 @@ class StringUtilsTest : public CppUnit::TestFixture {
 		auto out = vector<string>();
 		split_on_any_of(in, ".;^/", back_inserter(out));
 		CPPUNIT_ASSERT(exp == out);
+	}
+
+	auto splitFirst_Tab() -> void
+	{
+		auto in = string("first\tsecond");
+		auto first = string("first");
+		auto out = split_first(in, '\t');
+		CPPUNIT_ASSERT(first == out);
+
+		in = string("first");
+		out = split_first(in, '\t');
+		CPPUNIT_ASSERT(first == out);
+
+		in = string("\tsecond");
+		first = string("");
+		out = split_first(in, '\t');
+		CPPUNIT_ASSERT(first == out);
+
+		in = string("");
+		first = string("");
+		out = split_first(in, '\t');
+		CPPUNIT_ASSERT(first == out);
 	}
 };
 CPPUNIT_TEST_SUITE_REGISTRATION(StringUtilsTest);

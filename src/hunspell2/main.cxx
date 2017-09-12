@@ -321,6 +321,12 @@ auto handle_mode(Args_t& args) -> int
 		break; // prevents warning with clang
 	case CORRECT_LINES_MODE:
 		break; // prevents warning with clang
+	case CURSES_MODE:
+		break; // prevents warning with clang
+	case LIST_DICTIONARIES_MODE:
+		break; // prevents warning with clang
+	case LINES_MODE:
+		break; // prevents warning with clang
 	}
 
 	auto f = Finder();
@@ -600,5 +606,7 @@ int main(int argc, char* argv[])
 	// cin.imbue(locale(""));
 	setlocale(LC_ALL, "");
 
-	return handle_mode(args);
+	int success = handle_mode(args);
+
+	return success;
 }

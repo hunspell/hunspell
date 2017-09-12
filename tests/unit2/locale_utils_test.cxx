@@ -35,28 +35,25 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 	//  {
 	//  }
 
-	auto isAscii_Ascii() -> void
-	{
-        CPPUNIT_ASSERT(true == is_ascii('a'));
-	}
+	auto isAscii_Ascii() -> void { CPPUNIT_ASSERT(true == is_ascii('a')); }
 
 	auto isAscii_NotAscii() -> void
 	{
-        CPPUNIT_ASSERT(true == is_ascii('a'));
+		CPPUNIT_ASSERT(true == is_ascii('a'));
 	}
 	auto isAllAscii_Ascii() -> void
 	{
-        CPPUNIT_ASSERT(true == is_all_ascii(string("the brown fox")));
+		CPPUNIT_ASSERT(true == is_all_ascii(string("the brown fox")));
 	}
 
 	auto isAllAscii_NotAscii() -> void
 	{
-        CPPUNIT_ASSERT(false == is_all_ascii(string("the brown foxĳ")));
+		CPPUNIT_ASSERT(false == is_all_ascii(string("the brown foxĳ")));
 	}
 
 	auto validateUtf8_Utf8() -> void
 	{
-        CPPUNIT_ASSERT(true == validate_utf8(string("the brown fox")));
+		CPPUNIT_ASSERT(true == validate_utf8(string("the brown fox")));
 	}
 };
 CPPUNIT_TEST_SUITE_REGISTRATION(LocaleUtilsTest);
