@@ -68,6 +68,19 @@ Only for this, install the appropriate selection of
 
     libncurses5-dev libreadline-dev
 
+# Compiling on OSX and macOS
+
+Note that compilers and libraries from Homebrew have all been build with clang.
+Also, the installation of clang results in an alias called `gcc`. Both can
+cause problems when building Hunspell on OSX or, as it is called since mid
+2016, macOS.
+
+Therefore, when building, do not use `gcc`, but `g++-5` and `gcc-5` for `CXX`
+and `CC` respectively. This prevents a problem when building Hunspell with GCC
+which is then trying to link with the clang-build unit testing library cppunit
+that has been installed with Homebrew. For details, please see the the file
+`.travis.yml` which fixes it for continuous integration with Travis.
+
 # Compiling on Windows
 
 ## 1\. Compiling with Mingw64 and MSYS2
