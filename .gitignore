@@ -79,3 +79,5 @@ hunspell-*.tar.gz
 # https://vim.sourceforge.io/
 
 .?*.swp
+
+/personal-build-and-test.sh
