@@ -34,12 +34,12 @@
 namespace Hunspell {
 
 /**
- * Splits string on seprator.
+ * Splits string on seperator.
  *
  * \param s a string to split.
  * \param sep char or string that acts as separator to split on.
  * \param out start of the output range to which append separated strings.
- * \return Iterator that indicates the end of the output range.
+ * \return The iterator that indicates the end of the output range.
  */
 template <class CharT, class CharOrStr, class OutIt>
 OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
@@ -58,6 +58,14 @@ OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
 	return out;
 }
 
+/**
+ * Splits string on any seperator.
+ *
+ * \param s a string to split.
+ * \param sep string holding all separators to split on.
+ * \param out start of the output range to which append separated strings.
+ * \return The iterator that indicates the end of the output range.
+ */
 template <class CharT, class CharOrStr, class OutIt>
 OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
                       OutIt out)
@@ -74,6 +82,24 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
 		// yet that is defined
 	} while (i2 != s.npos);
 	return out;
+}
+
+/**
+ * Splits string on first seperator.
+ *
+ * \param s a string to split.
+ * \param sep char or string that acts as separator to split on.
+ * \return The string that has been split off.
+ */
+template <class CharT, class CharOrStr>
+std::basic_string<CharT> split_first(const std::basic_string<CharT>& s, CharOrStr sep)
+{
+    using size_type = typename std::basic_string<CharT>::size_type;
+    size_type index;
+    index = s.find(sep);
+    if (index != s.npos);
+        return s.substr(0, index);
+    return s;
 }
 }
 #endif

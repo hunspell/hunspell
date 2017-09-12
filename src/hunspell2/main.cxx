@@ -352,11 +352,8 @@ auto handle_mode(Args_t& args) -> int
 	case DEFAULT_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
-				if (args.first_of_tsv) {
-					auto out = vector<string>();
-					split(word, '\t', back_inserter(out));
-					word = out.front();
-				}
+                if (args.first_of_tsv)
+                    word = split_first(word, '\t');
 				auto res = dic.spell_narrow_input(word);
 				switch (res) {
 				case bad_word:
@@ -383,13 +380,9 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
-					if (args.first_of_tsv) {
-						auto out = vector<string>();
-						split(word, '\t',
-						      back_inserter(out));
-						word = out.front();
-					}
-					// TODO below is only temporary for
+                    if (args.first_of_tsv)
+                        word = split_first(word, '\t');
+                    // TODO below is only temporary for
 					// development purposes
 					auto res = dic.spell_narrow_input(word);
 					switch (res) {
@@ -416,12 +409,9 @@ auto handle_mode(Args_t& args) -> int
 	case MISSPELLED_WORDS_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
-				if (args.first_of_tsv) {
-					auto out = vector<string>();
-					split(word, '\t', back_inserter(out));
-					word = out.front();
-				}
-				auto res = dic.spell_narrow_input(word);
+                if (args.first_of_tsv)
+                    word = split_first(word, '\t');
+                auto res = dic.spell_narrow_input(word);
 				if (res == bad_word)
 					cout << word << endl;
 			}
@@ -435,13 +425,9 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
-					if (args.first_of_tsv) {
-						auto out = vector<string>();
-						split(word, '\t',
-						      back_inserter(out));
-						word = out.front();
-					}
-					auto res = dic.spell_narrow_input(word);
+                    if (args.first_of_tsv)
+                        word = split_first(word, '\t');
+                    auto res = dic.spell_narrow_input(word);
 					if (res == bad_word)
 						cout << word << endl;
 				}
@@ -451,12 +437,9 @@ auto handle_mode(Args_t& args) -> int
 	case CORRECT_WORDS_MODE:
 		if (args.files.empty()) {
 			while (cin >> word) {
-				if (args.first_of_tsv) {
-					auto out = vector<string>();
-					split(word, '\t', back_inserter(out));
-					word = out.front();
-				}
-				auto res = dic.spell_narrow_input(word);
+                if (args.first_of_tsv)
+                    word = split_first(word, '\t');
+                auto res = dic.spell_narrow_input(word);
 				if (res != bad_word)
 					cout << word << endl;
 			}
@@ -470,13 +453,9 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, word)) {
-					if (args.first_of_tsv) {
-						auto out = vector<string>();
-						split(word, '\t',
-						      back_inserter(out));
-						word = out.front();
-					}
-					auto res = dic.spell_narrow_input(word);
+                    if (args.first_of_tsv)
+                        word = split_first(word, '\t');
+                    auto res = dic.spell_narrow_input(word);
 					if (res != bad_word)
 						cout << word << endl;
 				}
@@ -486,8 +465,10 @@ auto handle_mode(Args_t& args) -> int
 	case MISSPELLED_LINES_MODE:
 		if (args.files.empty()) {
 			while (cin >> line) {
-				auto words = vector<string>();
-				split(line, ' ', back_inserter(words));
+                if (args.first_of_tsv)
+                    line = split_first(line, '\t');
+                auto words = vector<string>();
+                split(line, ' ', back_inserter(words));
 				// TODO Replace later with parser.
 				for (auto& w : words) {
 					auto res = dic.spell_narrow_input(w);
@@ -507,8 +488,10 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, line)) {
-					auto words = vector<string>();
-					split(line, ' ', back_inserter(words));
+                    if (args.first_of_tsv)
+                        line = split_first(line, '\t');
+                    auto words = vector<string>();
+                    split(line, ' ', back_inserter(words));
 					// TODO Replace later with parser.
 					for (auto& w : words) {
 						auto res =
@@ -525,7 +508,9 @@ auto handle_mode(Args_t& args) -> int
 	case CORRECT_LINES_MODE:
 		if (args.files.empty()) {
 			while (cin >> line) {
-				auto words = vector<string>();
+                if (args.first_of_tsv)
+                    line = split_first(line, '\t');
+                auto words = vector<string>();
 				split(line, ' ',
 				      back_inserter(words)); // TODO Replace
 				                             // later with
@@ -551,7 +536,9 @@ auto handle_mode(Args_t& args) -> int
 					return 1;
 				}
 				while (getline(input_file, line)) {
-					auto words = vector<string>();
+                    if (args.first_of_tsv)
+                        line = split_first(line, '\t');
+                    auto words = vector<string>();
 					split(line, ' ', back_inserter(words));
 					// TODO Replace later with parser.
 					bool correct = true;
