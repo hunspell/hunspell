@@ -211,6 +211,8 @@ g++ -lhunspell example.cxx
 
 Myspell & Hunspell dictionaries:
 
+  - https://github.com/hunspell/hunspell/wiki/Dictionaries-and-Contacts
+  - https://github.com/hunspell/hunspell/wiki/Dictionary-Packages
   - http://extensions.libreoffice.org
   - http://cgit.freedesktop.org/libreoffice/dictionaries
   - http://extensions.openoffice.org
