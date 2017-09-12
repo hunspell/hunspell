@@ -4,5 +4,8 @@ environment:
     BASH_PATH: C:\msys64\usr\bin\bash
 #  - BASH_PATH: c:\cygwin\bin\bash
 
+install:
+- cmd: '%BASH_PATH% -lc "pacman --noconfirm -S mingw-w64-x86_64-cppunit"'
+
 build_script:
 - cmd: '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make && make check"'
