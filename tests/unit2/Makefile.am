@@ -20,31 +20,24 @@ noinst_PROGRAMS = $(check_PROGRAMS)
 # Rebuilding locale_utils_test can be tested with:
 #     touch ../../src/hunspell2/locale_utils.hxx && make
 #     touch ../../src/hunspell2/locale_utils.cxx && make
-locale_utils_test_SOURCES = locale_utils_test.cxx
+# locale_utils_test_SOURCES = locale_utils_test.cxx
 # Next setting has $(CPPUNIT_LIBS) in order to link without errors.
 # program specific LDADD overrides global
-locale_utils_test_LDADD = ../../src/hunspell2/locale_utils.o $(CPPUNIT_LIBS)
+# locale_utils_test_LDADD = ../../src/hunspell2/locale_utils.o $(CPPUNIT_LIBS)
 
 # Rebuilding string_utils_test can be tested with:
 #     touch ../../src/hunspell2/string_utils.hxx && make
 string_utils_test_SOURCES = string_utils_test.cxx
 
-# NOTE: older rules for locale_utils_test are below. Because of
-# AUTOMAKE_OPTIONS = subdir-objects # they do work in the same way and even
-# result in the object files and executables of the same size, no object
-# files for source files from other directories are made and rebuiling works too.
-##locale_utils_test_SOURCES = \
-##../../src/hunspell2/locale_utils.cxx \
-##locale_utils_test.cxx
-# Any header files involved, with or without code in them, do not need to be listed
-# above as long as their related source files are listed.
-
 TESTS =	$(check_PROGRAMS)
 
+AUTOMAKE_OPTIONS = subdir-objects # use this if you add a .cxx file from another directory
+# that creates and object in that other directory
+# we shoud not use this, let it stay for now
 
-
-
-
+# Coverage should be enabled per whole project, not per unit tests.
+# Now the same object files from ../../src/hunspell2 have to be build twice with different CXXFLAGS
+# can create trouble
 
 # Code coverage reporting is defined below. The command gcov is part of the gcc package.  The command
 # gcovr is part of the gcovr package and the commands lcov and genhtml are part of package lcov. They

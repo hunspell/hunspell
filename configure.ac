@@ -1,15 +1,17 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-m4_pattern_allow
+#m4_pattern_allow
 
-AC_PREREQ(2.59)
+AC_PREREQ([2.69])
 AC_INIT([hunspell],[1.6.2],[https://github.com/hunspell/hunspell/issues],,[https://hunspell.github.io])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_SUBST(XFAILED)
 AC_USE_SYSTEM_EXTENSIONS
+AC_CONFIG_MACRO_DIRS([m4])
+
 AM_INIT_AUTOMAKE
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
