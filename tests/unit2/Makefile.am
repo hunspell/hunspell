@@ -4,13 +4,13 @@ override PACKAGE_STRING = Hunspell 2.0.0 unit tests
 
 
 @CODE_COVERAGE_RULES@
-LDADD = $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 AM_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS = -std=c++14 -I../../src/hunspell2 $(CPPUNIT_CFLAGS) $(CODE_COVERAGE_CXXFLAGS)
+LDADD = ../../src/hunspell2/libhunspell2.a $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 
 # CXXFLAGS is different than AM_CXXFLAGS. default values is -g -O2
 if CODE_COVERAGE_ENABLED
-	CXXFLAGS =
+CXXFLAGS=
 endif
 
 check_PROGRAMS = \
@@ -24,9 +24,6 @@ noinst_PROGRAMS = $(check_PROGRAMS)
 #     touch ../../src/hunspell2/locale_utils.hxx && make
 #     touch ../../src/hunspell2/locale_utils.cxx && make
 locale_utils_test_SOURCES = locale_utils_test.cxx
-# Next setting has $(CPPUNIT_LIBS) in order to link without errors.
-# program specific LDADD overrides global
-locale_utils_test_LDADD = ../../src/hunspell2/locale_utils.o $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 
 # Rebuilding string_utils_test can be tested with:
 #     touch ../../src/hunspell2/string_utils.hxx && make
