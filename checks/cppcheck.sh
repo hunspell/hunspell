@@ -24,7 +24,6 @@ cppcheck \
 --xml-version=2 \
 --enable=all \
 --suppress=missingIncludeSystem \
--I. \
 -Isrc/hunspell2 \
 -Itests/unit2 \
 src 2> checks/cppcheck.xml
