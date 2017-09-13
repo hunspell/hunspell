@@ -78,11 +78,13 @@ struct Args_t {
 auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
 // usage
-// hunspell [-a] [-d dict_NAME]... file_name...
-// hunspell -l|-G [-L] [-d dict_NAME]... file_name...
-// hunspell -i enc
+// hunspell [-a] [-d dict_NAME]... [-i enc] [-1] file_name...
+// hunspell -l|-G [-L] [-d dict_NAME]... [-i enc] [-1] file_name...
 // hunspell -D|-h|-v
 // TODO support --help
+//
+// See POSIX Utility argument syntax
+// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
 	// The program can run in various modes depending on the
@@ -563,36 +565,31 @@ auto handle_mode(Args_t& args) -> int
 		}
 		return 0;
 	}
+}
 
-	/*
-	ifstream affstream(filename + ".aff");
-	ifstream dicstream(filename + ".dic");
-	hunspell::aff_data aff;
-	aff.parse(affstream);
-	hunspell::dic_data dic;
-	dic.parse(dicstream, aff);
+auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
+{
 	cout << aff.encoding << endl;
 	cout << aff.try_chars << endl;
 	for (auto& a : aff.compound_rules) {
-	        cout << a << endl;
+		cout << a << endl;
 	}
 	for (auto& a : aff.suffixes) {
-	        cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
-	             << ' ' << a.stripping << ' ' << a.affix
-	             << (a.new_flags.size() ? "/ " : " ") << a.condition;
-	        cout << endl;
+		cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
+		     << ' ' << a.stripping << ' ' << a.affix
+		     << (a.new_flags.size() ? "/ " : " ") << a.condition;
+		cout << endl;
 	}
 	for (auto& wd : dic.words) {
-	        cout << wd.first;
-	        if (wd.second.size()) {
-	                cout << '/';
-	                for (auto& flag : wd.second) {
-	                        cout << flag << ',';
-	                }
-	        }
-	        cout << endl;
+		cout << wd.first;
+		if (wd.second.size()) {
+			cout << '/';
+			for (auto& flag : wd.second) {
+				cout << flag << ',';
+			}
+		}
+		cout << endl;
 	}
-	*/
 }
 
 int main(int argc, char* argv[])
