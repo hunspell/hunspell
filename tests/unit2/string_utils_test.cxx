@@ -12,9 +12,9 @@ using namespace Hunspell;
 
 class StringUtilsTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(StringUtilsTest);
-	CPPUNIT_TEST(split_Semicolon);
-	CPPUNIT_TEST(splitAnyOf_DotSemicolonCarotSlashDoublequote);
-	CPPUNIT_TEST(splitFirst_Tab);
+    CPPUNIT_TEST(test_split);
+    CPPUNIT_TEST(test_split_on_any_of);
+    CPPUNIT_TEST(test_split_first);
 	CPPUNIT_TEST_SUITE_END();
 
       private:
@@ -34,7 +34,7 @@ class StringUtilsTest : public CppUnit::TestFixture {
 	//  {
 	//  }
 
-	auto split_Semicolon() -> void
+    auto test_split() -> void
 	{
 		auto in = string(";abc;;qwe;zxc;");
 		auto out = vector<string>();
@@ -42,15 +42,15 @@ class StringUtilsTest : public CppUnit::TestFixture {
 		CPPUNIT_ASSERT(exp == out);
 	}
 
-	auto splitAnyOf_DotSemicolonCarotSlashDoublequote() -> void
+    auto test_split_on_any_of() -> void
 	{
 		auto in = string("^abc;.qwe/zxc/");
 		auto out = vector<string>();
-		split_on_any_of(in, ".;^/", back_inserter(out));
+        split_on_any_of(in, string(".;^/"), back_inserter(out));
 		CPPUNIT_ASSERT(exp == out);
 	}
 
-	auto splitFirst_Tab() -> void
+    auto test_split_first() -> void
 	{
 		auto in = string("first\tsecond");
 		auto first = string("first");

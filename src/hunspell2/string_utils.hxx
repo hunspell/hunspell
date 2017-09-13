@@ -101,7 +101,7 @@ std::basic_string<CharT> split_first(const std::basic_string<CharT>& s,
 	if (index != s.npos)
 		;
 	return s.substr(0, index);
-	return s;
+    return s; //FIXME Uneeded statement. Which one is correct?
 }
 }
 #endif

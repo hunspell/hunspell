@@ -9,19 +9,15 @@ cd ..
 cppcheck --check-config \
 --enable=all \
 --suppress=missingIncludeSystem \
--I. \
 -Isrc/hunspell2 \
--Isrc/parsers \
--I/usr/include/thunderbird \
+-Itests/unit2 \
 src 2> checks/cppcheck_checkconfig.txt
 
 cppcheck \
 --enable=all \
 --suppress=missingIncludeSystem \
--I. \
 -Isrc/hunspell2 \
--Isrc/parsers \
--I/usr/include/thunderbird \
+-Itests/unit2 \
 src 2> checks/cppcheck.txt
 
 cppcheck \
@@ -30,8 +26,7 @@ cppcheck \
 --suppress=missingIncludeSystem \
 -I. \
 -Isrc/hunspell2 \
--Isrc/parsers \
--I/usr/include/thunderbird \
+-Itests/unit2 \
 src 2> checks/cppcheck.xml
 
 cd checks
