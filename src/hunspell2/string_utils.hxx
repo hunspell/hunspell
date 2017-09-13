@@ -42,7 +42,7 @@ namespace Hunspell {
  * \return The iterator that indicates the end of the output range.
  */
 template <class CharT, class CharOrStr, class OutIt>
-OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
+auto split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
 {
 	using size_type = typename std::basic_string<CharT>::size_type;
 	size_type i1 = 0;
@@ -67,8 +67,8 @@ OutIt split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
  * \return The iterator that indicates the end of the output range.
  */
 template <class CharT, class CharOrStr, class OutIt>
-OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
-                      OutIt out)
+auto split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
+                     OutIt out)
 {
 	using size_type = typename std::basic_string<CharT>::size_type;
 	size_type i1 = 0;
@@ -92,16 +92,11 @@ OutIt split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
  * \return The string that has been split off.
  */
 template <class CharT, class CharOrStr>
-std::basic_string<CharT> split_first(const std::basic_string<CharT>& s,
-                                     CharOrStr sep)
+auto split_first(const std::basic_string<CharT>& s, CharOrStr sep)
+    -> std::basic_string<CharT>
 {
-	using size_type = typename std::basic_string<CharT>::size_type;
-	size_type index;
-	index = s.find(sep);
-	if (index != s.npos)
-		;
+	auto index = s.find(sep);
 	return s.substr(0, index);
-    return s; //FIXME Uneeded statement. Which one is correct?
 }
 }
 #endif
