@@ -2,8 +2,6 @@
 
 override PACKAGE_STRING = Hunspell 2.0.0
 
-XFAIL_TESTS = @XFAILED@
-
 TEST_EXTENSIONS = .dic
 AM_TESTS_ENVIRONMENT = HUNSPELL=../../src/hunspell2/hun2; export HUNSPELL;
 DIC_LOG_COMPILER = ../test.sh

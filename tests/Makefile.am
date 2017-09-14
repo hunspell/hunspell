@@ -2,8 +2,6 @@
 
 SUBDIRS = suggestiontest unit2 hun2
 
-XFAIL_TESTS = @XFAILED@
-
 TEST_EXTENSIONS = .dic
 DIC_LOG_COMPILER = ./test.sh
 
