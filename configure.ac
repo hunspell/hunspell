@@ -16,6 +16,11 @@ HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
 
+AX_CODE_COVERAGE
+AS_IF([test x$enable_code_coverage = xyes],
+      [: ${CXXFLAGS=""}; : ${CFLAGS=""}])
+
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -40,8 +45,6 @@ AC_CHECK_FUNCS([memchr setlocale strchr strstr])
 dnl internationalization macros
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_REQUIRE_VERSION(0.17)
-
-AX_CODE_COVERAGE
 
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages], [
      AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")

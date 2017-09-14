@@ -8,11 +8,6 @@ AM_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS = -std=c++14 -I../../src/hunspell2 $(CPPUNIT_CFLAGS) $(CODE_COVERAGE_CXXFLAGS)
 LDADD = ../../src/hunspell2/libhunspell2.a $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 
-# CXXFLAGS is different than AM_CXXFLAGS. default values is -g -O2
-if CODE_COVERAGE_ENABLED
-CXXFLAGS=
-endif
-
 check_PROGRAMS = \
 locale_utils_test \
 string_utils_test

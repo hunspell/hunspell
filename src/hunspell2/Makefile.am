@@ -8,12 +8,6 @@ AM_CXXFLAGS = -std=c++14 $(CODE_COVERAGE_CXXFLAGS)
 LDADD = $(CODE_COVERAGE_LIBS)
 LIBADD = $(CODE_COVERAGE_LIBS)
 
-# CXXFLAGS is different than AM_CXXFLAGS. default values is -g -O2
-if CODE_COVERAGE_ENABLED
-CXXFLAGS=
-endif
-
-
 libhunspell2_a_SOURCES=aff_manager.cxx aff_manager.hxx dic_manager.cxx \
 dic_manager.hxx dict_finder.cxx dict_finder.hxx hunspell.hxx \
 locale_utils.hxx locale_utils.cxx stream_utils.hxx  \
