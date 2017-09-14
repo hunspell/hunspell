@@ -2,7 +2,7 @@
 
 /Makefile.in
 /src/**/Makefile.in
-/man/**/Makefile.in
+/docs/**/Makefile.in
 /m4/**/Makefile.in
 /tests/**/Makefile.in
 /ar-lib
