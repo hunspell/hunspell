@@ -37,22 +37,15 @@ Main features of Hunspell spell checker and morphological analyzer:
 Build only dependencies:
 
     g++ make autoconf automake autopoint libtool
-  
-libhunspell 1.x dependencies: Nothing extra besides standard library
-  
-Command-line tool 1.x dependencies:
 
-  - Mandatory:
-  
-        libiconv
-        
-  - Optional:
-  
-        gettext ncurses readline
+Runtime dependencies:
 
-libhunspell 2 dependencies:
-
-    cppunit
+|               | Mandatory |Optional|
+|---------------|-----------|--------|
+|libhunspell 1  |           |        |
+|cmd line tool 1| libiconv  |gettext ncurses readline|
+|libhunspell 2  | cppunit   |        |
+|cmd line tool 2|           |        |
     
 Recommended tools for developers:
 
