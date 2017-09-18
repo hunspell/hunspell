@@ -7,25 +7,16 @@
 cd ..
 
 cppcheck --check-config \
---enable=all \
---suppress=missingIncludeSystem \
--Isrc/hunspell2 \
--Itests/unit2 \
-src 2> checks/cppcheck_checkconfig.txt
+--enable=all --suppress=missingIncludeSystem -Isrc/hunspell2 src/hunspell2/*xx tests/*xx \
+2> checks/cppcheck_checkconfig.txt
 
 cppcheck \
---enable=all \
---suppress=missingIncludeSystem \
--Isrc/hunspell2 \
--Itests/unit2 \
-src 2> checks/cppcheck.txt
+--enable=all --suppress=missingIncludeSystem -Isrc/hunspell2 src/hunspell2/*xx tests/*xx \
+2> checks/cppcheck.txt
 
 cppcheck \
 --xml-version=2 \
---enable=all \
---suppress=missingIncludeSystem \
--Isrc/hunspell2 \
--Itests/unit2 \
-src 2> checks/cppcheck.xml
+--enable=all --suppress=missingIncludeSystem -Isrc/hunspell2 src/hunspell2/*xx tests/*xx \
+2> checks/cppcheck.xml
 
 cd checks

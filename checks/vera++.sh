@@ -8,25 +8,12 @@ cd ..
 
 # omitting config.h
 
-ls \
-src/hunspell2/*.hxx src/hunspell2/*.cxx \
-src/parsers/*.hxx src/parsers/*.cxx \
-src/tools/*.cxx \
-| grep -v hunspell.cxx \
-| vera++ \
--p vera++.profile \
--s \
+vera++ \
+-s -p vera++.profile -P max-line-length=80 src/hunspell2/*xx tests/*xx \
 -o checks/vera++.txt
 
-ls \
-src/hunspell2/*.hxx src/hunspell2/*.cxx \
-src/parsers/*.hxx src/parsers/*.cxx \
-src/tools/*.cxx \
-| grep -v hunspell.cxx \
-| vera++ \
--p vera++.profile \
--P max-line-length=80 \
--s \
+vera++ \
+-s -p vera++.profile -P max-line-length=80 src/hunspell2/*xx tests/*xx \
 -x checks/vera++.xml
 
 cd checks
