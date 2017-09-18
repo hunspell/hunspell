@@ -1,11 +1,11 @@
 #!/usr/bin/tclsh
-# This profile includes all the rules provided by vera++
 
 set rules {
     F001
     F002
 
     L001
+
     L003
     L004
     L005
@@ -13,7 +13,7 @@ set rules {
 
     T001
     T002
-    T003
+
     T004
     T005
     T006
@@ -21,10 +21,11 @@ set rules {
     T008
     T009
     T010
+
     T013
+
     T015
     T016
     T017
     T018
-    T019
 }

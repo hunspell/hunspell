@@ -1,19 +1,18 @@
-#TODO see also comments in cppcheck.sh
-
-#TODO need to enable and fine-tune all rules
-#TODO need to disable tab reporting
-#TODO but need first local profile vera++.profile, see https://bitbucket.org/verateam/vera/issues/60/allow-to-use-absolute-path-for-profile
+#TODO Set up local profile vera++.profile with:
+#    sudo ln -s /home/.../workspace/hunspell/checks/vera++.profile \
+#    /usr/lib/vera++/profiles/vera__.profile
+#See also https://bitbucket.org/verateam/vera/issues/60/allow-to-use-absolute-path-for-profile
 
 cd ..
 
-# omitting config.h
+# Header file config.h is omitted.
 
 vera++ \
--s -p vera++.profile -P max-line-length=80 src/hunspell2/*xx tests/*xx \
+-s -p vera++.profile -P max-line-length=80 src/hunspell2/*.[ch]xx tests/*.[ch]xx \
 -o checks/vera++.txt
 
-vera++ \
--s -p vera++.profile -P max-line-length=80 src/hunspell2/*xx tests/*xx \
--x checks/vera++.xml
+#vera++ \
+#-s -p vera++.profile -P max-line-length=80 src/hunspell2/*.[ch]xx tests/*.[ch]xx \
+#-x checks/vera++.xml
 
 cd checks
