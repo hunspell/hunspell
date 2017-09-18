@@ -32,15 +32,34 @@ Main features of Hunspell spell checker and morphological analyzer:
   - Free software. Versions 1.x are licenced under LGPL, GPL, MPL
     tri-license. Version 2 is licenced only under GNU LGPL.
 
+# Dependencies
+
+Build only dependencies:
+
+    g++ make autoconf automake autopoint libtool
+
+Runtime dependencies:
+
+|               | Mandatory |Optional|
+|---------------|-----------|--------|
+|libhunspell 1  |           |        |
+|cmd line tool 1| libiconv  |gettext ncurses readline|
+|libhunspell 2  | cppunit   |        |
+|cmd line tool 2|           |        |
+    
+Recommended tools for developers:
+
+    vim qtcreator clang-format cppcheck
+
 # Compiling on GNU/Linux and Unixes
 
-First install the following dependencies with your package manager:
+We first need to download the dependencies. On Linux, `gettext` and
+`libiconv` are part of the standard library. On other Unixes we
+need to manually install them.
 
-    autoconf automake autopoint libtool g++ clang-format
+For Ubuntu:
 
-For some distributions, it is also advisable to install:
-
-    build-essential
+    sudo apt install autoconf automake autopoint libtool libcppunit-dev
 
 Then run the following commands:
 
@@ -64,22 +83,19 @@ Optional developer packages:
   - locale and gettext (but you can also use the --with-included-gettext
     configure parameter)
 
-Only for this, install the appropriate selection of
+In Ubuntu, the packages are:
 
     libncurses5-dev libreadline-dev
 
 # Compiling on OSX and macOS
 
-Note that compilers and libraries from Homebrew have all been build with clang.
-Also, the installation of clang results in an alias called `gcc`. Both can
-cause problems when building Hunspell on OSX or, as it is called since mid
-2016, macOS.
+On macOS for compiler always use `clang` and not `g++` because Homebrew
+dependencies are build with that.
 
-Therefore, when building, do not use `gcc`, but `g++-5` and `gcc-5` for `CXX`
-and `CC` respectively. This prevents a problem when building Hunspell with GCC
-which is then trying to link with the clang-build unit testing library cppunit
-that has been installed with Homebrew. For details, please see the the file
-`.travis.yml` which fixes it for continuous integration with Travis.
+    brew install autoconf automake libtool gettext cppunit
+    brew link gettext --force
+
+Then run the standard trio: autoreconf, configure, make. See above.
 
 # Compiling on Windows
 
@@ -88,7 +104,7 @@ that has been installed with Homebrew. For details, please see the the file
 Download Msys2, update everything and install the following
     packages:
 
-    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool
+    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-cppunit
 
 Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see
 above.
