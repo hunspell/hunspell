@@ -31,6 +31,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <boost/locale.hpp>
+
 #if defined(__MINGW32__) || defined(__unix__) || defined(__unix) ||            \
     (defined(__APPLE__) && defined(__MACH__))
 #include <unistd.h>
@@ -350,7 +352,8 @@ auto handle_mode(Args_t& args) -> int
 		     << endl;
 		return 1;
 	}
-	cerr << "INFO: Loaded dictionary " << filename << endl;
+	cerr << "INFO: Loaded dictionary " << filename << ".{dic,aff}"
+	     << endl;
 
 	Hunspell::Dictionary dic(filename); // FIXME
 	// TODO also get filename(s) from other_dicts and process these too
@@ -598,10 +601,11 @@ int main(int argc, char* argv[])
 	if (args.fail()) {
 		return 1;
 	}
-
-	// locale::global(locale(""));
-	// cin.imbue(locale(""));
-	setlocale(LC_ALL, "");
+	boost::locale::generator gen;
+	auto loc = gen("");
+	cerr << "INFO: Locale name: " << loc.name() << endl;
+	cin.imbue(loc);
+	setlocale(LC_CTYPE, "");
 
 	int success = handle_mode(args);
 

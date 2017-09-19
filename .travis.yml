@@ -15,9 +15,9 @@ before_install:
 
 install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      brew install gettext;
-      brew install cppunit;
+      brew install gettext cppunit boost;
       brew link gettext --force;
+      brew link icu4c --force;
     fi
 # Don't use real gcc on OS X, problems arise when
 # Hunspell built with gcc is linked with cppunit built with clang.
@@ -42,3 +42,4 @@ addons:
     - gcc-5
     - g++-5
     - libcppunit-dev
+    - libboost-locale-dev
