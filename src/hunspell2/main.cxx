@@ -352,8 +352,7 @@ auto handle_mode(Args_t& args) -> int
 		     << endl;
 		return 1;
 	}
-	cerr << "INFO: Loaded dictionary " << filename << ".{dic,aff}"
-	     << endl;
+	cerr << "INFO: Loaded dictionary " << filename << ".{dic,aff}" << endl;
 
 	Hunspell::Dictionary dic(filename); // FIXME
 	// TODO also get filename(s) from other_dicts and process these too
@@ -365,7 +364,7 @@ auto handle_mode(Args_t& args) -> int
 			while (cin >> word) {
 				if (args.first_of_tsv)
 					word = split_first(word, '\t');
-				auto res = dic.spell_narrow_input(word);
+				auto res = dic.spell(word, cin.getloc());
 				switch (res) {
 				case bad_word:
 					cout << '&' << endl;
@@ -395,7 +394,8 @@ auto handle_mode(Args_t& args) -> int
 						word = split_first(word, '\t');
 					// TODO below is only temporary for
 					// development purposes
-					auto res = dic.spell_narrow_input(word);
+					auto res =
+					    dic.spell(word, cin.getloc());
 					switch (res) {
 					case bad_word:
 						cout << '&' << endl;
@@ -422,7 +422,7 @@ auto handle_mode(Args_t& args) -> int
 			while (cin >> word) {
 				if (args.first_of_tsv)
 					word = split_first(word, '\t');
-				auto res = dic.spell_narrow_input(word);
+				auto res = dic.spell(word, cin.getloc());
 				if (res == bad_word)
 					cout << word << endl;
 			}
@@ -438,7 +438,8 @@ auto handle_mode(Args_t& args) -> int
 				while (getline(input_file, word)) {
 					if (args.first_of_tsv)
 						word = split_first(word, '\t');
-					auto res = dic.spell_narrow_input(word);
+					auto res =
+					    dic.spell(word, cin.getloc());
 					if (res == bad_word)
 						cout << word << endl;
 				}
@@ -450,7 +451,7 @@ auto handle_mode(Args_t& args) -> int
 			while (cin >> word) {
 				if (args.first_of_tsv)
 					word = split_first(word, '\t');
-				auto res = dic.spell_narrow_input(word);
+				auto res = dic.spell(word, cin.getloc());
 				if (res != bad_word)
 					cout << word << endl;
 			}
@@ -466,7 +467,8 @@ auto handle_mode(Args_t& args) -> int
 				while (getline(input_file, word)) {
 					if (args.first_of_tsv)
 						word = split_first(word, '\t');
-					auto res = dic.spell_narrow_input(word);
+					auto res =
+					    dic.spell(word, cin.getloc());
 					if (res != bad_word)
 						cout << word << endl;
 				}
@@ -482,7 +484,7 @@ auto handle_mode(Args_t& args) -> int
 				split(line, ' ', back_inserter(words));
 				// TODO Replace later with parser.
 				for (auto& w : words) {
-					auto res = dic.spell_narrow_input(w);
+					auto res = dic.spell(w, cin.getloc());
 					if (res == bad_word) {
 						cout << line << endl;
 						break;
@@ -506,7 +508,7 @@ auto handle_mode(Args_t& args) -> int
 					// TODO Replace later with parser.
 					for (auto& w : words) {
 						auto res =
-						    dic.spell_narrow_input(w);
+						    dic.spell(w, cin.getloc());
 						if (res == bad_word) {
 							cout << line << endl;
 							break;
@@ -528,7 +530,7 @@ auto handle_mode(Args_t& args) -> int
 				                             // parser.
 				bool correct = true;
 				for (auto& w : words) {
-					auto res = dic.spell_narrow_input(w);
+					auto res = dic.spell(w, cin.getloc());
 					if (res == bad_word) {
 						correct = false;
 						break;
@@ -555,7 +557,7 @@ auto handle_mode(Args_t& args) -> int
 					bool correct = true;
 					for (auto& w : words) {
 						auto res =
-						    dic.spell_narrow_input(w);
+						    dic.spell(w, cin.getloc());
 						if (res == bad_word) {
 							correct = false;
 							break;
