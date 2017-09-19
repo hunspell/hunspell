@@ -43,3 +43,4 @@ addons:
     - g++-5
     - libcppunit-dev
     - libboost-locale-dev
+    - libboost-system-dev
