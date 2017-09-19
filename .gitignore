@@ -97,3 +97,6 @@ hunspell-*.tar.gz
 /conftest.er1
 # following might be /conf??????/
 /confqd6eAO/
+
+# https://github.com/linux-test-project/lcov
+/hunspell-*-*coverage*

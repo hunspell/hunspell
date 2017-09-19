@@ -38,9 +38,11 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(test_validate_utf8);
 	CPPUNIT_TEST(test_is_ascii);
 	CPPUNIT_TEST(test_is_all_ascii);
+	CPPUNIT_TEST(test_ascii_to_ucs2_skip_invalid);
 	CPPUNIT_TEST(test_latin1_to_ucs2);
 	CPPUNIT_TEST(test_latin1_to_u32);
 	CPPUNIT_TEST(test_is_all_bmp);
+	CPPUNIT_TEST(test_u32_to_ucs2_skip_non_bmp);
 	CPPUNIT_TEST_SUITE_END();
 
       private:
@@ -62,8 +64,10 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 	auto test_decode_utf8() -> void
 	{
 		CPPUNIT_ASSERT(U"" == decode_utf8(string("")));
+		// TODO Omit constructor string("...") without risk for UTF-8?
 		CPPUNIT_ASSERT(U"azĳß«" == decode_utf8(string("azĳß«")));
 		CPPUNIT_ASSERT(U"日  Ӥ" != decode_utf8(string("Ӥ日本に")));
+		// TODO need counter example
 	}
 
 	auto test_validate_utf8() -> void
@@ -71,11 +75,13 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 		CPPUNIT_ASSERT(true == validate_utf8(string("")));
 		CPPUNIT_ASSERT(true == validate_utf8(string("the brown fox~")));
 		CPPUNIT_ASSERT(true == validate_utf8(string("Ӥ日本に")));
+		// TODO need counter example
 	}
 
 	auto test_is_ascii() -> void
 	{
 		CPPUNIT_ASSERT(true == is_ascii('a'));
+		CPPUNIT_ASSERT(true == is_ascii('\t'));
 		// Results in warning "multi-character character constant
 		// [-Wmultichar]"
 		// FIXME Add this to Makefile.am for only this source file.
@@ -86,17 +92,21 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 	{
 		CPPUNIT_ASSERT(true == is_all_ascii(string("")));
 		CPPUNIT_ASSERT(true == is_all_ascii(string("the brown fox~")));
-		CPPUNIT_ASSERT(false ==
-		               is_all_ascii(string("the brown foxĳӤ")));
+		CPPUNIT_ASSERT(false == is_all_ascii(string("brown foxĳӤ")));
+	}
+
+	auto test_ascii_to_ucs2_skip_invalid() -> void
+	{
+		CPPUNIT_ASSERT(u"ABC" == ascii_to_ucs2_skip_invalid("ABC"));
+		CPPUNIT_ASSERT(u"ABC" == ascii_to_ucs2_skip_invalid("ABCĳӤ日"));
 	}
 
 	auto test_latin1_to_ucs2() -> void
 	{
 		CPPUNIT_ASSERT(u"" == latin1_to_ucs2(string("")));
 		CPPUNIT_ASSERT(u"abc" == latin1_to_ucs2(string("abc")));
-		CPPUNIT_ASSERT(
-		    u"²¿ýþÿ" !=
-		    latin1_to_ucs2(string("²¿ýþÿ"))); // QUESTION Is this OK?
+		// QUESTION Is next line OK?
+		CPPUNIT_ASSERT(u"²¿ýþÿ" != latin1_to_ucs2(string("²¿ýþÿ")));
 		CPPUNIT_ASSERT(u"Ӥ日本に" != latin1_to_ucs2(string("Ӥ日本に")));
 	}
 
@@ -104,15 +114,19 @@ class LocaleUtilsTest : public CppUnit::TestFixture {
 	{
 		CPPUNIT_ASSERT(U"" == latin1_to_u32(string("")));
 		CPPUNIT_ASSERT(U"abc~" == latin1_to_u32(string("abc~")));
-		CPPUNIT_ASSERT(
-		    U"²¿ýþÿ" !=
-		    latin1_to_u32(string("²¿ýþÿ"))); // QUESTION Is this OK?
+		// QUESTION Is next line OK?
+		CPPUNIT_ASSERT(U"²¿ýþÿ" != latin1_to_u32(string("²¿ýþÿ")));
 		CPPUNIT_ASSERT(U"Ӥ日本に" != latin1_to_u32(string("Ӥ日本に")));
 	}
 
 	auto test_is_all_bmp() -> void
 	{
 		CPPUNIT_ASSERT(true == is_all_bmp(U"abcýþÿӤ"));
+	}
+
+	auto test_u32_to_ucs2_skip_non_bmp() -> void
+	{
+		CPPUNIT_ASSERT(u"ABC" == u32_to_ucs2_skip_non_bmp(U"ABC"));
 	}
 };
 CPPUNIT_TEST_SUITE_REGISTRATION(LocaleUtilsTest);

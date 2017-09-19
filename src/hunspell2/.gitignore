@@ -1,2 +1,6 @@
 /hun2
 /.dirstamp
+
+# https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+/*.gcno
+/*.gcda
