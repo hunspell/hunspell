@@ -83,8 +83,8 @@ auto get_default_search_paths(OutIt out) -> OutIt
 	if (dicpath) {
 		out = split(string(dicpath), PATHSEP, out);
 	}
-	char* home = getenv("HOME");
 #ifdef _POSIX_VERSION
+	char* home = getenv("HOME");
 	array<string, 3> prefixes = {home ? string(home) + "/.local" : "",
 	                             "/usr/local", "/usr"};
 	array<const char*, 3> dirs = {"/share/hunspell", "/share/myspell",
@@ -95,13 +95,13 @@ auto get_default_search_paths(OutIt out) -> OutIt
 			++out;
 		}
 	}
-#endif
 #if defined(__APPLE__) && defined(__MACH__)
 	string osx = "/Library/Spelling";
 	if (home) {
 		*out++ = home + osx;
 	}
 	*out++ = osx;
+#endif
 #endif
 #ifdef _WIN32
 	array<char*, 2> winpaths = {getenv("LOCALAPPDATA"),

@@ -296,6 +296,112 @@ auto list_dictionaries(Finder& f) -> void
 	}
 }
 
+auto normal_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto word = string();
+	while (in >> word) {
+		auto res = dic.spell(word, cin.getloc());
+		switch (res) {
+		case bad_word:
+			out << '&' << endl;
+			break;
+		case good_word:
+			out << '*' << endl;
+			break;
+		case affixed_good_word:
+			out << '+' << endl;
+			break;
+		case compound_good_word:
+			out << '-' << endl;
+			break;
+		}
+	}
+}
+
+auto normal_tsv_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto line = string();
+	auto word = string();
+	while (getline(in, line)) {
+		word = split_first(line, '\t');
+		auto res = dic.spell(word, cin.getloc());
+		switch (res) {
+		case bad_word:
+			out << '&' << endl;
+			break;
+		case good_word:
+			out << '*' << endl;
+			break;
+		case affixed_good_word:
+			out << '+' << endl;
+			break;
+		case compound_good_word:
+			out << '-' << endl;
+			break;
+		}
+	}
+}
+
+auto misspelled_word_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto word = string();
+	while (in >> word) {
+		auto res = dic.spell(word, cin.getloc());
+		if (res == bad_word)
+			out << word << endl;
+	}
+}
+
+auto correct_word_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto word = string();
+	while (in >> word) {
+		auto res = dic.spell(word, cin.getloc());
+		if (res == good_word)
+			out << word << endl;
+	}
+}
+
+auto misspelled_line_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto line = string();
+	auto words = vector<string>();
+	while (getline(in, line)) {
+		auto print = false;
+		split_v(line, ' ', words);
+		for (auto& word : words) {
+			cerr << "W " << word << endl;
+			auto res = dic.spell(word, cin.getloc());
+			if (res == bad_word) {
+				print = true;
+				break;
+			}
+		}
+		if (print)
+			out << line << endl;
+	}
+}
+
+auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
+{
+	auto line = string();
+	auto words = vector<string>();
+	while (getline(in, line)) {
+		auto print = true;
+		split_v(line, ' ', words);
+		for (auto& word : words) {
+			cerr << "W " << word << endl;
+			auto res = dic.spell(word, cin.getloc());
+			if (res == bad_word) {
+				print = false;
+				break;
+			}
+		}
+		if (print)
+			out << line << endl;
+	}
+}
+
 /*!
  * Handles the operation mode.
  *
@@ -313,24 +419,8 @@ auto handle_mode(Args_t& args) -> int
 	case VERSION_MODE:
 		print_version();
 		return 0;
-	case DEFAULT_MODE:
-		break; // prevents warning with clang
-	case PIPE_MODE:
-		break; // prevents warning with clang
-	case MISSPELLED_WORDS_MODE:
-		break; // prevents warning with clang
-	case CORRECT_WORDS_MODE:
-		break; // prevents warning with clang
-	case MISSPELLED_LINES_MODE:
-		break; // prevents warning with clang
-	case CORRECT_LINES_MODE:
-		break; // prevents warning with clang
-	case CURSES_MODE:
-		break; // prevents warning with clang
-	case LIST_DICTIONARIES_MODE:
-		break; // prevents warning with clang
-	case LINES_MODE:
-		break; // prevents warning with clang
+	default:
+		break;
 	}
 
 	auto f = Finder();
@@ -340,8 +430,7 @@ auto handle_mode(Args_t& args) -> int
 	f.add_apacheopenoffice_paths();
 	f.search_dictionaries();
 
-	switch (args.mode) {
-	case LIST_DICTIONARIES_MODE:
+	if (args.mode == LIST_DICTIONARIES_MODE) {
 		list_dictionaries(f);
 		return 0;
 	}
@@ -352,7 +441,7 @@ auto handle_mode(Args_t& args) -> int
 		     << endl;
 		return 1;
 	}
-	cerr << "INFO: Loaded dictionary " << filename << ".{dic,aff}" << endl;
+	cerr << "INFO: Pointed dictionary " << filename << ".{dic,aff}" << endl;
 
 	Hunspell::Dictionary dic(filename); // FIXME
 	// TODO also get filename(s) from other_dicts and process these too
@@ -361,215 +450,97 @@ auto handle_mode(Args_t& args) -> int
 	switch (args.mode) {
 	case DEFAULT_MODE:
 		if (args.files.empty()) {
-			while (cin >> word) {
-				if (args.first_of_tsv)
-					word = split_first(word, '\t');
-				auto res = dic.spell(word, cin.getloc());
-				switch (res) {
-				case bad_word:
-					cout << '&' << endl;
-					break;
-				case good_word:
-					cout << '*' << endl;
-					break;
-				case affixed_good_word:
-					cout << '+' << endl;
-					break;
-				case compound_good_word:
-					cout << '-' << endl;
-					break;
-				}
-			}
+			if (args.first_of_tsv)
+				normal_tsv_loop(cin, cout, dic);
+			else
+				normal_loop(cin, cout, dic);
 		}
 		else {
 			for (auto& file_name : args.files) {
-				ifstream input_file(file_name.c_str());
-				if (!input_file.is_open()) {
-					cerr << "Can't open "
-					     << file_name.c_str() << endl;
+				ifstream in(file_name.c_str());
+				if (!in.is_open()) {
+					cerr << "Can't open " << file_name
+					     << endl;
 					return 1;
 				}
-				while (getline(input_file, word)) {
-					if (args.first_of_tsv)
-						word = split_first(word, '\t');
-					// TODO below is only temporary for
-					// development purposes
-					auto res =
-					    dic.spell(word, cin.getloc());
-					switch (res) {
-					case bad_word:
-						cout << '&' << endl;
-						break;
-					case good_word:
-						cout << '*' << endl;
-						break;
-					case affixed_good_word:
-						cout << '+' << endl;
-						break;
-					case compound_good_word:
-						cout << '-' << endl;
-						break;
-					}
-				}
+				if (args.first_of_tsv)
+					normal_tsv_loop(in, cout, dic);
+				else
+					normal_loop(in, cout, dic);
 			}
 		}
-		return 0;
+		break;
 	case PIPE_MODE:
 		// TODO (Once implemented here, re-add < in tests/hun2/test.sh)
-		return 0;
+		break;
 	case MISSPELLED_WORDS_MODE:
 		if (args.files.empty()) {
-			while (cin >> word) {
-				if (args.first_of_tsv)
-					word = split_first(word, '\t');
-				auto res = dic.spell(word, cin.getloc());
-				if (res == bad_word)
-					cout << word << endl;
-			}
+			misspelled_word_loop(cin, cout, dic);
 		}
 		else {
 			for (auto& file_name : args.files) {
-				ifstream input_file(file_name.c_str());
-				if (!input_file.is_open()) {
-					cerr << "Can't open "
-					     << file_name.c_str() << endl;
+				ifstream in(file_name.c_str());
+				if (!in.is_open()) {
+					cerr << "Can't open " << file_name
+					     << endl;
 					return 1;
 				}
-				while (getline(input_file, word)) {
-					if (args.first_of_tsv)
-						word = split_first(word, '\t');
-					auto res =
-					    dic.spell(word, cin.getloc());
-					if (res == bad_word)
-						cout << word << endl;
-				}
+				misspelled_word_loop(in, cout, dic);
 			}
 		}
-		return 0;
+		break;
 	case CORRECT_WORDS_MODE:
 		if (args.files.empty()) {
-			while (cin >> word) {
-				if (args.first_of_tsv)
-					word = split_first(word, '\t');
-				auto res = dic.spell(word, cin.getloc());
-				if (res != bad_word)
-					cout << word << endl;
-			}
+			correct_word_loop(cin, cout, dic);
 		}
 		else {
 			for (auto& file_name : args.files) {
-				ifstream input_file(file_name.c_str());
-				if (!input_file.is_open()) {
-					cerr << "Can't open "
-					     << file_name.c_str() << endl;
+				ifstream in(file_name);
+				if (!in.is_open()) {
+					cerr << "Can't open " << file_name
+					     << endl;
 					return 1;
 				}
-				while (getline(input_file, word)) {
-					if (args.first_of_tsv)
-						word = split_first(word, '\t');
-					auto res =
-					    dic.spell(word, cin.getloc());
-					if (res != bad_word)
-						cout << word << endl;
-				}
+				correct_word_loop(in, cout, dic);
 			}
 		}
-		return 0;
+		break;
 	case MISSPELLED_LINES_MODE:
 		if (args.files.empty()) {
-			while (cin >> line) {
-				if (args.first_of_tsv)
-					line = split_first(line, '\t');
-				auto words = vector<string>();
-				split(line, ' ', back_inserter(words));
-				// TODO Replace later with parser.
-				for (auto& w : words) {
-					auto res = dic.spell(w, cin.getloc());
-					if (res == bad_word) {
-						cout << line << endl;
-						break;
-					}
-				}
-			}
+			misspelled_line_loop(cin, cout, dic);
 		}
 		else {
 			for (auto& file_name : args.files) {
-				ifstream input_file(file_name.c_str());
-				if (!input_file.is_open()) {
-					cerr << "Can't open "
-					     << file_name.c_str() << endl;
+				ifstream in(file_name.c_str());
+				if (!in.is_open()) {
+					cerr << "Can't open " << file_name
+					     << endl;
 					return 1;
 				}
-				while (getline(input_file, line)) {
-					if (args.first_of_tsv)
-						line = split_first(line, '\t');
-					auto words = vector<string>();
-					split(line, ' ', back_inserter(words));
-					// TODO Replace later with parser.
-					for (auto& w : words) {
-						auto res =
-						    dic.spell(w, cin.getloc());
-						if (res == bad_word) {
-							cout << line << endl;
-							break;
-						}
-					}
-				}
+				misspelled_line_loop(in, cout, dic);
 			}
 		}
-		return 0;
+		break;
 	case CORRECT_LINES_MODE:
 		if (args.files.empty()) {
-			while (cin >> line) {
-				if (args.first_of_tsv)
-					line = split_first(line, '\t');
-				auto words = vector<string>();
-				split(line, ' ',
-				      back_inserter(words)); // TODO Replace
-				                             // later with
-				                             // parser.
-				bool correct = true;
-				for (auto& w : words) {
-					auto res = dic.spell(w, cin.getloc());
-					if (res == bad_word) {
-						correct = false;
-						break;
-					}
-				}
-				if (correct)
-					cout << line << endl;
-			}
+			correct_line_loop(cin, cout, dic);
 		}
 		else {
 			for (auto& file_name : args.files) {
-				ifstream input_file(file_name.c_str());
-				if (!input_file.is_open()) {
-					cerr << "Can't open "
-					     << file_name.c_str() << endl;
+				ifstream in(file_name.c_str());
+				if (!in.is_open()) {
+					cerr << "Can't open " << file_name
+					     << endl;
 					return 1;
 				}
-				while (getline(input_file, line)) {
-					if (args.first_of_tsv)
-						line = split_first(line, '\t');
-					auto words = vector<string>();
-					split(line, ' ', back_inserter(words));
-					// TODO Replace later with parser.
-					bool correct = true;
-					for (auto& w : words) {
-						auto res =
-						    dic.spell(w, cin.getloc());
-						if (res == bad_word) {
-							correct = false;
-							break;
-						}
-					}
-					if (correct)
-						cout << line << endl;
-				}
+				correct_line_loop(in, cout, dic);
 			}
 		}
-		return 0;
+		break;
+	default:
+		break;
 	}
+	return 0;
 }
 
 auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
@@ -607,6 +578,7 @@ int main(int argc, char* argv[])
 	auto loc = gen("");
 	cerr << "INFO: Locale name: " << loc.name() << endl;
 	cin.imbue(loc);
+	cout.imbue(loc);
 	setlocale(LC_CTYPE, "");
 
 	int success = handle_mode(args);

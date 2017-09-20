@@ -28,6 +28,7 @@
 #ifndef HUNSPELL_STRING_UTILS_HXX
 #define HUNSPELL_STRING_UTILS_HXX
 
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -56,6 +57,14 @@ auto split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
 		// yet that is defined
 	} while (i2 != s.npos);
 	return out;
+}
+
+template <class CharT, class CharOrStr>
+auto split_v(const std::basic_string<CharT>& s, CharOrStr sep,
+             std::vector<std::basic_string<CharT>>& v)
+{
+	v.clear();
+	split(s, sep, std::back_inserter(v));
 }
 
 /**
