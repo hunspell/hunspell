@@ -1,0 +1,684 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><script type="text/javascript" xml:space="preserve">window["_gaUserPrefs"] = { ioo : function() { return true; } }</script><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="Railroad Diagram Generator 1.48.1593"><style type="text/css" xml:space="preserve">
+    ::-moz-selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }
+    ::selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }      
+    .ebnf a
+    {
+      text-decoration: none;
+    }
+    .ebnf a:hover
+    {
+      color: #050400;
+      text-decoration: underline;
+    }    
+    .signature
+    {
+      color: #806600;
+      font-size: 11px;
+      text-align: right;
+    }
+    body
+    {
+      font: normal 12px Verdana, sans-serif;
+      color: #0F0C00;
+      background: #FFFCF0;
+    }
+    a:link, a:visited
+    {
+      color: #0F0C00;
+    }
+    a:link.signature, a:visited.signature
+    {
+      color: #806600;
+    }
+    a.button, #tabs li a
+    {
+      padding: 0.25em 0.5em;
+      border: 1px solid #806600;
+      background: #F1E8C6;
+      color: #806600;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.button:hover, #tabs li a:hover
+    {
+      color: #050400;
+      background: #FFF6D1;
+      border-color: #050400;       
+    }     
+    #tabs
+    {
+      padding: 3px 10px;
+      margin-left: 0;
+      margin-top: 58px;
+      border-bottom: 1px solid #0F0C00;
+    }  
+    #tabs li
+    {
+      list-style: none;
+      margin-left: 5px;
+      display: inline;
+    }
+    #tabs li a
+    {     
+      border-bottom: 1px solid #0F0C00;
+    }
+    #tabs li a.active
+    {
+      color: #0F0C00;
+      background: #FFFCF0;
+      border-color: #0F0C00;
+      border-bottom: 1px solid #FFFCF0;
+      outline: none;
+    }
+    #divs div
+    {
+      display: none;
+      overflow:auto;
+    }
+    #divs div.active
+    {
+      display: block;
+    }
+    #text
+    {
+      border-color: #806600;
+      background: #FFFEFA;
+      color: #050400;
+    }
+    .small
+    {
+      vertical-align: top;
+      text-align: right;
+      font-size: 9px;
+      font-weight: normal;
+      line-height: 120%;
+    }
+    td.small
+    {
+      padding-top: 0px;
+    }
+    .hidden
+    {
+      visibility: hidden;
+    }
+    td:hover .hidden 
+    {
+      visibility: visible;
+    }
+    div.download
+    {
+      display: none;
+      background: #FFFCF0;
+      position: absolute;
+      right: 34px;
+      top: 94px;
+      padding: 10px;
+      border: 1px dotted #0F0C00;
+    }
+    #divs div.ebnf, div.ebnf
+    {
+      display: block;
+      padding-left: 16px;
+      padding-top: 2px; 
+      padding-bottom: 2px; 
+      background: #FFF6D1;
+    }
+    tr.option-line td:first-child
+    {
+      text-align: right
+    }
+    tr.option-text td
+    {
+      padding-bottom: 10px
+    }
+    table.palette
+    {
+      border-top: 1px solid #050400;
+      border-right: 1px solid #050400;
+      margin-bottom: 4px
+    }
+    td.palette
+    {
+      border-bottom: 1px solid #050400;
+      border-left: 1px solid #050400;
+    }
+    a.palette
+    {
+      padding: 2px 3px 2px 10px;
+      text-decoration: none;
+    }
+    .palette
+    {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -ms-user-select: none;
+    }
+  </style></head>
+   <body>
+      
+      <p style="font-size: 14px; font-weight:bold"><a name="PositiveNumeral">PositiveNumeral:</a></p>
+      <img border="0" src="diagram/PositiveNumeral.png" height="388" width="126">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#PositiveNumeral" title="PositiveNumeral" shape="rect">PositiveNumeral</a>
+         ::= '1'
+           | '2'
+           | '3'
+           | '4'
+           | '5'
+           | '6'
+           | '7'
+           | '8'
+           | '9'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#Number" title="Number">Number</a></li>
+            
+            <li><a href="#Numeral" title="Numeral">Numeral</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Numeral">Numeral:</a></p>
+      <img border="0" src="diagram/Numeral.png" height="80" width="212" usemap="#Numeral.map"><map name="Numeral.map">
+         <area shape="rect" coords="49,45,163,77" href="#PositiveNumeral" title="PositiveNumeral"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Numeral" title="Numeral" shape="rect">Numeral</a>  ::= '0'
+           | <a href="#PositiveNumeral" title="PositiveNumeral" shape="rect">PositiveNumeral</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#ASCIICharacter" title="ASCIICharacter">ASCIICharacter</a></li>
+            
+            <li><a href="#Number" title="Number">Number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Number">Number:</a></p>
+      <img border="0" src="diagram/Number.png" height="102" width="342" usemap="#Number.map"><map name="Number.map">
+         <area shape="rect" coords="49,1,119,33" href="#Numeral" title="Numeral">
+         <area shape="rect" coords="49,67,163,99" href="#PositiveNumeral" title="PositiveNumeral">
+         <area shape="rect" coords="203,67,273,99" href="#Numeral" title="Numeral"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Number" title="Number" shape="rect">Number</a>   ::= <a href="#Numeral" title="Numeral" shape="rect">Numeral</a>
+           | <a href="#PositiveNumeral" title="PositiveNumeral" shape="rect">PositiveNumeral</a> <a href="#Numeral" title="Numeral" shape="rect">Numeral</a>+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#DictionaryCount" title="DictionaryCount">DictionaryCount</a></li>
+            
+            <li><a href="#DictionaryEntry" title="DictionaryEntry">DictionaryEntry</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="LowercaseCharacter">LowercaseCharacter:</a></p>
+      <img border="0" src="diagram/LowercaseCharacter.png" height="1156" width="130">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#LowercaseCharacter" title="LowercaseCharacter" shape="rect">LowercaseCharacter</a>
+         ::= ( 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' )?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#LetterCharacter" title="LetterCharacter">LetterCharacter</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="UppercaseCharacter">UppercaseCharacter:</a></p>
+      <img border="0" src="diagram/UppercaseCharacter.png" height="1136" width="130">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#UppercaseCharacter" title="UppercaseCharacter" shape="rect">UppercaseCharacter</a>
+         ::= 'A'
+           | 'B'
+           | 'C'
+           | 'D'
+           | 'E'
+           | 'F'
+           | 'G'
+           | 'H'
+           | 'I'
+           | 'J'
+           | 'K'
+           | 'L'
+           | 'M'
+           | 'N'
+           | 'O'
+           | 'P'
+           | 'Q'
+           | 'R'
+           | 'S'
+           | 'T'
+           | 'U'
+           | 'V'
+           | 'W'
+           | 'X'
+           | 'Y'
+           | 'Z'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#LetterCharacter" title="LetterCharacter">LetterCharacter</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="LetterCharacter">LetterCharacter:</a></p>
+      <img border="0" src="diagram/LetterCharacter.png" height="80" width="240" usemap="#LetterCharacter.map"><map name="LetterCharacter.map">
+         <area shape="rect" coords="49,1,191,33" href="#LowercaseCharacter" title="LowercaseCharacter">
+         <area shape="rect" coords="49,45,189,77" href="#UppercaseCharacter" title="UppercaseCharacter"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a>
+         ::= <a href="#LowercaseCharacter" title="LowercaseCharacter" shape="rect">LowercaseCharacter</a>
+           | <a href="#UppercaseCharacter" title="UppercaseCharacter" shape="rect">UppercaseCharacter</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#ASCIICharacter" title="ASCIICharacter">ASCIICharacter</a></li>
+            
+            <li><a href="#DictionaryEntry" title="DictionaryEntry">DictionaryEntry</a></li>
+            
+            <li><a href="#LanguageCharacter" title="LanguageCharacter">LanguageCharacter</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="ASCIICharacter">ASCIICharacter:</a></p>
+      <img border="0" src="diagram/ASCIICharacter.png" height="1444" width="212" usemap="#ASCIICharacter.map"><map name="ASCIICharacter.map">
+         <area shape="rect" coords="49,1,119,33" href="#Numeral" title="Numeral">
+         <area shape="rect" coords="49,45,163,77" href="#LetterCharacter" title="LetterCharacter"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#ASCIICharacter" title="ASCIICharacter" shape="rect">ASCIICharacter</a>
+         ::= <a href="#Numeral" title="Numeral" shape="rect">Numeral</a>
+           | <a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a>
+           | '`'
+           | '~'
+           | '!'
+           | '@'
+           | '#'
+           | '$'
+           | '%'
+           | '^'
+           | '&amp;'
+           | '*'
+           | '('
+           | ')'
+           | '-'
+           | '_'
+           | '='
+           | '+'
+           | '['
+           | '}'
+           | ']'
+           | '\'
+           | ';'
+           | ':'
+           | "'"
+           | '"'
+           | ','
+           | '&lt;'
+           | '.'
+           | '&gt;'
+           | '/'
+           | '?'
+           | '␣'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#Comment" title="Comment">Comment</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Whitespace">Whitespace:</a></p>
+      <img border="0" src="diagram/Whitespace.png" height="96" width="172">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a>
+         ::= ( '␣' | '\t' )+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#CharacterSet" title="CharacterSet">CharacterSet</a></li>
+            
+            <li><a href="#Comment" title="Comment">Comment</a></li>
+            
+            <li><a href="#Flag" title="Flag">Flag</a></li>
+            
+            <li><a href="#Key" title="Key">Key</a></li>
+            
+            <li><a href="#Try" title="Try">Try</a></li>
+            
+            <li><a href="#WordChars" title="WordChars">WordChars</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="LanguageCharacter">LanguageCharacter:</a></p>
+      <img border="0" src="diagram/LanguageCharacter.png" height="36" width="172" usemap="#LanguageCharacter.map"><map name="LanguageCharacter.map">
+         <area shape="rect" coords="29,1,143,33" href="#LetterCharacter" title="LetterCharacter"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#LanguageCharacter" title="LanguageCharacter" shape="rect">LanguageCharacter</a>
+         ::= <a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a></pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="LanguageWord">LanguageWord:</a></p>
+      <img border="0" src="diagram/LanguageWord.png" height="52" width="208" usemap="#LanguageWord.map"><map name="LanguageWord.map">
+         <area shape="rect" coords="49,17,159,49" href="#WordCharacter" title="WordCharacter"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#LanguageWord" title="LanguageWord" shape="rect">LanguageWord</a>
+         ::= <a href="#WordCharacter" title="WordCharacter" shape="rect">WordCharacter</a>+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#DictionaryEntry" title="DictionaryEntry">DictionaryEntry</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Comment">Comment:</a></p>
+      <img border="0" src="diagram/Comment.png" height="114" width="314" usemap="#Comment.map"><map name="Comment.map">
+         <area shape="rect" coords="99,45,209,77" href="#ASCIICharacter" title="ASCIICharacter">
+         <area shape="rect" coords="99,1,187,33" href="#Whitespace" title="Whitespace"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Comment" title="Comment" shape="rect">Comment</a>  ::= '#' ( <a href="#ASCIICharacter" title="ASCIICharacter" shape="rect">ASCIICharacter</a> | <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> )* '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+            <li><a href="#DictionaryFile" title="DictionaryFile">DictionaryFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="DictionaryCount">DictionaryCount:</a></p>
+      <img border="0" src="diagram/DictionaryCount.png" height="36" width="180" usemap="#DictionaryCount.map"><map name="DictionaryCount.map">
+         <area shape="rect" coords="29,1,95,33" href="#Number" title="Number"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#DictionaryCount" title="DictionaryCount" shape="rect">DictionaryCount</a>
+         ::= <a href="#Number" title="Number" shape="rect">Number</a> '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#DictionaryFile" title="DictionaryFile">DictionaryFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="DictionaryEntry">DictionaryEntry:</a></p>
+      <img border="0" src="diagram/DictionaryEntry.png" height="222" width="746" usemap="#DictionaryEntry.map"><map name="DictionaryEntry.map">
+         <area shape="rect" coords="117,17,225,49" href="#LanguageWord" title="LanguageWord">
+         <area shape="rect" coords="353,17,467,49" href="#LetterCharacter" title="LetterCharacter">
+         <area shape="rect" coords="353,83,467,115" href="#LetterCharacter" title="LetterCharacter">
+         <area shape="rect" coords="487,83,601,115" href="#LetterCharacter" title="LetterCharacter">
+         <area shape="rect" coords="353,171,419,203" href="#Number" title="Number"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#DictionaryEntry" title="DictionaryEntry" shape="rect">DictionaryEntry</a>
+         ::= '*'? <a href="#LanguageWord" title="LanguageWord" shape="rect">LanguageWord</a> ( '/' ( <a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a>+ | ( <a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a> <a href="#LetterCharacter" title="LetterCharacter" shape="rect">LetterCharacter</a> )+ | <a href="#Number" title="Number" shape="rect">Number</a> ( ',' <a href="#Number" title="Number" shape="rect">Number</a> )* ) )? '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#DictionaryFile" title="DictionaryFile">DictionaryFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="DictionaryFile">DictionaryFile:</a></p>
+      <img border="0" src="diagram/DictionaryFile.png" height="114" width="482" usemap="#DictionaryFile.map"><map name="DictionaryFile.map">
+         <area shape="rect" coords="49,45,129,77" href="#Comment" title="Comment">
+         <area shape="rect" coords="169,79,283,111" href="#DictionaryCount" title="DictionaryCount">
+         <area shape="rect" coords="323,45,403,77" href="#Comment" title="Comment">
+         <area shape="rect" coords="323,1,433,33" href="#DictionaryEntry" title="DictionaryEntry"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#DictionaryFile" title="DictionaryFile" shape="rect">DictionaryFile</a>
+         ::= <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#DictionaryCount" title="DictionaryCount" shape="rect">DictionaryCount</a> ( <a href="#Comment" title="Comment" shape="rect">Comment</a> | <a href="#DictionaryEntry" title="DictionaryEntry" shape="rect">DictionaryEntry</a> )*</pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="Encoding">Encoding:</a></p>
+      <img border="0" src="diagram/Encoding.png" height="432" width="234">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Encoding" title="Encoding" shape="rect">Encoding</a> ::= 'UTF-8'
+           | 'ISO-8859-1'
+           | 'ISO8859-1'
+           | 'ISO8859-2'
+           | 'ISO8859-7'
+           | 'ISO8859-13'
+           | 'ISO8859-15'
+           | 'microsoft-cp1251'
+           | 'TIS-620'
+           | 'KOI8-R'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#CharacterSet" title="CharacterSet">CharacterSet</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="CharacterSet">CharacterSet:</a></p>
+      <img border="0" src="diagram/CharacterSet.png" height="36" width="358" usemap="#CharacterSet.map"><map name="CharacterSet.map">
+         <area shape="rect" coords="93,1,181,33" href="#Whitespace" title="Whitespace">
+         <area shape="rect" coords="201,1,273,33" href="#Encoding" title="Encoding"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#CharacterSet" title="CharacterSet" shape="rect">CharacterSet</a>
+         ::= 'SET' <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> <a href="#Encoding" title="Encoding" shape="rect">Encoding</a> '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Flag">Flag:</a></p>
+      <img border="0" src="diagram/Flag.png" height="124" width="396" usemap="#Flag.map"><map name="Flag.map">
+         <area shape="rect" coords="103,1,191,33" href="#Whitespace" title="Whitespace"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Flag" title="Flag" shape="rect">Flag</a>     ::= 'FLAG' <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> ( 'num' | 'long' | 'UTF-8' ) '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Try">Try:</a></p>
+      <img border="0" src="diagram/Try.png" height="36" width="268" usemap="#Try.map"><map name="Try.map">
+         <area shape="rect" coords="95,1,183,33" href="#Whitespace" title="Whitespace"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Try" title="Try" shape="rect">Try</a>      ::= 'TRY' <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="Key">Key:</a></p>
+      <img border="0" src="diagram/Key.png" height="36" width="268" usemap="#Key.map"><map name="Key.map">
+         <area shape="rect" coords="95,1,183,33" href="#Whitespace" title="Whitespace"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#Key" title="Key" shape="rect">Key</a>      ::= 'KEY' <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="WordChars">WordChars:</a></p>
+      <img border="0" src="diagram/WordChars.png" height="36" width="330" usemap="#WordChars.map"><map name="WordChars.map">
+         <area shape="rect" coords="157,1,245,33" href="#Whitespace" title="Whitespace"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#WordChars" title="WordChars" shape="rect">WordChars</a>
+         ::= 'WORDCHARS' <a href="#Whitespace" title="Whitespace" shape="rect">Whitespace</a> '\n'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#AffixFile" title="AffixFile">AffixFile</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="AffixFile">AffixFile:</a></p>
+      <img border="0" src="diagram/AffixFile.png" height="234" width="952" usemap="#AffixFile.map"><map name="AffixFile.map">
+         <area shape="rect" coords="49,1,129,33" href="#Comment" title="Comment">
+         <area shape="rect" coords="189,67,287,99" href="#CharacterSet" title="CharacterSet">
+         <area shape="rect" coords="347,1,427,33" href="#Comment" title="Comment">
+         <area shape="rect" coords="487,67,531,99" href="#Flag" title="Flag">
+         <area shape="rect" coords="591,1,671,33" href="#Comment" title="Comment">
+         <area shape="rect" coords="731,67,769,99" href="#Try" title="Try">
+         <area shape="rect" coords="829,1,909,33" href="#Comment" title="Comment">
+         <area shape="rect" coords="435,199,477,231" href="#Key" title="Key">
+         <area shape="rect" coords="537,133,617,165" href="#Comment" title="Comment">
+         <area shape="rect" coords="677,199,763,231" href="#WordChars" title="WordChars">
+         <area shape="rect" coords="823,133,903,165" href="#Comment" title="Comment"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#AffixFile" title="AffixFile" shape="rect">AffixFile</a>
+         ::= <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#CharacterSet" title="CharacterSet" shape="rect">CharacterSet</a>? <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#Flag" title="Flag" shape="rect">Flag</a>? <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#Try" title="Try" shape="rect">Try</a>? <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#Key" title="Key" shape="rect">Key</a>? <a href="#Comment" title="Comment" shape="rect">Comment</a>* <a href="#WordChars" title="WordChars" shape="rect">WordChars</a>? <a href="#Comment" title="Comment" shape="rect">Comment</a>*</pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><hr>
+      
+      <p>
+         
+         <table class="signature" border="0">
+            
+            <tr>
+               
+               <td style="width: 100%">&nbsp;</td>
+               
+               <td valign="top">
+                  
+                  <nobr class="signature">... generated by <a name="Railroad-Diagram-Generator" class="signature" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">Railroad Diagram Generator</a></nobr>
+                  
+               </td>
+               
+               <td><a name="Railroad-Diagram-Generator" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">
+                     <img border="0" src="diagram/Railroad-Diagram-Generator.png" height="16" width="16"></a></td>
+               
+            </tr>
+            
+         </table>
+         
+      </p>
+      
+   </body>
+</html>
