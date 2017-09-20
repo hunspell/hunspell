@@ -370,7 +370,6 @@ auto misspelled_line_loop(istream& in, ostream& out, Dictionary& dic)
 		auto print = false;
 		split_v(line, ' ', words);
 		for (auto& word : words) {
-			cerr << "W " << word << endl;
 			auto res = dic.spell(word, cin.getloc());
 			if (res == bad_word) {
 				print = true;
@@ -390,7 +389,6 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 		auto print = true;
 		split_v(line, ' ', words);
 		for (auto& word : words) {
-			cerr << "W " << word << endl;
 			auto res = dic.spell(word, cin.getloc());
 			if (res == bad_word) {
 				print = false;
