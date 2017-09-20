@@ -3,3 +3,5 @@ Question: Using local dict paths with and without .dic at the end results in dif
 Question: What should be the spelling of an empty string? Hunspell version 1 ignores it in words mode, but approves of it (finds the spelling correct) in lines mode. Version 2 (at the moment) marks it in word and line mode as incorrect.
 
 Question: How do I combine a top-level directory `make check-code-coverage` with `make check-TESTS` in directory `tests`?
+
+Proposal: Shall we use https://lvc.github.io/api-sanity-checker for testing of the API?

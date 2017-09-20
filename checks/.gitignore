@@ -1,11 +1,14 @@
-# http://cppcheck.sourceforge.net/
+# http://cppcheck.sourceforge.net
 /cppcheck*.txt
 /cppcheck*.xml
 
-# https://bitbucket.org/verateam/vera/
+# https://bitbucket.org/verateam/vera
 /vera++.txt
 /vera++.xml
 
 # https://github.com/AlDanial/cloc
 /cloc.txt
 /cloc.xml
+
+# https://www.gnu.org/software/trueprint
+/*.ps
