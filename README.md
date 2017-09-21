@@ -92,7 +92,7 @@ In Ubuntu, the packages are:
 On macOS for compiler always use `clang` and not `g++` because Homebrew
 dependencies are build with that.
 
-    brew install autoconf automake libtool gettext cppunit
+    brew install autoconf automake libtool gettext pkg-config cppunit
     brew link gettext --force
 
 Then run the standard trio: autoreconf, configure, make. See above.
