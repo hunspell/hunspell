@@ -34,17 +34,22 @@ namespace Hunspell {
 using namespace std;
 
 template <class T, class Func>
-auto parse_vector_of_T(istream& in, const string& command,
-                       unordered_map<string, int>& counts, vector<T>& vec,
-                       Func parseLineFunc) -> void
+auto parse_vector_of_T(/* in */ istream& in, /* in */ size_t line_num,
+                       /* in */ const string& command,
+                       /* in out */ unordered_map<string, int>& counts,
+                       /* in out */ vector<T>& vec,
+                       /* in */ Func parseLineFunc) -> void
 {
 	auto dat = counts.find(command);
 	if (dat == counts.end()) {
 		// first line
-		int a;
+		size_t a;
 		in >> a;
-		if (in.fail() || a < 0) {
+		if (in.fail()) {
 			a = 0; // err
+			cerr << "Hunspell error: a vector command (series of "
+			        "of similar commands) has no count. Ignoring "
+			        "all of them.\n";
 		}
 		counts[command] = a;
 	}
@@ -53,19 +58,25 @@ auto parse_vector_of_T(istream& in, const string& command,
 		parseLineFunc(in, vec.back());
 		if (in.fail()) {
 			vec.pop_back();
+			cerr << "Hunspell error: single entry of a vector "
+			        "command (series of "
+			        "of similar commands) is invalid.\n";
 		}
 		dat->second--;
 	}
 	else {
 		cerr << "Hunspell warning: extra entries of " << command
 		     << '\n';
+		cerr << "Hunspell warning in line " << line_num << endl;
 	}
 }
 
 // Expects that there are flags in the stream.
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
-auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
+auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
+                  /* in */ Flag_type_t t, /* in */ bool is_stream_u8)
+    -> u16string
 {
 	string s;
 	u16string ret;
@@ -83,6 +94,7 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 		}
 		if (is_stream_u8 && !is_all_ascii(s)) {
 			cerr << err_message << endl;
+			cerr << "Hunspell warning in line " << line_num << endl;
 			// This error will be triggered in Hungarian.
 			// Version 1 passed this, it just read a
 			// single byte even if the stream utf-8.
@@ -103,6 +115,7 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 		}
 		if (is_stream_u8 && !is_all_ascii(s)) {
 			cerr << err_message << endl;
+			cerr << "Hunspell warning in line " << line_num << endl;
 		}
 		auto i = s.begin();
 		auto e = s.end();
@@ -152,7 +165,8 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 		auto u32flags = decode_utf8(s);
 		if (!is_all_bmp(u32flags)) {
 			cerr << "Hunspell warning: flags must be in BMP. "
-			        "Skipping non-BMP\n";
+			        "Skipping non-BMP\n"
+			     << "Hunspell warning in line " << line_num << endl;
 		}
 		ret = u32_to_ucs2_skip_non_bmp(u32flags);
 		break;
@@ -161,11 +175,25 @@ auto decode_flags(istream& in, Flag_type_t t, bool is_stream_u8) -> u16string
 	return ret;
 }
 
-auto parse_affix(istream& in, string& command, vector<Aff_data::affix>& vec,
-                 unordered_map<string, pair<bool, int>>& cmd_affix,
-                 Aff_data& thiss) -> void
+auto decode_single_flag(/* in */ istream& in, /* in */ size_t line_num,
+                        /* in */ Flag_type_t t, /* in */ bool is_stream_u8)
+    -> char16_t
 {
-	char16_t f = thiss.decode_single_flag(in);
+	auto flags = decode_flags(in, line_num, t, is_stream_u8);
+	if (flags.size()) {
+		return flags.front();
+	}
+	return 0;
+}
+
+auto parse_affix(/* in */ istream& in, /* in */ size_t line_num,
+                 /* in out */ string& command,
+                 /* in */ Flag_type_t t, /* in */ bool is_u8,
+                 /* in out */ vector<Aff_data::affix>& vec,
+                 /* in out */ unordered_map<string, pair<bool, int>>& cmd_affix)
+    -> void
+{
+	char16_t f = decode_single_flag(in, line_num, t, is_u8);
 	if (f == 0) {
 		// err
 		return;
@@ -180,11 +208,13 @@ auto parse_affix(istream& in, string& command, vector<Aff_data::affix>& vec,
 	// one flag is tied to one cross product value
 	if (dat == cmd_affix.end()) {
 		char cross_char; // 'Y' or 'N'
-		int cnt;
+		size_t cnt;
 		in >> cross_char >> cnt;
 		bool cross = cross_char == 'Y';
-		if (in.fail() || cnt < 0) {
+		if (in.fail()) {
 			cnt = 0; // err
+			cerr << "Hunspell error: a SFX/PFX header command is "
+			        "invalid. Missing count or cross product\n";
 		}
 		cmd_affix[command] = make_pair(cross, cnt);
 	}
@@ -195,7 +225,7 @@ auto parse_affix(istream& in, string& command, vector<Aff_data::affix>& vec,
 		elem.cross_product = dat->second.first;
 		in >> elem.stripping;
 		if (read_to_slash_or_space(in, elem.affix)) {
-			elem.new_flags = thiss.decode_flags(in);
+			elem.new_flags = decode_flags(in, line_num, t, is_u8);
 		}
 		in >> elem.condition;
 		if (in.fail()) {
@@ -209,43 +239,32 @@ auto parse_affix(istream& in, string& command, vector<Aff_data::affix>& vec,
 	}
 	else {
 		cerr << "Hunspell warning: extra entries of "
-		     << command.substr(0, 3) << '\n';
+		     << command.substr(0, 3) << '\n'
+		     << "Hunspell warning in line " << line_num << endl;
 	}
 }
 
-auto Aff_data::decode_flags(istream& in) const -> u16string
-{
-	return Hunspell::decode_flags(in, flag_type, encoding == "UTF-8");
-}
-
-auto Aff_data::decode_single_flag(istream& in) const -> char16_t
-{
-	auto flags = decode_flags(in);
-	if (flags.size()) {
-		return flags.front();
-	}
-	return 0;
-}
-
-auto parse_string_cmd(istream& in, const string& command, string& str) -> void
+auto parse_string_cmd(/* in */ istream& in, /* in */ size_t line_num,
+                      /* in */ const string& command, /* in out */ string& str)
+    -> void
 {
 	if (str.empty())
 		in >> str;
 	else
 		cerr << "Hunspell warning: "
 		        "Setting "
-		     << command
-		     << " more than once. Ignoring.\n";
+		     << command << " more than once. Ignoring.\n"
+		     << "Hunspell warning in line " << line_num << endl;
 	if (command == "SET") {
 		// handle encoding string
 		toupper(str, in.getloc());
 		if (str == "UTF8")
 			str = "UTF-8";
 	}
-	
 }
 
-auto parse_flag_type(istream& in, Flag_type_t& flag_type) -> void
+auto parse_flag_type(/* in */ istream& in, /* in */ size_t line_num,
+                     /* in out */ Flag_type_t& flag_type) -> void
 {
 	string p;
 	in >> p;
@@ -260,9 +279,35 @@ auto parse_flag_type(istream& in, Flag_type_t& flag_type) -> void
 		cerr << "Hunspell error: unknown FLAG type\n";
 }
 
+auto parse_morhological_fields(/* in */ istream& in,
+                               /* in out */ vector<string>& vecOut) -> void
+{
+	if (!in.good()) {
+		return;
+	}
+
+	std::string morph;
+	while (in >> morph) {
+		vecOut.push_back(morph);
+	}
+	reset_failbit_istream(in);
+}
+
+auto Aff_data::decode_flags(istream& in, size_t line_num) const -> u16string
+{
+	return Hunspell::decode_flags(in, line_num, flag_type,
+	                              encoding == "UTF-8");
+}
+
+auto Aff_data::decode_single_flag(istream& in, size_t line_num) const
+    -> char16_t
+{
+	return Hunspell::decode_single_flag(in, line_num, flag_type,
+	                                    encoding == "UTF-8");
+}
+
 auto Aff_data::parse(istream& in) -> bool
 {
-	string flag_type_str;
 	unordered_map<string, string*> command_strings = {
 	    {"SET", &encoding},        {"LANG", &language_code},
 	    {"IGNORE", &ignore_chars},
@@ -329,12 +374,12 @@ auto Aff_data::parse(istream& in) -> bool
 	    {"SUBSTANDARD", &substandard_flag}};
 
 	// keeps count for each vector
-	unordered_map<string, int> cmd_with_vec_cnt;
-	unordered_map<string, pair<bool, int>> cmd_affix;
-	string line;
-	string command;
-	int line_number = 0;
-	istringstream ss;
+	auto cmd_with_vec_cnt = unordered_map<string, int>();
+	auto cmd_affix = unordered_map<string, pair<bool, int>>();
+	auto line = string();
+	auto command = string();
+	size_t line_num = 0;
+	auto ss = istringstream();
 
 	// Must be "C" locale, otherwise istream >> int might fail
 	// due to thousands separator. "C" locale has no such seprator
@@ -344,7 +389,7 @@ auto Aff_data::parse(istream& in) -> bool
 
 	flag_type = SINGLE_CHAR_FLAG;
 	while (getline(in, line)) {
-		line_number++;
+		line_num++;
 
 		if (encoding == "UTF-8" && !validate_utf8(line)) {
 			cerr << "Hunspell warning: invalid utf in aff file\n";
@@ -363,11 +408,12 @@ auto Aff_data::parse(istream& in) -> bool
 		ss >> ws;
 		if (command == "PFX" || command == "SFX") {
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
-			parse_affix(ss, command, vec, cmd_affix, *this);
+			parse_affix(ss, line_num, command, flag_type,
+			            encoding == "UTF-8", vec, cmd_affix);
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
-			parse_string_cmd(ss, command, str);
+			parse_string_cmd(ss, line_num, command, str);
 		}
 		else if (command_bools.count(command)) {
 			*command_bools[command] = true;
@@ -376,36 +422,38 @@ auto Aff_data::parse(istream& in) -> bool
 			ss >> *command_shorts[command];
 		}
 		else if (command_flag.count(command)) {
-			*command_flag[command] = decode_single_flag(ss);
+			*command_flag[command] =
+			    decode_single_flag(ss, line_num);
 		}
 		else if (command_vec_str.count(command)) {
 			auto& vec = *command_vec_str[command];
 			auto func = [&](istream& in, string& p) { in >> p; };
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
-			                  func);
+			parse_vector_of_T(ss, line_num, command,
+			                  cmd_with_vec_cnt, vec, func);
 		}
 		else if (command_vec_pair.count(command)) {
 			auto& vec = *command_vec_pair[command];
 			auto func = [&](istream& in, pair<string, string>& p) {
 				in >> p.first >> p.second;
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
-			                  func);
+			parse_vector_of_T(ss, line_num, command,
+			                  cmd_with_vec_cnt, vec, func);
 		}
 		else if (command == "FLAG") {
-			parse_flag_type(ss, flag_type);
+			parse_flag_type(ss, line_num, flag_type);
 		}
 		else if (command == "AF") {
 			auto& vec = flag_aliases;
 			auto func = [&](istream& inn, u16string& p) {
-				p = decode_flags(inn);
+				p = decode_flags(inn, line_num);
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
-			                  func);
+			parse_vector_of_T(ss, line_num, command,
+			                  cmd_with_vec_cnt, vec, func);
 		}
 		else if (command == "AM") {
 			auto& vec = morphological_aliases;
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
+			parse_vector_of_T(ss, line_num, command,
+			                  cmd_with_vec_cnt, vec,
 			                  parse_morhological_fields);
 		}
 		else if (command == "CHECKCOMPOUNDPATTERN") {
@@ -413,10 +461,12 @@ auto Aff_data::parse(istream& in) -> bool
 			auto func = [&](istream& in,
 			                compound_check_pattern& p) {
 				if (read_to_slash_or_space(in, p.end_chars)) {
-					p.end_flag = decode_single_flag(in);
+					p.end_flag =
+					    decode_single_flag(in, line_num);
 				}
 				if (read_to_slash_or_space(in, p.begin_chars)) {
-					p.begin_flag = decode_single_flag(in);
+					p.begin_flag =
+					    decode_single_flag(in, line_num);
 				}
 				if (in.fail()) {
 					return;
@@ -424,17 +474,17 @@ auto Aff_data::parse(istream& in) -> bool
 				in >> p.replacement;
 				reset_failbit_istream(in);
 			};
-			parse_vector_of_T(ss, command, cmd_with_vec_cnt, vec,
-			                  func);
+			parse_vector_of_T(ss, line_num, command,
+			                  cmd_with_vec_cnt, vec, func);
 		}
 		else if (command == "COMPOUNDSYLLABLE") {
 			ss >> compound_syllable_max >> compound_syllable_vowels;
 		}
 		else if (command == "SYLLABLENUM") {
-			compound_syllable_num = decode_flags(ss);
+			compound_syllable_num = decode_flags(ss, line_num);
 		}
 		if (ss.fail()) {
-			cerr << "Hunspell aff error in line " << line_number
+			cerr << "Hunspell aff error in line " << line_num
 			     << ": " << line << endl;
 		}
 	}

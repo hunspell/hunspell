@@ -71,20 +71,6 @@ inline bool read_to_slash(std::istream& in, std::string& out)
 	}
 	return slash;
 }
-
-inline void parse_morhological_fields(std::istream& in,
-                                      std::vector<std::string>& vecOut)
-{
-	if (!in.good()) {
-		return;
-	}
-
-	std::string morph;
-	while (in >> morph) {
-		vecOut.push_back(morph);
-	}
-	reset_failbit_istream(in);
-}
 }
 
 #endif // STREAM_UTILS_HXX

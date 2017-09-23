@@ -127,9 +127,12 @@ struct Aff_data {
 	// methods
 	auto parse(istream& in) -> bool;
 
-	auto decode_flags(istream& in) const -> u16string;
-	auto decode_single_flag(istream& in) const -> char16_t;
+	auto decode_flags(istream& in, size_t line_num = 0) const -> u16string;
+	auto decode_single_flag(istream& in, size_t line_num = 0) const
+	    -> char16_t;
 };
+void parse_morhological_fields(std::istream& in,
+                               std::vector<std::string>& vecOut);
 }
 
 #endif
