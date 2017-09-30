@@ -8,20 +8,17 @@ AM_LDFLAGS  = $(BOOST_LOCALE_LDFLAGS)
 LDADD = ../src/hunspell2/libhunspell2.a $(BOOST_LOCALE_LIBS) $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 
 
-BUILT_SOURCES = catch.hpp catch_reporter_automake.hpp catch_reporter_tap.hpp
+BUILT_SOURCES = catch.hpp catch_reporter_tap.hpp
 catch_url = https://raw.githubusercontent.com/philsquared/Catch/v1.10.0
 catch.hpp:
 	wget $(catch_url)/single_include/catch.hpp
-
-catch_reporter_automake.hpp:
-	wget $(catch_url)/include/reporters/catch_reporter_automake.hpp
 
 catch_reporter_tap.hpp:
 	wget $(catch_url)/include/reporters/catch_reporter_tap.hpp
 
 TEST_EXTENSIONS = .catch
 CATCH_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) tap-driver.sh
-CATCH_LOG_COMPILER = ./catch-runner.sh
+CATCH_LOG_COMPILER = $(SHELL) catch-runner.sh
 
 check_PROGRAMS = \
 locale_utils_test \
@@ -35,7 +32,9 @@ TESTS =	$(check_PROGRAMS)
 
 locale_utils_test_SOURCES = locale_utils_test.cxx
 string_utils_test_SOURCES = string_utils_test.cxx
-ch_catch_SOURCES = ch.cxx catch_main.cxx $(BUILT_SOURCES)
+
+ch_catch_SOURCES = ch.cxx catch_main.cxx
+nodist_ch_catch_SOURCES = $(BUILT_SOURCES)
 
 
 # to run coverage, cd to root
