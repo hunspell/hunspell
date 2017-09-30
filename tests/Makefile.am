@@ -17,7 +17,7 @@ catch_reporter_tap.hpp:
 	wget $(catch_url)/include/reporters/catch_reporter_tap.hpp
 
 TEST_EXTENSIONS = .catch
-CATCH_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) tap-driver.sh
+CATCH_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
 CATCH_LOG_COMPILER = $(SHELL) catch-runner.sh
 
 check_PROGRAMS = \

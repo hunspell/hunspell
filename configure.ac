@@ -20,16 +20,17 @@ AX_CODE_COVERAGE
 AS_IF([test x$enable_code_coverage = xyes],
       [: ${CXXFLAGS=""}; : ${CFLAGS=""}])
 
-
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 LT_INIT
+AC_PROG_AWK
 
 # Checks for libraries.
 PKG_CHECK_MODULES([CPPUNIT], [cppunit >= 1.11.6])
 BOOST_REQUIRE
 BOOST_LOCALE
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 # Checks for header files.
 

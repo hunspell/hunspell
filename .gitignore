@@ -11,6 +11,7 @@
 /test-driver
 /ylwrap
 /INSTALL
+/tap-driver.sh
 
 # http://www.gnu.org/software/autoconf
 
