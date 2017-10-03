@@ -21,6 +21,7 @@
 # MySpell is Copyright (C) 2002 Kevin Hendricks.
 
 # set -x # uncomment for debugging
+set -o pipefail
 
 export LC_ALL="C"
 
@@ -43,42 +44,46 @@ if [[ "$VALGRIND" != "" && -f $TEMPDIR/test.pid* ]]; then
 fi
 }
 
-TESTDIR=.
-TEMPDIR=$TESTDIR/testSubDir
-NAME=$(basename "$1" .dic)
+TEMPDIR=./testSubDir
+NAME="${1%.dic}"
 shift
 ENCODING=UTF-8 #io encoding passed with -i
 if [[ "$1" == "-i" && -n "$2" ]]; then
-	ENCODING=$2
+	ENCODING="$2"
 	shift 2
 fi
 shopt -s expand_aliases
 
-[[ "$HUNSPELL" == "" ]] && HUNSPELL=$(dirname $0)/../src/tools/hunspell
-ANALYZE=$(dirname $0)/../src/tools/analyze
-LIBTOOL=$(dirname $0)/../libtool
+[[ "$HUNSPELL" = "" ]] && HUNSPELL="$(dirname $0)"/../src/tools/hunspell
+[[ "$ANALYZE" = "" ]] && ANALYZE="$(dirname $0)"/../src/tools/analyze
+[[ "$LIBTOOL" = "" ]] && LIBTOOL="$(dirname $0)"/../libtool
 alias hunspell='"$LIBTOOL" --mode=execute "$HUNSPELL"'
 alias analyze='"$LIBTOOL" --mode=execute "$ANALYZE"'
 
 if [[ "$VALGRIND" != "" ]]; then
-	mkdir $TEMPDIR 2> /dev/null
-	rm -f $TEMPDIR/test.pid*
-	mkdir $TEMPDIR/badlogs 2> /dev/null
+	mkdir $TEMPDIR 2> /dev/null || :
+	rm -f $TEMPDIR/test.pid* || :
+	mkdir $TEMPDIR/badlogs 2> /dev/null || :
 	alias hunspell='"$LIBTOOL" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$HUNSPELL"'
 	alias analyze='"$LIBTOOL" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$ANALYZE"'
 fi
 
 CR=$(printf "\r")
 
-in_dict="$TESTDIR/$NAME"
+in_dict="$NAME"
+if [[ ! -f "$in_dict.dic" ]]; then
+	echo "Dictionary $in_dict.dic does not exists"
+	exit 3
+fi
 
 # Tests good words
 in_file="$in_dict.good"
 
 if [[ -f $in_file ]]; then
-	out=$(hunspell -l -i $ENCODING $* -d $in_dict < $in_file \
+	out=$(hunspell -l -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
 	      | tr -d "$CR")
-	if [[ $out != "" ]]; then
+	if [[ $? -ne 0 ]]; then exit 2; fi
+	if [[ "$out" != "" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.good. Good words recognised as wrong:"
 		echo "$out"
@@ -92,8 +97,9 @@ check_valgrind_log "good words"
 in_file="$in_dict.wrong"
 
 if [[ -f $in_file ]]; then
-	out=$(hunspell -G -i $ENCODING $* -d $in_dict < "$in_file" \
+	out=$(hunspell -G -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
 	      | tr -d "$CR") #strip carige return for mingw builds
+	if [[ $? -ne 0 ]]; then exit 2; fi
 	if [[ "$out" != "" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.wrong. Bad words recognised as good:"
@@ -110,13 +116,14 @@ expected_file="$in_dict.morph"
 
 if [[ -f $expected_file ]]; then
 	#in=$(sed 's/	$//' "$in_file") #passes without this.
-	out=$(analyze $in_dict.aff $in_dict.dic $in_file \
+	out=$(analyze "$in_dict.aff" "$in_dict.dic" "$in_file" \
 	      | tr -d "$CR") #strip carige return for mingw builds
-	expected=$(<$expected_file)
+	if [[ $? -ne 0 ]]; then exit 2; fi
+	expected=$(<"$expected_file")
 	if [[ "$out" != "$expected" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.morph. Bad analysis?"
-		diff $expected_file <(echo "$out") | grep '^<' | sed 's/^..//'
+		diff "$expected_file" <(echo "$out") | grep '^<' | sed 's/^..//'
 		exit 1
 	fi
 fi
@@ -128,13 +135,14 @@ in_file=$in_dict.wrong
 expected_file=$in_dict.sug
 
 if [[ -f $expected_file ]]; then
-	out=$(hunspell -i $ENCODING $* -a -d $in_dict <$in_file | \
-              grep -a '^&' | sed 's/^[^:]*: //')
-	expected=$(<$expected_file) 
+	out=$(hunspell -i "$ENCODING" "$@" -a -d "$in_dict" <"$in_file" | \
+	      { grep -a '^&' || true; } | sed 's/^[^:]*: //')
+	if [[ $? -ne 0 ]]; then exit 2; fi
+	expected=$(<"$expected_file")
 	if [[ "$out" != "$expected" ]]; then
 		echo "============================================="
 		echo "Fail in $NAME.sug. Bad suggestion?"
-		diff $expected_file <(echo "$out")
+		diff "$expected_file" <(echo "$out")
 		exit 1
 	fi
 fi

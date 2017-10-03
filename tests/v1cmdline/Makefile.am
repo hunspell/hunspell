@@ -1,7 +1,10 @@
 ## Process this file with automake to create Makefile.in
 
 TEST_EXTENSIONS = .dic
-DIC_LOG_COMPILER = ../test.sh
+AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/tools/hunspell; \
+                       export ANALYZE=$(top_builddir)/src/tools/analyze; \
+                       export LIBTOOL=$(top_builddir)/libtool;
+DIC_LOG_COMPILER = $(SHELL) $(top_srcdir)/tests/test.sh
 
 TESTS =	\
 affixes.dic \

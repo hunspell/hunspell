@@ -2,8 +2,8 @@ SUBDIRS = suggestiontest hun2 v1cmdline
 
 override PACKAGE_STRING = Hunspell 2.0.0 unit tests
 
-AM_CPPFLAGS = $(BOOST_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
-AM_CXXFLAGS = -std=c++14 -I../src/hunspell2 $(CPPUNIT_CFLAGS) $(CODE_COVERAGE_CXXFLAGS)
+AM_CPPFLAGS = -I../src/hunspell2 $(BOOST_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
+AM_CXXFLAGS = -std=c++14 $(CPPUNIT_CFLAGS) $(CODE_COVERAGE_CXXFLAGS)
 AM_LDFLAGS  = $(BOOST_LOCALE_LDFLAGS)
 LDADD = ../src/hunspell2/libhunspell2.a $(BOOST_LOCALE_LIBS) $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
 
@@ -16,9 +16,11 @@ catch.hpp:
 catch_reporter_tap.hpp:
 	wget $(catch_url)/include/reporters/catch_reporter_tap.hpp
 
+CLEANFILES = catch.hpp catch_reporter_tap.hpp
+
 TEST_EXTENSIONS = .catch
 CATCH_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
-CATCH_LOG_COMPILER = $(SHELL) catch-runner.sh
+CATCH_LOG_COMPILER = $(SHELL) $(srcdir)/catch-runner.sh
 
 check_PROGRAMS = \
 locale_utils_test \
@@ -41,4 +43,4 @@ nodist_ch_catch_SOURCES = $(BUILT_SOURCES)
 # ./configure --enable-code-coverage
 # make check-code-coverage
 
-EXTRA_DIST = test.sh tap-driver.sh catch-runner.sh
+EXTRA_DIST = test.sh catch-runner.sh
