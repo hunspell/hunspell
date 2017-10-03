@@ -5,7 +5,7 @@ override PACKAGE_STRING = Hunspell 2.0.0
 TEST_EXTENSIONS = .dic
 AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/hunspell2/hun2; \
                        export LIBTOOL=$(top_builddir)/libtool;
-DIC_LOG_COMPILER = $(SHELL) $(top_srcdir)/tests/test.sh
+DIC_LOG_COMPILER = $(top_srcdir)/tests/test.sh
 
 TESTS =	\
 simple.dic \
