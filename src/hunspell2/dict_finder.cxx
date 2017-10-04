@@ -181,14 +181,12 @@ class Directory {
 	struct dirent* ent_p = nullptr;
 
       public:
-	Directory() {}
+	Directory() = default;
 	Directory(const Directory& d) = delete;
 	void operator=(const Directory& d) = delete;
 	auto open(const string& dirname) -> bool
 	{
-		if (dp) {
-			(void)closedir(dp);
-		}
+		close();
 		dp = opendir(dirname.c_str());
 		return dp;
 	}
@@ -196,8 +194,10 @@ class Directory {
 	auto entry_name() const -> const char* { return ent_p->d_name; }
 	auto close() -> void
 	{
-		(void)closedir(dp);
-		dp = nullptr;
+		if (dp) {
+			(void)closedir(dp);
+			dp = nullptr;
+		}
 	}
 	~Directory() { close(); }
 };
