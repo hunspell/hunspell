@@ -17,6 +17,7 @@ allcaps_utf.dic \
 allcaps2.dic \
 allcaps3.dic \
 keepcase.dic \
+dotless_i.dic \
 i58202.dic \
 map.test \
 rep.test \
@@ -171,6 +172,10 @@ keepcase.dic \
 keepcase.good \
 keepcase.sug \
 keepcase.wrong \
+dotless_i.aff \
+dotless_i.dic \
+dotless_i.good \
+dotless_i.wrong \
 map.aff \
 map.dic \
 map.sug \
