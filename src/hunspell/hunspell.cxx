@@ -633,7 +633,7 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
   }
 
   // recursive breaking at break points
-  if (!wordbreak.empty()) {
+  if (!wordbreak.empty() && !(*info & SPELL_FORBIDDEN)) {
 
     int nbr = 0;
     wl = scw.size();
