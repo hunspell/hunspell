@@ -10,6 +10,6 @@ MAXNGRAMSUGS 0
 REP 1
 REP alot a_lot
 KEY qwertzuiop|asdfghjkl|yxcvbnm|aq
-WORDCHARS .
+WORDCHARS .-
 FORBIDDENWORD ?
 
