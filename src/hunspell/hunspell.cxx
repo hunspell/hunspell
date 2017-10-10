@@ -1069,7 +1069,11 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
             wspace.append("-");
             wspace.append(scw.substr(dash_pos + 1));
           }
-          insert_sug(slst, wspace);
+          int info = 0;
+          if (pAMgr && pAMgr->get_forbiddenword())
+            checkword(wspace, &info, NULL);
+          if (!(info & SPELL_FORBIDDEN))
+            insert_sug(slst, wspace);
         }
         nodashsug = 0;
       }
