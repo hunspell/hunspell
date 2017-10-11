@@ -8,64 +8,67 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2017-10-12 12:45+0000\n"
+"Last-Translator: Pander <pander@users.sourceforge.net>\n"
+"Language-Team: Dutch "
+"<https://hosted.weblate.org/projects/hunspell/translations/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.17-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "fout - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:272
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "fout - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:317 src/tools/hunspell.cxx:339
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "fout - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Kan tmp dir niet aanmaken"
 
 #: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:689
 #: src/tools/hunspell.cxx:1558 src/tools/hunspell.cxx:1588
 #: src/tools/hunspell.cxx:1601
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Kan inputfile niet openen"
 
 #: src/tools/hunspell.cxx:679 src/tools/hunspell.cxx:1590
 #: src/tools/hunspell.cxx:2001 src/tools/hunspell.cxx:2153
 #: src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Kan %s niet openen.\n"
 
 #: src/tools/hunspell.cxx:759 src/tools/hunspell.cxx:1345
 #: src/tools/hunspell.cxx:1457
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "fout - variabele HOME ontbreekt\n"
 
 #: src/tools/hunspell.cxx:844
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Regel %d: %s -> "
 
 #: src/tools/hunspell.cxx:1124
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "VERBODEN!"
 
 #: src/tools/hunspell.cxx:1126
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Spelfout?"
 
 #: src/tools/hunspell.cxx:1128
 #, c-format
@@ -73,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tBestand: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -109,15 +114,17 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1268
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAccepteer het woord voor de rest van deze sessie.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tAccepteer het woord en bewaar het in je persoonlijke woordenboek.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
+"U\tAccepteer en versie met alleen kleine letters in persoonlijk woordenboek."
+"\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
@@ -127,7 +134,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tVervang met een van de gesuggereerde woorden.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
@@ -161,7 +168,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Vervang met: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -180,7 +187,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Kan persoonlijk woordenboek niet bijwerken."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -195,11 +202,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Nieuw woord (stam): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Modelwoord (een vergelijkbaar woordenboekwoord): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
@@ -221,7 +228,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Weet je zeker dat je je wijzigingen wil weggooien? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -231,11 +238,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Kan tempfile niet aanmaken"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Kan outputfile niet openen"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
@@ -396,10 +403,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"ZOEKPAD:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "BESCHIKBARE WOORDENBOEKEN (pad is niet verplicht voor optie -d):\n"
 
 #: src/tools/hunspell.cxx:2074
 #, c-format
@@ -408,17 +417,22 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"INGELADEN WOORDENBOEK:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "fout - %s overschrijdt woordenboeklimiet.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"Kan affix- of woordenboekbestanden voor woordenboek genaamd \"%s\" niet "
+"openen.\n"
 
 #: src/tools/hunspell.cxx:2183
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell is gecompileerd zonder de gebruikersinterface Ncurses.\n"
