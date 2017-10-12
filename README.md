@@ -44,7 +44,7 @@ Runtime dependencies:
 |---------------|-----------|--------|
 |libhunspell 1  |           |        |
 |cmd line tool 1| libiconv  |gettext ncurses readline|
-|libhunspell 2  | cppunit   |        |
+|libhunspell 2  | cppunit boost-locale  |        |
 |cmd line tool 2|           |        |
     
 Recommended tools for developers:
@@ -59,7 +59,7 @@ need to manually install them.
 
 For Ubuntu:
 
-    sudo apt install autoconf automake autopoint libtool libcppunit-dev
+    sudo apt install autoconf automake autopoint libtool libcppunit-dev libboost-locale-dev libboost-system-dev
 
 Then run the following commands:
 
@@ -92,7 +92,7 @@ In Ubuntu, the packages are:
 On macOS for compiler always use `clang` and not `g++` because Homebrew
 dependencies are build with that.
 
-    brew install autoconf automake libtool gettext pkg-config cppunit
+    brew install autoconf automake libtool gettext pkg-config cppunit boost
     brew link gettext --force
 
 Then run the standard trio: autoreconf, configure, make. See above.
@@ -104,7 +104,7 @@ Then run the standard trio: autoreconf, configure, make. See above.
 Download Msys2, update everything and install the following
     packages:
 
-    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-cppunit
+    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-cppunit mingw-w64-x86_64-boost
 
 Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see
 above.
