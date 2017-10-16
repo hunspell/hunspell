@@ -2608,7 +2608,7 @@ int AffixMgr::compound_check_morph(const char* word,
           if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
-            result.append(word + 1);
+            result.append(word + i);
             line_uniq_app(m, MSEP_REC);
             result.append(m);
           }
