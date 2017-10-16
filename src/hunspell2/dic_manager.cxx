@@ -22,6 +22,7 @@
 
 #include "dic_manager.hxx"
 
+#include "stream_utils.hxx"
 #include "string_utils.hxx"
 #include <algorithm>
 #include <iostream>
@@ -32,30 +33,47 @@ namespace Hunspell {
 
 using namespace std;
 
-auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
+auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 {
+	size_t line_number = 1;
 	size_t approximate_size;
-	if (in >> approximate_size) {
+	istringstream ss;
+	string line;
+
+	// locale must be "C", see note in Aff_data::parse()
+	in.imbue(locale::classic());
+	ss.imbue(locale::classic());
+	if (!getline(in, line)) {
+		return false;
+	}
+	if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+		cerr << "Invalid utf in dic file" << endl;
+	}
+	ss.str(line);
+	if (ss >> approximate_size) {
 		words.reserve(approximate_size);
-		in.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 	else {
 		return false;
 	}
-	string line;
+
 	string word;
 	string morph;
 	vector<string> morphs;
 	u16string flags;
-	istringstream ss;
-	utf8_to_ucs2_converter cv;
+
 	while (getline(in, line)) {
+		line_number++;
 		ss.str(line);
 		ss.clear();
 		word.clear();
 		morph.clear();
 		flags.clear();
 		morphs.clear();
+
+		if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+			cerr << "Invalid utf in dic file" << endl;
+		}
 		if (line.find('/') == line.npos) {
 			// no slash, treat word until first space
 			ss >> word;
@@ -70,7 +88,7 @@ auto Dic_data::parse(std::istream& in, const Aff_data& aff) -> bool
 				continue;
 			}
 			if (aff.flag_aliases.empty()) {
-				flags = aff.decode_flags(ss, cv);
+				flags = aff.decode_flags(ss);
 			}
 			else {
 				size_t flag_alias_idx;

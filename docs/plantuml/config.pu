@@ -1,0 +1,154 @@
+skinparam activityFontColor white
+skinparam usecaseFontColor white
+skinparam sequenceParticipantFontColor white
+skinparam classFontColor white
+skinparam classAttributeFontColor white
+skinparam noteFontColor white
+skinparam componentFontColor white
+skinparam stateFontColor white
+skinparam objectFontColor white
+skinparam objectAttributeFontColor white
+
+skinparam sequenceDividerBackgroundColor white
+skinparam sequenceGroupBackgroundColor white
+skinparam sequenceBoxBackgroundColor white
+skinparam sequenceLifeLineBackgroundColor white
+
+skinparam packageFontColor #black
+skinparam actorFontColor #black
+skinparam sequenceActorFontColor #black
+skinparam sequenceDividerFontColor #black
+skinparam sequenceArrowFontColor #black
+skinparam interfaceFontColor #black
+skinparam databaseFontColor #black
+skinparam nodeFontColor #black
+skinparam usecaseArrowFontColor #black
+skinparam classArrowFontColor #black
+skinparam componentArrowFontColor #fblack
+skinparam stateArrowFontColor #black
+skinparam stateAttributeFontColor #black
+skinparam objectArrowFontColor #black
+
+skinparam activityFontSize 14
+skinparam usecaseFontSize 14
+skinparam actorFontSize 14
+skinparam sequenceActorFontSize 14
+skinparam sequenceDividerFontSize 14
+skinparam classFontSize 14
+skinparam packageFontSize 14
+skinparam componentFontSize 14
+skinparam interfaceFontSize 14
+skinparam stateFontSize 14
+skinparam objectFontSize 14
+
+skinparam noteFontSize 12
+skinparam activityArrowFontSize 12
+skinparam usecaseArrowFontSize 12
+skinparam sequenceArrowFontSize 12
+skinparam classArrowFontSize 12
+skinparam classAttributeFontSize 12
+skinparam componentArrowFontSize 12
+skinparam stateArrowFontSize 12
+skinparam stateAttributeFontSize 12
+skinparam objectArrowFontSize 12
+skinparam objectAttributeFontSize 12
+
+skinparam titleFontSize 20
+skinparam sequenceTitleFontSize 20
+
+skinparam titleFontName Roboto Slab
+skinparam activityFontName Roboto Slab
+skinparam usecaseFontName Roboto Slab
+skinparam usecaseArrowFontName Roboto Slab
+skinparam actorFontName Roboto Slab
+skinparam sequenceTitleFontName Roboto Slab
+skinparam sequenceActorFontName Roboto Slab
+skinparam sequenceDividerFontName Roboto Slab
+skinparam sequenceArrowFontName Roboto Slab
+skinparam sequenceParticipantFontName Roboto Slab
+skinparam classFontName Roboto Slab
+skinparam classArrowFontName Roboto Slab
+skinparam classattributeFontName Roboto Slab
+skinparam packageFontName Roboto Slab
+skinparam noteFontName Roboto Slab
+skinparam componentFontName Roboto Slab
+skinparam componentArrowFontName Roboto Slab
+skinparam interfaceFontName Roboto Slab
+skinparam databaseFontName Roboto Slab
+skinparam nodeFontName Roboto Slab
+skinparam stateFontName Roboto Slab
+skinparam stateArrowFontName Roboto Slab
+skinparam stateAttributeFontName Roboto Slab
+skinparam objectFontName Roboto Slab
+skinparam objectArrowFontName Roboto Slab
+skinparam objectAttributeFontName Roboto Slab
+
+skinparam titleFontStyle bold
+skinparam sequenceTitleFontStyle bold
+skinparam activityFontStyle bold
+skinparam usecaseFontStyle bold
+skinparam usecaseArrowFontStyle bold
+skinparam actorFontStyle bold
+skinparam sequenceParticipantFontStyle bold
+skinparam sequenceActorFontStyle bold
+skinparam sequenceDividerFontStyle bold
+skinparam sequenceArrowFontStyle bold
+skinparam classFontStyle bold
+skinparam classArrowFontStyle bold
+skinparam classAttributeFontStyle bold
+skinparam packageFontStyle bold
+skinparam noteFontStyle bold
+skinparam componentFontStyle bold
+skinparam interfaceFontStyle bold
+skinparam databaseFontStyle bold
+skinparam nodeFontStyle bold
+skinparam stateFontStyle bold
+skinparam stateArrowFontStyle bold
+skinparam stateAttributeFontStyle bold
+skinparam objectFontStyle bold
+skinparam objectArrowFontStyle bold
+skinparam objectAttributeFontStyle bold
+
+skinparam activityBackgroundColor #2A7AE2
+skinparam usecaseBackgroundColor #2A7AE2
+skinparam actorBackgroundColor #2A7AE2
+skinparam sequenceParticipantBackgroundColor #2A7AE2
+skinparam classBackgroundColor #2A7AE2
+skinparam noteBackgroundColor #2A7AE2
+skinparam componentBackgroundColor #2A7AE2
+skinparam interfaceBackgroundColor #2A7AE2
+skinparam stateBackgroundColor #2A7AE2
+skinparam objectBackgroundColor #2A7AE2
+
+skinparam titleFontColor #black
+skinparam activityArrowColor #black
+skinparam usecaseArrowColor #black
+skinparam activityBorderColor #black
+skinparam usecaseBorderColor #black
+skinparam actorBorderColor #black
+skinparam sequenceParticipantBorderColor #black
+skinparam activityStartColor #black
+skinparam activityEndColor #black
+skinparam activityBarColor #black
+skinparam sequenceArrowColor #black
+skinparam sequenceLifeLineBorderColor #black
+skinparam sequenceBoxLineColor #black
+skinparam classArrowColor #black
+skinparam classBorderColor #black
+skinparam packageBorderColor #black
+skinparam noteBorderColor #black
+skinparam componentArrowColor #black
+skinparam componentBorderColor #black
+skinparam interfaceBorderColor #black
+skinparam databaseBorderColor #black
+skinparam nodeBorderColor #black
+skinparam stateBorderColor #black
+skinparam objectBorderColor #black
+
+skinparam stereotypeCBackgroundColor #00BCD4
+skinparam stereotypeEBackgroundColor #00BCD4
+
+hide empty attributes
+hide empty methods
+
+skinparam componentStyle uml2

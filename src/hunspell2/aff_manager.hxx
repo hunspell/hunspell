@@ -23,7 +23,7 @@
 #ifndef HUNSPELL_AFF_MANAGER_HXX
 #define HUNSPELL_AFF_MANAGER_HXX
 
-#include "string_utils.hxx"
+#include "locale_utils.hxx"
 #include <istream>
 #include <string>
 #include <utility>
@@ -125,18 +125,14 @@ struct Aff_data {
 	bool checksharps;
 
 	// methods
-	auto parse(std::istream& in) -> bool;
+	auto parse(istream& in) -> bool;
 
-	auto decode_flags(istream& in, utf8_to_ucs2_converter& cv) const
-	    -> u16string;
-
-	// u16string decode_flags(istream& in);
-
-	auto decode_single_flag(istream& in, utf8_to_ucs2_converter& cv) const
+	auto decode_flags(istream& in, size_t line_num = 0) const -> u16string;
+	auto decode_single_flag(istream& in, size_t line_num = 0) const
 	    -> char16_t;
-
-	// char16_t decode_single_flag(istream& in);
 };
+void parse_morhological_fields(std::istream& in,
+                               std::vector<std::string>& vecOut);
 }
 
 #endif

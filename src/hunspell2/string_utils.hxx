@@ -20,87 +20,92 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
+/**
+ * @file string_utils.hxx
+ * @brief String algorithms not dependent on locale.
+ */
+
 #ifndef HUNSPELL_STRING_UTILS_HXX
 #define HUNSPELL_STRING_UTILS_HXX
 
-#include <codecvt>
-#include <istream>
-#include <locale>
+#include <iterator>
 #include <string>
 #include <vector>
 
-#include <cctype>
-
 namespace Hunspell {
 
-using utf8_to_ucs2_converter =
-    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t>;
-
-inline void toupper_ascii(std::string& s)
+/**
+ * Splits string on seperator.
+ *
+ * \param s a string to split.
+ * \param sep char or string that acts as separator to split on.
+ * \param out start of the output range to which append separated strings.
+ * \return The iterator that indicates the end of the output range.
+ */
+template <class CharT, class CharOrStr, class OutIt>
+auto split(const std::basic_string<CharT>& s, CharOrStr sep, OutIt out)
 {
-	for (auto& c : s)
-		c = toupper(c);
+	using size_type = typename std::basic_string<CharT>::size_type;
+	size_type i1 = 0;
+	size_type i2;
+	do {
+		i2 = s.find(sep, i1);
+		*out++ = s.substr(i1, i2 - i1);
+		i1 = i2 + 1;
+		// i2 gets s.npos after the last separator
+		// lenth of i2-i1 will always go past the end
+		// yet that is defined
+	} while (i2 != s.npos);
+	return out;
 }
 
-inline void reset_failbit_istream(std::istream& in)
+template <class CharT, class CharOrStr>
+auto split_v(const std::basic_string<CharT>& s, CharOrStr sep,
+             std::vector<std::basic_string<CharT>>& v)
 {
-	in.clear(in.rdstate() & ~in.failbit);
+	v.clear();
+	split(s, sep, std::back_inserter(v));
 }
 
-template <class To>
-struct cast_lambda {
-	template <class From>
-	To operator()(From& f) const
-	{
-		return static_cast<To>(f);
-	}
-};
-
-inline bool read_to_slash_or_space(std::istream& in, std::string& out)
+/**
+ * Splits string on any seperator.
+ *
+ * \param s a string to split.
+ * \param sep string holding all separators to split on.
+ * \param out start of the output range to which append separated strings.
+ * \return The iterator that indicates the end of the output range.
+ */
+template <class CharT, class CharOrStr, class OutIt>
+auto split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
+                     OutIt out)
 {
-	in >> std::ws;
-	int c;
-	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof() &&
-	       !isspace((char)c, in.getloc()) && c != '/') {
-		out.push_back(c);
-		readSomething = true;
-	}
-	bool slash = c == '/';
-	if (readSomething || slash) {
-		reset_failbit_istream(in);
-	}
-	return slash;
+	using size_type = typename std::basic_string<CharT>::size_type;
+	size_type i1 = 0;
+	size_type i2;
+	do {
+		i2 = s.find_first_of(sep, i1);
+		*out++ = s.substr(i1, i2 - i1);
+		i1 = i2 + 1;
+		// i2 gets s.npos after the last separator
+		// lenth of i2-i1 will always go past the end
+		// yet that is defined
+	} while (i2 != s.npos);
+	return out;
 }
 
-inline bool read_to_slash(std::istream& in, std::string& out)
+/**
+ * Splits string on first seperator.
+ *
+ * \param s a string to split.
+ * \param sep char or string that acts as separator to split on.
+ * \return The string that has been split off.
+ */
+template <class CharT, class CharOrStr>
+auto split_first(const std::basic_string<CharT>& s, CharOrStr sep)
+    -> std::basic_string<CharT>
 {
-	in >> std::ws;
-	int c;
-	bool readSomething = false;
-	while ((c = in.get()) != std::istream::traits_type::eof() && c != '/') {
-		out.push_back(c);
-		readSomething = true;
-	}
-	bool slash = c == '/';
-	if (readSomething || slash) {
-		reset_failbit_istream(in);
-	}
-	return slash;
-}
-
-inline void parse_morhological_fields(std::istream& in,
-                                      std::vector<std::string>& vecOut)
-{
-	if (!in.good()) {
-		return;
-	}
-
-	std::string morph;
-	while (in >> morph) {
-		vecOut.push_back(morph);
-	}
-	reset_failbit_istream(in);
+	auto index = s.find(sep);
+	return s.substr(0, index);
 }
 }
 #endif

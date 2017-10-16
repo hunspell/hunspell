@@ -32,15 +32,34 @@ Main features of Hunspell spell checker and morphological analyzer:
   - Free software. Versions 1.x are licenced under LGPL, GPL, MPL
     tri-license. Version 2 is licenced only under GNU LGPL.
 
+# Dependencies
+
+Build only dependencies:
+
+    g++ make autoconf automake autopoint libtool
+
+Runtime dependencies:
+
+|               | Mandatory |Optional|
+|---------------|-----------|--------|
+|libhunspell 1  |           |        |
+|cmd line tool 1| libiconv  |gettext ncurses readline|
+|libhunspell 2  | cppunit boost-locale  |        |
+|cmd line tool 2|           |        |
+    
+Recommended tools for developers:
+
+    vim qtcreator clang-format cppcheck
+
 # Compiling on GNU/Linux and Unixes
 
-First install the following dependencies with your package manager:
+We first need to download the dependencies. On Linux, `gettext` and
+`libiconv` are part of the standard library. On other Unixes we
+need to manually install them.
 
-    autoconf automake autopoint libtool g++
-    
-For some distributions, it is also advisable to install:
+For Ubuntu:
 
-    build-essential
+    sudo apt install autoconf automake autopoint libtool libcppunit-dev libboost-locale-dev libboost-system-dev
 
 Then run the following commands:
 
@@ -63,11 +82,20 @@ Optional developer packages:
     --with-readline)
   - locale and gettext (but you can also use the --with-included-gettext
     configure parameter)
-  - thunderbird TODO?
 
-Only for this, install the appropriate selection of
+In Ubuntu, the packages are:
 
-    libncurses5-dev libreadline-dev gettext-base? thunderbird-dev 
+    libncurses5-dev libreadline-dev
+
+# Compiling on OSX and macOS
+
+On macOS for compiler always use `clang` and not `g++` because Homebrew
+dependencies are build with that.
+
+    brew install autoconf automake libtool gettext pkg-config cppunit boost
+    brew link gettext --force
+
+Then run the standard trio: autoreconf, configure, make. See above.
 
 # Compiling on Windows
 
@@ -76,7 +104,7 @@ Only for this, install the appropriate selection of
 Download Msys2, update everything and install the following
     packages:
 
-    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool
+    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-cppunit mingw-w64-x86_64-boost
 
 Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see
 above.
@@ -99,12 +127,23 @@ Cygwin1.dll.
 
 # Debugging
 
+It is recomended to install a debug build of the standard library:
+
+    libstdc++6-6-dbg
+
 For debugging we need to create a debug build and then we need to start
 `gdb`.
 
-    make clean
-    make CXXFLAGS='-g -O0'
+    ./configure CXXFLAGS='-g -O0 -Wall -Wextra'
+    make
     libtool --mode=execute gdb src/tools/hunspell
+
+You can also pass the `CXXFLAGS` directly to `make` without calling
+`./configure`, but we don't recommend this way during long development
+sessions.
+
+If you like to develop and debug with an IDE, see documentation at
+https://github.com/hunspell/hunspell/wiki/IDE-Setup
 
 # Testing
 
@@ -188,6 +227,8 @@ g++ -lhunspell example.cxx
 
 Myspell & Hunspell dictionaries:
 
+  - https://github.com/hunspell/hunspell/wiki/Dictionaries-and-Contacts
+  - https://github.com/hunspell/hunspell/wiki/Dictionary-Packages
   - http://extensions.libreoffice.org
   - http://cgit.freedesktop.org/libreoffice/dictionaries
   - http://extensions.openoffice.org
@@ -200,6 +241,5 @@ Aspell dictionaries (need some conversion):
 Conversion steps: see relevant feature request at
 http://hunspell.github.io/ .
 
-László Németh,
-nemeth at numbertext org
+László Németh, nemeth at numbertext org
 

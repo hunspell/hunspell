@@ -28,13 +28,31 @@
 
 namespace Hunspell {
 
-auto get_default_search_directories() -> std::vector<std::string>;
+class Finder {
+	using string = std::string;
+	template <class T>
+	using vector = std::vector<T>;
+	template <class T, class U>
+	using pair = std::pair<T, U>;
 
-auto get_mozilla_directories(std::vector<std::string>& out) -> void;
+	vector<string> paths;
+	vector<pair<string, string>> dictionaries;
 
-auto get_libreoffice_directories(std::vector<std::string>& out) -> void;
+      public:
+	auto add_default_paths() -> void;
+	auto add_mozilla_paths() -> void;
+	auto add_libreoffice_paths() -> void;
+	auto add_apacheopenoffice_paths() -> void;
+	auto search_dictionaries() -> void;
 
-auto search_dirs_for_dicts(const std::vector<std::string>& dirs)
-    -> std::vector<std::pair<std::string, std::string>>;
+	auto get_all_paths() const -> const vector<string>& { return paths; }
+	auto get_all_dictionaries() const -> const vector<pair<string, string>>&
+	{
+		return dictionaries;
+	}
+
+	auto get_dictionary(const string& dict) const -> string;
+};
 }
+
 #endif

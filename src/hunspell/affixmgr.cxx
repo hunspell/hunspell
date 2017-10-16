@@ -1990,6 +1990,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 std::string tmp(sfxappnd);
                 reverseword(tmp);
                 numsyllable -= get_syllable(tmp) + sfxextra;
+              } else {
+                numsyllable -= sfxextra;
               }
 
               // + 1 word, if syllable number of the prefix > 1 (hungarian
@@ -2024,7 +2026,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (TESTAFF(rv->astr, compoundroot, rv->alen))) {
               wordnum++;
             }
-
             // second word is acceptable, as a word with prefix or/and suffix?
             // hungarian conventions: compounding is acceptable,
             // when compound forms consist 2 word, otherwise
@@ -2553,6 +2554,8 @@ int AffixMgr::compound_check_morph(const char* word,
             std::string tmp(sfxappnd);
             reverseword(tmp);
             numsyllable -= get_syllable(tmp) + sfxextra;
+          } else {
+            numsyllable -= sfxextra;
           }
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
