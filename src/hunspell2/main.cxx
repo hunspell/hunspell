@@ -44,13 +44,12 @@ using namespace Hunspell;
 enum Mode {
 	DEFAULT_MODE,
 	PIPE_MODE,
-	CURSES_MODE,
 	MISSPELLED_WORDS_MODE,
 	MISSPELLED_LINES_MODE,
 	CORRECT_WORDS_MODE,
 	CORRECT_LINES_MODE,
-	LIST_DICTIONARIES_MODE,
 	LINES_MODE,
+	LIST_DICTIONARIES_MODE,
 	HELP_MODE,
 	VERSION_MODE,
 	ERROR_MODE
@@ -58,9 +57,9 @@ enum Mode {
 
 struct Args_t {
 	Mode mode = DEFAULT_MODE;
-	string dictionary;
 	bool first_of_tsv = false;
-	string encoding = "UTF-8";
+	string dictionary;
+	string encoding;
 	vector<string> other_dicts;
 	vector<string> files;
 
@@ -80,8 +79,8 @@ struct Args_t {
 auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
 // usage
-// hunspell [-a] [-d dict_NAME]... [-i enc] [-1] file_name...
-// hunspell -l|-G [-L] [-d dict_NAME]... [-i enc] [-1] file_name...
+// hunspell [-d dict_NAME]... [-i enc] [-1] file_name...
+// hunspell -l|-G [-L] [-d dict_NAME]... [-i enc] file_name...
 // hunspell -D|-h|-v
 // TODO support --help
 //
@@ -151,7 +150,6 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 				mode = PIPE_MODE;
 			else
 				mode = ERROR_MODE;
-
 			break;
 		case 'D':
 			if (mode == DEFAULT_MODE)
@@ -400,147 +398,6 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 	}
 }
 
-/*!
- * Handles the operation mode.
- *
- * \param args an object with the parsed command line arguments.
- * \return The int with application return value.
- */
-auto handle_mode(Args_t& args) -> int
-{
-	switch (args.mode) {
-	case ERROR_MODE:
-		return 1;
-	case HELP_MODE:
-		print_help();
-		return 0;
-	case VERSION_MODE:
-		print_version();
-		return 0;
-	default:
-		break;
-	}
-
-	auto f = Finder();
-	f.add_default_paths();
-	f.add_libreoffice_paths();
-	f.add_mozilla_paths();
-	f.add_apacheopenoffice_paths();
-	f.search_dictionaries();
-
-	if (args.mode == LIST_DICTIONARIES_MODE) {
-		list_dictionaries(f);
-		return 0;
-	}
-
-	auto filename = f.get_dictionary(args.dictionary);
-	if (filename.empty()) {
-		cerr << "Dictionary " << args.dictionary << " not found."
-		     << endl;
-		return 1;
-	}
-	cerr << "INFO: Pointed dictionary " << filename << ".{dic,aff}" << endl;
-
-	Hunspell::Dictionary dic(filename); // FIXME
-	// TODO also get filename(s) from other_dicts and process these too
-	string line;
-	string word;
-	switch (args.mode) {
-	case DEFAULT_MODE:
-		if (args.files.empty()) {
-			if (args.first_of_tsv)
-				normal_tsv_loop(cin, cout, dic);
-			else
-				normal_loop(cin, cout, dic);
-		}
-		else {
-			for (auto& file_name : args.files) {
-				ifstream in(file_name.c_str());
-				if (!in.is_open()) {
-					cerr << "Can't open " << file_name
-					     << endl;
-					return 1;
-				}
-				if (args.first_of_tsv)
-					normal_tsv_loop(in, cout, dic);
-				else
-					normal_loop(in, cout, dic);
-			}
-		}
-		break;
-	case PIPE_MODE:
-		// TODO (Once implemented here, re-add < in tests/hun2/test.sh)
-		break;
-	case MISSPELLED_WORDS_MODE:
-		if (args.files.empty()) {
-			misspelled_word_loop(cin, cout, dic);
-		}
-		else {
-			for (auto& file_name : args.files) {
-				ifstream in(file_name.c_str());
-				if (!in.is_open()) {
-					cerr << "Can't open " << file_name
-					     << endl;
-					return 1;
-				}
-				misspelled_word_loop(in, cout, dic);
-			}
-		}
-		break;
-	case CORRECT_WORDS_MODE:
-		if (args.files.empty()) {
-			correct_word_loop(cin, cout, dic);
-		}
-		else {
-			for (auto& file_name : args.files) {
-				ifstream in(file_name);
-				if (!in.is_open()) {
-					cerr << "Can't open " << file_name
-					     << endl;
-					return 1;
-				}
-				correct_word_loop(in, cout, dic);
-			}
-		}
-		break;
-	case MISSPELLED_LINES_MODE:
-		if (args.files.empty()) {
-			misspelled_line_loop(cin, cout, dic);
-		}
-		else {
-			for (auto& file_name : args.files) {
-				ifstream in(file_name.c_str());
-				if (!in.is_open()) {
-					cerr << "Can't open " << file_name
-					     << endl;
-					return 1;
-				}
-				misspelled_line_loop(in, cout, dic);
-			}
-		}
-		break;
-	case CORRECT_LINES_MODE:
-		if (args.files.empty()) {
-			correct_line_loop(cin, cout, dic);
-		}
-		else {
-			for (auto& file_name : args.files) {
-				ifstream in(file_name.c_str());
-				if (!in.is_open()) {
-					cerr << "Can't open " << file_name
-					     << endl;
-					return 1;
-				}
-				correct_line_loop(in, cout, dic);
-			}
-		}
-		break;
-	default:
-		break;
-	}
-	return 0;
-}
-
 auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 {
 	cout << aff.encoding << endl;
@@ -574,12 +431,90 @@ int main(int argc, char* argv[])
 	}
 	boost::locale::generator gen;
 	auto loc = gen("");
-	cerr << "INFO: Locale name: " << loc.name() << endl;
 	cin.imbue(loc);
 	cout.imbue(loc);
+	cerr.imbue(loc);
+	clog.imbue(loc);
 	setlocale(LC_CTYPE, "");
 
-	int success = handle_mode(args);
+	switch (args.mode) {
+	case HELP_MODE:
+		print_help();
+		return 0;
+	case VERSION_MODE:
+		print_version();
+		return 0;
+	case ERROR_MODE:
+		return 1;
+	default:
+		break;
+	}
 
-	return success;
+	auto f = Finder();
+	f.add_default_paths();
+	f.add_libreoffice_paths();
+	f.add_mozilla_paths();
+	f.add_apacheopenoffice_paths();
+	f.search_dictionaries();
+
+	if (args.mode == LIST_DICTIONARIES_MODE) {
+		list_dictionaries(f);
+		return 0;
+	}
+
+	auto filename = f.get_dictionary(args.dictionary);
+	if (filename.empty()) {
+		cerr << "Dictionary " << args.dictionary << " not found."
+		     << endl;
+		return 1;
+	}
+	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}" << endl;
+	Hunspell::Dictionary dic(filename);
+	auto loop_function = normal_loop;
+	switch (args.mode) {
+	case DEFAULT_MODE:
+		if (args.first_of_tsv)
+			loop_function = normal_tsv_loop;
+		else
+			loop_function = normal_loop;
+		break;
+	case PIPE_MODE:
+		cerr << "ERROR: pipe mode unimplelemed, will behave"
+		        "same as normal mode" << endl;
+		if (args.first_of_tsv)
+			loop_function = normal_tsv_loop;
+		else
+			loop_function = normal_loop;
+		break;
+	case MISSPELLED_WORDS_MODE:
+		loop_function = misspelled_word_loop;
+		break;
+	case MISSPELLED_LINES_MODE:
+		loop_function = misspelled_line_loop;
+		break;
+	case CORRECT_WORDS_MODE:
+		loop_function = correct_word_loop;
+		break;
+	case CORRECT_LINES_MODE:
+		loop_function = correct_line_loop;
+		break;
+	default:
+		break;
+	}
+
+	if (args.files.empty()) {
+		loop_function(cin, cout, dic);
+	}
+	else {
+		for (auto& file_name : args.files) {
+			ifstream in(file_name.c_str());
+			if (!in.is_open()) {
+				cerr << "Can't open " << file_name
+				     << endl;
+				return 1;
+			}
+			loop_function(in, cout, dic);
+		}
+	}
+	return 0;
 }
