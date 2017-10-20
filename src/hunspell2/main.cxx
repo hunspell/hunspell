@@ -28,6 +28,7 @@
 #include <clocale>
 #include <fstream>
 #include <iostream>
+#include <locale>
 #include <string>
 #include <unordered_map>
 
@@ -298,7 +299,7 @@ auto normal_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
 	while (in >> word) {
-		auto res = dic.spell(word, cin.getloc());
+		auto res = dic.spell(word, in.getloc());
 		switch (res) {
 		case bad_word:
 			out << '&' << endl;
@@ -322,7 +323,7 @@ auto normal_tsv_loop(istream& in, ostream& out, Dictionary& dic)
 	auto word = string();
 	while (getline(in, line)) {
 		word = split_first(line, '\t');
-		auto res = dic.spell(word, cin.getloc());
+		auto res = dic.spell(word, in.getloc());
 		switch (res) {
 		case bad_word:
 			out << '&' << endl;
@@ -344,7 +345,7 @@ auto misspelled_word_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
 	while (in >> word) {
-		auto res = dic.spell(word, cin.getloc());
+		auto res = dic.spell(word, in.getloc());
 		if (res == bad_word)
 			out << word << endl;
 	}
@@ -354,7 +355,7 @@ auto correct_word_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
 	while (in >> word) {
-		auto res = dic.spell(word, cin.getloc());
+		auto res = dic.spell(word, in.getloc());
 		if (res == good_word)
 			out << word << endl;
 	}
@@ -368,7 +369,7 @@ auto misspelled_line_loop(istream& in, ostream& out, Dictionary& dic)
 		auto print = false;
 		split_v(line, ' ', words);
 		for (auto& word : words) {
-			auto res = dic.spell(word, cin.getloc());
+			auto res = dic.spell(word, in.getloc());
 			if (res == bad_word) {
 				print = true;
 				break;
@@ -387,7 +388,7 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 		auto print = true;
 		split_v(line, ' ', words);
 		for (auto& word : words) {
-			auto res = dic.spell(word, cin.getloc());
+			auto res = dic.spell(word, in.getloc());
 			if (res == bad_word) {
 				print = false;
 				break;
@@ -423,6 +424,16 @@ auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 	}
 }
 
+namespace std {
+ostream& operator<<(ostream& out, const locale& loc)
+{
+	auto& f = use_facet<boost::locale::info>(loc);
+	out << "name=" << f.name() << ", lang=" << f.language()
+	    << ", enc=" << f.encoding();
+	return out;
+}
+}
+
 int main(int argc, char* argv[])
 {
 	auto args = Args_t(argc, argv);
@@ -431,11 +442,18 @@ int main(int argc, char* argv[])
 	}
 	boost::locale::generator gen;
 	auto loc = gen("");
-	cin.imbue(loc);
+	if (args.encoding.empty()) {
+		cin.imbue(loc);
+	}
+	else {
+		cin.imbue(gen("en_US." + args.encoding));
+	}
 	cout.imbue(loc);
 	cerr.imbue(loc);
 	clog.imbue(loc);
 	setlocale(LC_CTYPE, "");
+	clog << "INFO: Input  locale " << cin.getloc() << endl;
+	clog << "INFO: Output locale " << cout.getloc() << endl;
 
 	switch (args.mode) {
 	case HELP_MODE:
@@ -480,7 +498,8 @@ int main(int argc, char* argv[])
 		break;
 	case PIPE_MODE:
 		cerr << "ERROR: pipe mode unimplelemed, will behave"
-		        "same as normal mode" << endl;
+		        "same as normal mode"
+		     << endl;
 		if (args.first_of_tsv)
 			loop_function = normal_tsv_loop;
 		else
@@ -509,10 +528,10 @@ int main(int argc, char* argv[])
 		for (auto& file_name : args.files) {
 			ifstream in(file_name.c_str());
 			if (!in.is_open()) {
-				cerr << "Can't open " << file_name
-				     << endl;
+				cerr << "Can't open " << file_name << endl;
 				return 1;
 			}
+			in.imbue(cin.getloc());
 			loop_function(in, cout, dic);
 		}
 	}

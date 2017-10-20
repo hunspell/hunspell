@@ -23,6 +23,7 @@
 #include "aff_manager.hxx"
 #include "dic_manager.hxx"
 
+#include <boost/locale.hpp>
 #include <fstream>
 #include <locale>
 
@@ -93,9 +94,19 @@ class Dictionary {
 	auto spell(const std::string& word, std::locale loc = std::locale())
 	    -> Spell_result
 	{
-		// this just for mocking ATM
-		if (dic_data.words.count(word))
-			return good_word;
+		if (std::has_facet<boost::locale::info>(loc)) {
+
+			auto& fac = std::use_facet<boost::locale::info>(loc);
+			auto from_enc = fac.encoding();
+			auto& to_enc = aff_data.encoding;
+			auto w = boost::locale::conv::between(word, to_enc,
+			                                      from_enc);
+			// this just for mocking ATM
+			if (dic_data.words.count(w))
+				return good_word;
+			return bad_word;
+		}
+		std::cerr << "No info facet in locale" << std::endl;
 		return bad_word;
 	}
 	auto spell_u8(const std::string& word) -> Spell_result;
