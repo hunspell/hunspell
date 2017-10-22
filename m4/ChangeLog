@@ -1,3 +1,15 @@
+2017-10-22  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* gettext.m4: New file, from gettext-0.19.8.1.
+	* iconv.m4: New file, from gettext-0.19.8.1.
+	* lib-ld.m4: New file, from gettext-0.19.8.1.
+	* lib-link.m4: New file, from gettext-0.19.8.1.
+	* lib-prefix.m4: New file, from gettext-0.19.8.1.
+	* nls.m4: New file, from gettext-0.19.8.1.
+	* po.m4: New file, from gettext-0.19.8.1.
+	* progtest.m4: New file, from gettext-0.19.8.1.
+	* visibility.m4: from gettext-0.19.8.1, manually copied.
+
 2016-11-02  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* gettext.m4: Upgrade to gettext-0.19.8. Manually copied.

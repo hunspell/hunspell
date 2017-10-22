@@ -27,6 +27,7 @@ LT_INIT
 AC_PROG_AWK
 
 # Checks for libraries.
+AM_ICONV
 PKG_CHECK_MODULES([CPPUNIT], [cppunit >= 1.11.6])
 BOOST_REQUIRE
 BOOST_LOCALE
@@ -39,6 +40,7 @@ AC_CHECK_HEADERS([fcntl.h libintl.h locale.h unistd.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
+gl_VISIBILITY
 
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
@@ -46,7 +48,7 @@ AC_HEADER_STDC
 AC_CHECK_FUNCS([memchr setlocale strchr strstr])
 
 dnl internationalization macros
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_REQUIRE_VERSION(0.17)
 
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages], [
@@ -106,7 +108,6 @@ AC_CONFIG_FILES([Makefile
 		 hunspell.pc
                  docs/Makefile
                  docs/hu/Makefile
-                 intl/Makefile
                  po/Makefile.in
 		 src/Makefile
 		 src/hunspell/Makefile
