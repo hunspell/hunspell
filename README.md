@@ -63,7 +63,7 @@ need to manually install them.
 
 For Ubuntu:
 
-    sudo apt install autoconf automake autopoint libtool libcppunit-dev libboost-locale-dev libboost-system-dev
+    sudo apt install autoconf automake autopoint pkg-config libtool libcppunit-dev libboost-locale-dev libboost-system-dev
 
 Then run the following commands:
 
