@@ -28,7 +28,6 @@ AC_PROG_AWK
 
 # Checks for libraries.
 AM_ICONV
-PKG_CHECK_MODULES([CPPUNIT], [cppunit >= 1.11.6])
 BOOST_REQUIRE
 BOOST_LOCALE
 AC_REQUIRE_AUX_FILE([tap-driver.sh])

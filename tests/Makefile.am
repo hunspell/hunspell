@@ -3,9 +3,9 @@ SUBDIRS = suggestiontest hun2 v1cmdline
 override PACKAGE_STRING = Hunspell 2.0.0 unit tests
 
 AM_CPPFLAGS = -I../src/hunspell2 $(BOOST_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
-AM_CXXFLAGS = -std=c++14 $(CPPUNIT_CFLAGS) $(CODE_COVERAGE_CXXFLAGS)
+AM_CXXFLAGS = -std=c++14 $(CODE_COVERAGE_CXXFLAGS)
 AM_LDFLAGS  = $(BOOST_LOCALE_LDFLAGS)
-LDADD = ../src/hunspell2/libhunspell2.a $(BOOST_LOCALE_LIBS) $(CPPUNIT_LIBS) $(CODE_COVERAGE_LIBS)
+LDADD = ../src/hunspell2/libhunspell2.a $(BOOST_LOCALE_LIBS) $(CODE_COVERAGE_LIBS)
 
 
 BUILT_SOURCES = catch.hpp catch_reporter_tap.hpp
@@ -23,8 +23,6 @@ CATCH_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
 CATCH_LOG_COMPILER = $(SHELL) $(srcdir)/catch-runner.sh
 
 check_PROGRAMS = \
-locale_utils_test \
-string_utils_test \
 ch.catch
 
 # Next setting is needed to build executables from Qt Creator.
@@ -32,10 +30,12 @@ noinst_PROGRAMS = $(check_PROGRAMS)
 
 TESTS =	$(check_PROGRAMS)
 
-locale_utils_test_SOURCES = locale_utils_test.cxx
-string_utils_test_SOURCES = string_utils_test.cxx
+ch_catch_SOURCES = \
+ch.cxx \
+locale_utils_test.cxx \
+string_utils_test.cxx \
+catch_main.cxx
 
-ch_catch_SOURCES = ch.cxx catch_main.cxx
 nodist_ch_catch_SOURCES = $(BUILT_SOURCES)
 
 

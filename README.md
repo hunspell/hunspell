@@ -40,12 +40,12 @@ Build only dependencies:
 
 Runtime dependencies:
 
-|               | Mandatory |Optional|
-|---------------|-----------|--------|
-|libhunspell 1  |           |        |
-|cmd line tool 1| libiconv  |gettext ncurses readline|
-|libhunspell 2  | cppunit boost-locale  |        |
-|cmd line tool 2|           |        |
+|               |Mandatory         |Optional                |
+|---------------|------------------|------------------------|
+|libhunspell 1  |                  |                        |
+|cmd line tool 1|libiconv          |gettext ncurses readline|
+|libhunspell 2  |catch boost-locale|                        |
+|cmd line tool 2|                  |                        |
     
 Recommended tools for developers:
 
@@ -59,7 +59,7 @@ need to manually install them.
 
 For Ubuntu:
 
-    sudo apt install autoconf automake autopoint pkg-config libtool libcppunit-dev libboost-locale-dev libboost-system-dev
+    sudo apt install autoconf automake autopoint libtool libboost-locale-dev libboost-system-dev
 
 Then run the following commands:
 
@@ -82,6 +82,7 @@ Optional developer packages:
     --with-readline)
   - locale and gettext (but you can also use the --with-included-gettext
     configure parameter)
+  - gdb and libtool-bin (for debugging with gdb and IDE, see IDE documentation)
 
 In Ubuntu, the packages are:
 
@@ -92,7 +93,7 @@ In Ubuntu, the packages are:
 On macOS for compiler always use `clang` and not `g++` because Homebrew
 dependencies are build with that.
 
-    brew install autoconf automake libtool gettext pkg-config cppunit boost
+    brew install autoconf automake libtool gettext boost
     brew link gettext --force
 
 Then run the standard trio: autoreconf, configure, make. See above.

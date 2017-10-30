@@ -20,127 +20,79 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
+#include "catch.hpp"
+
 #include <iostream>
 
 #include "../src/hunspell2/locale_utils.hxx"
 
-#include <cppunit/CompilerOutputter.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
-
 using namespace std;
 using namespace Hunspell;
 
-class LocaleUtilsTest : public CppUnit::TestFixture {
-	CPPUNIT_TEST_SUITE(LocaleUtilsTest);
-	CPPUNIT_TEST(test_decode_utf8);
-	CPPUNIT_TEST(test_validate_utf8);
-	CPPUNIT_TEST(test_is_ascii);
-	CPPUNIT_TEST(test_is_all_ascii);
-	CPPUNIT_TEST(test_ascii_to_ucs2_skip_invalid);
-	CPPUNIT_TEST(test_latin1_to_ucs2);
-	CPPUNIT_TEST(test_latin1_to_u32);
-	CPPUNIT_TEST(test_is_all_bmp);
-	CPPUNIT_TEST(test_u32_to_ucs2_skip_non_bmp);
-	CPPUNIT_TEST_SUITE_END();
-
-      private:
-	vector<string> exp;
-
-      public:
-	//    LocaleUtilsTest()
-	//    {
-	//    }
-
-	//	auto setUp() -> void
-	//	{
-	//	}
-
-	//  auto tearDown() -> void
-	//  {
-	//  }
-
-	auto test_decode_utf8() -> void
+TEST_CASE("Testing locale_utils", "[locale_utils]")
+{
+	SECTION("Testing decode_utf8")
 	{
-		CPPUNIT_ASSERT(U"" == decode_utf8(string("")));
+		CHECK(U"" == decode_utf8(string("")));
 		// TODO Omit constructor string("...") without risk for UTF-8?
-		CPPUNIT_ASSERT(U"azĳß«" == decode_utf8(string("azĳß«")));
-		CPPUNIT_ASSERT(U"日  Ӥ" != decode_utf8(string("Ӥ日本に")));
+		CHECK(U"azĳß«" == decode_utf8(string("azĳß«")));
+		CHECK(U"日  Ӥ" != decode_utf8(string("Ӥ日本に")));
 		// TODO need counter example
 	}
 
-	auto test_validate_utf8() -> void
+	SECTION("Testing validate_utf8")
 	{
-		CPPUNIT_ASSERT(true == validate_utf8(string("")));
-		CPPUNIT_ASSERT(true == validate_utf8(string("the brown fox~")));
-		CPPUNIT_ASSERT(true == validate_utf8(string("Ӥ日本に")));
+		CHECK(validate_utf8(string("")));
+		CHECK(validate_utf8(string("the brown fox~")));
+		CHECK(validate_utf8(string("Ӥ日本に")));
 		// TODO need counter example
 	}
 
-	auto test_is_ascii() -> void
+	SECTION("Testing is_ascii")
 	{
-		CPPUNIT_ASSERT(true == is_ascii('a'));
-		CPPUNIT_ASSERT(true == is_ascii('\t'));
+		CHECK(is_ascii('a'));
+		CHECK(is_ascii('\t'));
 		// Results in warning "multi-character character constant
 		// [-Wmultichar]"
 		// FIXME Add this to Makefile.am for only this source file.
-		//        CPPUNIT_ASSERT(true != is_ascii('Ӥ'));
+		//        CHECK_FALSE(is_ascii('Ӥ'));
 	}
 
-	auto test_is_all_ascii() -> void
+	SECTION("Testing is_all_ascii")
 	{
-		CPPUNIT_ASSERT(true == is_all_ascii(string("")));
-		CPPUNIT_ASSERT(true == is_all_ascii(string("the brown fox~")));
-		CPPUNIT_ASSERT(false == is_all_ascii(string("brown foxĳӤ")));
+		CHECK(is_all_ascii(string("")));
+		CHECK(is_all_ascii(string("the brown fox~")));
+		CHECK_FALSE(is_all_ascii(string("brown foxĳӤ")));
 	}
 
-	auto test_ascii_to_ucs2_skip_invalid() -> void
+	SECTION("Testing ascii_to_ucs2_skip_invalid")
 	{
-		CPPUNIT_ASSERT(u"ABC" == ascii_to_ucs2_skip_invalid("ABC"));
-		CPPUNIT_ASSERT(u"ABC" == ascii_to_ucs2_skip_invalid("ABCĳӤ日"));
+		CHECK(u"ABC" == ascii_to_ucs2_skip_invalid("ABC"));
+		CHECK(u"ABC" == ascii_to_ucs2_skip_invalid("ABCĳӤ日"));
 	}
 
-	auto test_latin1_to_ucs2() -> void
+	SECTION("Testing latin1_to_ucs2")
 	{
-		CPPUNIT_ASSERT(u"" == latin1_to_ucs2(string("")));
-		CPPUNIT_ASSERT(u"abc" == latin1_to_ucs2(string("abc")));
+		CHECK(u"" == latin1_to_ucs2(string("")));
+		CHECK(u"abc" == latin1_to_ucs2(string("abc")));
 		// QUESTION Is next line OK?
-		CPPUNIT_ASSERT(u"²¿ýþÿ" != latin1_to_ucs2(string("²¿ýþÿ")));
-		CPPUNIT_ASSERT(u"Ӥ日本に" != latin1_to_ucs2(string("Ӥ日本に")));
+		CHECK(u"²¿ýþÿ" != latin1_to_ucs2(string("²¿ýþÿ")));
+		CHECK(u"Ӥ日本に" != latin1_to_ucs2(string("Ӥ日本に")));
 	}
 
-	auto test_latin1_to_u32() -> void
+	SECTION("Testing latin1_to_u32")
 	{
-		CPPUNIT_ASSERT(U"" == latin1_to_u32(string("")));
-		CPPUNIT_ASSERT(U"abc~" == latin1_to_u32(string("abc~")));
+		CHECK(U"" == latin1_to_u32(string("")));
+		CHECK(U"abc~" == latin1_to_u32(string("abc~")));
 		// QUESTION Is next line OK?
-		CPPUNIT_ASSERT(U"²¿ýþÿ" != latin1_to_u32(string("²¿ýþÿ")));
-		CPPUNIT_ASSERT(U"Ӥ日本に" != latin1_to_u32(string("Ӥ日本に")));
+		CHECK(U"²¿ýþÿ" != latin1_to_u32(string("²¿ýþÿ")));
+		CHECK(U"Ӥ日本に" != latin1_to_u32(string("Ӥ日本に")));
 	}
 
-	auto test_is_all_bmp() -> void
+	SECTION("Testing is_all_bmp") { CHECK(true == is_all_bmp(U"abcýþÿӤ")); }
+
+	SECTION("Testing u32_to_ucs2_skip_non_bmp")
 	{
-		CPPUNIT_ASSERT(true == is_all_bmp(U"abcýþÿӤ"));
+		CHECK(u"ABC" == u32_to_ucs2_skip_non_bmp(U"ABC"));
 	}
-
-	auto test_u32_to_ucs2_skip_non_bmp() -> void
-	{
-		CPPUNIT_ASSERT(u"ABC" == u32_to_ucs2_skip_non_bmp(U"ABC"));
-	}
-};
-CPPUNIT_TEST_SUITE_REGISTRATION(LocaleUtilsTest);
-
-int main(int argc, char* argv[])
-{
-	CppUnit::TextUi::TestRunner runner;
-	CppUnit::TestFactoryRegistry& registry =
-	    CppUnit::TestFactoryRegistry::getRegistry();
-	runner.addTest(registry.makeTest());
-
-	// Change the default outputter to a compiler error format outputter
-	runner.setOutputter(
-	    new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
-
-	return !runner.run();
 }

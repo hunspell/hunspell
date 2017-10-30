@@ -15,7 +15,7 @@ before_install:
 
 install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      brew install gettext cppunit;
+      brew install gettext;
       brew link gettext --force;
     fi
 # Don't use real gcc on OS X, problems arise when
@@ -46,6 +46,5 @@ addons:
     - autopoint
     - gcc-5
     - g++-5
-    - libcppunit-dev
     - libboost-locale-dev
     - libboost-system-dev
