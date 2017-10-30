@@ -1,7 +1,3 @@
-<a href="https://hosted.weblate.org/engage/hunspell/?utm_source=widget">
-<img src="https://hosted.weblate.org/widgets/hunspell/-/translations/svg-badge.svg" alt="Translation status" />
-</a>
-
 # About Hunspell
 
 NOTICE: Version 2 is in the works. For contributing see [version 2
