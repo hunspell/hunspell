@@ -20,8 +20,8 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-#include "aff_manager.hxx"
-#include "dic_manager.hxx"
+#include "aff_data.hxx"
+#include "dic_data.hxx"
 
 #include <boost/locale.hpp>
 #include <fstream>

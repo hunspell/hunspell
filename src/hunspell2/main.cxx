@@ -20,14 +20,11 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-#include "aff_manager.hxx"
-#include "dic_manager.hxx"
-#include "dict_finder.hxx"
-#include "hunspell.hxx"
+#include "finder.hxx"
+#include "dictionary.hxx"
 #include "string_utils.hxx"
 #include <clocale>
 #include <fstream>
-#include <getopt.h>
 #include <iostream>
 #include <locale>
 #include <string>
@@ -38,6 +35,7 @@
 #if defined(__MINGW32__) || defined(__unix__) || defined(__unix) ||            \
     (defined(__APPLE__) && defined(__MACH__))
 #include <unistd.h>
+#include <getopt.h>
 #endif
 
 using namespace std;

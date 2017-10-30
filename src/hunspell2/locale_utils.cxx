@@ -24,7 +24,6 @@
 
 #include <algorithm>
 #include <limits>
-#include <type_traits>
 
 #ifdef _MSC_VER
 #include <intrin.h>

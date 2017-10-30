@@ -8,11 +8,14 @@ AM_LDFLAGS  = $(BOOST_LOCALE_LDFLAGS)
 LDADD       = $(BOOST_LOCALE_LIBS) $(CODE_COVERAGE_LIBS)
 LIBADD      = $(BOOST_LOCALE_LIBS) $(CODE_COVERAGE_LIBS)
 
-libhunspell2_a_SOURCES=aff_manager.cxx aff_manager.hxx dic_manager.cxx \
-dic_manager.hxx dict_finder.cxx dict_finder.hxx hunspell.hxx \
-locale_utils.hxx locale_utils.cxx stream_utils.hxx  \
-string_utils.hxx
-# libhunspell2_a_LIBADD = $(LIBADD)
+libhunspell2_a_SOURCES=\
+aff_data.cxx     aff_data.hxx     \
+dic_data.cxx     dic_data.hxx     \
+                 dictionary.hxx   \
+finder.cxx       finder.hxx       \
+locale_utils.cxx locale_utils.hxx \
+                 stream_utils.hxx \
+                 string_utils.hxx
 
 hun2_SOURCES = main.cxx
 hun2_LDADD = libhunspell2.a $(LDADD)

@@ -20,7 +20,7 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-#include "aff_manager.hxx"
+#include "aff_data.hxx"
 
 #include "stream_utils.hxx"
 #include "string_utils.hxx"

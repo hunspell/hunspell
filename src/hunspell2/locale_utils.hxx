@@ -28,8 +28,6 @@
 #ifndef LOCALE_UTILS_HXX
 #define LOCALE_UTILS_HXX
 
-#include <codecvt>
-#include <istream>
 #include <locale>
 #include <string>
 

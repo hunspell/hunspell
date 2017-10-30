@@ -20,7 +20,7 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-#include "dic_manager.hxx"
+#include "dic_data.hxx"
 
 #include "stream_utils.hxx"
 #include "string_utils.hxx"

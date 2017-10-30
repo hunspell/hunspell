@@ -23,7 +23,7 @@
 #ifndef HUNSPELL_DIC_MANAGER_HXX
 #define HUNSPELL_DIC_MANAGER_HXX
 
-#include "aff_manager.hxx"
+#include "aff_data.hxx"
 #include <istream>
 #include <string>
 #include <unordered_map>
