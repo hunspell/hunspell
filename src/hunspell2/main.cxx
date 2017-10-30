@@ -27,6 +27,7 @@
 #include "string_utils.hxx"
 #include <clocale>
 #include <fstream>
+#include <getopt.h>
 #include <iostream>
 #include <locale>
 #include <string>
@@ -91,7 +92,11 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	while ((c = getopt(argc, argv, ":d:i:1aDGHLOP::Xlhtv")) != -1) {
+	const char* shortopts = ":d:i:1aDGHLOP::Xlhtv";
+	const struct option longopts[] = {
+	    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'}, {NULL, 0, 0, 0},
+	};
+	while ((c = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
 		switch (c) {
 		case '1':
 			first_of_tsv = true;
