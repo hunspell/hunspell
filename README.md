@@ -36,20 +36,20 @@ Main features of Hunspell spell checker and morphological analyzer:
 
 Build only dependencies:
 
-    g++ make autoconf automake autopoint libtool
+    g++ make autoconf automake autopoint libtool wget catch
 
 Runtime dependencies:
 
-|               |Mandatory         |Optional                |
-|---------------|------------------|------------------------|
-|libhunspell 1  |                  |                        |
-|cmd line tool 1|libiconv          |gettext ncurses readline|
-|libhunspell 2  |catch boost-locale|                        |
-|cmd line tool 2|                  |                        |
+|               | Mandatory        |Optional          |
+|---------------|------------------|------------------|
+|libhunspell 1  |                  |                  |
+|cmd line tool 1| libiconv gettext | ncurses readline |
+|libhunspell 2  | boost-locale     |                  |
+|cmd line tool 2|                  |                  |
     
 Recommended tools for developers:
 
-    vim qtcreator clang-format cppcheck
+    vim qtcreator clang-format cppcheck gdb libtool-bin
 
 # Compiling on GNU/Linux and Unixes
 
@@ -59,7 +59,8 @@ need to manually install them.
 
 For Ubuntu:
 
-    sudo apt install autoconf automake autopoint libtool libboost-locale-dev libboost-system-dev
+    sudo apt install autoconf automake autopoint libtool libboost-locale-dev \
+                     libboost-system-dev
 
 Then run the following commands:
 
@@ -80,9 +81,6 @@ Optional developer packages:
   - ncurses (need for --with-ui), eg. libncursesw5 for UTF-8
   - readline (for fancy input line editing, configure parameter:
     --with-readline)
-  - locale and gettext (but you can also use the --with-included-gettext
-    configure parameter)
-  - gdb and libtool-bin (for debugging with gdb and IDE, see IDE documentation)
 
 In Ubuntu, the packages are:
 
@@ -105,7 +103,8 @@ Then run the standard trio: autoreconf, configure, make. See above.
 Download Msys2, update everything and install the following
     packages:
 
-    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-cppunit mingw-w64-x86_64-boost
+    pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool \
+              mingw-w64-x86_64-boost
 
 Open Mingw-w64 Win64 prompt and compile the same way as on Linux, see
 above.
@@ -120,6 +119,7 @@ extra packages:
   - autoconf
   - libtool
   - gcc-g++ development package
+  - boost
   - ncurses, readline (for user interface)
   - iconv (character conversion)
 
@@ -137,7 +137,7 @@ For debugging we need to create a debug build and then we need to start
 
     ./configure CXXFLAGS='-g -O0 -Wall -Wextra'
     make
-    libtool --mode=execute gdb src/tools/hunspell
+    ./libtool --mode=execute gdb src/tools/hunspell
 
 You can also pass the `CXXFLAGS` directly to `make` without calling
 `./configure`, but we don't recommend this way during long development
@@ -220,9 +220,9 @@ Including in your program:
 
 Linking with Hunspell static library:
 
-``` 
-g++ -lhunspell example.cxx 
-```
+    g++ -lhunspell-1.6 example.cxx
+    # or better, use pkg-config
+    g++ $(pkg-config --cflags --libs hunspell) example.cxx
 
 ## Dictionaries
 
