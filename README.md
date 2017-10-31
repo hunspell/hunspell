@@ -1,3 +1,12 @@
+<!-- add following also to hunspell.github.io
+[![Code Coverage Codecov](https://codecov.io/gh/hunspell/hunspell/branch/master/graph/badge.svg)](https://codecov.io/gh/hunspell/hunspell)
+[![Build Status Travis](https://travis-ci.org/hunspell/hunspell.svg?branch=master)](https://travis-ci.org/hunspell/hunspell)
+[![Build Status AppVeyor]([https://ci.appveyor.com/api/projects/status/ecxsq3s4j2b9n965?svg=true](https://ci.appveyor.com/api/projects/status/ecxsq3s4j2b9n965?svg=true)](https://ci.appveyor.com/project/hunspell-bot/hunspell-n4uof)
+[![Translation Status](https://hosted.weblate.org/widgets/hunspell/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/hunspell/?utm_source=widget)
+
+see also https://shields.io/
+-->
+
 # About Hunspell
 
 NOTICE: Version 2 is in the works. For contributing see [version 2
