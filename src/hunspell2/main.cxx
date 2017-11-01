@@ -69,9 +69,66 @@ struct Args_t {
 	auto fail() -> bool { return mode == ERROR_MODE; }
 };
 
-/**
+/*!
  * Parses command line arguments and result is stored in mode, dictionary,
  * other_dicts and files.
+ *
+ * @startuml{main-parse_args-state.png}
+ * title main - parse_args - state diagram
+ * [*] --> DEFAULT_MODE
+ * DEFAULT_MODE --> DEFAULT_MODE : -d\nwith\noperand
+ * DEFAULT_MODE --> DEFAULT_MODE : -1 for\n1st field\nin TSV
+ * DEFAULT_MODE --> ERROR_MODE : -d\nwithout\noperand
+ * DEFAULT_MODE --> PIPE_MODE : -a
+ * DEFAULT_MODE --> LIST_DICTIONARIES_MODE : -D
+ * DEFAULT_MODE --> CORRECT_WORDS_MODE : -G
+ * LINES_MODE --> CORRECT_LINES_MODE : -G
+ * DEFAULT_MODE --> MISSPELLED_WORDS_MODE : -l
+ * LINES_MODE --> MISSPELLED_LINES_MODE : -l
+ * DEFAULT_MODE --> LINES_MODE : -L
+ * MISSPELLED_WORDS_MODE --> MISSPELLED_LINES_MODE : -L
+ * CORRECT_WORDS_MODE --> CORRECT_LINES_MODE : -L
+ * DEFAULT_MODE --> HELP_MODE : -h\n--help
+ * DEFAULT_MODE --> VERSION_MODE : -v\n--version
+ * DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
+ * DEFAULT_MODE --> ERROR_MODE : deprecated\n-H -O -P -t -X
+ * LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
+ * LINES_MODE : is intermediate mode
+ * ERROR_MODE --> [*]
+ * ERROR_MODE : returns exit code of 1
+ * @enduml
+ *
+ * @startuml{main-parse_args-activity.png}
+ * title main - parse_args - activity diagram
+ * start
+ * while (has options to process?) is (yes)
+ *     if (option is '1'?) then (yes)
+ *         :set first_of_tsv to\ntrue;
+ *     elseif (option is 'd'?) then (yes)
+ *         if (dictionary is empty?) then (yes)
+ *             :set dictionary to\naccompanying provided argument;
+ *         else (no)
+ *             :print warning message;
+ *         endif
+ *         :append to other_dicts\naccompanying provided argument;
+ *     elseif (option is 'i'?) then (yes)
+ *         :set encoding to\naccompanying provided argument;
+ *     elseif (option is 'H'?) then (yes)
+ *         :print error message;
+ *         :set error mode;
+ *     endif
+ * endwhile (no)
+ * :append to files\nthe remaining provided arguments;
+ * if (is lines mode?) then (yes)
+ *     :set error mode;
+ * else (no)
+ * endif
+ * if (is error mode?) then (yes)
+ *     :print error message;
+ * else (no)
+ * endif
+ * stop
+ * @enduml
  *
  * \param argc the total number of command line arguments.
  * \param argv all the individual command linen arguments.

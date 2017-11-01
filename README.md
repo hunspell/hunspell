@@ -58,7 +58,7 @@ Runtime dependencies:
     
 Recommended tools for developers:
 
-    vim qtcreator clang-format cppcheck gdb libtool-bin
+    vim qtcreator clang-format cppcheck gdb libtool-bin doxygen plantuml
 
 # Compiling on GNU/Linux and Unixes
 
@@ -180,6 +180,15 @@ features and dictionary format:
     hunspell -h
 
 http://hunspell.github.io/
+
+Documentation for developers can be generated from the source files by running:
+
+    doxygen
+
+The result can be viewed by opening `doxygen/html/index.html` in a web browser.
+Doxygen will use Graphviz for generating all sorts of graphs and PlantUML
+for generating UML diagrams. Make sure that the packages plantuml and graphviz are installed before running Doxygen. The latter is usually installed automatically
+when installing Doxygen.
 
 # Usage
 
