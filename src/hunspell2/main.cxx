@@ -20,8 +20,8 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-#include "finder.hxx"
 #include "dictionary.hxx"
+#include "finder.hxx"
 #include "string_utils.hxx"
 #include <clocale>
 #include <fstream>
@@ -34,8 +34,8 @@
 
 #if defined(__MINGW32__) || defined(__unix__) || defined(__unix) ||            \
     (defined(__APPLE__) && defined(__MACH__))
-#include <unistd.h>
 #include <getopt.h>
+#include <unistd.h>
 #endif
 
 using namespace std;
@@ -108,13 +108,13 @@ struct Args_t {
  *         if (dictionary is empty?) then (yes)
  *             :set dictionary to\naccompanying provided argument;
  *         else (no)
- *             :print warning message;
+ *             :print warning to stderr;
  *         endif
  *         :append to other_dicts\naccompanying provided argument;
  *     elseif (option is 'i'?) then (yes)
  *         :set encoding to\naccompanying provided argument;
  *     elseif (option is 'H'?) then (yes)
- *         :print error message;
+ *         :print error to stderr;
  *         :set error mode;
  *     endif
  * endwhile (no)
@@ -124,7 +124,7 @@ struct Args_t {
  * else (no)
  * endif
  * if (is error mode?) then (yes)
- *     :print error message;
+ *     :print error to stderr;
  * else (no)
  * endif
  * stop
@@ -355,6 +355,34 @@ auto list_dictionaries(Finder& f) -> void
 	}
 }
 
+/*!
+ * Checks spelling for input stream with on each line a single word to check
+ * and report on respective line in output correctness of that word with a
+ * single character.
+ *
+ * @startuml{main-normal_loop-activity.png}
+ * title main - normal_loop - activity diagram
+ * start
+ * while (input stream has words?) is (yes)
+ *     :check spelling for word;
+ *     if (spelling is a bad word?) then (yes)
+ *         :print '&' to output stream;
+ *     elseif (spelling is a good word?) then (yes)
+ *         :print '*' to output stream;
+ *     elseif (spelling is an affixed good word?) then (yes)
+ *         :print '+' to output stream;
+ *     elseif (spelling is compound good word?) then (yes)
+ *         :print '-' to output stream;
+ *     endif
+ * endwhile (no)
+ * stop
+ * @enduml
+ *
+ * \param in the input stream to check spelling for with a word on each line.
+ * \param out the output stream to report spelling correctness on the respective
+ * lines.
+ * \param dic the dictionary to use.
+ */
 auto normal_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
