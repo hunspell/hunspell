@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace Hunspell {
+namespace hunspell {
 
 inline void reset_failbit_istream(std::istream& in)
 {

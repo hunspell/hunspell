@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-namespace Hunspell {
+namespace hunspell {
 
 class Finder {
 	using string = std::string;

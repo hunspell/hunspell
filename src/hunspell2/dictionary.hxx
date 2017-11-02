@@ -27,7 +27,7 @@
 #include <fstream>
 #include <locale>
 
-namespace Hunspell {
+namespace hunspell {
 
 enum Spell_result {
 	bad_word,

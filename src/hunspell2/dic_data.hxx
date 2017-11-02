@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Hunspell {
+namespace hunspell {
 
 struct Dic_data {
 	// word and flag vector

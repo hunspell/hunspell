@@ -29,7 +29,7 @@
 #include <intrin.h>
 #endif
 
-namespace Hunspell {
+namespace hunspell {
 
 using namespace std;
 

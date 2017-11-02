@@ -27,7 +27,7 @@
 #include "../src/hunspell2/string_utils.hxx"
 
 using namespace std;
-using namespace Hunspell;
+using namespace hunspell;
 
 TEST_CASE("Testing string utils", "[string_utils]")
 {

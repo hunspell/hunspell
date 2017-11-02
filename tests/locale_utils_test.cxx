@@ -27,7 +27,7 @@
 #include "../src/hunspell2/locale_utils.hxx"
 
 using namespace std;
-using namespace Hunspell;
+using namespace hunspell;
 
 TEST_CASE("Testing locale_utils", "[locale_utils]")
 {

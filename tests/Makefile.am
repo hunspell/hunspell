@@ -31,7 +31,6 @@ noinst_PROGRAMS = $(check_PROGRAMS)
 TESTS =	$(check_PROGRAMS)
 
 ch_catch_SOURCES = \
-ch.cxx \
 locale_utils_test.cxx \
 string_utils_test.cxx \
 catch_main.cxx
