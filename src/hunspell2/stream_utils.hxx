@@ -20,9 +20,9 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-/**
- * @file stream_utils.hxx
- * @brief C++ stream functions.
+/*!
+ * \file stream_utils.hxx
+ * \brief C++ stream functions.
  */
 
 #ifndef STREAM_UTILS_HXX

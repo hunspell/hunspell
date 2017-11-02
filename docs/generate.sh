@@ -9,6 +9,15 @@ do
 done
 cd ..
 
+plantuml -o ../uml-usecase-diagrams plantuml/*-usecase-diagram.pu
+cd uml-usecase-diagrams
+echo '# Hunspell - UML Usecase Diagrams' > README.md
+for i in *png
+do
+    echo '[![]('$i'?raw=true)]('$BASE'/uml-usecase-diagrams/'$i')' >> README.md
+done
+cd ..
+
 exit
 #TODO Add diagrams for rendering below
 

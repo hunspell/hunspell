@@ -20,9 +20,9 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-/**
- * @file string_utils.hxx
- * @brief String algorithms not dependent on locale.
+/*!
+ * \file string_utils.hxx
+ * \brief String algorithms not dependent on locale.
  */
 
 #ifndef HUNSPELL_STRING_UTILS_HXX
@@ -34,7 +34,7 @@
 
 namespace Hunspell {
 
-/**
+/*!
  * Splits string on seperator.
  *
  * \param s a string to split.
@@ -67,7 +67,7 @@ auto split_v(const std::basic_string<CharT>& s, CharOrStr sep,
 	split(s, sep, std::back_inserter(v));
 }
 
-/**
+/*!
  * Splits string on any seperator.
  *
  * \param s a string to split.
@@ -93,7 +93,7 @@ auto split_on_any_of(const std::basic_string<CharT>& s, CharOrStr sep,
 	return out;
 }
 
-/**
+/*!
  * Splits string on first seperator.
  *
  * \param s a string to split.

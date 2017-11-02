@@ -95,8 +95,8 @@ auto inline count_leading_ones(unsigned char c)
 }
 }
 
-/**
- * @brief Finite state transducer used for decoding UTF-8 stream.
+/*!
+ * \brief Finite state transducer used for decoding UTF-8 stream.
  *
  * Formally, the state is a pair (state, cp) and
  * output is a triplet (is_cp_ready, out_cp, too_short_error).
@@ -119,10 +119,10 @@ auto inline count_leading_ones(unsigned char c)
  * At the end of the input stream, we should check if the state is 1, 2 or 3
  * which indicates that too_short_err happend. FFFD should be emitted.
  *
- * @param state In out parametar, first part of the state pair.
- * @param cp In out parametar, the code point in the state pair.
- * @param in Input byte.
- * @return true if too short sequence error happend. False otherwise.
+ * \param state In out parametar, first part of the state pair.
+ * \param cp In out parametar, the code point in the state pair.
+ * \param in Input byte.
+ * \return true if too short sequence error happend. False otherwise.
  */
 auto inline utf8_decode_dfst(unsigned char& state, char32_t& cp,
                              unsigned char in) -> bool

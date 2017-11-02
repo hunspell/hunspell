@@ -1,0 +1,11 @@
+@startuml
+!include config.pu
+
+title Hunspell - Top-level
+
+User --> (load affix file\nand dictionaries)
+User --> (check spelling\nof word)
+User --> (get suggestions\nfor word)
+User --> (add word to\npersonal dictionary)
+
+@enduml

@@ -20,9 +20,9 @@
  * MySpell is Copyright (C) 2002 Kevin Hendricks.
  */
 
-/**
- * @file locale_utils.hxx
- * @brief String transformations that depend on locales and enocdings.
+/*!
+ * \file locale_utils.hxx
+ * \brief String transformations that depend on locales and enocdings.
  */
 
 #ifndef LOCALE_UTILS_HXX

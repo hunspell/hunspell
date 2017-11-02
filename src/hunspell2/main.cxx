@@ -73,63 +73,6 @@ struct Args_t {
  * Parses command line arguments and result is stored in mode, dictionary,
  * other_dicts and files.
  *
- * @startuml{main-parse_args-state.png}
- * title main - parse_args - state diagram
- * [*] --> DEFAULT_MODE
- * DEFAULT_MODE --> DEFAULT_MODE : -d\nwith\noperand
- * DEFAULT_MODE --> DEFAULT_MODE : -1 for\n1st field\nin TSV
- * DEFAULT_MODE --> ERROR_MODE : -d\nwithout\noperand
- * DEFAULT_MODE --> PIPE_MODE : -a
- * DEFAULT_MODE --> LIST_DICTIONARIES_MODE : -D
- * DEFAULT_MODE --> CORRECT_WORDS_MODE : -G
- * LINES_MODE --> CORRECT_LINES_MODE : -G
- * DEFAULT_MODE --> MISSPELLED_WORDS_MODE : -l
- * LINES_MODE --> MISSPELLED_LINES_MODE : -l
- * DEFAULT_MODE --> LINES_MODE : -L
- * MISSPELLED_WORDS_MODE --> MISSPELLED_LINES_MODE : -L
- * CORRECT_WORDS_MODE --> CORRECT_LINES_MODE : -L
- * DEFAULT_MODE --> HELP_MODE : -h\n--help
- * DEFAULT_MODE --> VERSION_MODE : -v\n--version
- * DEFAULT_MODE --> ERROR_MODE : any\nunregonized\noperand
- * DEFAULT_MODE --> ERROR_MODE : deprecated\n-H -O -P -t -X
- * LINES_MODE --> ERROR_MODE : missing -G\nor\nmissing -l
- * LINES_MODE : is intermediate mode
- * ERROR_MODE --> [*]
- * ERROR_MODE : returns exit code of 1
- * @enduml
- *
- * @startuml{main-parse_args-activity.png}
- * title main - parse_args - activity diagram
- * start
- * while (has options to process?) is (yes)
- *     if (option is '1'?) then (yes)
- *         :set first_of_tsv to\ntrue;
- *     elseif (option is 'd'?) then (yes)
- *         if (dictionary is empty?) then (yes)
- *             :set dictionary to\naccompanying provided argument;
- *         else (no)
- *             :print warning to stderr;
- *         endif
- *         :append to other_dicts\naccompanying provided argument;
- *     elseif (option is 'i'?) then (yes)
- *         :set encoding to\naccompanying provided argument;
- *     elseif (option is 'H'?) then (yes)
- *         :print error to stderr;
- *         :set error mode;
- *     endif
- * endwhile (no)
- * :append to files\nthe remaining provided arguments;
- * if (is lines mode?) then (yes)
- *     :set error mode;
- * else (no)
- * endif
- * if (is error mode?) then (yes)
- *     :print error to stderr;
- * else (no)
- * endif
- * stop
- * @enduml
- *
  * \param argc the total number of command line arguments.
  * \param argv all the individual command linen arguments.
  */
@@ -324,7 +267,7 @@ auto print_version() -> void
 	// TODO print copyright and licence, LGPL v3
 }
 
-/**
+/*!
  * Lists dictionary paths and available dictionaries on the system to standard
  * output.
  *
@@ -359,24 +302,6 @@ auto list_dictionaries(Finder& f) -> void
  * Checks spelling for input stream with on each line a single word to check
  * and report on respective line in output correctness of that word with a
  * single character.
- *
- * @startuml{main-normal_loop-activity.png}
- * title main - normal_loop - activity diagram
- * start
- * while (input stream has words?) is (yes)
- *     :check spelling for word;
- *     if (spelling is a bad word?) then (yes)
- *         :print '&' to output stream;
- *     elseif (spelling is a good word?) then (yes)
- *         :print '*' to output stream;
- *     elseif (spelling is an affixed good word?) then (yes)
- *         :print '+' to output stream;
- *     elseif (spelling is compound good word?) then (yes)
- *         :print '-' to output stream;
- *     endif
- * endwhile (no)
- * stop
- * @enduml
  *
  * \param in the input stream to check spelling for with a word on each line.
  * \param out the output stream to report spelling correctness on the respective
@@ -429,6 +354,24 @@ auto normal_tsv_loop(istream& in, ostream& out, Dictionary& dic)
 	}
 }
 
+/*!
+ * Prints misspelled words from an input stream to an output stream.
+ *
+ * \startuml
+ * start
+ * while (input stream has words?) is (yes)
+ *     :check spelling word;
+ *     if (word is misspelled?) then (yes)
+ *         :print word to output stream;
+ *     endif
+ * endwhile (no)
+ * stop
+ * \enduml
+ *
+ * \param in the input stream with a word on each line.
+ * \param out the output stream with on each line only misspelled words.
+ * \param dic the dictionary to use.
+ */
 auto misspelled_word_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
@@ -444,7 +387,7 @@ auto correct_word_loop(istream& in, ostream& out, Dictionary& dic)
 	auto word = string();
 	while (in >> word) {
 		auto res = dic.spell(word, in.getloc());
-		if (res == good_word)
+		if (res == good_word) // TODO Should it be `!= bad_word` ?
 			out << word << endl;
 	}
 }
