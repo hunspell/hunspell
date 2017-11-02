@@ -357,17 +357,6 @@ auto normal_tsv_loop(istream& in, ostream& out, Dictionary& dic)
 /*!
  * Prints misspelled words from an input stream to an output stream.
  *
- * \startuml
- * start
- * while (input stream has words?) is (yes)
- *     :check spelling word;
- *     if (word is misspelled?) then (yes)
- *         :print word to output stream;
- *     endif
- * endwhile (no)
- * stop
- * \enduml
- *
  * \param in the input stream with a word on each line.
  * \param out the output stream with on each line only misspelled words.
  * \param dic the dictionary to use.
@@ -387,7 +376,7 @@ auto correct_word_loop(istream& in, ostream& out, Dictionary& dic)
 	auto word = string();
 	while (in >> word) {
 		auto res = dic.spell(word, in.getloc());
-		if (res == good_word) // TODO Should it be `!= bad_word` ?
+		if (res != bad_word)
 			out << word << endl;
 	}
 }
