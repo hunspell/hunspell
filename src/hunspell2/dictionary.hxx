@@ -58,14 +58,14 @@ class Dictionary {
 	auto spell(ConvIter start, ConvIter end, const string& s)
 	    -> Spell_result;
 
-	/**
+	/*
 	 * (1) This should be called when the input and the dictionary
 	 * are in the same encoding and that encoding is single byte encoding.
 	 */
 	auto spell_singlechar_input_singlechar_dict(const string& word)
 	    -> Spell_result;
 
-	/**
+	/*
 	 * (2) This should be called when the input and the dictionary
 	 * are in the same encoding and that encoding UTF-8.
 	 */
