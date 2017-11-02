@@ -140,7 +140,7 @@ auto inline utf8_decode_dfst(unsigned char& state, char32_t& cp,
 	return too_short_err;
 }
 
-auto decode_utf8(const string& s) -> u32string
+auto decode_utf8(const std::string& s) -> std::u32string
 {
 	unsigned char state = 0;
 	char32_t cp = 0;
@@ -189,12 +189,12 @@ auto validate_utf8(const std::string& s) -> bool
 
 auto is_ascii(char c) -> bool { return (unsigned char)c <= 127; }
 
-auto is_all_ascii(const string& s) -> bool
+auto is_all_ascii(const std::string& s) -> bool
 {
 	return all_of(s.begin(), s.end(), is_ascii);
 }
 
-auto ascii_to_ucs2_skip_invalid(const string& s) -> u16string
+auto ascii_to_ucs2_skip_invalid(const std::string& s) -> std::u16string
 {
 	u16string ret(s.size(), 0);
 	auto i = ret.begin();
@@ -209,14 +209,14 @@ auto widen_latin1(char c) -> CharT
 	return (unsigned char)c;
 }
 
-auto latin1_to_ucs2(const string& s) -> u16string
+auto latin1_to_ucs2(const std::string& s) -> std::u16string
 {
 	u16string ret(s.size(), 0);
 	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char16_t>);
 	return ret;
 }
 
-auto latin1_to_u32(const string& s) -> u32string
+auto latin1_to_u32(const std::string& s) -> std::u32string
 {
 	u32string ret(s.size(), 0);
 	transform(s.begin(), s.end(), ret.begin(), widen_latin1<char32_t>);
@@ -227,12 +227,12 @@ auto is_bmp(char32_t c) -> bool { return c <= 0xFFFF; }
 
 // auto is_non_bmp(char32_t c) -> bool { return c > 0xFFFF; }
 
-auto is_all_bmp(const u32string& s) -> bool
+auto is_all_bmp(const std::u32string& s) -> bool
 {
 	return all_of(s.begin(), s.end(), is_bmp);
 }
 
-auto u32_to_ucs2_skip_non_bmp(const u32string& s) -> u16string
+auto u32_to_ucs2_skip_non_bmp(const std::u32string& s) -> std::u16string
 {
 	u16string ret(s.size(), 0);
 	auto i = ret.begin();
