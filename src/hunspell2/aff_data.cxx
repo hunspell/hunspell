@@ -29,7 +29,7 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace Hunspell {
+namespace hunspell {
 
 using namespace std;
 
@@ -295,14 +295,14 @@ auto parse_morhological_fields(/* in */ istream& in,
 
 auto Aff_data::decode_flags(istream& in, size_t line_num) const -> u16string
 {
-	return Hunspell::decode_flags(in, line_num, flag_type,
+	return hunspell::decode_flags(in, line_num, flag_type,
 	                              encoding == "UTF-8");
 }
 
 auto Aff_data::decode_single_flag(istream& in, size_t line_num) const
     -> char16_t
 {
-	return Hunspell::decode_single_flag(in, line_num, flag_type,
+	return hunspell::decode_single_flag(in, line_num, flag_type,
 	                                    encoding == "UTF-8");
 }
 

@@ -29,7 +29,7 @@
 #include <limits>
 #include <sstream>
 
-namespace Hunspell {
+namespace hunspell {
 
 using namespace std;
 

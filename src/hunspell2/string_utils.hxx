@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace Hunspell {
+namespace hunspell {
 
 /*!
  * Splits string on seperator.

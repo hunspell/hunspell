@@ -31,7 +31,7 @@
 #include <locale>
 #include <string>
 
-namespace Hunspell {
+namespace hunspell {
 
 template <class CharT>
 auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void

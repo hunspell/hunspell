@@ -39,7 +39,7 @@
 #endif
 
 using namespace std;
-using namespace Hunspell;
+using namespace hunspell;
 
 enum Mode {
 	DEFAULT_MODE,
@@ -518,7 +518,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}" << endl;
-	Hunspell::Dictionary dic(filename);
+	hunspell::Dictionary dic(filename);
 	auto loop_function = normal_loop;
 	switch (args.mode) {
 	case DEFAULT_MODE:

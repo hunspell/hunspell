@@ -29,7 +29,7 @@
 #include <utility>
 #include <vector>
 
-namespace Hunspell {
+namespace hunspell {
 
 enum Flag_type_t { SINGLE_CHAR_FLAG, DOUBLE_CHAR_FLAG, NUMBER_FLAG, UTF8_FLAG };
 

@@ -57,7 +57,7 @@
 
 using namespace std;
 
-namespace Hunspell {
+namespace hunspell {
 
 #ifdef _WIN32
 const char PATHSEP = ';';
