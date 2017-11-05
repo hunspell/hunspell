@@ -22,7 +22,7 @@
 
 /*!
  * \file locale_utils.hxx
- * \brief String transformations that depend on locales and enocdings.
+ * String transformations that depend on locales and enocdings.
  */
 
 #ifndef LOCALE_UTILS_HXX
@@ -32,13 +32,6 @@
 #include <string>
 
 namespace hunspell {
-
-template <class CharT>
-auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void
-{
-	auto& f = std::use_facet<std::ctype<char>>(loc);
-	f.toupper(&s[0], &s[s.size()]);
-}
 
 auto decode_utf8(const std::string& s) -> std::u32string;
 auto validate_utf8(const std::string& s) -> bool;
@@ -54,6 +47,16 @@ auto is_bmp(char32_t c) -> bool;
 // auto is_non_bmp(char32_t c) -> bool;
 auto is_all_bmp(const std::u32string& s) -> bool;
 auto u32_to_ucs2_skip_non_bmp(const std::u32string& s) -> std::u16string;
+
+// put template function definitions bellow the declarations above
+// otherwise doxygen has bugs when generating call graphs
+
+template <class CharT>
+auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void
+{
+	auto& f = std::use_facet<std::ctype<char>>(loc);
+	f.toupper(&s[0], &s[s.size()]);
+}
 }
 
 #endif // LOCALE_UTILS_HXX

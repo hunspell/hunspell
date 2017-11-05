@@ -29,46 +29,57 @@
 using namespace std;
 using namespace hunspell;
 
-TEST_CASE("Testing string utils", "[string_utils]")
+TEST_CASE("Testing split", "[string_utils]")
 {
+	auto in = string(";abc;;qwe;zxc;");
 	auto exp = vector<string>{"", "abc", "", "qwe", "zxc", ""};
-	REQUIRE(exp.size() == 6);
+	auto out = vector<string>();
+	split(in, ';', back_inserter(out));
+	CHECK(exp == out);
+}
 
-	SECTION("Testing split")
-	{
-		auto in = string(";abc;;qwe;zxc;");
-		auto out = vector<string>();
-		split(in, ';', back_inserter(out));
-		CHECK(exp == out);
-	}
+TEST_CASE("Testing split_on_any_of", "[string_utils]")
+{
+	auto in = string("^abc;.qwe/zxc/");
+	auto exp = vector<string>{"", "abc", "", "qwe", "zxc", ""};
+	auto out = vector<string>();
+	split_on_any_of(in, string(".;^/"), back_inserter(out));
+	CHECK(exp == out);
+}
 
-	SECTION("Testing split_on_any_of")
-	{
-		auto in = string("^abc;.qwe/zxc/");
-		auto out = vector<string>();
-		split_on_any_of(in, string(".;^/"), back_inserter(out));
-		CHECK(exp == out);
-	}
+TEST_CASE("split_first", "[string_utils]")
+{
+	auto in = string("first\tsecond");
+	auto first = string("first");
+	auto out = split_first(in, '\t');
+	CHECK(first == out);
 
-	SECTION("Testing split_first")
-	{
-		auto in = string("first\tsecond");
-		auto first = string("first");
-		auto out = split_first(in, '\t');
-		CHECK(first == out);
+	in = string("first");
+	out = split_first(in, '\t');
+	CHECK(first == out);
 
-		in = string("first");
-		out = split_first(in, '\t');
-		CHECK(first == out);
+	in = string("\tsecond");
+	first = string("");
+	out = split_first(in, '\t');
+	CHECK(first == out);
 
-		in = string("\tsecond");
-		first = string("");
-		out = split_first(in, '\t');
-		CHECK(first == out);
+	in = string("");
+	first = string("");
+	out = split_first(in, '\t');
+	CHECK(first == out);
+}
 
-		in = string("");
-		first = string("");
-		out = split_first(in, '\t');
-		CHECK(first == out);
-	}
+TEST_CASE("split_on_whitespace", "[string_utils]")
+{
+	auto in = string("   qwe ert  \tasd ");
+	auto exp = vector<string>{"qwe", "ert", "asd"};
+	auto out = vector<string>();
+	split_on_whitespace_v(in, out);
+	CHECK(exp == out);
+
+	in = string("   \t\r\n  ");
+	exp = vector<string>{};
+	// out = vector<string>();
+	split_on_whitespace_v(in, out);
+	CHECK(exp == out);
 }

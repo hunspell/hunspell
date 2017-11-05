@@ -22,7 +22,7 @@
 
 /*!
  * \file stream_utils.hxx
- * \brief C++ stream functions.
+ * C++ stream functions.
  */
 
 #ifndef STREAM_UTILS_HXX

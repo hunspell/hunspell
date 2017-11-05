@@ -96,7 +96,7 @@ auto inline count_leading_ones(unsigned char c)
 }
 
 /*!
- * \brief Finite state transducer used for decoding UTF-8 stream.
+ * Finite state transducer used for decoding UTF-8 stream.
  *
  * Formally, the state is a pair (state, cp) and
  * output is a triplet (is_cp_ready, out_cp, too_short_error).

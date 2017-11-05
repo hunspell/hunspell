@@ -387,7 +387,7 @@ auto misspelled_line_loop(istream& in, ostream& out, Dictionary& dic)
 	auto words = vector<string>();
 	while (getline(in, line)) {
 		auto print = false;
-		split_v(line, ' ', words);
+		split_on_whitespace_v(line, words, in.getloc());
 		for (auto& word : words) {
 			auto res = dic.spell(word, in.getloc());
 			if (res == bad_word) {
@@ -406,7 +406,7 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 	auto words = vector<string>();
 	while (getline(in, line)) {
 		auto print = true;
-		split_v(line, ' ', words);
+		split_on_whitespace_v(line, words, in.getloc());
 		for (auto& word : words) {
 			auto res = dic.spell(word, in.getloc());
 			if (res == bad_word) {
