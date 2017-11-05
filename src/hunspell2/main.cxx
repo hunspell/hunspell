@@ -57,7 +57,6 @@ enum Mode {
 
 struct Args_t {
 	Mode mode = DEFAULT_MODE;
-	bool first_of_tsv = false;
 	string dictionary;
 	string encoding;
 	vector<string> other_dicts;
@@ -90,16 +89,12 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	const char* shortopts = ":d:i:1aDGHLOP::Xlhtv";
+	const char* shortopts = ":d:i:aDGHLOP::Xlhtv";
 	const struct option longopts[] = {
 	    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'}, {NULL, 0, 0, 0},
 	};
 	while ((c = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
 		switch (c) {
-		case '1':
-			first_of_tsv = true;
-
-			break;
 		case 'd':
 			if (dictionary.empty())
 				dictionary = optarg;
@@ -237,9 +232,6 @@ auto print_help() -> void
 	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
 	        "standard input.\n\n"
-	        "  -1          check only first field in lines (delimiter = "
-	        "tabulator)\n"
-	        "              (-1 is not supported in line modes)\n"
 	        "  -d di_CT    use di_CT dictionary. You can specify\n"
 	        "              -d multiple times. \n"
 	        "  -D          show available dictionaries\n"
@@ -312,30 +304,6 @@ auto normal_loop(istream& in, ostream& out, Dictionary& dic)
 {
 	auto word = string();
 	while (in >> word) {
-		auto res = dic.spell(word, in.getloc());
-		switch (res) {
-		case bad_word:
-			out << '&' << endl;
-			break;
-		case good_word:
-			out << '*' << endl;
-			break;
-		case affixed_good_word:
-			out << '+' << endl;
-			break;
-		case compound_good_word:
-			out << '-' << endl;
-			break;
-		}
-	}
-}
-
-auto normal_tsv_loop(istream& in, ostream& out, Dictionary& dic)
-{
-	auto line = string();
-	auto word = string();
-	while (getline(in, line)) {
-		word = split_first(line, '\t');
 		auto res = dic.spell(word, in.getloc());
 		switch (res) {
 		case bad_word:
@@ -511,19 +479,13 @@ int main(int argc, char* argv[])
 	auto loop_function = normal_loop;
 	switch (args.mode) {
 	case DEFAULT_MODE:
-		if (args.first_of_tsv)
-			loop_function = normal_tsv_loop;
-		else
-			loop_function = normal_loop;
+		//loop_function = normal_loop;
 		break;
 	case PIPE_MODE:
 		cerr << "ERROR: pipe mode unimplelemed, will behave"
 		        "same as normal mode"
 		     << endl;
-		if (args.first_of_tsv)
-			loop_function = normal_tsv_loop;
-		else
-			loop_function = normal_loop;
+		//loop_function = normal_loop;
 		break;
 	case MISSPELLED_WORDS_MODE:
 		loop_function = misspelled_word_loop;
