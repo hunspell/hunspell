@@ -77,19 +77,13 @@ struct Args_t {
  */
 auto Args_t::parse_args(int argc, char* argv[]) -> void
 {
-// usage
-// hunspell [-d dict_NAME]... [-i enc] [-1] file_name...
-// hunspell -l|-G [-L] [-d dict_NAME]... [-i enc] file_name...
-// hunspell -D|-h|-v
-// TODO support --help
-//
 // See POSIX Utility argument syntax
 // http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
 #if defined(_POSIX_VERSION) || defined(__MINGW32__)
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	const char* shortopts = ":d:i:aDGHLOP::Xlhtv";
+	const char* shortopts = ":d:i:aDGLlhv";
 	const struct option longopts[] = {
 	    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'}, {NULL, 0, 0, 0},
 	};
@@ -101,47 +95,12 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 			else
 				cerr << "WARNING: Detected not yet supported "
 				        "other dictionary "
-				     << optarg << endl;
+				     << optarg << '\n';
 			other_dicts.emplace_back(optarg);
 
 			break;
 		case 'i':
 			encoding = optarg;
-
-			break;
-		case 'H':
-			cerr << "ERROR: Deprecated option \"-H\" HTML input "
-			        "file format"
-			     << endl;
-			mode = ERROR_MODE;
-
-			break;
-		case 'O':
-			cerr << "ERROR: Deprecated option \"-O\" OpenDocument "
-			        "(ODF or Flat ODF) input file format"
-			     << endl;
-			mode = ERROR_MODE;
-
-			break;
-		case 'P':
-			cerr << "ERROR: Deprecated option \"-P\" set password "
-			        "for encrypted dictionaries"
-			     << endl;
-			mode = ERROR_MODE;
-
-			break;
-		case 't':
-			cerr << "ERROR: Deprecated option \"-t\" TeX/LaTeX "
-			        "input file format"
-			     << endl;
-			mode = ERROR_MODE;
-
-			break;
-		case 'X':
-			cerr << "ERROR: Deprecated option \"-X\" XML input "
-			        "file format"
-			     << endl;
-			mode = ERROR_MODE;
 
 			break;
 		case 'a':
@@ -202,12 +161,12 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 			break;
 		case ':':
 			cerr << "Option -" << (char)optopt
-			     << " requires an operand" << endl;
+			     << " requires an operand\n";
 			mode = ERROR_MODE;
 			break;
 		case '?':
 			cerr << "Unrecognized option: '-" << (char)optopt << "'"
-			     << endl;
+			     << '\n';
 			mode = ERROR_MODE;
 			break;
 		}
@@ -218,9 +177,6 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 		// we will make it error here
 		mode = ERROR_MODE;
 	}
-	if (mode == ERROR_MODE) {
-		cerr << "Invalid arguments" << endl;
-	}
 #endif
 }
 
@@ -229,11 +185,17 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
  */
 auto print_help() -> void
 {
-	cout << "Usage: hunspell [OPTION]... [FILE]...\n"
+	cout << "Usage:\n"
+	        "\n"
+	        "hun2 [-d dict_NAME] [-i enc] [file_name]...\n"
+	        "hun2 -l|-G [-L] [-d dict_NAME] [-i enc] [file_name]...\n"
+	        "hun2 -D|-h|-v\n"
+	        "\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
-	        "standard input.\n\n"
-	        "  -d di_CT    use di_CT dictionary. You can specify\n"
-	        "              -d multiple times. \n"
+	        "standard input.\n"
+	        "\n"
+	        "  -d di_CT    use di_CT dictionary. Only one dictionary is\n"
+	        "              supported.\n"
 	        "  -D          show available dictionaries\n"
 	        "  TODO\n"
 	        "  -i enc      input encoding\n"
@@ -242,10 +204,10 @@ auto print_help() -> void
 	        "  -L          lines mode\n"
 	        "  -h          display this help and exit\n"
 	        "  -v          print version number\n"
-	        "Example: hunspell -d en_US file.txt    # interactive "
-	        "spelling\n"
-	        "Bug reports: http://hunspell.github.io/"
-	     << endl;
+	        "\n"
+	        "Example: hun2 -d en_US file.txt\n"
+	        "\n"
+	        "Bug reports: http://hunspell.github.io/\n";
 }
 
 /*!
@@ -254,7 +216,7 @@ auto print_help() -> void
 auto print_version() -> void
 {
 	cout << "Hunspell "
-	     << "2.0.0" << endl;
+	     << "2.0.0" << '\n';
 	// FIXME should get version via API or (better?) from config.h
 	// TODO print copyright and licence, LGPL v3
 }
@@ -268,24 +230,24 @@ auto print_version() -> void
 auto list_dictionaries(Finder& f) -> void
 {
 	if (f.get_all_paths().empty()) {
-		cout << "No search paths available" << endl;
+		cout << "No search paths available" << '\n';
 	}
 	else {
-		cout << "Search paths:" << endl;
+		cout << "Search paths:" << '\n';
 		for (auto& p : f.get_all_paths()) {
-			cout << p << endl;
+			cout << p << '\n';
 		}
 	}
 
 	// Even if no search paths are available, still report on available
 	// dictionaries.
 	if (f.get_all_dictionaries().empty()) {
-		cout << "No dictionaries available" << endl;
+		cout << "No dictionaries available\n";
 	}
 	else {
-		cout << "Available dictionaries:" << endl;
+		cout << "Available dictionaries:\n";
 		for (auto& d : f.get_all_dictionaries()) {
-			cout << d.first << '\t' << d.second << endl;
+			cout << d.first << '\t' << d.second << '\n';
 		}
 	}
 }
@@ -307,16 +269,16 @@ auto normal_loop(istream& in, ostream& out, Dictionary& dic)
 		auto res = dic.spell(word, in.getloc());
 		switch (res) {
 		case bad_word:
-			out << '&' << endl;
+			out << '&' << '\n';
 			break;
 		case good_word:
-			out << '*' << endl;
+			out << '*' << '\n';
 			break;
 		case affixed_good_word:
-			out << '+' << endl;
+			out << '+' << '\n';
 			break;
 		case compound_good_word:
-			out << '-' << endl;
+			out << '-' << '\n';
 			break;
 		}
 	}
@@ -335,7 +297,7 @@ auto misspelled_word_loop(istream& in, ostream& out, Dictionary& dic)
 	while (in >> word) {
 		auto res = dic.spell(word, in.getloc());
 		if (res == bad_word)
-			out << word << endl;
+			out << word << '\n';
 	}
 }
 
@@ -345,7 +307,7 @@ auto correct_word_loop(istream& in, ostream& out, Dictionary& dic)
 	while (in >> word) {
 		auto res = dic.spell(word, in.getloc());
 		if (res != bad_word)
-			out << word << endl;
+			out << word << '\n';
 	}
 }
 
@@ -364,7 +326,7 @@ auto misspelled_line_loop(istream& in, ostream& out, Dictionary& dic)
 			}
 		}
 		if (print)
-			out << line << endl;
+			out << line << '\n';
 	}
 }
 
@@ -383,22 +345,22 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 			}
 		}
 		if (print)
-			out << line << endl;
+			out << line << '\n';
 	}
 }
 
 auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 {
-	cout << aff.encoding << endl;
-	cout << aff.try_chars << endl;
+	cout << aff.encoding << '\n';
+	cout << aff.try_chars << '\n';
 	for (auto& a : aff.compound_rules) {
-		cout << a << endl;
+		cout << a << '\n';
 	}
 	for (auto& a : aff.suffixes) {
 		cout << (char)a.flag << ' ' << (a.cross_product ? 'Y' : 'N')
 		     << ' ' << a.stripping << ' ' << a.affix
 		     << (a.new_flags.size() ? "/ " : " ") << a.condition;
-		cout << endl;
+		cout << '\n';
 	}
 	for (auto& wd : dic.words) {
 		cout << wd.first;
@@ -408,7 +370,7 @@ auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 				cout << flag << ',';
 			}
 		}
-		cout << endl;
+		cout << '\n';
 	}
 }
 
@@ -440,8 +402,6 @@ int main(int argc, char* argv[])
 	cerr.imbue(loc);
 	clog.imbue(loc);
 	setlocale(LC_CTYPE, "");
-	clog << "INFO: Input  locale " << cin.getloc() << endl;
-	clog << "INFO: Output locale " << cout.getloc() << endl;
 
 	switch (args.mode) {
 	case HELP_MODE:
@@ -451,10 +411,14 @@ int main(int argc, char* argv[])
 		print_version();
 		return 0;
 	case ERROR_MODE:
+		cerr << "Invalid arguments, try 'hun2 --help' for more "
+		        "information.\n";
 		return 1;
 	default:
 		break;
 	}
+	clog << "INFO: Input  locale " << cin.getloc() << '\n';
+	clog << "INFO: Output locale " << cout.getloc() << '\n';
 
 	auto f = Finder();
 	f.add_default_paths();
@@ -470,22 +434,20 @@ int main(int argc, char* argv[])
 
 	auto filename = f.get_dictionary(args.dictionary);
 	if (filename.empty()) {
-		cerr << "Dictionary " << args.dictionary << " not found."
-		     << endl;
+		cerr << "Dictionary " << args.dictionary << " not found.\n";
 		return 1;
 	}
-	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}" << endl;
+	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}\n";
 	hunspell::Dictionary dic(filename);
 	auto loop_function = normal_loop;
 	switch (args.mode) {
 	case DEFAULT_MODE:
-		//loop_function = normal_loop;
+		// loop_function = normal_loop;
 		break;
 	case PIPE_MODE:
 		cerr << "ERROR: pipe mode unimplelemed, will behave"
-		        "same as normal mode"
-		     << endl;
-		//loop_function = normal_loop;
+		        "same as normal mode\n";
+		// loop_function = normal_loop;
 		break;
 	case MISSPELLED_WORDS_MODE:
 		loop_function = misspelled_word_loop;
@@ -510,7 +472,7 @@ int main(int argc, char* argv[])
 		for (auto& file_name : args.files) {
 			ifstream in(file_name.c_str());
 			if (!in.is_open()) {
-				cerr << "Can't open " << file_name << endl;
+				cerr << "Can't open " << file_name << '\n';
 				return 1;
 			}
 			in.imbue(cin.getloc());
