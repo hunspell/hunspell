@@ -182,21 +182,21 @@ auto print_help() -> void
 	        "\n"
 	        "hun2 [-d dict_NAME] [-i enc] [file_name]...\n"
 	        "hun2 -l|-G [-L] [-d dict_NAME] [-i enc] [file_name]...\n"
-		"hun2 -D|-h|--help|-v|--version\n"
+	        "hun2 -D|-h|--help|-v|--version\n"
 	        "\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
 	        "standard input.\n"
 	        "\n"
-		"  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
-		"                supported.\n"
-		"  -D            show available dictionaries\n"
+	        "  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
+	        "                supported.\n"
+	        "  -D            show available dictionaries\n"
 	        "  TODO\n"
-		"  -i enc        input encoding\n"
-		"  -l            print only misspelled words or lines\n"
-		"  -G            print only correct words or lines\n"
-		"  -L            lines mode\n"
-		"  -h, --help    display this help and exit\n"
-		"  -v, --version print version number\n"
+	        "  -i enc        input encoding\n"
+	        "  -l            print only misspelled words or lines\n"
+	        "  -G            print only correct words or lines\n"
+	        "  -L            lines mode\n"
+	        "  -h, --help    display this help and exit\n"
+	        "  -v, --version print version number\n"
 	        "\n"
 	        "Example: hun2 -d en_US file.txt\n"
 	        "\n"
@@ -372,13 +372,16 @@ ostream& operator<<(ostream& out, const locale& loc)
 {
 	auto& f = use_facet<boost::locale::info>(loc);
 	out << "name=" << f.name() << ", lang=" << f.language()
-	    <<  "country=" << f.country() << ", enc=" << f.encoding();
+	    << "country=" << f.country() << ", enc=" << f.encoding();
 	return out;
 }
 }
 
 int main(int argc, char* argv[])
 {
+	// may spedup io. after this, don't use C printf, scanf etc.
+	ios_base::sync_with_stdio(false);
+
 	auto args = Args_t(argc, argv);
 	if (args.fail()) {
 		return 1;
@@ -425,7 +428,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	if (args.dictionary.empty()) {
-		//infer dictionary from locale
+		// infer dictionary from locale
 		auto& info = use_facet<boost::locale::info>(loc);
 		args.dictionary = info.language();
 		auto c = info.country();
