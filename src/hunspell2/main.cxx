@@ -43,7 +43,6 @@ using namespace hunspell;
 
 enum Mode {
 	DEFAULT_MODE,
-	PIPE_MODE,
 	MISSPELLED_WORDS_MODE,
 	MISSPELLED_LINES_MODE,
 	CORRECT_WORDS_MODE,
@@ -83,7 +82,7 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	const char* shortopts = ":d:i:aDGLlhv";
+	const char* shortopts = ":d:i:DGLlhv";
 	const struct option longopts[] = {
 	    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'}, {NULL, 0, 0, 0},
 	};
@@ -102,12 +101,6 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 		case 'i':
 			encoding = optarg;
 
-			break;
-		case 'a':
-			if (mode == DEFAULT_MODE)
-				mode = PIPE_MODE;
-			else
-				mode = ERROR_MODE;
 			break;
 		case 'D':
 			if (mode == DEFAULT_MODE)
@@ -379,7 +372,7 @@ ostream& operator<<(ostream& out, const locale& loc)
 {
 	auto& f = use_facet<boost::locale::info>(loc);
 	out << "name=" << f.name() << ", lang=" << f.language()
-	    << ", enc=" << f.encoding();
+	    <<  "country=" << f.country() << ", enc=" << f.encoding();
 	return out;
 }
 }
@@ -431,7 +424,16 @@ int main(int argc, char* argv[])
 		list_dictionaries(f);
 		return 0;
 	}
-
+	if (args.dictionary.empty()) {
+		//infer dictionary from locale
+		auto& info = use_facet<boost::locale::info>(loc);
+		args.dictionary = info.language();
+		auto c = info.country();
+		if (!c.empty()) {
+			args.dictionary += '_';
+			args.dictionary += c;
+		}
+	}
 	auto filename = f.get_dictionary(args.dictionary);
 	if (filename.empty()) {
 		cerr << "Dictionary " << args.dictionary << " not found.\n";
@@ -442,11 +444,6 @@ int main(int argc, char* argv[])
 	auto loop_function = normal_loop;
 	switch (args.mode) {
 	case DEFAULT_MODE:
-		// loop_function = normal_loop;
-		break;
-	case PIPE_MODE:
-		cerr << "ERROR: pipe mode unimplelemed, will behave"
-		        "same as normal mode\n";
 		// loop_function = normal_loop;
 		break;
 	case MISSPELLED_WORDS_MODE:
