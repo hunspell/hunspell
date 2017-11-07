@@ -372,7 +372,7 @@ ostream& operator<<(ostream& out, const locale& loc)
 {
 	auto& f = use_facet<boost::locale::info>(loc);
 	out << "name=" << f.name() << ", lang=" << f.language()
-	    << "country=" << f.country() << ", enc=" << f.encoding();
+	    << ", country=" << f.country() << ", enc=" << f.encoding();
 	return out;
 }
 }

@@ -39,7 +39,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "hunspell.hxx"
+#include "../hunspell/hunspell.hxx"
 
 #ifndef WIN32
 using namespace std;

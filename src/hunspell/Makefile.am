@@ -4,9 +4,10 @@ libhunspell_1_6_la_SOURCES=affentry.cxx affentry.hxx affixmgr.cxx affixmgr.hxx \
                            atypes.hxx baseaffix.hxx csutil.cxx csutil.hxx \
                            filemgr.cxx filemgr.hxx hashmgr.cxx hashmgr.hxx \
                            htypes.hxx hunspell.cxx hunspell.h hunspell.hxx \
-                           hunvisapi.h hunzip.cxx hunzip.hxx langnum.hxx \
+                           hunzip.cxx hunzip.hxx langnum.hxx \
                            phonet.cxx phonet.hxx replist.cxx replist.hxx \
                            suggestmgr.cxx suggestmgr.hxx utf_info.hxx w_char.hxx
+nodist_libhunspell_1_6_la_SOURCES=hunvisapi.h
 
 
 libhunspell_1_6_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \

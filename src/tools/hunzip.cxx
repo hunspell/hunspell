@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hunzip.hxx"
+#include "../hunspell/hunzip.hxx"
 
 #define DESC                                                 \
   "hunzip - decompress a hzip file to the standard output\n" \

@@ -42,8 +42,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "config.h" // for macro VERSION
-#include "hunspell.hxx"
+#include "../hunspell/hunspell.hxx"
 
 using namespace std;
 
@@ -154,7 +153,7 @@ int main(int argc, char** argv) {
   float per_incorrect_space = 100.0 - per_correct_space;
   float per_incorrect_nospace = 100.0 - per_correct_nospace;
 
-  cerr << "Hunspell version\t" << VERSION << endl;
+  //cerr << "Hunspell version\t" << VERSION << endl;
   cerr << "Hunspell affix\t" << argv[1] << endl;
   cerr << "Hunspell dict\t" << argv[2] << endl;
 
