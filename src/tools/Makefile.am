@@ -13,6 +13,7 @@ example_SOURCES=example.cxx
 example_LDADD = ../hunspell/libhunspell-1.6.la
 
 hunspell_SOURCES=hunspell.cxx
+nodist_hunspell_SOURCES= ../../config.h
 hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
 	../hunspell/libhunspell-1.6.la @CURSESLIB@ @READLINELIB@
 

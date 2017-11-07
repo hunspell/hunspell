@@ -43,7 +43,6 @@ using namespace hunspell;
 
 enum Mode {
 	DEFAULT_MODE,
-	PIPE_MODE,
 	MISSPELLED_WORDS_MODE,
 	MISSPELLED_LINES_MODE,
 	CORRECT_WORDS_MODE,
@@ -83,7 +82,7 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 	int c;
 	// The program can run in various modes depending on the
 	// command line options. mode is FSM state, this while loop is FSM.
-	const char* shortopts = ":d:i:aDGLlhv";
+	const char* shortopts = ":d:i:DGLlhv";
 	const struct option longopts[] = {
 	    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'}, {NULL, 0, 0, 0},
 	};
@@ -102,12 +101,6 @@ auto Args_t::parse_args(int argc, char* argv[]) -> void
 		case 'i':
 			encoding = optarg;
 
-			break;
-		case 'a':
-			if (mode == DEFAULT_MODE)
-				mode = PIPE_MODE;
-			else
-				mode = ERROR_MODE;
 			break;
 		case 'D':
 			if (mode == DEFAULT_MODE)
@@ -189,21 +182,21 @@ auto print_help() -> void
 	        "\n"
 	        "hun2 [-d dict_NAME] [-i enc] [file_name]...\n"
 	        "hun2 -l|-G [-L] [-d dict_NAME] [-i enc] [file_name]...\n"
-		"hun2 -D|-h|--help|-v|--version\n"
+	        "hun2 -D|-h|--help|-v|--version\n"
 	        "\n"
 	        "Check spelling of each FILE. Without FILE, check\n"
 	        "standard input.\n"
 	        "\n"
-		"  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
-		"                supported.\n"
-		"  -D            show available dictionaries\n"
+	        "  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
+	        "                supported.\n"
+	        "  -D            show available dictionaries\n"
 	        "  TODO\n"
-		"  -i enc        input encoding\n"
-		"  -l            print only misspelled words or lines\n"
-		"  -G            print only correct words or lines\n"
-		"  -L            lines mode\n"
-		"  -h, --help    display this help and exit\n"
-		"  -v, --version print version number\n"
+	        "  -i enc        input encoding\n"
+	        "  -l            print only misspelled words or lines\n"
+	        "  -G            print only correct words or lines\n"
+	        "  -L            lines mode\n"
+	        "  -h, --help    display this help and exit\n"
+	        "  -v, --version print version number\n"
 	        "\n"
 	        "Example: hun2 -d en_US file.txt\n"
 	        "\n"
@@ -381,13 +374,16 @@ ostream& operator<<(ostream& out, const locale& loc)
 {
 	auto& f = use_facet<boost::locale::info>(loc);
 	out << "name=" << f.name() << ", lang=" << f.language()
-	    << ", enc=" << f.encoding();
+	    << ", country=" << f.country() << ", enc=" << f.encoding();
 	return out;
 }
 }
 
 int main(int argc, char* argv[])
 {
+	// may spedup io. after this, don't use C printf, scanf etc.
+	ios_base::sync_with_stdio(false);
+
 	auto args = Args_t(argc, argv);
 	if (args.fail()) {
 		return 1;
@@ -433,7 +429,16 @@ int main(int argc, char* argv[])
 		list_dictionaries(f);
 		return 0;
 	}
-
+	if (args.dictionary.empty()) {
+		// infer dictionary from locale
+		auto& info = use_facet<boost::locale::info>(loc);
+		args.dictionary = info.language();
+		auto c = info.country();
+		if (!c.empty()) {
+			args.dictionary += '_';
+			args.dictionary += c;
+		}
+	}
 	auto filename = f.get_dictionary(args.dictionary);
 	if (filename.empty()) {
 		if (args.dictionary.empty())
@@ -447,11 +452,6 @@ int main(int argc, char* argv[])
 	auto loop_function = normal_loop;
 	switch (args.mode) {
 	case DEFAULT_MODE:
-		// loop_function = normal_loop;
-		break;
-	case PIPE_MODE:
-		cerr << "ERROR: pipe mode unimplelemed, will behave"
-		        "same as normal mode\n";
 		// loop_function = normal_loop;
 		break;
 	case MISSPELLED_WORDS_MODE:

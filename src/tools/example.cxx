@@ -39,7 +39,7 @@
 #include <cstdlib>
 #include <fstream>
 
-#include "hunspell.hxx"
+#include "../hunspell/hunspell.hxx"
 
 using namespace std;
 

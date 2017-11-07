@@ -46,11 +46,11 @@
 #include <sstream>
 #include <string>
 #include <string.h>
-#include "config.h"
-#include "atypes.hxx"
-#include "hunspell.hxx"
-#include "csutil.hxx"
-#include "hunzip.hxx"
+#include "../../config.h"
+#include "../hunspell/atypes.hxx"
+#include "../hunspell/hunspell.hxx"
+#include "../hunspell/csutil.hxx"
+#include "../hunspell/hunzip.hxx"
 
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
@@ -92,13 +92,13 @@
 #include <unistd.h>
 #endif
 
-#include "textparser.hxx"
-#include "htmlparser.hxx"
-#include "latexparser.hxx"
-#include "manparser.hxx"
-#include "firstparser.hxx"
-#include "xmlparser.hxx"
-#include "odfparser.hxx"
+#include "../parsers/textparser.hxx"
+#include "../parsers/htmlparser.hxx"
+#include "../parsers/latexparser.hxx"
+#include "../parsers/manparser.hxx"
+#include "../parsers/firstparser.hxx"
+#include "../parsers/xmlparser.hxx"
+#include "../parsers/odfparser.hxx"
 
 #else
 
@@ -107,13 +107,13 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
-#include "textparser.hxx"
-#include "htmlparser.hxx"
-#include "latexparser.hxx"
-#include "manparser.hxx"
-#include "firstparser.hxx"
-#include "xmlparser.hxx"
-#include "odfparser.hxx"
+#include "../parsers/textparser.hxx"
+#include "../parsers/htmlparser.hxx"
+#include "../parsers/latexparser.hxx"
+#include "../parsers/manparser.hxx"
+#include "../parsers/firstparser.hxx"
+#include "../parsers/xmlparser.hxx"
+#include "../parsers/odfparser.hxx"
 
 #define LIBDIR                \
   "/usr/share/hunspell:"      \
