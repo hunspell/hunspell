@@ -216,9 +216,11 @@ auto print_help() -> void
 auto print_version() -> void
 {
 	cout << "Hunspell "
-	     << "2.0.0" << '\n';
-	// FIXME should get version via API or (better?) from config.h
-	// TODO print copyright and licence, LGPL v3
+	     << "2.0.0" << '\n'; //TODO Get via macro from VERSION offered by Makefile.
+	cout << "Copyright (C) 2017-2018 D. Mijoski, S. van Geloven. License MPL/GPL/LGPL." << '\n';
+	cout << "Copyright (C) 2002-2016 László Németh et al. License MPL/GPL/LGPL." << '\n';
+	cout << "Based on Myspell. Copyright (C) 2001-2002 Kevin Hendricks. License BSD." << '\n';
+	//TODO Move contents of this method completely to library so it can also be queried via API.
 }
 
 /*!
@@ -434,7 +436,10 @@ int main(int argc, char* argv[])
 
 	auto filename = f.get_dictionary(args.dictionary);
 	if (filename.empty()) {
-		cerr << "Dictionary " << args.dictionary << " not found.\n";
+		if (args.dictionary.empty())
+			cerr << "No dictionary provided.\n";
+		else
+			cerr << "Dictionary " << args.dictionary << " not found.\n";
 		return 1;
 	}
 	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}\n";
