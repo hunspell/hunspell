@@ -198,7 +198,8 @@ auto print_help() -> void
 	        "\n"
 	        "Example: hun2 -d en_US file.txt\n"
 	        "\n"
-	        "Bug reports: http://hunspell.github.io/\n";
+		"Bug reports: <https://github.com/hunspell/hunspell/issues>\n"
+		"Home page: <http://hunspell.github.io/>\n";
 }
 
 /*!
@@ -206,11 +207,14 @@ auto print_help() -> void
  */
 auto print_version() -> void
 {
-	cout << "hunspell 2.0.0" << '\n';
-	cout << '\n';
-	cout << "Copyright (C) 2017-2018 D. Mijoski, S. van Geloven. License MPL/GPL/LGPL." << '\n';
-	cout << "Copyright (C) 2002-2016 László Németh et al. License MPL/GPL/LGPL." << '\n';
-	cout << "Based on Myspell. Copyright (C) 2001-2002 Kevin Hendricks. License BSD." << '\n';
+	cout << "hunspell 2.0.0\n"
+		"Copyright (C) 2017 Dimitri Mijoski and Sander van Geloven\n"
+		"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>."
+		"This is free software: you are free to change and redistribute it."
+		"There is NO WARRANTY, to the extent permitted by law.\n"
+		"\n"
+		"Written by Dimitri Mijoski, Sander van Geloven, László Németh and others,"
+		"see <https://github.com/hunspell/hunspell/blob/master/AUTHORS>.";
 }
 
 /*!

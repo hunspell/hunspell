@@ -1,5 +1,11 @@
-Author of Hunspell:
-Németh László nemeth (at) numbertext.org
+Authors of Hunspell:
+* 2002-2017, Németh László
+* 2014, Caolán McNamara
+* 2015-2016 Paweł Hajdan, Jr.
+* 2016-2017, Dimitri Mijoski
+* 2017, Sander van Geloven
 
-Hunspell based on OpenOffice.org's Myspell. MySpell's author:
-Kevin Hendricks kevin.hendricks (at) sympatico.ca
+See also <https://github.com/hunspell/hunspell/graphs/contributors>
+
+Hunspell is based on OpenOffice.org's Myspell. MySpell's author:
+* 2001-2002, Kevin Hendricks
