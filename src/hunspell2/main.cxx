@@ -184,19 +184,17 @@ auto print_help() -> void
 	        "hun2 -l|-G [-L] [-d dict_NAME] [-i enc] [file_name]...\n"
 	        "hun2 -D|-h|--help|-v|--version\n"
 	        "\n"
-	        "Check spelling of each FILE. Without FILE, check\n"
-	        "standard input.\n"
+		"Check spelling of each FILE. Without FILE, check standard input.\n"
 	        "\n"
 	        "  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
-	        "                supported.\n"
-	        "  -D            show available dictionaries\n"
-	        "  TODO\n"
-	        "  -i enc        input encoding\n"
+		"                currently supported.\n"
+		"  -D            show available dictionaries and exit\n"
+		"  -i enc        input encoding, default is active locale\n"
 	        "  -l            print only misspelled words or lines\n"
 	        "  -G            print only correct words or lines\n"
 	        "  -L            lines mode\n"
 	        "  -h, --help    display this help and exit\n"
-	        "  -v, --version print version number\n"
+		"  -v, --version print version number and exit\n"
 	        "\n"
 	        "Example: hun2 -d en_US file.txt\n"
 	        "\n"
@@ -208,12 +206,11 @@ auto print_help() -> void
  */
 auto print_version() -> void
 {
-	cout << "Hunspell "
-	     << "2.0.0" << '\n'; //TODO Get via macro from VERSION offered by Makefile.
+	cout << "hunspell 2.0.0" << '\n';
+	cout << '\n';
 	cout << "Copyright (C) 2017-2018 D. Mijoski, S. van Geloven. License MPL/GPL/LGPL." << '\n';
 	cout << "Copyright (C) 2002-2016 László Németh et al. License MPL/GPL/LGPL." << '\n';
 	cout << "Based on Myspell. Copyright (C) 2001-2002 Kevin Hendricks. License BSD." << '\n';
-	//TODO Move contents of this method completely to library so it can also be queried via API.
 }
 
 /*!
