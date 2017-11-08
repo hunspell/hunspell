@@ -77,7 +77,7 @@
 #include <string>
 #include <fstream>
 
-class FileMgr {
+class LIBHUNSPELL_DLL_EXPORTED FileMgr {
  private:
   FileMgr(const FileMgr&);
   FileMgr& operator=(const FileMgr&);

@@ -89,7 +89,7 @@
 class PfxEntry;
 class SfxEntry;
 
-class AffixMgr {
+class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   PfxEntry* pStart[SETSIZE];
   SfxEntry* sStart[SETSIZE];
   PfxEntry* pFlag[SETSIZE];
