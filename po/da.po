@@ -8,64 +8,68 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2017-11-13 21:45+0000\n"
+"Last-Translator: jan madsen <jsm@janz.dk>\n"
+"Language-Team: Danish "
+"<https://hosted.weblate.org/projects/hunspell/translations/da/>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "fejl - iconv_open: %s-> %s\n"
 
 #: src/tools/hunspell.cxx:272
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "fejl - iconv: %s-> %s\n"
 
 #: src/tools/hunspell.cxx:317 src/tools/hunspell.cxx:339
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "fejl - iconv_open: UTF-8-> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
+#, fuzzy
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Kan ikke oprette tmp dir"
 
 #: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:689
 #: src/tools/hunspell.cxx:1558 src/tools/hunspell.cxx:1588
 #: src/tools/hunspell.cxx:1601
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Ikke kan åbne inddatafilen"
 
 #: src/tools/hunspell.cxx:679 src/tools/hunspell.cxx:1590
 #: src/tools/hunspell.cxx:2001 src/tools/hunspell.cxx:2153
 #: src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Kan ikke åbne %s.\n"
 
 #: src/tools/hunspell.cxx:759 src/tools/hunspell.cxx:1345
 #: src/tools/hunspell.cxx:1457
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "fejl - mangler HOME variabel\n"
 
 #: src/tools/hunspell.cxx:844
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Linje %d: %s-> "
 
 #: src/tools/hunspell.cxx:1124
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "FORBUDT!"
 
 #: src/tools/hunspell.cxx:1126
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Stavefejl?"
 
 #: src/tools/hunspell.cxx:1128
 #, c-format
@@ -73,6 +77,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tFil: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -91,6 +97,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Når et ord er fundet der ikke er i ordbogen\n"
+"udskrives på den første linje på skærmen.  Hvis ordbogen\n"
+"indeholder nogen lignende ord, står de angivet med et tal\n"
+"ved siden af hver enkelt.  Du har mulighed for at erstatte ordet\n"
+"helt, eller vælge en af de foreslåede ord.\n"
 
 #: src/tools/hunspell.cxx:1264
 msgid ""
@@ -98,6 +109,9 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Kommandoer er:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
@@ -144,13 +158,16 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\t\tVis denne hjælp skærm.\n"
 
 #: src/tools/hunspell.cxx:1287
+#, fuzzy
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Skriv mellemrum for at fortsætte -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -161,7 +178,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Erstat med: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -180,7 +197,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Kan ikke opdatere personlig ordbog."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -199,11 +216,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Modelord (et lignende ordbogsord): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Modelord skal være i ordbogen. Tryk på en vilkårlig tast!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -230,22 +247,26 @@ msgid "y"
 msgstr ""
 
 #: src/tools/hunspell.cxx:1611
+#, fuzzy
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Kan ikke oprette tempfil"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Kan ikke åbne uddatafil"
 
 #: src/tools/hunspell.cxx:1821
+#, fuzzy
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Anvendelse: hunspell [OPTION]... [FIL]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Kontrollere stavningen af hver fil. Uden filen, tjek standardinput.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1824
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
@@ -265,23 +286,23 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d-d[d2,...]\tbrug d (d2 etc.) ordbøgerne\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tVis tilgængelige ordbøger\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tudskriv kun korrekte ord eller linjer\n"
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\t\tvis denne hjælp og afslut\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tHTML input filformat\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -i enc\tinput encoding\n"
@@ -289,11 +310,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1840
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l \t\tudskriv forkert stavede ord\n"
 
 #: src/tools/hunspell.cxx:1841
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L \t\tudskriv linjerne med forkert stavede ord\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -m \t\tanalyze the words of the input text\n"
@@ -333,7 +354,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1858
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version \tudskriv versionsnummer\n"
 
 #: src/tools/hunspell.cxx:1860
 msgid "  -vv\t\tprint Ispell compatible version number\n"
@@ -371,7 +392,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1882
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Fejlrapporter: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -382,6 +403,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright (C) 2002-2014 László Németh. Licens: MPL/GPL/LGPL.\n"
+"\n"
+"Baseret på OpenOffice.org's Myspell bibliotek.\n"
+"Myspell's copyright (C) Kevin Hendricks, 2001-2002, licens: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1895
 msgid ""
@@ -396,10 +423,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"SØGESTI:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "TILGÆNGELIGE ORDBØGER (stien er ikke obligatorisk for -d option):\n"
 
 #: src/tools/hunspell.cxx:2074
 #, c-format
@@ -408,11 +437,14 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"INDLÆST ORDBOG: \n"
+"%s \n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "fejl - %s overskrider ordbogsgrænse.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
