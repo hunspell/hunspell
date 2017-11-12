@@ -19,7 +19,7 @@ allcaps3.dic \
 keepcase.dic \
 dotless_i.dic \
 i58202.dic \
-map.test \
+map.dic \
 rep.dic \
 sug.dic \
 sugutf.dic \
@@ -590,5 +590,4 @@ warn.aff \
 warn.dic \
 warn.good \
 \
-map.test  \
 utf8_nonbmp.test

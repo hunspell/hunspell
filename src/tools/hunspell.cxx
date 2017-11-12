@@ -230,7 +230,7 @@ std::string chenc(const std::string& st, const char* enc1, const char* enc2) {
   if (!enc1 || !enc2 || strcmp(enc1, enc2) == 0)
     return st;
 
-  std::string out(st.size(), std::string::value_type());
+  std::string out(st.size() < 15 ? 15 : st.size(), '\0');
   size_t c1(st.size());
   size_t c2(out.size());
   ICONV_CONST char* source = (ICONV_CONST char*) &st[0];
@@ -244,8 +244,8 @@ std::string chenc(const std::string& st, const char* enc1, const char* enc2) {
       if (errno == E2BIG) {
         //c2 is zero or close to zero
         size_t next_start = out.size() - c2;
-        c2 += c1;
-        out.resize(out.size() + c2);
+        c2 += c1*2;
+        out.resize(out.size() + c1*2);
         dest = &out[next_start];
       } else
         break;
