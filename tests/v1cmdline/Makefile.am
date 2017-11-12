@@ -8,7 +8,7 @@ DIC_LOG_COMPILER = $(top_srcdir)/tests/test.sh
 
 TESTS =	\
 affixes.dic \
-condition.test \
+condition.dic \
 condition_utf.dic \
 base.dic \
 base_utf.dic \
@@ -20,7 +20,7 @@ keepcase.dic \
 dotless_i.dic \
 i58202.dic \
 map.test \
-rep.test \
+rep.dic \
 sug.dic \
 sugutf.dic \
 phone.dic \
@@ -68,29 +68,29 @@ compoundaffix3.dic \
 checkcompounddup.dic \
 checkcompoundtriple.dic \
 simplifiedtriple.dic \
-checkcompoundrep.test \
-checkcompoundcase2.test \
+checkcompoundrep.dic \
+checkcompoundcase2.dic \
 checkcompoundcaseutf.dic \
-checkcompoundpattern.test \
-checkcompoundpattern2.test \
-checkcompoundpattern3.test \
-checkcompoundpattern4.test \
+checkcompoundpattern.dic \
+checkcompoundpattern2.dic \
+checkcompoundpattern3.dic \
+checkcompoundpattern4.dic \
 utfcompound.dic \
-checksharps.test \
+checksharps.dic \
 checksharpsutf.dic \
-germancompounding.test \
+germancompounding.dic \
 germancompoundingold.dic \
 i35725.dic \
 i53643.dic \
-i54633.test \
-i54980.test \
+i54633.dic \
+i54980.dic \
 maputf.dic \
 reputf.dic \
 ignore.dic \
 ignoreutf.dic \
 1592880.dic \
 1695964.dic \
-1463589.test \
+1463589.dic \
 1463589_utf.dic \
 IJ.dic \
 i68568.dic \
@@ -105,7 +105,7 @@ fullstrip.dic \
 iconv.dic \
 iconv2.dic \
 oconv.dic \
-encoding.test \
+encoding.dic \
 korean.dic \
 opentaal_forbiddenword1.dic \
 opentaal_forbiddenword2.dic \
@@ -590,20 +590,5 @@ warn.aff \
 warn.dic \
 warn.good \
 \
-condition.test  \
 map.test  \
-rep.test  \
-utf8_nonbmp.test  \
-checkcompoundrep.test  \
-checkcompoundcase2.test  \
-checkcompoundpattern.test  \
-checksharps.test  \
-i54633.test  \
-i54980.test  \
-1463589.test  \
-encoding.test \
-checkcompoundcase.test \
-checkcompoundpattern2.test \
-checkcompoundpattern3.test \
-checkcompoundpattern4.test \
-germancompounding.test
+utf8_nonbmp.test
