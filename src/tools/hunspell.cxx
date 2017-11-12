@@ -146,8 +146,8 @@ char text_conv[MAXLNLEN];
 #endif
 
 #ifdef HAVE_CURSES_H
-#ifdef HAVE_NCURSESW_H
-#include <ncurses.h>
+#ifdef HAVE_NCURSESW_CURSES_H
+#include <ncursesw/curses.h>
 #else
 #include <curses.h>
 #endif
