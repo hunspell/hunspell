@@ -71,6 +71,7 @@ auto inline count_leading_ones(unsigned char c)
 	clz = numeric_limits<ulong>::digits - 1 - clz;
 	return clz;
 #else
+	unsigned cc = c;
 	int clz;
 	// note the operator presedence
 	// all parenthesis are necessary

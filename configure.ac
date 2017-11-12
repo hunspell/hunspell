@@ -33,18 +33,12 @@ BOOST_LOCALE
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 # Checks for header files.
-
-AC_CHECK_HEADERS([fcntl.h libintl.h locale.h unistd.h])
+AC_CHECK_HEADERS([locale.h langinfo.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
 gl_VISIBILITY
 
 # Checks for library functions.
-AC_FUNC_ERROR_AT_LINE
-AC_HEADER_STDC
-AC_CHECK_FUNCS([memchr setlocale strchr strstr])
 
 dnl internationalization macros
 AM_GNU_GETTEXT([external])
