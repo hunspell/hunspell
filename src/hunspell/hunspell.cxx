@@ -71,9 +71,6 @@ public:
   const char* get_version() const;
   int input_conv(const char* word, char* dest, size_t destsize);
 
-
-  std::vector<char> dic_encoding_vec;
-
 private:
   AffixMgr* pAMgr;
   std::vector<HashMgr*> m_HMgrs;
@@ -138,9 +135,6 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
     csconv = get_current_cs(encoding);
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
-
-  dic_encoding_vec.resize(encoding.size()+1);
-  strcpy(&dic_encoding_vec[0], encoding.c_str());
 
   /* and finally set up the suggestion manager */
   pSMgr = new SuggestMgr(try_string, MAXSUGGESTION, pAMgr);
@@ -1784,7 +1778,7 @@ void HunspellImpl::free_list(char*** slst, int n) {
 }
 
 char* HunspellImpl::get_dic_encoding() {
-  return &dic_encoding_vec[0];
+  return &encoding[0];
 }
 
 int HunspellImpl::analyze(char*** slst, const char* word) {
