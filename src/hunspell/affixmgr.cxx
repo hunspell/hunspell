@@ -494,7 +494,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
       }
     }
 
-    /* parse in the input conversion table */
+    /* parse in the output conversion table */
     if (line.compare(0, 5, "OCONV", 5) == 0) {
       if (!parse_convtable(line, afflst, &oconvtable, "OCONV")) {
         finishFileMgr(afflst);
