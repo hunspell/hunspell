@@ -27,6 +27,25 @@
 
 namespace hunspell {
 
+class Encoding {
+	std::string name;
+
+      public:
+	Encoding() = default;
+	Encoding(const std::string& e,
+	         const std::locale& ascii_loc = std::locale::classic())
+	    : name(e)
+	{
+		toupper(name, ascii_loc);
+		if (name == "UTF8")
+			name = "UTF-8";
+	}
+	auto empty() const -> bool { return name.empty(); }
+	operator const std::string&() const { return name; }
+	auto value() const -> const std::string& { return name; }
+	auto is_utf8() const -> bool { return name == "UTF-8"; }
+};
+
 enum Flag_type_t { SINGLE_CHAR_FLAG, DOUBLE_CHAR_FLAG, NUMBER_FLAG, UTF8_FLAG };
 
 struct Aff_data {
@@ -38,13 +57,15 @@ struct Aff_data {
 	template <class T, class U>
 	using pair = std::pair<T, U>;
 
-	string encoding;
+	Encoding encoding;
 	Flag_type_t flag_type;
 	bool complex_prefixes;
 	string language_code;
 	string ignore_chars;
 	vector<u16string> flag_aliases;
 	vector<vector<string>> morphological_aliases;
+
+	std::locale locale_aff;
 
 	// suggestion options
 	string keyboard_layout;

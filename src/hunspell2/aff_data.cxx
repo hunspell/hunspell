@@ -25,6 +25,8 @@
 #include <sstream>
 #include <unordered_map>
 
+#include <boost/locale.hpp>
+
 namespace hunspell {
 
 using namespace std;
@@ -71,7 +73,7 @@ auto parse_vector_of_T(/* in */ istream& in, /* in */ size_t line_num,
 // If there are no flags in the stream (eg, stream is at eof)
 // or if the format of the flags is incorrect the stream failbit will be set.
 auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
-                  /* in */ Flag_type_t t, /* in */ bool is_stream_u8)
+                  /* in */ Flag_type_t t, /* in */ const Encoding& enc)
     -> u16string
 {
 	string s;
@@ -79,7 +81,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 	const auto err_message = "Hunspell warning: bytes above 127 in UTF-8 "
 	                         "stream should not be treated alone as "
 	                         "flags. Please update dictionary to use "
-	                         "FLAG UTF-8 and make the file valid UTF-8.\n";
+	                         "FLAG UTF-8 and make the file valid UTF-8.";
 	switch (t) {
 	case SINGLE_CHAR_FLAG:
 		in >> s;
@@ -88,9 +90,10 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 			cerr << "Hunspell error: missing flag\n";
 			break;
 		}
-		if (is_stream_u8 && !is_all_ascii(s)) {
-			cerr << err_message << endl;
-			cerr << "Hunspell warning in line " << line_num << endl;
+		if (enc.is_utf8() && !is_all_ascii(s)) {
+			cerr << err_message << '\n';
+			cerr << "Hunspell warning in line " << line_num
+			     << "\n\n";
 			// This error will be triggered in Hungarian.
 			// Version 1 passed this, it just read a
 			// single byte even if the stream utf-8.
@@ -109,7 +112,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 			cerr << "Hunspell error: missing flag\n";
 			break;
 		}
-		if (is_stream_u8 && !is_all_ascii(s)) {
+		if (enc.is_utf8() && !is_all_ascii(s)) {
 			cerr << err_message << endl;
 			cerr << "Hunspell warning in line " << line_num << endl;
 		}
@@ -153,6 +156,11 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 		break;
 	case UTF8_FLAG: {
 		in >> s;
+		if (!enc.is_utf8()) {
+			// err
+			cerr << "Hunspell error: File encoding is not UTF-8, "
+			        "yet flags are\n";
+		}
 		if (in.fail()) {
 			// err no flag at all
 			cerr << "Hunspell error: missing flag\n";
@@ -172,10 +180,10 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 }
 
 auto decode_single_flag(/* in */ istream& in, /* in */ size_t line_num,
-                        /* in */ Flag_type_t t, /* in */ bool is_stream_u8)
+                        /* in */ Flag_type_t t, /* in */ Encoding enc)
     -> char16_t
 {
-	auto flags = decode_flags(in, line_num, t, is_stream_u8);
+	auto flags = decode_flags(in, line_num, t, enc);
 	if (flags.size()) {
 		return flags.front();
 	}
@@ -184,12 +192,12 @@ auto decode_single_flag(/* in */ istream& in, /* in */ size_t line_num,
 
 auto parse_affix(/* in */ istream& in, /* in */ size_t line_num,
                  /* in out */ string& command,
-                 /* in */ Flag_type_t t, /* in */ bool is_u8,
+                 /* in */ Flag_type_t t, /* in */ Encoding enc,
                  /* in out */ vector<Aff_data::affix>& vec,
                  /* in out */ unordered_map<string, pair<bool, int>>& cmd_affix)
     -> void
 {
-	char16_t f = decode_single_flag(in, line_num, t, is_u8);
+	char16_t f = decode_single_flag(in, line_num, t, enc);
 	if (f == 0) {
 		// err
 		return;
@@ -221,7 +229,7 @@ auto parse_affix(/* in */ istream& in, /* in */ size_t line_num,
 		elem.cross_product = dat->second.first;
 		in >> elem.stripping;
 		if (read_to_slash_or_space(in, elem.affix)) {
-			elem.new_flags = decode_flags(in, line_num, t, is_u8);
+			elem.new_flags = decode_flags(in, line_num, t, enc);
 		}
 		in >> elem.condition;
 		if (in.fail()) {
@@ -237,25 +245,6 @@ auto parse_affix(/* in */ istream& in, /* in */ size_t line_num,
 		cerr << "Hunspell warning: extra entries of "
 		     << command.substr(0, 3) << '\n'
 		     << "Hunspell warning in line " << line_num << endl;
-	}
-}
-
-auto parse_string_cmd(/* in */ istream& in, /* in */ size_t line_num,
-                      /* in */ const string& command, /* in out */ string& str)
-    -> void
-{
-	if (str.empty())
-		in >> str;
-	else
-		cerr << "Hunspell warning: "
-		        "Setting "
-		     << command << " more than once. Ignoring.\n"
-		     << "Hunspell warning in line " << line_num << endl;
-	if (command == "SET") {
-		// handle encoding string
-		toupper(str, in.getloc());
-		if (str == "UTF8")
-			str = "UTF-8";
 	}
 }
 
@@ -291,24 +280,35 @@ auto parse_morhological_fields(/* in */ istream& in,
 
 auto Aff_data::decode_flags(istream& in, size_t line_num) const -> u16string
 {
-	return hunspell::decode_flags(in, line_num, flag_type,
-	                              encoding == "UTF-8");
+	return hunspell::decode_flags(in, line_num, flag_type, encoding);
 }
 
 auto Aff_data::decode_single_flag(istream& in, size_t line_num) const
     -> char16_t
 {
-	return hunspell::decode_single_flag(in, line_num, flag_type,
-	                                    encoding == "UTF-8");
+	return hunspell::decode_single_flag(in, line_num, flag_type, encoding);
+}
+
+auto get_locale_name(string lang, string enc, const string& filename = "")
+{
+	if (enc.empty())
+		enc = "ISO8859-1";
+	if (lang.empty()) {
+		if (filename.empty()) {
+			lang = "en_US";
+		}
+	}
+	return lang + "." + enc;
 }
 
 auto Aff_data::parse(istream& in) -> bool
 {
 	unordered_map<string, string*> command_strings = {
-	    {"SET", &encoding},        {"LANG", &language_code},
+	    {"LANG", &language_code},
 	    {"IGNORE", &ignore_chars},
 
-	    {"KEY", &keyboard_layout}, {"TRY", &try_chars},
+	    {"KEY", &keyboard_layout},
+	    {"TRY", &try_chars},
 
 	    {"WORDCHARS", &wordchars}};
 
@@ -377,17 +377,22 @@ auto Aff_data::parse(istream& in) -> bool
 	size_t line_num = 0;
 	auto ss = istringstream();
 
-	// Must be "C" locale, otherwise istream >> int might fail
-	// due to thousands separator. "C" locale has no such seprator
-	// We kinda assume C locale is US-ASCII which should not be a problem.
-	in.imbue(locale::classic());
-	ss.imbue(locale::classic());
+	boost::locale::generator locale_generator;
+	// auto loc = locale_generator("en_US.us-ascii");
+	auto loc = locale::classic();
+	// while parsing, the streams must have plain ascii locale without
+	// any special number separator otherwise istream >> int might fail
+	// due to thousands separator.
+	// "C" locale can be used assuming it is US-ASCII,
+	// but also boost en_US.us-ascii will do, avoiding any assumptions
+	in.imbue(loc);
+	ss.imbue(loc);
 
 	flag_type = SINGLE_CHAR_FLAG;
 	while (getline(in, line)) {
 		line_num++;
 
-		if (encoding == "UTF-8" && !validate_utf8(line)) {
+		if (encoding.is_utf8() && !validate_utf8(line)) {
 			cerr << "Hunspell warning: invalid utf in aff file\n";
 			// Hungarian will triger this, contains mixed
 			// utf-8 and latin2. See note in decode_flags().
@@ -404,12 +409,20 @@ auto Aff_data::parse(istream& in) -> bool
 		ss >> ws;
 		if (command == "PFX" || command == "SFX") {
 			auto& vec = command[0] == 'P' ? prefixes : suffixes;
-			parse_affix(ss, line_num, command, flag_type,
-			            encoding == "UTF-8", vec, cmd_affix);
+			parse_affix(ss, line_num, command, flag_type, encoding,
+			            vec, cmd_affix);
 		}
 		else if (command_strings.count(command)) {
 			auto& str = *command_strings[command];
-			parse_string_cmd(ss, line_num, command, str);
+			if (str.empty())
+				ss >> str;
+			else
+				cerr << "Hunspell warning: "
+				        "Setting "
+				     << command
+				     << " more than once. Ignoring.\n"
+				     << "Hunspell warning in line " << line_num
+				     << '\n';
 		}
 		else if (command_bools.count(command)) {
 			*command_bools[command] = true;
@@ -434,6 +447,21 @@ auto Aff_data::parse(istream& in) -> bool
 			};
 			parse_vector_of_T(ss, line_num, command,
 			                  cmd_with_vec_cnt, vec, func);
+		}
+		else if (command == "SET") {
+			if (encoding.empty()) {
+				auto str = string();
+				ss >> str;
+				encoding = str;
+			}
+			else {
+				cerr << "Hunspell warning: "
+				        "Setting "
+				     << command
+				     << " more than once. Ignoring.\n"
+				     << "Hunspell warning in line " << line_num
+				     << '\n';
+			}
 		}
 		else if (command == "FLAG") {
 			parse_flag_type(ss, line_num, flag_type);
@@ -484,6 +512,7 @@ auto Aff_data::parse(istream& in) -> bool
 			     << ": " << line << endl;
 		}
 	}
+	locale_aff = locale_generator(get_locale_name(language_code, encoding));
 	cerr.flush();
 	return in.eof(); // success if we reached eof
 }

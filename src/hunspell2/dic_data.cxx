@@ -25,6 +25,8 @@
 #include <limits>
 #include <sstream>
 
+//#include <boost/locale.hpp>
+
 namespace hunspell {
 
 using namespace std;
@@ -36,13 +38,16 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 	istringstream ss;
 	string line;
 
-	// locale must be "C", see note in Aff_data::parse()
-	in.imbue(locale::classic());
-	ss.imbue(locale::classic());
+	// locale must be without thousands separator.
+	// boost::locale::generator locale_generator;
+	// auto loc = locale_generator("en_US.us-ascii");
+	auto loc = locale::classic();
+	in.imbue(loc);
+	ss.imbue(loc);
 	if (!getline(in, line)) {
 		return false;
 	}
-	if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+	if (aff.encoding.is_utf8() && !validate_utf8(line)) {
 		cerr << "Invalid utf in dic file" << endl;
 	}
 	ss.str(line);
@@ -67,7 +72,7 @@ auto Dic_data::parse(istream& in, const Aff_data& aff) -> bool
 		flags.clear();
 		morphs.clear();
 
-		if (aff.encoding == "UTF-8" && !validate_utf8(line)) {
+		if (aff.encoding.is_utf8() && !validate_utf8(line)) {
 			cerr << "Invalid utf in dic file" << endl;
 		}
 		if (line.find('/') == line.npos) {

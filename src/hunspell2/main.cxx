@@ -180,22 +180,23 @@ auto print_help() -> void
 	        "hun2 -l|-G [-L] [-d dict_NAME] [-i enc] [file_name]...\n"
 	        "hun2 -D|-h|--help|-v|--version\n"
 	        "\n"
-		"Check spelling of each FILE. Without FILE, check standard input.\n"
+	        "Check spelling of each FILE. Without FILE, check standard "
+	        "input.\n"
 	        "\n"
 	        "  -d di_CT      use di_CT dictionary. Only one dictionary is\n"
-		"                currently supported.\n"
-		"  -D            show available dictionaries and exit\n"
-		"  -i enc        input encoding, default is active locale\n"
+	        "                currently supported.\n"
+	        "  -D            show available dictionaries and exit\n"
+	        "  -i enc        input encoding, default is active locale\n"
 	        "  -l            print only misspelled words or lines\n"
 	        "  -G            print only correct words or lines\n"
 	        "  -L            lines mode\n"
 	        "  -h, --help    display this help and exit\n"
-		"  -v, --version print version number and exit\n"
+	        "  -v, --version print version number and exit\n"
 	        "\n"
 	        "Example: hun2 -d en_US file.txt\n"
 	        "\n"
-		"Bug reports: <https://github.com/hunspell/hunspell/issues>\n"
-		"Home page: <http://hunspell.github.io/>\n";
+	        "Bug reports: <https://github.com/hunspell/hunspell/issues>\n"
+	        "Home page: <http://hunspell.github.io/>\n";
 }
 
 /*!
@@ -204,13 +205,17 @@ auto print_help() -> void
 auto print_version() -> void
 {
 	cout << "hunspell 2.0.0\n"
-		"Copyright (C) 2017 Dimitri Mijoski and Sander van Geloven\n"
-	        "License LGPLv3+: GNU LGPL version 3 or later <http://gnu.org/licenses/lgpl.html>."
-		"This is free software: you are free to change and redistribute it."
-		"There is NO WARRANTY, to the extent permitted by law.\n"
-		"\n"
-		"Written by Dimitri Mijoski, Sander van Geloven, László Németh and others,"
-		"see <https://github.com/hunspell/hunspell/blob/master/AUTHORS>.";
+	        "Copyright (C) 2017 Dimitri Mijoski and Sander van Geloven\n"
+	        "License LGPLv3+: GNU LGPL version 3 or later "
+	        "<http://gnu.org/licenses/lgpl.html>."
+	        "This is free software: you are free to change and "
+	        "redistribute it."
+	        "There is NO WARRANTY, to the extent permitted by law.\n"
+	        "\n"
+	        "Written by Dimitri Mijoski, Sander van Geloven, László Németh "
+	        "and others,"
+	        "see "
+	        "<https://github.com/hunspell/hunspell/blob/master/AUTHORS>.";
 }
 
 /*!
@@ -343,7 +348,7 @@ auto correct_line_loop(istream& in, ostream& out, Dictionary& dic)
 
 auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 {
-	cout << aff.encoding << '\n';
+	cout << aff.encoding.value() << '\n';
 	cout << aff.try_chars << '\n';
 	for (auto& a : aff.compound_rules) {
 		cout << a << '\n';
@@ -441,7 +446,8 @@ int main(int argc, char* argv[])
 		if (args.dictionary.empty())
 			cerr << "No dictionary provided.\n";
 		else
-			cerr << "Dictionary " << args.dictionary << " not found.\n";
+			cerr << "Dictionary " << args.dictionary
+			     << " not found.\n";
 		return 1;
 	}
 	clog << "INFO: Pointed dictionary " << filename << ".{dic,aff}\n";
