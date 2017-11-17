@@ -374,9 +374,14 @@ auto diagnose_dic_and_aff(Aff_data& aff, Dic_data& dic)
 namespace std {
 ostream& operator<<(ostream& out, const locale& loc)
 {
-	auto& f = use_facet<boost::locale::info>(loc);
-	out << "name=" << f.name() << ", lang=" << f.language()
-	    << ", country=" << f.country() << ", enc=" << f.encoding();
+	if (has_facet<boost::locale::info>(loc)) {
+		auto& f = use_facet<boost::locale::info>(loc);
+		out << "name=" << f.name() << ", lang=" << f.language()
+		    << ", country=" << f.country() << ", enc=" << f.encoding();
+	}
+	else {
+		out << loc.name();
+	}
 	return out;
 }
 }

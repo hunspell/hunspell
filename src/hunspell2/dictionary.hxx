@@ -19,7 +19,6 @@
 #include "aff_data.hxx"
 #include "dic_data.hxx"
 
-#include <boost/locale.hpp>
 #include <fstream>
 #include <locale>
 
@@ -40,32 +39,15 @@ class Dictionary {
 	Dic_data dic_data;
 
       private:
-	/* (0)
-	All the major work is done here.
-	(1) and (2) are the lowest level specializations.
-	The rest just do some conversions and delegate to them.
-
-	(1) will simply call this
-	with ConversionIterator set to string::iterator
-
-	(2) will call this with u8_u32 on the fly conversion iterator.
-	*/
-	template <class ConvIter>
-	auto spell(ConvIter start, ConvIter end, const string& s)
-	    -> Spell_result;
-
-	/*
-	 * (1) This should be called when the input and the dictionary
-	 * are in the same encoding and that encoding is single byte encoding.
-	 */
-	auto spell_singlechar_input_singlechar_dict(const string& word)
-	    -> Spell_result;
-
-	/*
-	 * (2) This should be called when the input and the dictionary
-	 * are in the same encoding and that encoding UTF-8.
-	 */
-	auto spell_u8_input_u8_dict(const string& word) -> Spell_result;
+	template <class CharT>
+	auto spell(const std::basic_string<CharT>& w, const std::string& s)
+	    -> Spell_result
+	{
+		(void)w;
+		if (dic_data.words.count(s))
+			return good_word;
+		return bad_word;
+	}
 
       public:
 	Dictionary()
@@ -90,20 +72,12 @@ class Dictionary {
 	auto spell(const std::string& word, std::locale loc = std::locale())
 	    -> Spell_result
 	{
-		if (std::has_facet<boost::locale::info>(loc)) {
-
-			auto& fac = std::use_facet<boost::locale::info>(loc);
-			auto from_enc = fac.encoding();
-			auto& to_enc = aff_data.encoding;
-			auto w = boost::locale::conv::between(word, to_enc,
-			                                      from_enc);
-			// this just for mocking ATM
-			if (dic_data.words.count(w))
-				return good_word;
-			return bad_word;
-		}
-		std::cerr << "No info facet in locale" << std::endl;
-		return bad_word;
+		auto f = [this](auto&& a, auto&& b) {
+			return this->spell(std::forward<decltype(a)>(a),
+			                   std::forward<decltype(b)>(b));
+		};
+		return convert_and_call(LocaleInput{}, word, loc,
+		                        aff_data.locale_aff, f);
 	}
 	auto spell_u8(const std::string& word) -> Spell_result;
 	auto spell(const std::wstring& word) -> Spell_result;

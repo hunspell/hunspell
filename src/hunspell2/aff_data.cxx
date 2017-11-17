@@ -251,6 +251,7 @@ auto parse_affix(/* in */ istream& in, /* in */ size_t line_num,
 auto parse_flag_type(/* in */ istream& in, /* in */ size_t line_num,
                      /* in out */ Flag_type_t& flag_type) -> void
 {
+	(void)line_num;
 	string p;
 	in >> p;
 	toupper(p, in.getloc());

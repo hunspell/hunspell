@@ -24,6 +24,7 @@
 #ifndef LOCALE_UTILS_HXX
 #define LOCALE_UTILS_HXX
 
+#include <boost/locale.hpp>
 #include <locale>
 #include <string>
 
@@ -53,6 +54,112 @@ auto toupper(std::basic_string<CharT>& s, const std::locale& loc) -> void
 	auto& f = std::use_facet<std::ctype<char>>(loc);
 	f.toupper(&s[0], &s[s.size()]);
 }
+
+class LocaleInput {
+};
+class Utf8Input {
+};
+class SameAsDictInput {
+};
+class WideInput {
+};
+
+template <class Str, class Callback>
+auto convert_and_call(LocaleInput, Str&& in, const std::locale& inloc,
+                      const std::locale& outloc, Callback func)
+{
+	using namespace std;
+	using info_t = boost::locale::info;
+	using namespace boost::locale::conv;
+	if (has_facet<boost::locale::info>(inloc)) {
+		auto& in_info = use_facet<info_t>(inloc);
+		if (in_info.utf8())
+			return convert_and_call(Utf8Input{}, forward<Str>(in),
+			                        inloc, outloc, func);
+
+		auto& out_info = use_facet<info_t>(outloc);
+		if (out_info.utf8()) {
+			auto w_out = to_utf<wchar_t>(in, inloc);
+			auto out = utf_to_utf<char>(w_out);
+			return func(move(w_out), move(out));
+		}
+		else {
+			auto in_enc = in_info.encoding();
+			auto out_enc = out_info.encoding();
+			if (in_enc == out_enc) {
+				return func(in, in);
+			}
+			else {
+				auto out = between(in, out_enc, in_enc);
+				return func(out, out);
+			}
+		}
+	}
+	// else
+	auto& cvt = use_facet<codecvt<wchar_t, char, mbstate_t>>(inloc);
+	auto wide = std::wstring();
+	wide.resize(in.size(), L'\0');
+	auto state = mbstate_t{};
+	auto char_ptr = in.c_str();
+	auto wchar_ptr = &wide[0];
+	cvt.in(state, in.c_str(), in.c_str() + in.size(), char_ptr, &wide[0],
+	       &wide[wide.size()], wchar_ptr);
+	wide.erase(wchar_ptr - &wide[0]);
+	return convert_and_call(WideInput{}, move(wide), inloc, outloc, func);
 }
 
+template <class Str, class Callback>
+auto convert_and_call(Utf8Input, Str&& in, const std::locale& /*inloc*/,
+                      const std::locale& outloc, Callback func)
+{
+	using namespace std;
+	using info_t = boost::locale::info;
+	using namespace boost::locale::conv;
+	auto& out_info = use_facet<info_t>(outloc);
+	if (out_info.utf8()) {
+		auto w_out = utf_to_utf<wchar_t>(in);
+		return func(move(w_out), forward<Str>(in));
+	}
+	else {
+		auto out = from_utf(in, outloc);
+		return func(out, out);
+	}
+}
+
+template <class Str, class Callback>
+auto convert_and_call(SameAsDictInput, Str&& in, const std::locale& /*inloc*/,
+                      const std::locale& outloc, Callback func)
+{
+	using namespace std;
+	using info_t = boost::locale::info;
+	using namespace boost::locale::conv;
+
+	auto& out_info = use_facet<info_t>(outloc);
+	if (out_info.utf8()) {
+		auto w_out = utf_to_utf<wchar_t>(in);
+		return func(move(w_out), forward<Str>(in));
+	}
+	else {
+		return func(in, in);
+	}
+}
+
+template <class WStr, class Callback>
+auto convert_and_call(WideInput, WStr&& w_in, const std::locale& /*inloc*/,
+                      const std::locale& outloc, Callback func)
+{
+	using namespace std;
+	using info_t = boost::locale::info;
+	using namespace boost::locale::conv;
+
+	auto out = from_utf(w_in, outloc);
+	auto& out_info = use_facet<info_t>(outloc);
+	if (out_info.utf8()) {
+		return func(forward<WStr>(w_in), move(out));
+	}
+	else {
+		return func(out, out);
+	}
+}
+}
 #endif // LOCALE_UTILS_HXX
