@@ -1,7 +1,7 @@
-#TODO Set up local profile vera++.profile with:
+# Set up local profile vera++.profile with:
 #    sudo ln -s /home/.../workspace/hunspell/checks/vera++.profile \
 #    /usr/lib/vera++/profiles/vera__.profile
-#See also https://bitbucket.org/verateam/vera/issues/60/allow-to-use-absolute-path-for-profile
+# See also https://bitbucket.org/verateam/vera/issues/60/allow-to-use-absolute-path-for-profile
 
 cd ..
 

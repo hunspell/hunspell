@@ -30,10 +30,10 @@ TEST_CASE("header locale_utils", "[locale_utils]")
 	SECTION("method decode_utf8")
 	{
 		CHECK(U"" == decode_utf8(string("")));
-		// TODO Omit constructor string("...") without risk for UTF-8?
+		// Omit constructor string("...") without risk for UTF-8?
 		CHECK(U"azĳß«" == decode_utf8(string("azĳß«")));
 		CHECK(U"日  Ӥ" != decode_utf8(string("Ӥ日本に")));
-		// TODO need counter example
+		// need counter example too
 	}
 
 	SECTION("method validate_utf8")
@@ -41,7 +41,7 @@ TEST_CASE("header locale_utils", "[locale_utils]")
 		CHECK(validate_utf8(string("")));
 		CHECK(validate_utf8(string("the brown fox~")));
 		CHECK(validate_utf8(string("Ӥ日本に")));
-		// TODO need counter example
+		// need counter example too
 	}
 
 	SECTION("method is_ascii")

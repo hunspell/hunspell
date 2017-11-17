@@ -25,4 +25,4 @@ This is a programmable verification and analysis tool for C++. Install with `sud
 
 ## Qt Creator
 
-These static code checks and the code reformatter can also be run directly in Qt Creator as external tools. TODO more documentation on this. See also https://sourceforge.net/projects/qtprojecttool
+These static code checks and the code reformatter can also be run directly in Qt Creator as external tools, but needs investigation. See also https://sourceforge.net/projects/qtprojecttool
