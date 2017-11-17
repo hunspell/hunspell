@@ -289,7 +289,7 @@ auto Aff_data::decode_single_flag(istream& in, size_t line_num) const
 	return hunspell::decode_single_flag(in, line_num, flag_type, encoding);
 }
 
-auto get_locale_name(string lang, string enc, const string& filename = "")
+auto get_locale_name(string lang, string enc, const string& filename) -> string
 {
 	if (enc.empty())
 		enc = "ISO8859-1";

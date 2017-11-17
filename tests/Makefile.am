@@ -33,6 +33,8 @@ TESTS =	$(check_PROGRAMS)
 ch_catch_SOURCES = \
 locale_utils_test.cxx \
 string_utils_test.cxx \
+aff_data_test.cxx \
+finder_test.cxx \
 catch_main.cxx
 
 nodist_ch_catch_SOURCES = $(BUILT_SOURCES)

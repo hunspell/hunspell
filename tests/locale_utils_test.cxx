@@ -25,9 +25,9 @@
 using namespace std;
 using namespace hunspell;
 
-TEST_CASE("Testing locale_utils", "[locale_utils]")
+TEST_CASE("header locale_utils", "[locale_utils]")
 {
-	SECTION("Testing decode_utf8")
+	SECTION("method decode_utf8")
 	{
 		CHECK(U"" == decode_utf8(string("")));
 		// TODO Omit constructor string("...") without risk for UTF-8?
@@ -36,7 +36,7 @@ TEST_CASE("Testing locale_utils", "[locale_utils]")
 		// TODO need counter example
 	}
 
-	SECTION("Testing validate_utf8")
+	SECTION("method validate_utf8")
 	{
 		CHECK(validate_utf8(string("")));
 		CHECK(validate_utf8(string("the brown fox~")));
@@ -44,7 +44,7 @@ TEST_CASE("Testing locale_utils", "[locale_utils]")
 		// TODO need counter example
 	}
 
-	SECTION("Testing is_ascii")
+	SECTION("method is_ascii")
 	{
 		CHECK(is_ascii('a'));
 		CHECK(is_ascii('\t'));
@@ -54,20 +54,20 @@ TEST_CASE("Testing locale_utils", "[locale_utils]")
 		//        CHECK_FALSE(is_ascii('Ӥ'));
 	}
 
-	SECTION("Testing is_all_ascii")
+	SECTION("method is_all_ascii")
 	{
 		CHECK(is_all_ascii(string("")));
 		CHECK(is_all_ascii(string("the brown fox~")));
 		CHECK_FALSE(is_all_ascii(string("brown foxĳӤ")));
 	}
 
-	SECTION("Testing ascii_to_ucs2_skip_invalid")
+	SECTION("method ascii_to_ucs2_skip_invalid")
 	{
 		CHECK(u"ABC" == ascii_to_ucs2_skip_invalid("ABC"));
 		CHECK(u"ABC" == ascii_to_ucs2_skip_invalid("ABCĳӤ日"));
 	}
 
-	SECTION("Testing latin1_to_ucs2")
+	SECTION("method latin1_to_ucs2")
 	{
 		CHECK(u"" == latin1_to_ucs2(string("")));
 		CHECK(u"abc" == latin1_to_ucs2(string("abc")));
@@ -76,7 +76,7 @@ TEST_CASE("Testing locale_utils", "[locale_utils]")
 		CHECK(u"Ӥ日本に" != latin1_to_ucs2(string("Ӥ日本に")));
 	}
 
-	SECTION("Testing latin1_to_u32")
+	SECTION("method latin1_to_u32")
 	{
 		CHECK(U"" == latin1_to_u32(string("")));
 		CHECK(U"abc~" == latin1_to_u32(string("abc~")));
@@ -85,9 +85,9 @@ TEST_CASE("Testing locale_utils", "[locale_utils]")
 		CHECK(U"Ӥ日本に" != latin1_to_u32(string("Ӥ日本に")));
 	}
 
-	SECTION("Testing is_all_bmp") { CHECK(true == is_all_bmp(U"abcýþÿӤ")); }
+	SECTION("method is_all_bmp") { CHECK(true == is_all_bmp(U"abcýþÿӤ")); }
 
-	SECTION("Testing u32_to_ucs2_skip_non_bmp")
+	SECTION("method u32_to_ucs2_skip_non_bmp")
 	{
 		CHECK(u"ABC" == u32_to_ucs2_skip_non_bmp(U"ABC"));
 	}
