@@ -1,4 +1,5 @@
 # word break points test, recursive break at dash and n-dash
+# note: spelling is incorrect when word has ten or more break patterns
 SET UTF-8
 
 BREAK 2

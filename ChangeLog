@@ -1683,7 +1683,7 @@ changes:
 
         * src/hunspell/suggestmgr.cxx:
         - fix missing suggestions for words with crossed prefix and suffix
-        - fix redundant non compound word checking
+        - fix redundant non-compound word checking
         - fix losing suggestions problem. Bug reported by Dmitri Gabinski.
 
         * src/hunspell/dictmgr.*:
