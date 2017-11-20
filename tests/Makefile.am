@@ -9,7 +9,7 @@ LDADD = ../src/hunspell2/libhunspell2.a $(BOOST_LOCALE_LIBS) $(CODE_COVERAGE_LIB
 
 
 BUILT_SOURCES = catch.hpp catch_reporter_tap.hpp
-catch_url = https://raw.githubusercontent.com/philsquared/Catch/v1.10.0
+catch_url = https://raw.githubusercontent.com/catchorg/Catch2/v2.0.1
 catch.hpp:
 	wget $(catch_url)/single_include/catch.hpp
 

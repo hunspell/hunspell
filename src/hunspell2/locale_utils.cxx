@@ -96,6 +96,16 @@ auto inline count_leading_ones(unsigned char c)
 }
 }
 
+struct Utf8Decoder {
+	unsigned char state = 0;
+	char32_t cp = 0;
+
+	auto next(unsigned char in) -> bool;
+
+	template <class InpIter, class OutIter>
+	auto decode(InpIter first, InpIter last, OutIter out) -> OutIter;
+};
+
 /*!
  * Finite state transducer used for decoding UTF-8 stream.
  *
@@ -120,15 +130,12 @@ auto inline count_leading_ones(unsigned char c)
  * At the end of the input stream, we should check if the state is 1, 2 or 3
  * which indicates that too_short_err happend. FFFD should be emitted.
  *
- * \param state In out parametar, first part of the state pair.
- * \param cp In out parametar, the code point in the state pair.
  * \param in Input byte.
  * \return true if too short sequence error happend. False otherwise.
  */
-auto inline utf8_decode_dfst(unsigned char& state, char32_t& cp,
-                             unsigned char in) -> bool
+auto inline Utf8Decoder::next(unsigned char in) -> bool
 {
-	char32_t cc = in; // do not delete the cast
+	char32_t cc = in;
 	auto clz = count_leading_ones(in);
 	//*cp = (*cp << shift[clz]) | (cc & mask[clz]);
 	if (clz == 1)
@@ -141,33 +148,37 @@ auto inline utf8_decode_dfst(unsigned char& state, char32_t& cp,
 	return too_short_err;
 }
 
-auto decode_utf8(const std::string& s) -> std::u32string
+template <class InpIter, class OutIter>
+auto decode_utf8(InpIter first, InpIter last, OutIter out) -> OutIter
 {
-	unsigned char state = 0;
-	char32_t cp = 0;
+	Utf8Decoder u8;
 	bool err;
 	constexpr auto REP_CH = U'\uFFFD';
-	u32string ret(s.size(), 0);
-
-	auto i = ret.begin();
-
-	for (auto& c : s) {
-		err = utf8_decode_dfst(state, cp, c);
+	for (auto i = first; i != last; ++i) {
+		auto&& c = *i;
+		err = u8.next(c);
 		if (unlikely(err)) {
-			*i++ = REP_CH;
+			*out++ = REP_CH;
 		}
-		if (state == 0) {
-			*i++ = cp;
-			cp = 0;
+		if (u8.state == 0) {
+			*out++ = u8.cp;
+			u8.cp = 0;
 		}
-		else if (unlikely(state == 4)) {
-			*i++ = REP_CH;
-			cp = 0;
+		else if (unlikely(u8.state == 4)) {
+			*out++ = REP_CH;
+			u8.cp = 0;
 		}
 	}
-	if (unlikely(state & 3))
-		*i++ = REP_CH;
-	ret.erase(i, ret.end());
+	if (unlikely(u8.state & 3))
+		*out++ = REP_CH;
+	return out;
+}
+
+auto decode_utf8(const std::string& s) -> std::u32string
+{
+	u32string ret(s.size(), 0);
+	auto last = decode_utf8(begin(s), end(s), begin(ret));
+	ret.erase(last, ret.end());
 	return ret;
 }
 
