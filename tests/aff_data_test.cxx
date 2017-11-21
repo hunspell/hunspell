@@ -39,12 +39,34 @@ TEST_CASE("method get_locale_name", "[aff_data]")
 	      get_locale_name("nl_NL", "UTF-8", "somefilename"));
 }
 
+TEST_CASE("method get_capitalization", "[aff_data]")
+{
+	CHECK(CAP_NO == get_cap_type("alllowercase"));
+	CHECK(CAP_NO == get_cap_type("alllowercase3"));
+	CHECK(CAP_NO == get_cap_type("Initandlowercase"));//TODO CAP_INIT
+	CHECK(CAP_NO == get_cap_type("Initandlowercase_"));//TODO CAP_INIT
+	CHECK(CAP_NO == get_cap_type("ALLUPPERCASE"));//TODO CAP_ALL
+	CHECK(CAP_NO == get_cap_type("ALLUPPERCASE."));//TODO CAP_ALL
+	CHECK(CAP_NO == get_cap_type("iCamelCase"));//TODO CAP_CAM
+	CHECK(CAP_NO == get_cap_type("iCamelCase@"));//TODO CAP_CAM
+	CHECK(CAP_NO == get_cap_type("InitCamelCase"));//TODO CAP_INITCAM
+	CHECK(CAP_NO == get_cap_type("InitCamelCase "));//TODO CAP_INITCAM
+}
+
 TEST_CASE("method clean_word", "[aff_data]")
 {
-	string src = "  blah...";
+	string src;
 	string dst;
 	size_t captype; // TODO Ask dimitrij to use int or size_t?
 	size_t abbrev;
+
+	src = "blah";
+	CHECK(4 == clean_word(dst, src, &captype, &abbrev));
+	CHECK("blah" == dst);
+	CHECK(CAP_NO == captype);
+	CHECK(3 == abbrev);//TODO
+
+	src = "  blah...";
 	CHECK(4 == clean_word(dst, src, &captype, &abbrev));
 	CHECK("blah" == dst);
 	CHECK(CAP_NO == captype);

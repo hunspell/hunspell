@@ -41,6 +41,8 @@ auto get_locale_name(std::string lang, std::string enc,
 #define CAP_CAM 3
 #define CAP_INITCAM 4
 
+auto get_cap_type(const std::string& word) -> int;
+
 auto clean_word(std::string& dst, const std::string& src, size_t* captype,
                 size_t* abbrev) -> int;
 

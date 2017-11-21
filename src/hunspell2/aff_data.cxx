@@ -324,8 +324,19 @@ auto clean_word(string& dst, const string& src, size_t* captype, size_t* abbrev)
 	dst = "blah";
 	*captype = CAP_NO;
 	*abbrev = (size_t)3;
-	// TODO analyse if abbrev is only used as boolean or also as count
 	return 4;
+}
+
+/*!
+ * Returns capitalization type for a word.
+ *
+ * \param word word for which capitalization is determined.
+ * \return capitalization type.
+ */
+auto get_cap_type(const std::string& word) -> int
+{
+	// TODO implement
+	return CAP_NO;
 }
 
 auto Aff_data::parse(istream& in) -> bool
