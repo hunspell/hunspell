@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Hunspell-2.	If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2. If not, see <http://www.gnu.org/licenses/>.
  *
  * Hunspell 2 is based on Hunspell v1 and MySpell.
  * Hunspell v1 is Copyright (C) 2002-2017 Németh László

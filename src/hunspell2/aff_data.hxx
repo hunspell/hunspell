@@ -9,11 +9,11 @@
  *
  * Hunspell-2 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Hunspell-2.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2. If not, see <http://www.gnu.org/licenses/>.
  *
  * Hunspell 2 is based on Hunspell v1 and MySpell.
  * Hunspell v1 is Copyright (C) 2002-2017 Németh László
@@ -34,6 +34,16 @@ namespace hunspell {
 auto get_locale_name(std::string lang, std::string enc,
                      const std::string& filename = "") -> std::string;
 
+// capitalization types
+#define CAP_NO 0
+#define CAP_INIT 1
+#define CAP_ALL 2
+#define CAP_CAM 3
+#define CAP_INITCAM 4
+
+auto clean_word(std::string& dst, const std::string& src, size_t* captype,
+                size_t* abbrev) -> int;
+
 class Encoding {
 	std::string name;
 
@@ -53,7 +63,7 @@ class Encoding {
 	auto is_utf8() const -> bool { return name == "UTF-8"; }
 };
 
-enum Flag_type_t { SINGLE_CHAR_FLAG, DOUBLE_CHAR_FLAG, NUMBER_FLAG, UTF8_FLAG };
+enum Flag_type_t { FLAG_SINGLE_CHAR, FLAG_DOUBLE_CHAR, FLAG_NUMBER, FLAG_UTF8 };
 
 struct Aff_data {
 	using string = std::string;

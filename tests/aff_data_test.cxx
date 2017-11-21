@@ -38,3 +38,15 @@ TEST_CASE("method get_locale_name", "[aff_data]")
 	CHECK("nl_NL.UTF-8" ==
 	      get_locale_name("nl_NL", "UTF-8", "somefilename"));
 }
+
+TEST_CASE("method clean_word", "[aff_data]")
+{
+	string src = "  blah...";
+	string dst;
+	size_t captype; // TODO Ask dimitrij to use int or size_t?
+	size_t abbrev;
+	CHECK(4 == clean_word(dst, src, &captype, &abbrev));
+	CHECK("blah" == dst);
+	CHECK(CAP_NO == captype);
+	CHECK(3 == abbrev);
+}

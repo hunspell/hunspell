@@ -13,7 +13,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Hunspell-2.	If not, see <http://www.gnu.org/licenses/>.
+ * along with Hunspell-2. If not, see <http://www.gnu.org/licenses/>.
  *
  * Hunspell 2 is based on Hunspell v1 and MySpell.
  * Hunspell v1 is Copyright (C) 2002-2017 Németh László
@@ -87,7 +87,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 	                         "flags. Please update dictionary to use "
 	                         "FLAG UTF-8 and make the file valid UTF-8.";
 	switch (t) {
-	case SINGLE_CHAR_FLAG:
+	case FLAG_SINGLE_CHAR:
 		in >> s;
 		if (in.fail()) {
 			// err no flag at all
@@ -109,7 +109,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 		}
 		ret = latin1_to_ucs2(s);
 		break;
-	case DOUBLE_CHAR_FLAG: {
+	case FLAG_DOUBLE_CHAR: {
 		in >> s;
 		if (in.fail()) {
 			// err no flag at all
@@ -135,7 +135,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 		}
 		break;
 	}
-	case NUMBER_FLAG:
+	case FLAG_NUMBER:
 		unsigned short flag;
 		in >> flag;
 		if (in.fail()) {
@@ -158,7 +158,7 @@ auto decode_flags(/* in */ istream& in, /* in */ size_t line_num,
 			}
 		}
 		break;
-	case UTF8_FLAG: {
+	case FLAG_UTF8: {
 		in >> s;
 		if (!enc.is_utf8()) {
 			// err
@@ -260,11 +260,11 @@ auto parse_flag_type(/* in */ istream& in, /* in */ size_t line_num,
 	in >> p;
 	toupper(p, in.getloc());
 	if (p == "LONG")
-		flag_type = DOUBLE_CHAR_FLAG;
+		flag_type = FLAG_DOUBLE_CHAR;
 	else if (p == "NUM")
-		flag_type = NUMBER_FLAG;
+		flag_type = FLAG_NUMBER;
 	else if (p == "UTF-8")
-		flag_type = UTF8_FLAG;
+		flag_type = FLAG_UTF8;
 	else
 		cerr << "Hunspell error: unknown FLAG type\n";
 }
@@ -304,6 +304,28 @@ auto get_locale_name(string lang, string enc, const string& filename) -> string
 		}
 	}
 	return lang + "." + enc;
+}
+
+/*!
+ * Returns a cleaned version of a word by removing any leading spaces and
+ * trailing periods. It also returns the count the removed trailing periods and
+ * the capitalization type of the cleaned word.
+ *
+ * \param dst destination holding the cleaned string.
+ * \param src source holding the string to clean.
+ * \param captype capitalisation type that has been detected.
+ * \param abbrev number of removed trainling periods.
+ * \return length of the cleaned string.
+ */
+auto clean_word(string& dst, const string& src, size_t* captype, size_t* abbrev)
+    -> int
+{
+	// TODO implement
+	dst = "blah";
+	*captype = CAP_NO;
+	*abbrev = (size_t)3;
+	// TODO analyse if abbrev is only used as boolean or also as count
+	return 4;
 }
 
 auto Aff_data::parse(istream& in) -> bool
@@ -393,7 +415,7 @@ auto Aff_data::parse(istream& in) -> bool
 	in.imbue(loc);
 	ss.imbue(loc);
 
-	flag_type = SINGLE_CHAR_FLAG;
+	flag_type = FLAG_SINGLE_CHAR;
 	while (getline(in, line)) {
 		line_num++;
 
