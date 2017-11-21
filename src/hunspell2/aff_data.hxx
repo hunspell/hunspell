@@ -35,11 +35,7 @@ auto get_locale_name(std::string lang, std::string enc,
                      const std::string& filename = "") -> std::string;
 
 // capitalization types
-#define CAP_NO 0
-#define CAP_INIT 1
-#define CAP_ALL 2
-#define CAP_CAM 3
-#define CAP_INITCAM 4
+enum Capitalization_type_t { CAP_NO, CAP_INIT, CAP_ALL, CAP_CAM, INITCAM };
 
 auto get_cap_type(const std::string& word) -> int;
 

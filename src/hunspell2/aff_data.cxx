@@ -311,11 +311,11 @@ auto get_locale_name(string lang, string enc, const string& filename) -> string
  * trailing periods. It also returns the count the removed trailing periods and
  * the capitalization type of the cleaned word.
  *
- * \param dst destination holding the cleaned string.
- * \param src source holding the string to clean.
+ * \param dst destination holding the cleaned word.
+ * \param src source holding the word to clean.
  * \param captype capitalisation type that has been detected.
  * \param abbrev number of removed trainling periods.
- * \return length of the cleaned string.
+ * \return length of the cleaned word.
  */
 auto clean_word(string& dst, const string& src, size_t* captype, size_t* abbrev)
     -> int
