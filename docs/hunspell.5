@@ -1,4 +1,4 @@
-.TH hunspell 5 "2014-05-26"
+.TH hunspell 5 "2017-09-20"
 .LO 1
 .SH NAME
 hunspell \- format of Hunspell dictionaries and affix files
@@ -121,8 +121,10 @@ Set twofold prefix stripping (but single suffix stripping) eg. for morphological
 languages with right-to-left writing system.
 
 .IP "LANG langcode"
-Set language code for language specific functions of Hunspell. Use it to activate special casing
-of Azeri (LANG az) and Turkish (LANG tr).
+Set language code for language-specific functions of Hunspell. Use it to activate special casing
+of Azeri (LANG az), Turkish (LANG tr) and Crimean Tatar (LANG crh), also not generalized
+syllable-counting compounding rules of Hungarian (LANG hu).
+
 .IP "IGNORE characters"
 Sets characters to ignore dictionary words, affixes and
 input words.
