@@ -670,7 +670,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
     sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
-            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
+            "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g;s/<\\/\\?text:span[^>]*>//g\" "
             ">" << odftmpdir << "/content.xml";
     if (!secure_filename(filename) || system(sbuf.str().c_str()) != 0) {
       if (secure_filename(filename))
