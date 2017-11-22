@@ -198,6 +198,8 @@ char* privdicname = NULL;
 const char* currentfilename = NULL;
 
 int modified;  // modified file sign
+bool multiple_files; // for listing file names in pipe interface
+
 enum {
   NORMAL,
   BADWORD,     // print only bad words
@@ -654,6 +656,8 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   int d = 0;
   char* odftmpdir = NULL;
 
+  std::string filename_prefix = (multiple_files) ? filename + std::string(": ") : "";
+
   const char* extension = (filename) ? basename(filename, '.') : NULL;
   TextParser* parser = get_parser(format, extension, pMS[0]);
   char tmpdirtemplate[] = "/tmp/hunspellXXXXXX";
@@ -798,10 +802,10 @@ nextline:
             if (!check(pMS, &d, token, NULL, NULL)) {
               bad = 1;
               if (!printgood)
-                fprintf(stdout, "%s\n", token.c_str());
+                fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
             } else {
               if (printgood)
-                fprintf(stdout, "%s\n", token.c_str());
+                fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
             }
             continue;
           }
@@ -1995,6 +1999,8 @@ int main(int argc, char** argv) {
       }
     }
   }
+
+  multiple_files = (arg_files > 0) && (argc - arg_files > 1);
 
   if (printgood && (filter_mode == NORMAL))
     filter_mode = BADWORD;
