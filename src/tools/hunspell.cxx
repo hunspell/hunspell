@@ -791,6 +791,7 @@ nextline:
       parser->put_line(buf + pos);
       std::string token;
       while (parser->next_token(token)) {
+        token = parser->get_word(token);
         mystrrep(token, ENTITY_APOS, "'");
         switch (filter_mode) {
           case BADWORD: {
@@ -806,7 +807,7 @@ nextline:
           }
 
           case WORDFILTER: {
-            if (!check(pMS, &d, token, NULL, NULL)) {
+            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
               if (!printgood)
                 fprintf(stdout, "%s\n", buf);
             } else {
@@ -817,7 +818,7 @@ nextline:
           }
 
           case BADLINE: {
-            if (!check(pMS, &d, token, NULL, NULL)) {
+            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
               bad = 1;
             }
             continue;
@@ -828,10 +829,10 @@ nextline:
           case AUTO2:
           case AUTO3: {
             FILE* f = (filter_mode == AUTO) ? stderr : stdout;
-            if (!check(pMS, &d, token, NULL, NULL)) {
+            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
               bad = 1;
               std::vector<std::string> wlst =
-                  pMS[d]->suggest(chenc(token, io_enc, dic_enc[d]));
+                  pMS[d]->suggest(chenc(parser->get_word(token), io_enc, dic_enc[d]));
               if (!wlst.empty()) {
                 parser->change_token(chenc(wlst[0], dic_enc[d], io_enc).c_str());
                 if (filter_mode == AUTO3) {
@@ -904,7 +905,7 @@ nextline:
           case PIPE: {
             int info;
             std::string root;
-            if (check(pMS, &d, token, &info, &root)) {
+            if (check(pMS, &d, parser->get_word(token), &info, &root)) {
               if (!terse_mode) {
                 if (verbose_mode)
                   fprintf(stdout, "* %s\n", token.c_str());
@@ -1521,11 +1522,11 @@ int interactive_line(TextParser* parser,
   int d = 0;
   std::string token;
   while (parser->next_token(token)) {
-    if (!check(pMS, &d, token, &info, NULL)) {
+    if (!check(pMS, &d, parser->get_word(token), &info, NULL)) {
       std::vector<std::string> wlst;
       dialogscreen(parser, token, filename, info, wlst);  // preview
       refresh();
-      std::string dicbuf = chenc(token, io_enc, dic_enc[d]);
+      std::string dicbuf = chenc(parser->get_word(token), io_enc, dic_enc[d]);
       wlst = pMS[d]->suggest(mystrrep(dicbuf, ENTITY_APOS, "'").c_str());
       if (wlst.empty()) {
         dialogexit = dialog(parser, pMS[d], token, filename, wlst, info);
