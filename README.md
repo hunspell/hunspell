@@ -1,17 +1,4 @@
-<!-- add following also to hunspell.github.io
-[![Code Coverage Codecov](https://codecov.io/gh/hunspell/hunspell/branch/master/graph/badge.svg)](https://codecov.io/gh/hunspell/hunspell)
-[![Build Status Travis](https://travis-ci.org/hunspell/hunspell.svg?branch=master)](https://travis-ci.org/hunspell/hunspell)
-[![Build Status AppVeyor]([https://ci.appveyor.com/api/projects/status/ecxsq3s4j2b9n965?svg=true](https://ci.appveyor.com/api/projects/status/ecxsq3s4j2b9n965?svg=true)](https://ci.appveyor.com/project/hunspell-bot/hunspell-n4uof)
-[![Translation Status](https://hosted.weblate.org/widgets/hunspell/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/hunspell/?utm_source=widget)
-
-see also https://shields.io/
--->
-
 # About Hunspell
-
-NOTICE: Version 2 is in the works. For contributing see [version 2
-specification](https://github.com/hunspell/hunspell/wiki/Version-2-Specification)
-and the folder `src/hunspell2`.
 
 Hunspell is a spell checker and morphological analyzer library and
 program designed for languages with rich morphology and complex word
@@ -45,7 +32,7 @@ Main features of Hunspell spell checker and morphological analyzer:
 
 Build only dependencies:
 
-    g++ make autoconf automake autopoint libtool wget catch
+    g++ make autoconf automake autopoint libtool
 
 Runtime dependencies:
 
@@ -53,8 +40,6 @@ Runtime dependencies:
 |---------------|------------------|------------------|
 |libhunspell 1  |                  |                  |
 |cmd line tool 1| libiconv gettext | ncurses readline |
-|libhunspell 2  | boost-locale     |                  |
-|cmd line tool 2|                  |                  |
     
 Recommended tools for developers:
 

@@ -29,8 +29,6 @@ AC_PROG_AWK
 
 # Checks for libraries.
 AM_ICONV
-BOOST_REQUIRE([1.48.0])
-BOOST_LOCALE
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 # Checks for header files.
@@ -114,10 +112,8 @@ AC_CONFIG_FILES([
 	src/hunspell/hunvisapi.h
 	src/parsers/Makefile
 	src/tools/Makefile
-	src/hunspell2/Makefile
 	tests/Makefile
 	tests/suggestiontest/Makefile
 	tests/v1cmdline/Makefile
-	tests/hun2/Makefile
 ])
 AC_OUTPUT
