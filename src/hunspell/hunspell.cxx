@@ -667,6 +667,11 @@ bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) 
       size_t plen = wordbreak[j].size();
       size_t found = scw.find(wordbreak[j]);
       if ((found > 0) && (found < wl - plen)) {
+        size_t found2 = scw.find(wordbreak[j], found + 1);
+        // try to break at the second occurance
+        // to recognize dictionary words with wordbreak
+        if (found2 > 0 && (found2 < wl - plen))
+            found = found2;
         if (!spell(scw.substr(found + plen)))
           continue;
         std::string suffix(scw.substr(found));
