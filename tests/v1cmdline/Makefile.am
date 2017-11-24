@@ -25,6 +25,7 @@ sug.dic \
 sugutf.dic \
 phone.dic \
 ph.dic \
+ph2.dic \
 flag.dic \
 flaglong.dic \
 flagnum.dic \
@@ -201,6 +202,10 @@ ph.aff \
 ph.dic \
 ph.sug \
 ph.wrong \
+ph2.aff \
+ph2.dic \
+ph2.sug \
+ph2.wrong \
 alias.aff \
 alias.dic \
 alias.good \

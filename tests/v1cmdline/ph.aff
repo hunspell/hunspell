@@ -23,4 +23,8 @@
 # which ph:wich
 # witch ph:witch
 #
+# switch off ngram suggestions to check only
+# ph: based suggestions
+MAXNGRAMSUGS 0
+
 TRY esianrtolcdugmphbyfvkwzESIANRTOLCDUGMPHBYFVKWZ'-

@@ -1,0 +1,8 @@
+4
+foo ph:bar ph:baz
+foo bar ph:foobar
+word/Y ph:baz
+stem/Y
+forbidden/Y
+root/YA
+forbidden root/A ph:forbiddenroot

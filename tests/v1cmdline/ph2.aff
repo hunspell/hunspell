@@ -1,0 +1,19 @@
+# switch off ngram suggestion to test
+# usage of ph: dictionary fields in REP
+# suggestions
+MAXNGRAMSUGS 0
+
+# test in compounds, too
+COMPOUNDFLAG Y
+
+# test also dictionary items with space,
+# and forbidden compounding, if there is
+# a ph: field with that compound as
+# mispelling in the dictionary
+CHECKCOMPOUNDREP
+
+# test in compound word with affixes
+SFX A Y 1
+SFX A 0 's .
+
+WORDCHARS '
