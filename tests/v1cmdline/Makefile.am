@@ -24,6 +24,7 @@ rep.dic \
 sug.dic \
 sugutf.dic \
 phone.dic \
+ph.dic \
 flag.dic \
 flaglong.dic \
 flagnum.dic \
@@ -196,6 +197,10 @@ phone.aff \
 phone.dic \
 phone.sug \
 phone.wrong \
+ph.aff \
+ph.dic \
+ph.sug \
+ph.wrong \
 alias.aff \
 alias.dic \
 alias.good \
