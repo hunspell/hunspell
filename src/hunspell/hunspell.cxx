@@ -887,6 +887,11 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   switch (captype) {
     case NOCAP: {
       pSMgr->suggest(slst, scw.c_str(), &onlycmpdsug);
+      if (abbv) {
+        std::string wspace(scw);
+        wspace.push_back('.');
+        pSMgr->suggest(slst, wspace.c_str(), &onlycmpdsug);
+      }
       break;
     }
 
@@ -1007,7 +1012,7 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   if (pAMgr && (slst.empty() || onlycmpdsug) && (pAMgr->get_maxngramsugs() != 0)) {
     switch (captype) {
       case NOCAP: {
-        pSMgr->ngsuggest(slst, scw.c_str(), m_HMgrs);
+        pSMgr->ngsuggest(slst, scw.c_str(), m_HMgrs, NOCAP);
         break;
       }
       case HUHINITCAP:
@@ -1015,21 +1020,21 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
       case HUHCAP: {
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
-        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs);
+        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, HUHCAP);
         break;
       }
       case INITCAP: {
         capwords = 1;
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
-        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs);
+        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, INITCAP);
         break;
       }
       case ALLCAP: {
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
         size_t oldns = slst.size();
-        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs);
+        pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, ALLCAP);
         for (size_t j = oldns; j < slst.size(); ++j) {
           mkallcap(slst[j]);
         }

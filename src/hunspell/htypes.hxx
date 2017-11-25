@@ -44,9 +44,10 @@
   (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q)) - 1));
 
 // hentry options
-#define H_OPT (1 << 0)
-#define H_OPT_ALIASM (1 << 1)
-#define H_OPT_PHON (1 << 2)
+#define H_OPT (1 << 0)          // is there optional morphological data?
+#define H_OPT_ALIASM (1 << 1)   // using alias compression?
+#define H_OPT_PHON (1 << 2)     // is there ph: field in the morphological data?
+#define H_OPT_INITCAP (1 << 3)  // is dictionary word capitalized?
 
 // see also csutil.hxx
 #define HENTRY_WORD(h) &(h->word[0])

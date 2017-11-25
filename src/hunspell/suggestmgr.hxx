@@ -125,7 +125,7 @@ class SuggestMgr {
   ~SuggestMgr();
 
   void suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
-  void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr);
+  void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr, int captype);
 
   std::string suggest_morph(const std::string& word);
   std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);

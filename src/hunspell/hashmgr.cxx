@@ -182,7 +182,8 @@ int HashMgr::add_word(const std::string& in_word,
                       unsigned short* aff,
                       int al,
                       const std::string* in_desc,
-                      bool onlyupcase) {
+                      bool onlyupcase,
+                      int captype) {
   const std::string* word = &in_word;
   const std::string* desc = in_desc;
 
@@ -243,10 +244,11 @@ int HashMgr::add_word(const std::string& in_word,
   hp->astr = aff;
   hp->next = NULL;
   hp->next_homonym = NULL;
+  hp->var = (captype == INITCAP) ? H_OPT_INITCAP : 0;
 
   // store the description string or its pointer
   if (desc) {
-    hp->var = H_OPT;
+    hp->var += H_OPT;
     if (aliasm) {
       hp->var += H_OPT_ALIASM;
       store_pointer(hpw + word->size() + 1, get_aliasm(atoi(desc->c_str())));
@@ -270,8 +272,7 @@ int HashMgr::add_word(const std::string& in_word,
         start_piece = mystrsep(fields, iter);
       }
     }
-  } else
-    hp->var = 0;
+  }
 
   struct hentry* dp = tableptr[i];
   if (!dp) {
@@ -362,12 +363,12 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
       mkallsmall_utf(w, langnum);
       mkinitcap_utf(w, langnum);
       u16_u8(st, w);
-      return add_word(st, wcl, flags2, flagslen + 1, dp, true);
+      return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP);
     } else {
       std::string new_word(word);
       mkallsmall(new_word, csconv);
       mkinitcap(new_word, csconv);
-      int ret = add_word(new_word, wcl, flags2, flagslen + 1, dp, true);
+      int ret = add_word(new_word, wcl, flags2, flagslen + 1, dp, true, INITCAP);
       return ret;
     }
   }
@@ -450,7 +451,7 @@ int HashMgr::add(const std::string& word) {
     int al = 0;
     unsigned short* flags = NULL;
     int wcl = get_clen_and_captype(word, &captype);
-    add_word(word, wcl, flags, al, NULL, false);
+    add_word(word, wcl, flags, al, NULL, false, captype);
     return add_hidden_capitalized_word(word, wcl, flags, al, NULL,
                                        captype);
   }
@@ -465,14 +466,14 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
     int captype;
     int wcl = get_clen_and_captype(word, &captype);
     if (aliasf) {
-      add_word(word, wcl, dp->astr, dp->alen, NULL, false);
+      add_word(word, wcl, dp->astr, dp->alen, NULL, false, captype);
     } else {
       unsigned short* flags =
           (unsigned short*)malloc(dp->alen * sizeof(unsigned short));
       if (flags) {
         memcpy((void*)flags, (void*)dp->astr,
                dp->alen * sizeof(unsigned short));
-        add_word(word, wcl, flags, dp->alen, NULL, false);
+        add_word(word, wcl, flags, dp->alen, NULL, false, captype);
       } else
         return 1;
     }
@@ -620,7 +621,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     int wcl = get_clen_and_captype(ts, &captype, workbuf);
     const std::string *dp_str = dp.empty() ? NULL : &dp;
     // add the word and its index plus its capitalized form optionally
-    if (add_word(ts, wcl, flags, al, dp_str, false) ||
+    if (add_word(ts, wcl, flags, al, dp_str, false, captype) ||
         add_hidden_capitalized_word(ts, wcl, flags, al, dp_str, captype)) {
       delete dict;
       return 5;

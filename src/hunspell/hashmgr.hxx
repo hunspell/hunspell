@@ -140,7 +140,8 @@ class HashMgr {
                unsigned short* ap,
                int al,
                const std::string* desc,
-               bool onlyupcase);
+               bool onlyupcase,
+               int captype);
   int load_config(const char* affpath, const char* key);
   bool parse_aliasf(const std::string& line, FileMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
