@@ -105,3 +105,8 @@ hunspell-*.tar.gz
 
 # https://github.com/linux-test-project/lcov
 /hunspell-*-*coverage*
+
+# Sourcetrail
+/Hunspell.srctrlbm
+/Hunspell.srctrldb
+/Hunspell.srctrlprj
