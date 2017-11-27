@@ -1573,7 +1573,8 @@ int SuggestMgr::checkword(const std::string& word,
     if (rv) {
       if ((rv->astr) &&
           (TESTAFF(rv->astr, pAMgr->get_forbiddenword(), rv->alen) ||
-           TESTAFF(rv->astr, pAMgr->get_nosuggest(), rv->alen)))
+           TESTAFF(rv->astr, pAMgr->get_nosuggest(), rv->alen) ||
+           TESTAFF(rv->astr, pAMgr->get_substandard(), rv->alen)))
         return 0;
       while (rv) {
         if (rv->astr &&

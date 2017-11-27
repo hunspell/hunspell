@@ -309,6 +309,7 @@ class AffixMgr {
   FLAG get_forbiddenword() const;
   FLAG get_nosuggest() const;
   FLAG get_nongramsuggest() const;
+  FLAG get_substandard() const;
   FLAG get_needaffix() const;
   FLAG get_onlyincompound() const;
   const char* get_derived() const;

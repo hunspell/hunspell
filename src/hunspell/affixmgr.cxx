@@ -3548,6 +3548,11 @@ FLAG AffixMgr::get_nongramsuggest() const {
   return nongramsuggest;
 }
 
+// return the substandard root/affix control flag
+FLAG AffixMgr::get_substandard() const {
+  return substandard;
+}
+
 // return the forbidden words flag modify flag
 FLAG AffixMgr::get_needaffix() const {
   return needaffix;
