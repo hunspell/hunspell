@@ -1078,21 +1078,25 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   
   for (size_t i = 0; i < rHMgr.size(); ++i) {
     while (0 != (hp = rHMgr[i]->walk_hashtable(col, hp))) {
-      if (((hp->astr) && (pAMgr) &&
-          // exceptions for suggestions
-          (TESTAFF(hp->astr, forbiddenword, hp->alen) ||
-           TESTAFF(hp->astr, ONLYUPCASEFLAG, hp->alen) ||
-           TESTAFF(hp->astr, nosuggest, hp->alen) ||
-           TESTAFF(hp->astr, nongramsuggest, hp->alen) ||
-           TESTAFF(hp->astr, onlyincompound, hp->alen))) ||
-          // don't suggest uppercase words for lower case misspellings
-          // in ngram suggestions, except in German, where
-          // not only proper nouns are capitalized
-          ((langnum != LANG_de) && (hp->var & H_OPT_INITCAP) &&
-           (captype == NOCAP)) ||
-          // don't suggest, if the word length different by 5 characters
-          // or more (to avoid strange suggestions)
-           (((abs(n - hp->clen) > 4) && !nonbmp)))
+      // skip exceptions
+      if (
+           // skip it, if the word length different by 5 or
+           // more characters (to avoid strange suggestions)
+           // (except Unicode characters over BMP)
+           (((abs(n - hp->clen) > 4) && !nonbmp)) ||
+           // don't suggest uppercase words for lower case
+           // misspellings in ngram suggestions, except in
+           // German, where not only proper nouns are capitalized
+           ((captype == NOCAP) &&
+              (langnum != LANG_de) && (hp->var & H_OPT_INITCAP)) ||
+           // or it has one of the following special flags
+           ((hp->astr) && (pAMgr) &&
+             (TESTAFF(hp->astr, forbiddenword, hp->alen) ||
+             TESTAFF(hp->astr, ONLYUPCASEFLAG, hp->alen) ||
+             TESTAFF(hp->astr, nosuggest, hp->alen) ||
+             TESTAFF(hp->astr, nongramsuggest, hp->alen) ||
+             TESTAFF(hp->astr, onlyincompound, hp->alen)))
+         )
         continue;
 
       if (utf8) {
