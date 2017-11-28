@@ -249,6 +249,7 @@ class AffixMgr {
 
   short get_syllable(const std::string& word);
   int cpdrep_check(const char* word, int len);
+  int cpdwordpair_check(const char * word, int len);
   int cpdpat_check(const char* word,
                    int len,
                    hentry* r1,
