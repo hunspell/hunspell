@@ -22,6 +22,7 @@ i58202.dic \
 map.dic \
 rep.dic \
 sug.dic \
+sug2.dic \
 sugutf.dic \
 phone.dic \
 ph.dic \
@@ -190,6 +191,10 @@ sug.aff \
 sug.dic \
 sug.sug \
 sug.wrong \
+sug2.aff \
+sug2.dic \
+sug2.sug \
+sug2.wrong \
 sugutf.aff \
 sugutf.dic \
 sugutf.sug \
