@@ -1084,11 +1084,14 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
            // more characters (to avoid strange suggestions)
            // (except Unicode characters over BMP)
            (((abs(n - hp->clen) > 4) && !nonbmp)) ||
-           // don't suggest uppercase words for lower case
-           // misspellings in ngram suggestions, except in
-           // German, where not only proper nouns are capitalized
-           ((captype == NOCAP) &&
-              (langnum != LANG_de) && (hp->var & H_OPT_INITCAP)) ||
+           // don't suggest capitalized dictionary words for
+           // lower case misspellings in ngram suggestions, except
+           // - PHONE usage, or
+           // - in the case of German, where not only proper
+           //   nouns are capitalized, or
+           // - the capitalized word has special pronunciation
+           ((captype == NOCAP) && (hp->var & H_OPT_INITCAP) &&
+              !ph && (langnum != LANG_de) && !(hp->var & H_OPT_PHON)) ||
            // or it has one of the following special flags
            ((hp->astr) && (pAMgr) &&
              (TESTAFF(hp->astr, forbiddenword, hp->alen) ||
@@ -1119,7 +1122,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         sc = ngram(3, word, f, NGRAM_LONGER_WORSE) + leftcommon;
       }
 
-      // check special pronounciation
+      // check special pronunciation
       f.clear();
       if ((hp->var & H_OPT_PHON) &&
           copy_field(f, HENTRY_DATA(hp), MORPH_PHON)) {
