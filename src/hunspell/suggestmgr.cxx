@@ -775,7 +775,12 @@ int SuggestMgr::twowords(std::vector<std::string>& wlst,
         }
         if (wlst.size() < maxSug) {
           if (cwrd) {
-            wlst.push_back(candidate);
+            // give maximal priority for word pairs listed in the dictionary
+            // for example, possible "a lot" in the English dictionary
+            if (checkword(candidate, cpdsuggest, NULL, NULL))
+              wlst.insert(wlst.begin(), candidate);
+            else
+              wlst.push_back(candidate);
           }
         } else {
           free(candidate);
