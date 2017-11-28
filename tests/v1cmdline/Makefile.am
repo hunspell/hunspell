@@ -23,6 +23,7 @@ map.dic \
 rep.dic \
 sug.dic \
 sug2.dic \
+wordpair.dic \
 sugutf.dic \
 phone.dic \
 ph.dic \
@@ -195,6 +196,10 @@ sug2.aff \
 sug2.dic \
 sug2.sug \
 sug2.wrong \
+wordpair.aff \
+wordpair.dic \
+wordpair.sug \
+wordpair.wrong \
 sugutf.aff \
 sugutf.dic \
 sugutf.sug \
