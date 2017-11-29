@@ -109,6 +109,7 @@ class SuggestMgr {
   char* ctry;
   size_t ctryl;
   std::vector<w_char> ctry_utf;
+  bool lang_with_dash_usage;
 
   AffixMgr* pAMgr;
   unsigned int maxSug;
@@ -124,7 +125,7 @@ class SuggestMgr {
   SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr);
   ~SuggestMgr();
 
-  void suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
+  bool suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
   void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr, int captype);
 
   std::string suggest_morph(const std::string& word);
@@ -149,7 +150,7 @@ class SuggestMgr {
   int extrachar(std::vector<std::string>&, const char*, int);
   int badcharkey(std::vector<std::string>&, const char*, int);
   int badchar(std::vector<std::string>&, const char*, int);
-  int twowords(std::vector<std::string>&, const char*, int);
+  bool twowords(std::vector<std::string>&, const char*, int, bool);
 
   void capchars_utf(std::vector<std::string>&, const w_char*, int wl, int);
   int doubletwochars_utf(std::vector<std::string>&, const w_char*, int wl, int);

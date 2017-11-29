@@ -132,6 +132,11 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
       ctryl = u8_u16(ctry_utf, tryme);
     }
   }
+
+  // language with possible dash usage
+  // (latin letters or dash in TRY characters)
+  lang_with_dash_usage = (ctry &&
+      ((strchr(ctry, '-') != NULL) || (strchr(ctry, 'a') != NULL)));
 }
 
 SuggestMgr::~SuggestMgr() {
@@ -169,10 +174,13 @@ void SuggestMgr::testsug(std::vector<std::string>& wlst,
   }
 }
 
-// generate suggestions for a misspelled word
-//    pass in address of array of char * pointers
-// onlycompoundsug: probably bad suggestions (need for ngram sugs, too)
-void SuggestMgr::suggest(std::vector<std::string>& slst,
+/* generate suggestions for a misspelled word
+ *    pass in address of array of char * pointers
+ * onlycompoundsug: probably bad suggestions (need for ngram sugs, too)
+ * return value: true, if there is a good suggestion
+ * (REP, ph: or a dictionary word pair)
+ */
+bool SuggestMgr::suggest(std::vector<std::string>& slst,
                         const char* w,
                         int* onlycompoundsug) {
   int nocompoundtwowords = 0;
@@ -182,6 +190,7 @@ void SuggestMgr::suggest(std::vector<std::string>& slst,
   std::string w2;
   const char* word = w;
   size_t oldSug = 0;
+  bool good_suggestion = false;
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
@@ -196,11 +205,11 @@ void SuggestMgr::suggest(std::vector<std::string>& slst,
   if (utf8) {
     wl = u8_u16(word_utf, word);
     if (wl == -1) {
-      return;
+      return false;
     }
   }
 
-  for (int cpdsuggest = 0; (cpdsuggest < 2) && (nocompoundtwowords == 0);
+  for (int cpdsuggest = 0; (cpdsuggest < 2) && (nocompoundtwowords == 0) && !good_suggestion;
        cpdsuggest++) {
     // limit compound suggestion
     if (cpdsuggest > 0)
@@ -208,15 +217,21 @@ void SuggestMgr::suggest(std::vector<std::string>& slst,
 
     // suggestions for an uppercase word (html -> HTML)
     if (slst.size() < maxSug) {
+      size_t i = slst.size();
       if (utf8)
         capchars_utf(slst, &word_utf[0], wl, cpdsuggest);
       else
         capchars(slst, word, cpdsuggest);
+      if (slst.size() > i)
+        good_suggestion = true;
     }
 
     // perhaps we made a typical fault of spelling
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
+      size_t i = slst.size();
       replchars(slst, word, cpdsuggest);
+      if (slst.size() > i)
+        good_suggestion = true;
     }
 
     // perhaps we made chose the wrong char from a related set
@@ -294,15 +309,19 @@ void SuggestMgr::suggest(std::vector<std::string>& slst,
     }
 
     // perhaps we forgot to hit space and two words ran together
-    if (!nosplitsugs && (slst.size() < maxSug) &&
-        (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
-      twowords(slst, word, cpdsuggest);
+    // (dictionary word pairs have top priority here, so
+    // we always suggest them, in despite of nosplitsugs, and
+    // drop compound word and other suggestions)
+    if (!cpdsuggest || (!nosplitsugs && slst.size() < oldSug + maxcpdsugs)) {
+      good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion);
     }
 
   }  // repeating ``for'' statement compounding support
 
   if (!nocompoundtwowords && (!slst.empty()) && onlycompoundsug)
     *onlycompoundsug = 1;
+
+  return good_suggestion;
 }
 
 // suggestions for an uppercase word (html -> HTML)
@@ -721,17 +740,22 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
   return wlst.size();
 }
 
-/* error is should have been two words */
-int SuggestMgr::twowords(std::vector<std::string>& wlst,
+/* error is should have been two words
+ * return value is true, if there is a dictionary word pair,
+ * or there was already a good suggestion before calling
+ * this function.
+ */
+bool SuggestMgr::twowords(std::vector<std::string>& wlst,
                          const char* word,
-                         int cpdsuggest) {
+                         int cpdsuggest,
+                         bool good) {
   int c2;
   int forbidden = 0;
   int cwrd;
 
   int wl = strlen(word);
   if (wl < 3)
-    return wlst.size();
+    return false;
 
   if (langnum == LANG_hu)
     forbidden = check_forbidden(word, wl);
@@ -750,68 +774,87 @@ int SuggestMgr::twowords(std::vector<std::string>& wlst,
     }
     if (utf8 && p[1] == '\0')
       break;  // last UTF-8 character
-    *p = '\0';
-    int c1 = checkword(candidate, cpdsuggest, NULL, NULL);
-    if (c1) {
-      c2 = checkword((p + 1), cpdsuggest, NULL, NULL);
-      if (c2) {
-        *p = ' ';
 
-        // spec. Hungarian code (need a better compound word support)
-        if ((langnum == LANG_hu) && !forbidden &&
-            // if 3 repeating letter, use - instead of space
-            (((p[-1] == p[1]) &&
+    // Suggest only word pairs, if they are listed in the dictionary.
+    // For example, adding "a lot" to the English dic file will
+    // result only "alot" -> "a lot" suggestion instead of
+    // "alto, slot, alt, lot, allot, aloft, aloe, clot, plot, blot, a lot".
+    // Note: using "ph:alot" keeps the other suggestions:
+    // a lot ph:alot
+    // alot -> a lot, alto, slot...
+    *p = ' ';
+    if (!cpdsuggest && checkword(candidate, cpdsuggest, NULL, NULL)) {
+      // remove not word pair suggestions
+      if (!good) {
+        good = true;
+        wlst.clear();
+      }
+      wlst.insert(wlst.begin(), candidate);
+    }
+
+    // word pairs with dash?
+    if (lang_with_dash_usage) {
+      *p = '-';
+
+      if (!cpdsuggest && checkword(candidate, cpdsuggest, NULL, NULL)) {
+        // remove not word pair suggestions
+        if (!good) {
+          good = true;
+          wlst.clear();
+        }
+        wlst.insert(wlst.begin(), candidate);
+      }
+    }
+
+    if (wlst.size() < maxSug && !nosplitsugs && !good) {
+      *p = '\0';
+      int c1 = checkword(candidate, cpdsuggest, NULL, NULL);
+      if (c1) {
+        c2 = checkword((p + 1), cpdsuggest, NULL, NULL);
+        if (c2) {
+          // spec. Hungarian code (TODO need a better compound word support)
+          if ((langnum == LANG_hu) && !forbidden &&
+              // if 3 repeating letter, use - instead of space
+              (((p[-1] == p[1]) &&
               (((p > candidate + 1) && (p[-1] == p[-2])) || (p[-1] == p[2]))) ||
-             // or multiple compounding, with more, than 6 syllables
-             ((c1 == 3) && (c2 >= 2))))
-          *p = '-';
+              // or multiple compounding, with more, than 6 syllables
+              ((c1 == 3) && (c2 >= 2))))
+            *p = '-';
+          else
+            *p = ' ';
 
-        cwrd = 1;
-        for (size_t k = 0; k < wlst.size(); ++k) {
-          if (wlst[k] == candidate) {
-            cwrd = 0;
-            break;
-          }
-        }
-        if (wlst.size() < maxSug) {
-          if (cwrd) {
-            // give maximal priority for word pairs listed in the dictionary
-            // for example, possible "a lot" in the English dictionary
-            if (checkword(candidate, cpdsuggest, NULL, NULL))
-              wlst.insert(wlst.begin(), candidate);
-            else
-              wlst.push_back(candidate);
-          }
-        } else {
-          free(candidate);
-          return wlst.size();
-        }
-        // add two word suggestion with dash, if TRY string contains
-        // "a" or "-"
-	// Note that cwrd doesn't modified for REP twoword sugg.
-        if (ctry && (strchr(ctry, 'a') || strchr(ctry, '-')) &&
-            mystrlen(p + 1) > 1 && mystrlen(candidate) - mystrlen(p) > 1) {
-          *p = '-';
+          cwrd = 1;
           for (size_t k = 0; k < wlst.size(); ++k) {
             if (wlst[k] == candidate) {
               cwrd = 0;
               break;
             }
           }
-          if (wlst.size() < maxSug) {
-            if (cwrd) {
+
+          if (cwrd && (wlst.size() < maxSug))
               wlst.push_back(candidate);
+
+          // add two word suggestion with dash, depending on the language
+          // Note that cwrd doesn't modified for REP twoword sugg.
+          if ( !nosplitsugs && lang_with_dash_usage &&
+              mystrlen(p + 1) > 1 && mystrlen(candidate) - mystrlen(p) > 1) {
+            *p = '-';
+            for (size_t k = 0; k < wlst.size(); ++k) {
+              if (wlst[k] == candidate) {
+                cwrd = 0;
+                break;
+              }
             }
-          } else {
-            free(candidate);
-            return wlst.size();
+
+            if ((wlst.size() < maxSug) && cwrd)
+              wlst.push_back(candidate);
           }
         }
       }
     }
   }
   free(candidate);
-  return wlst.size();
+  return good;
 }
 
 // error is adjacent letter were swapped
@@ -1077,10 +1120,10 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     u8_u16(w_word, word);
     u8_u16(w_target, target);
   }
-  
+
   std::string f;
   std::vector<w_char> w_f;
-  
+
   for (size_t i = 0; i < rHMgr.size(); ++i) {
     while (0 != (hp = rHMgr[i]->walk_hashtable(col, hp))) {
       // skip exceptions
