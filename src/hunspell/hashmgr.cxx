@@ -257,7 +257,8 @@ int HashMgr::add_word(const std::string& in_word,
     }
     if (strstr(HENTRY_DATA(hp), MORPH_PHON)) {
       hp->var += H_OPT_PHON;
-      // store ph: fields of a morphological description in reptable
+      // store ph: fields (pronounciation, misspellings, old orthography etc.)
+      // of a morphological description in reptable to use in REP replacements.
       if (reptable.capacity() < tablesize/MORPH_PHON_RATIO)
           reptable.reserve(tablesize/MORPH_PHON_RATIO);
       std::string fields = HENTRY_DATA(hp);
@@ -265,9 +266,24 @@ int HashMgr::add_word(const std::string& in_word,
       std::string::const_iterator start_piece = mystrsep(fields, iter);
       while (start_piece != fields.end()) {
         if (std::string(start_piece, iter).find(MORPH_PHON) == 0) {
-          reptable.push_back(replentry());
-          reptable.back().pattern.assign(std::string(start_piece, iter).substr(3));
-          reptable.back().outstrings[0].assign(in_word);
+          std::string ph = std::string(start_piece, iter).substr(3);
+          // when the ph: field ends with the character *,
+          // strip last character of the pattern and the replacement
+          // to match in REP suggestions also at character changes,
+          // for example, "pretty ph:prity*" results "prit->prett"
+          // REP replacement instead of "prity->pretty", to get
+          // prity->pretty and pritiest->prettiest suggestions.
+          if (ph.at(ph.size()-1) == '*') {
+            if (ph.size() > 2 && in_word.size() > 1) {
+              reptable.push_back(replentry());
+              reptable.back().pattern.assign(ph.erase(ph.size()-2, 2));
+              reptable.back().outstrings[0].assign(std::string(in_word).erase(in_word.size()-1, 1));
+            }
+          } else if (ph.size() > 0) {
+            reptable.push_back(replentry());
+            reptable.back().pattern.assign(ph);
+            reptable.back().outstrings[0].assign(in_word);
+          }
         }
         start_piece = mystrsep(fields, iter);
       }

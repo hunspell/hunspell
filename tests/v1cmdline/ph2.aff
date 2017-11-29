@@ -16,4 +16,14 @@ CHECKCOMPOUNDREP
 SFX A Y 1
 SFX A 0 's .
 
+# when the ph: field ends with the character *,
+# strip last character of the pattern and the replacement
+# to match in REP suggestions also at character changes,
+# for example, "pretty ph:prity*" results "prit->prett"
+# REP replacement instead of "prity->pretty", to get
+# prity->pretty and pritiest->prettiest suggestions.
+
+SFX B Y 1
+SFX B y iest [^aeiou]y
+
 WORDCHARS '
