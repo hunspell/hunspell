@@ -28,3 +28,19 @@ WORDCHARS -
 
 BREAK 1
 BREAK -
+
+# to check COMPOUNDFORBIDFLAG and spec. Hungarian compounding
+
+COMPOUNDPERMITFLAG +
+COMPOUNDFORBIDFLAG !
+
+# SFX F suffix "-ó" is allowed in compounds by COMPOUNDPERMITFLAG,
+# but the generated word form "forró" is forbidden in compound
+# by the dictionary item "forró" with COMPOUNDFORBIDFLAG
+#
+# Exception: in special Hungarian "moving rule" (hard-wired to the
+# flag "F" in a LANG_hu code), "forró" can be in similar compounds:
+# "forróvíz-tartály"
+
+SFX S Y 1
+SFX S 0 ó/Y+ .

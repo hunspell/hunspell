@@ -1658,7 +1658,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
         // forbid dictionary stems with COMPOUNDFORBIDFLAG in
         // compound words, overriding the effect of COMPOUNDPERMITFLAG
         if ((rv) && compoundforbidflag &&
-                TESTAFF(rv->astr, compoundforbidflag, rv->alen))
+                TESTAFF(rv->astr, compoundforbidflag, rv->alen) && !hu_mov_rule)
             continue;
 
         // search homonym with compound flag
@@ -2223,7 +2223,7 @@ int AffixMgr::compound_check_morph(const char* word,
       // forbid dictionary stems with COMPOUNDFORBIDFLAG in
       // compound words, overriding the effect of COMPOUNDPERMITFLAG
       if ((rv) && compoundforbidflag &&
-              TESTAFF(rv->astr, compoundforbidflag, rv->alen))
+              TESTAFF(rv->astr, compoundforbidflag, rv->alen) && !hu_mov_rule)
           continue;
 
       // search homonym with compound flag
