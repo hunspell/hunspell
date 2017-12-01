@@ -69,6 +69,7 @@ compoundrule8.dic \
 compoundaffix.dic \
 compoundaffix2.dic \
 compoundaffix3.dic \
+compoundforbid.dic \
 checkcompounddup.dic \
 checkcompoundtriple.dic \
 simplifiedtriple.dic \
@@ -356,6 +357,10 @@ compoundaffix3.aff \
 compoundaffix3.dic \
 compoundaffix3.good \
 compoundaffix3.wrong \
+compoundforbid.aff \
+compoundforbid.dic \
+compoundforbid.good \
+compoundforbid.wrong \
 checkcompounddup.aff \
 checkcompounddup.dic \
 checkcompounddup.good \
