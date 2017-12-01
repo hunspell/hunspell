@@ -78,6 +78,7 @@
 #include "hashmgr.hxx"
 #include "csutil.hxx"
 #include "atypes.hxx"
+#include "langnum.hxx"
 
 // build a hash table from a munched word list
 
@@ -266,23 +267,81 @@ int HashMgr::add_word(const std::string& in_word,
       std::string::const_iterator start_piece = mystrsep(fields, iter);
       while (start_piece != fields.end()) {
         if (std::string(start_piece, iter).find(MORPH_PHON) == 0) {
-          std::string ph = std::string(start_piece, iter).substr(3);
-          // when the ph: field ends with the character *,
-          // strip last character of the pattern and the replacement
-          // to match in REP suggestions also at character changes,
-          // for example, "pretty ph:prity*" results "prit->prett"
-          // REP replacement instead of "prity->pretty", to get
-          // prity->pretty and pritiest->prettiest suggestions.
-          if (ph.at(ph.size()-1) == '*') {
-            if (ph.size() > 2 && in_word.size() > 1) {
-              reptable.push_back(replentry());
-              reptable.back().pattern.assign(ph.erase(ph.size()-2, 2));
-              reptable.back().outstrings[0].assign(std::string(in_word).erase(in_word.size()-1, 1));
+          std::string ph = std::string(start_piece, iter).substr(sizeof MORPH_PHON - 1);
+          std::vector<w_char> w;
+          if (ph.size() > 0) {
+            std::string wordpart(in_word);
+            // when the ph: field ends with the character *,
+            // strip last character of the pattern and the replacement
+            // to match in REP suggestions also at character changes,
+            // for example, "pretty ph:prity*" results "prit->prett"
+            // REP replacement instead of "prity->pretty", to get
+            // prity->pretty and pritiest->prettiest suggestions.
+            if (ph.at(ph.size()-1) == '*') {
+              int strippatt = 1;
+              int stripword = 0;
+              if (utf8) {
+                while ((strippatt < ph.size()) &&
+                  ((ph.at(ph.size()-strippatt-1) & 0xc0) == 0x80))
+                     ++strippatt;
+                while ((stripword < wordpart.size()) &&
+                  ((wordpart.at(wordpart.size()-stripword-1) & 0xc0) == 0x80))
+                     ++stripword;
+              }
+              ++strippatt;
+              ++stripword;
+              if ((ph.size() > strippatt) && (wordpart.size() > stripword)) {
+                ph.erase(ph.size()-strippatt, strippatt);
+                wordpart.erase(in_word.size()-stripword, stripword);
+              }
             }
-          } else if (ph.size() > 0) {
-            reptable.push_back(replentry());
-            reptable.back().pattern.assign(ph);
-            reptable.back().outstrings[0].assign(in_word);
+            // capitalize lowercase pattern for capitalized words to support
+            // good suggestions also for capitalized misspellings, eg.
+            // Wednesday ph:wendsay
+            // results wendsay -> Wednesday and Wendsay -> Wednesday, too.
+            if (captype==INITCAP) {
+              std::string ph_capitalized;
+              if (utf8) {
+                u8_u16(w, ph);
+                if (get_captype_utf8(w, langnum) == NOCAP) {
+                  mkinitcap_utf(w, langnum);
+                  u16_u8(ph_capitalized, w);
+                }
+              } else if (get_captype(ph, csconv) == NOCAP)
+                  mkinitcap(ph_capitalized, csconv);
+
+              if (ph_capitalized.size() > 0) {
+                // add also lowercase word in the case of German or
+                // Hungarian to support lowercase suggestions lowercased by
+                // compound word generation or derivational suffixes
+                // (for example by adjectival suffix "-i" of geographical
+                // names in Hungarian:
+                // Massachusetts ph:messzecsuzec
+                // messzecsuzeci -> massachusettsi (adjective)
+                // For lowercasing by conditional PFX rules, see
+                // tests/germancompounding test example or the
+                // Hungarian dictionary.)
+                if (langnum == LANG_de || langnum == LANG_hu) {
+                  std::string wordpart_lower(wordpart);
+                  if (utf8) {
+                    u8_u16(w, wordpart_lower);
+                    mkallsmall_utf(w, langnum);
+                    u16_u8(wordpart_lower, w);
+                  } else {
+                    mkallsmall(wordpart_lower, csconv);
+                  }
+                  reptable.push_back(replentry());
+                  reptable.back().pattern.assign(ph);
+                  reptable.back().outstrings[0].assign(wordpart_lower);
+                }
+                reptable.push_back(replentry());
+                reptable.back().pattern.assign(ph_capitalized);
+                reptable.back().outstrings[0].assign(wordpart);
+              }
+           }
+           reptable.push_back(replentry());
+           reptable.back().pattern.assign(ph);
+           reptable.back().outstrings[0].assign(wordpart);
           }
         }
         start_piece = mystrsep(fields, iter);

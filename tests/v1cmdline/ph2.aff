@@ -1,6 +1,8 @@
 # switch off ngram suggestion to test
 # usage of ph: dictionary fields in REP
 # suggestions
+SET UTF-8
+
 MAXNGRAMSUGS 0
 
 # test in compounds, too
@@ -23,7 +25,8 @@ SFX A 0 's .
 # REP replacement instead of "prity->pretty", to get
 # prity->pretty and pritiest->prettiest suggestions.
 
-SFX B Y 1
+SFX B Y 2
 SFX B y iest [^aeiou]y
+SFX B ö őt ö
 
 WORDCHARS '
