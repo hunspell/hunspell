@@ -21,3 +21,10 @@ REP 1
 REP kor _kor
 
 CHECKCOMPOUNDREP
+
+# to check word breaking
+
+WORDCHARS -
+
+BREAK 1
+BREAK -

@@ -710,6 +710,32 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
         // end of LANG specific region
       }
     }
+
+    // other patterns (break at first break point)
+    for (size_t j = 0; j < wordbreak.size(); ++j) {
+      size_t plen = wordbreak[j].size();
+      size_t found = scw.find(wordbreak[j]);
+      if ((found > 0) && (found < wl - plen)) {
+        if (!spell(scw.substr(found + plen)))
+          continue;
+        std::string suffix(scw.substr(found));
+        scw.resize(found);
+        // examine 2 sides of the break point
+        if (spell(scw))
+          return true;
+        scw.append(suffix);
+
+        // LANG_hu: spec. dash rule
+        if (langnum == LANG_hu && wordbreak[j] == "-") {
+          suffix = scw.substr(found + 1);
+          scw.resize(found + 1);
+          if (spell(scw))
+            return true;  // check the first part with dash
+          scw.append(suffix);
+        }
+        // end of LANG specific region
+      }
+    }
   }
 
   return false;
