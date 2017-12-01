@@ -1655,6 +1655,12 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
         affixed = 1;
         rv = lookup(st.c_str());  // perhaps without prefix
 
+        // forbid dictionary stems with COMPOUNDFORBIDFLAG in
+        // compound words, overriding the effect of COMPOUNDPERMITFLAG
+        if ((rv) && compoundforbidflag &&
+                TESTAFF(rv->astr, compoundforbidflag, rv->alen))
+            continue;
+
         // search homonym with compound flag
         while ((rv) && !hu_mov_rule &&
                ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||
@@ -2213,6 +2219,12 @@ int AffixMgr::compound_check_morph(const char* word,
         presult.append(*partresult);
 
       rv = lookup(st.c_str());  // perhaps without prefix
+
+      // forbid dictionary stems with COMPOUNDFORBIDFLAG in
+      // compound words, overriding the effect of COMPOUNDPERMITFLAG
+      if ((rv) && compoundforbidflag &&
+              TESTAFF(rv->astr, compoundforbidflag, rv->alen))
+          continue;
 
       // search homonym with compound flag
       while ((rv) && !hu_mov_rule &&
