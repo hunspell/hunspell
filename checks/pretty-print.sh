@@ -5,3 +5,4 @@ do
 done
 cd ../../checks
 ls -ltrh *.ps
+# man -t 5 hunspell |ps2pdf - hunspell.pdf
