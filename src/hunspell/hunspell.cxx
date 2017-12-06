@@ -850,8 +850,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 }
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
-  std::vector<std::string> slst;
-  slst = suggest_internal(word);
+  std::vector<std::string> slst = suggest_internal(word);
   // output conversion
   RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   if (rl) {
@@ -1350,8 +1349,7 @@ void HunspellImpl::cat_result(std::string& result, const std::string& st) {
 }
 
 std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
-  std::vector<std::string> slst;
-  slst = analyze_internal(word);
+  std::vector<std::string> slst = analyze_internal(word);
   // output conversion
   RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
   if (rl) {
