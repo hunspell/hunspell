@@ -110,6 +110,7 @@ fullstrip.dic \
 iconv.dic \
 iconv2.dic \
 oconv.dic \
+oconv2.dic \
 encoding.dic \
 korean.dic \
 opentaal_forbiddenword1.dic \
@@ -543,6 +544,12 @@ oconv.dic \
 oconv.good \
 oconv.sug \
 oconv.wrong \
+oconv2.aff \
+oconv2.dic \
+oconv2.good \
+oconv2.morph \
+oconv2.root \
+oconv2.test \
 encoding.aff \
 encoding.dic \
 encoding.good \
