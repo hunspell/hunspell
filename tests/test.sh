@@ -107,7 +107,7 @@ in_file="$in_dict.wrong"
 
 if [[ -f $in_file ]]; then
 	out=$(hunspell -G -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
-	      | tr -d "$CR") #strip carige return for mingw builds
+	      | tr -d "$CR") #strip carriage return for mingw builds
 	if [[ $? -ne 0 ]]; then exit 2; fi
 	if [[ "$out" != "" ]]; then
 		echo "============================================="
@@ -120,18 +120,21 @@ fi
 check_valgrind_log "bad words"
 
 # Tests good words' root
-if test -f $TESTDIR/$NAME.root; then
-    # Extract the root words of the affixed words, after '+'
-    hunspell $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good | grep -a '^+ ' | \
-        sed 's/^+ //' >$TEMPDIR/$NAME.root
-    if ! cmp $TEMPDIR/$NAME.root $TESTDIR/$NAME.root >/dev/null; then
-        echo "============================================="
-        echo "Fail in $NAME.root. Bad prefix or suffix?"
-        diff -u $TESTDIR/$NAME.root $TEMPDIR/$NAME.root
-        rm -f $TEMPDIR/$NAME.root
-        exit 1
-    fi
-    rm -f $TEMPDIR/$NAME.root
+in_file="$in_dict.good"
+expected_file="$in_dict.root"
+
+if [[ -f $expected_file ]]; then
+        # Extract the root words of the affixed words, after '+'
+        out=$(hunspell -d "$in_dict" < "$in_file" | grep -a '^+ ' \
+              | sed 's/^+ //')
+	if [[ $? -ne 0 ]]; then exit 2; fi
+	expected=$(<"$expected_file")
+	if [[ "$out" != "$expected" ]]; then
+		echo "============================================="
+		echo "Fail in $NAME.root. Bad analysis?"
+		diff "$expected_file" <(echo "$out") | grep '^<' | sed 's/^..//'
+		exit 1
+	fi
 fi
 
 check_valgrind_log "root"
