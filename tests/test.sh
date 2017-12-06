@@ -119,6 +119,23 @@ fi
 
 check_valgrind_log "bad words"
 
+# Tests good words' root
+if test -f $TESTDIR/$NAME.root; then
+    # Extract the root words of the affixed words, after '+'
+    hunspell $* -d $TESTDIR/$NAME <$TESTDIR/$NAME.good | grep -a '^+ ' | \
+        sed 's/^+ //' >$TEMPDIR/$NAME.root
+    if ! cmp $TEMPDIR/$NAME.root $TESTDIR/$NAME.root >/dev/null; then
+        echo "============================================="
+        echo "Fail in $NAME.root. Bad prefix or suffix?"
+        diff -u $TESTDIR/$NAME.root $TEMPDIR/$NAME.root
+        rm -f $TEMPDIR/$NAME.root
+        exit 1
+    fi
+    rm -f $TEMPDIR/$NAME.root
+fi
+
+check_valgrind_log "root"
+
 # Tests morphological analysis
 in_file="$in_dict.good"
 expected_file="$in_dict.morph"

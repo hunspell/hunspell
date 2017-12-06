@@ -135,6 +135,9 @@ private:
   std::vector<std::string> wordbreak;
 
 private:
+  std::vector<std::string> analyze_internal(const std::string& word);
+  bool spell_internal(const std::string& word, int* info = NULL, std::string* root = NULL);
+  std::vector<std::string> suggest_internal(const std::string& word);
   void cleanword(std::string& dest, const std::string&, int* pcaptype, int* pabbrev);
   size_t cleanword2(std::string& dest,
                     std::vector<w_char>& dest_u,
@@ -405,6 +408,21 @@ void HunspellImpl::insert_sug(std::vector<std::string>& slst, const std::string&
 }
 
 bool HunspellImpl::spell(const std::string& word, int* info, std::string* root) {
+  bool r = spell_internal(word, info, root);
+  if (r && root) {
+    // output conversion
+    RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+    if (rl) {
+      std::string wspace;
+      if (rl->conv(*root, wspace)) {
+        *root = wspace;
+      }
+    }
+  }
+  return r;
+}
+
+bool HunspellImpl::spell_internal(const std::string& word, int* info, std::string* root) {
   struct hentry* rv = NULL;
 
   int info2 = 0;
@@ -833,6 +851,22 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   std::vector<std::string> slst;
+  slst = suggest_internal(word);
+  // output conversion
+  RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  if (rl) {
+    for (size_t i = 0; rl && i < slst.size(); ++i) {
+      std::string wspace;
+      if (rl->conv(slst[i], wspace)) {
+        slst[i] = wspace;
+      }
+    }
+  }
+  return slst;
+}
+
+std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word) {
+  std::vector<std::string> slst;
 
   int onlycmpdsug = 0;
   if (!pSMgr || m_HMgrs.empty())
@@ -1163,15 +1197,6 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   }
   slst.resize(l);
 
-  // output conversion
-  rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
-  for (size_t j = 0; rl && j < slst.size(); ++j) {
-    std::string wspace;
-    if (rl->conv(slst[j], wspace)) {
-      slst[j] = wspace;
-    }
-  }
-
   return slst;
 }
 
@@ -1325,6 +1350,22 @@ void HunspellImpl::cat_result(std::string& result, const std::string& st) {
 }
 
 std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
+  std::vector<std::string> slst;
+  slst = analyze_internal(word);
+  // output conversion
+  RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : NULL;
+  if (rl) {
+    for (size_t i = 0; rl && i < slst.size(); ++i) {
+      std::string wspace;
+      if (rl->conv(slst[i], wspace)) {
+        slst[i] = wspace;
+      }
+    }
+  }
+  return slst;
+}
+
+std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word) {
   std::vector<std::string> slst;
   if (!pSMgr || m_HMgrs.empty())
     return slst;
