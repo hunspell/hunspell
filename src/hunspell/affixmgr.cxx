@@ -1294,15 +1294,17 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
 // forbid compound words, if they are in the dictionary as a
 // word pair separated by space
 int AffixMgr::cpdwordpair_check(const char * word, int wl) {
-  std::string candidate(word);
-  for (size_t i = 1; i < candidate.size(); i++) {
-    // go to end of the UTF-8 character
-    if (utf8 && ((word[i] & 0xc0) == 0x80))
-        continue;
-    candidate.insert(i, 1, ' ');
-    if (candidate_check(candidate.c_str(), candidate.size()))
-      return 1;
-    candidate.erase(i, 1);
+  if (wl > 2) {
+    std::string candidate(word);
+    for (size_t i = 1; i < candidate.size(); i++) {
+      // go to end of the UTF-8 character
+      if (utf8 && ((word[i] & 0xc0) == 0x80))
+          continue;
+      candidate.insert(i, 1, ' ');
+      if (candidate_check(candidate.c_str(), candidate.size()))
+        return 1;
+      candidate.erase(i, 1);
+    }
   }
 
   return 0;

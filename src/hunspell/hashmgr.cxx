@@ -260,7 +260,7 @@ int HashMgr::add_word(const std::string& in_word,
       hp->var += H_OPT_PHON;
       // store ph: fields (pronounciation, misspellings, old orthography etc.)
       // of a morphological description in reptable to use in REP replacements.
-      if (reptable.capacity() < tablesize/MORPH_PHON_RATIO)
+      if (reptable.capacity() < (unsigned int)(tablesize/MORPH_PHON_RATIO))
           reptable.reserve(tablesize/MORPH_PHON_RATIO);
       std::string fields = HENTRY_DATA(hp);
       std::string::const_iterator iter = fields.begin();
@@ -278,8 +278,8 @@ int HashMgr::add_word(const std::string& in_word,
             // REP replacement instead of "prity->pretty", to get
             // prity->pretty and pritiest->prettiest suggestions.
             if (ph.at(ph.size()-1) == '*') {
-              int strippatt = 1;
-              int stripword = 0;
+              size_t strippatt = 1;
+              size_t stripword = 0;
               if (utf8) {
                 while ((strippatt < ph.size()) &&
                   ((ph.at(ph.size()-strippatt-1) & 0xc0) == 0x80))
