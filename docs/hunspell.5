@@ -18,6 +18,22 @@ represents the word attributes, for example affixes.
 
 Note: Dictionary words can contain also slashes when escaped like  "\/" syntax. 
 
+It's worth to add not only words, but word pairs to the dictionary to get correct
+suggestions for common misspellings with missing space, as in the
+following example, for the bad "alot" and "inspite" (see also "REP" and field "ph:" about
+correct suggestions for common misspellings):
+
+.PP
+.RS
+.nf
+3
+word
+a lot
+in spite
+.fi
+.RE
+.PP
+
 .SH Personal dictionary file
 Personal dictionaries are simple word lists. Asterisk at the first character
 position signs prohibition.
@@ -79,7 +95,6 @@ Flag A defines a `re-' prefix. Class B defines two `-ed'
 suffixes. First B suffix can be added to a word if
 the last character of the word isn't `y'.
 Second suffix can be added to the words terminated with an `y'.
-
 
 All accepted words with this dictionary and affix combination are:
 "hello", "try", "tried", "work", "worked", "rework", "reworked".
@@ -189,6 +204,9 @@ character-sequences), character swap and deletion suggestions of Hunspell.
 REP is suggested to fix the typical and especially bad language specific bugs,
 because the REP suggestions have the highest priority in the suggestion list.
 PHONE is for languages with not pronunciation based orthography.
+
+For short common misspellings, it's important to use the ph:
+field (see later) to give the best suggestions.
 .IP "KEY characters_separated_by_vertical_line_optionally"
 Hunspell searches and suggests words with one different
 character replaced by a neighbor KEY character. Not neighbor
@@ -655,18 +673,103 @@ style.
 Default morphological and other IDs (used in suggestion,
 stemming and morphological generation):
 .IP "ph:"
-Alternative transliteration for better suggestion.
-It's useful for words with foreign
-pronunciation. (Dictionary based phonetic suggestion.)
+Alternative transliteration for better suggestions, ie.
+misspellings related to the special orthography
+and pronunciation of the word. The best way to handle common
+misspellings, so it's worth to add ph: field to the most
+affected few thousand dictionary words (or word pairs etc.) to get
+correct suggestions for their misspellings.
+
+
 For example:
 
 .PP
 .RS
 .nf
+Wednesday ph:wendsay ph:wensday
 Marseille ph:maarsayl
 .fi
 .RE
 .PP
+
+Hunspell adds all ph: transliterations to the inner REP table, so
+it will always suggest the correct word for the specified
+misspellings with the highest priority.
+
+The previous example is equivalent of the following REP definition:
+
+.PP
+.RS
+.nf
+REP 6
+REP wendsay Wednesday
+REP Wendsay Wednesday
+REP wensday Wednesday
+REP Wensday Wednesday
+REP maarsayl Marseille
+REP Maarsayl Marseille
+.fi
+.RE
+.PP
+
+The asterisk at the end of the ph: pattern means stripping the
+terminating character both from the pattern and the word in the
+associated REP rule:
+
+.PP
+.RS
+.nf
+pretty ph:prity*
+.fi
+.RE
+.PP
+
+will result
+
+.PP
+.RS
+.nf
+REP 1
+REP prit prett
+.fi
+.RE
+.PP
+
+REP rule, resulting the following correct suggestions
+
+.PP
+.RS
+.nf
+*prity -> pretty
+*pritier -> prettier
+*pritiest -> prettiest
+.fi
+.RE
+.PP
+
+Moreover, ph: fields can handle suggestions with more than
+two words, also different suggestions for the same
+misspelling:
+.PP
+.RS
+.nf
+do not know ph:dunno
+don't know ph:dunno
+.fi
+.RE
+.PP
+
+results
+
+.PP
+.RS
+.nf
+*dunno -> do not know, don't know
+.fi
+.RE
+.PP
+
+Note: if available, ph: is used in n-gram similarity, too.
 
 .IP "st:"
 Stem. Optional: default stem is the dictionary item in morphological
