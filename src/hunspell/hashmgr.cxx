@@ -268,9 +268,19 @@ int HashMgr::add_word(const std::string& in_word,
       while (start_piece != fields.end()) {
         if (std::string(start_piece, iter).find(MORPH_PHON) == 0) {
           std::string ph = std::string(start_piece, iter).substr(sizeof MORPH_PHON - 1);
-          std::vector<w_char> w;
           if (ph.size() > 0) {
-            std::string wordpart(in_word);
+            std::vector<w_char> w;
+            size_t strippatt;
+            std::string wordpart;
+            // dictionary based REP replacement, separated by "->"
+            // for example "pretty ph:prity ph:priti->pretti" to handle
+            // both prity -> pretty and pritier -> prettiest suggestions.
+            if (((strippatt = ph.find("->")) != std::string::npos) &&
+                    (strippatt > 0) && (strippatt < ph.size() - 2)) {
+                wordpart = ph.substr(strippatt + 2);
+                ph.erase(ph.begin() + strippatt, ph.end());
+            } else
+                wordpart = in_word;
             // when the ph: field ends with the character *,
             // strip last character of the pattern and the replacement
             // to match in REP suggestions also at character changes,
@@ -278,7 +288,7 @@ int HashMgr::add_word(const std::string& in_word,
             // REP replacement instead of "prity->pretty", to get
             // prity->pretty and pritiest->prettiest suggestions.
             if (ph.at(ph.size()-1) == '*') {
-              size_t strippatt = 1;
+              strippatt = 1;
               size_t stripword = 0;
               if (utf8) {
                 while ((strippatt < ph.size()) &&
@@ -338,10 +348,10 @@ int HashMgr::add_word(const std::string& in_word,
                 reptable.back().pattern.assign(ph_capitalized);
                 reptable.back().outstrings[0].assign(wordpart);
               }
-           }
-           reptable.push_back(replentry());
-           reptable.back().pattern.assign(ph);
-           reptable.back().outstrings[0].assign(wordpart);
+            }
+            reptable.push_back(replentry());
+            reptable.back().pattern.assign(ph);
+            reptable.back().outstrings[0].assign(wordpart);
           }
         }
         start_piece = mystrsep(fields, iter);
