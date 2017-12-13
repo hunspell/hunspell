@@ -8,3 +8,4 @@ root/YA
 forbidden root/A ph:forbiddenroot
 pretty/B ph:prity*
 foobarö/B ph:fubarő*
+happy/B ph:hepy ph:hepi->happi
