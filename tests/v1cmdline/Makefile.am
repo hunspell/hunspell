@@ -200,7 +200,6 @@ sug2.sug \
 sug2.wrong \
 wordpair.aff \
 wordpair.dic \
-wordpair.sug \
 wordpair.wrong \
 sugutf.aff \
 sugutf.dic \
