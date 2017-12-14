@@ -26,6 +26,8 @@ AC_PROG_CXX
 AC_PROG_CC
 LT_INIT
 AC_PROG_AWK
+AC_CHECK_PROG([ronn], [ronn], [yes])
+AM_CONDITIONAL([HAVE_RONN], [test x$ronn = xyes])
 
 # Checks for libraries.
 AM_ICONV
