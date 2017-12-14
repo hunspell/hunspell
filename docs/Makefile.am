@@ -6,5 +6,5 @@ SUFFIXES = .md
 	ronn -r $<
 endif
 
-EXTRA_DIST = hunspell.1.md
+EXTRA_DIST = hunspell.1.md hunspell.5.md README.md
 SUBDIRS=hu
