@@ -270,7 +270,7 @@ LIBHUNSPELL_DLL_EXPORTED void store_pointer(char* dest, char* source);
 LIBHUNSPELL_DLL_EXPORTED char* get_stored_pointer(const char* s);
 
 // hash entry macros
-LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry* h) {
+inline char* HENTRY_DATA(struct hentry* h) {
   char* ret;
   if (!(h->var & H_OPT))
     ret = NULL;
@@ -281,7 +281,7 @@ LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry* h) {
   return ret;
 }
 
-LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA(
+inline const char* HENTRY_DATA(
     const struct hentry* h) {
   const char* ret;
   if (!(h->var & H_OPT))
@@ -294,7 +294,7 @@ LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA(
 }
 
 // NULL-free version for warning-free OOo build
-LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA2(
+inline const char* HENTRY_DATA2(
     const struct hentry* h) {
   const char* ret;
   if (!(h->var & H_OPT))
@@ -306,7 +306,7 @@ LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA2(
   return ret;
 }
 
-LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_FIND(struct hentry* h,
+inline char* HENTRY_FIND(struct hentry* h,
                                                   const char* p) {
   return (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL);
 }

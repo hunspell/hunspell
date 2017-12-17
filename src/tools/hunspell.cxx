@@ -179,9 +179,6 @@ char text_conv[MAXLNLEN];
 #define readline scanline
 #endif
 
-extern char* mystrdup(const char* s);
-extern char* mystrrep(const char* s);
-
 // file formats:
 
 enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
