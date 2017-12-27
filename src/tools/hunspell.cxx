@@ -152,17 +152,19 @@
 char text_conv[MAXLNLEN];
 #endif
 
-#if ENABLE_NLS
 #ifdef HAVE_LOCALE_H
-#include <locale.h>
+# include <locale.h>
+#endif
 #ifdef HAVE_LANGINFO_H
-#include <langinfo.h>
+# include <langinfo.h>
 #endif
-#endif
-#include <libintl.h>
+#ifdef ENABLE_NLS
+# include <libintl.h>
 #else
-#define gettext
-#undef HAVE_LOCALE_H
+# undef gettext
+# define gettext(Msgid) ((const char *) (Msgid))
+# undef textdomain
+# define textdomain(Domainname) ((const char *) (Domainname))
 #endif
 
 #ifdef HAVE_CURSES_H
@@ -1759,15 +1761,13 @@ int main(int argc, char** argv) {
   int format = FMT_TEXT;
   int argstate = 0;
 
-#ifdef ENABLE_NLS
 #ifdef HAVE_LOCALE_H
   setlocale(LC_ALL, "");
-  textdomain("hunspell");
+#endif
 #ifdef HAVE_LANGINFO_H
   ui_enc = nl_langinfo(CODESET);
 #endif
-#endif
-#endif
+  textdomain("hunspell"); //for gettext
 
 #ifdef HAVE_READLINE
   rl_set_key("\x1b\x1b", rl_escape, rl_get_keymap());
