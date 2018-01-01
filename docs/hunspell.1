@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "HUNSPELL" "1" "December 2017" "" ""
+.TH "HUNSPELL" "1" "January 2018" "" ""
 .
 .SH "NAME"
 \fBhunspell\fR \- spell checker, stemmer and morphological analyzer
@@ -90,112 +90,7 @@ Check only first field in lines (delimiter = tabulator)\.
 .
 .TP
 \fB\-a\fR
-The \-a option is intended to be used from other programs through a pipe\. In this mode, hunspell prints a one\-line version identification message, and then begins reading lines of input\. For each input line, a single line is written to the standard output for each word checked for spelling on the line\. If the word was found in the main dictionary, or your personal dictionary, then the line contains only a \fB*\fR\. If the word was found through affix removal, then the line contains a \fB+\fR, a space, and the root word\. If the word was found through compound formation (concatenation of two words, then the line contains only a \fB\-\fR\.
-.
-.IP
-If the word is not in the dictionary, but there are near misses, then the line contains an \fB&\fR, a space, the misspelled word, a space, the number of near misses, the number of characters between the beginning of the line and the beginning of the misspelled word, a colon, another space, and a list of the near misses separated by commas and spaces\.
-.
-.IP
-Also, each near miss or guess is capitalized the same as the input word unless such capitalization is illegal; in the latter case each near miss is capitalized correctly according to the dictionary\.
-.
-.IP
-Finally, if the word does not appear in the dictionary, and there are no near misses, then the line contains a \fB#\fR, a space, the misspelled word, a space, and the character offset from the beginning of the line\. Each sentence of text input is terminated with an additional blank line, indicating that hunspell has completed processing the input line\.
-.
-.IP
-These output lines can be summarized as follows:
-.
-.TP
-OK
-\fB*\fR
-.
-.TP
-Root
-\fB+ <root>\fR
-.
-.TP
-Compound
-\fB\-\fR
-.
-.TP
-Miss
-\fB& <original> <count> <offset>: <miss>, <miss>, \.\.\.\fR
-.
-.TP
-None
-\fB# <original> <offset>\fR
-.
-.IP
-For example, a dummy dictionary containing the words "fray", "Frey", "fry", and "refried" might produce the following response to the command "echo \'frqy refries | hunspell \-a":
-.
-.IP "" 4
-.
-.nf
-
-(#) Hunspell 0\.4\.1 (beta), 2005\-05\-26
-& frqy 3 0: fray, Frey, fry
-& refries 1 5: refried
-.
-.fi
-.
-.IP "" 0
-.
-.IP
-This mode is also suitable for interactive use when you want to figure out the spelling of a single word (but this is the default behavior of hunspell without \-a, too)\.
-.
-.IP
-When in the \-a mode, hunspell will also accept lines of single words prefixed with any of \fB*\fR, \fB&\fR, \fB@\fR, \fB+\fR, \fB\-\fR, \fB~\fR, \fB#\fR, \fB!\fR, \fB%\fR, \fB`\fR, or \fB^\fR\. A line starting with \fB*\fR tells hunspell to insert the word into the user\'s dictionary (similar to the I command)\. A line starting with \fB&\fR tells hunspell to insert an all\-lowercase version of the word into the user\'s dictionary (similar to the U command)\. A line starting with \fB@\fR causes hunspell to accept this word in the future (similar to the A command)\. A line starting with \fB+\fR, followed immediately by tex or nroff will cause hunspell to parse future input according the syntax of that formatter\. A line consisting solely of a \fB+\fR will place hunspell in TeX/LaTeX mode (similar to the \-t option) and \fB\-\fR returns hunspell to nroff/troff mode (but these commands are obsolete)\. However, the string character type is not changed; the \fB~\fR command must be used to do this\. A line starting with \fB~\fR causes hunspell to set internal parameters (in particular, the default string character type) based on the filename given in the rest of the line\. (A file suffix is sufficient, but the period must be included\. Instead of a file name or suffix, a unique name, as listed in the language affix file, may be specified\.) However, the formatter parsing is not changed; the \fB+\fR command must be used to change the formatter\. A line prefixed with \fB#\fR will cause the personal dictionary to be saved\. A line prefixed with \fB!\fR will turn on terse mode (see below), and a line prefixed with \fB%\fR will return hunspell to normal (non\-terse) mode\. A line prefixed with \fB`\fR will turn on verbose\-correction mode (see below); this mode can only be disabled by turning on terse mode with \fB%\fR\.
-.
-.IP
-Any input following the prefix characters \fB+\fR, \fB\-\fR, \fB#\fR, \fB!\fR, \fB%\fR, or \fB`\fR is ignored, as is any input following the filename on a \fB~\fR line\. To allow spell\-checking of lines beginning with these characters, a line starting with \fB^\fR has that character removed before it is passed to the spell\-checking code\. It is recommended that programmatic interfaces prefix every data line with an uparrow to protect themselves against future changes in hunspell\.
-.
-.IP
-To summarize these:
-.
-.TP
-\fB*\fR
-Add to personal dictionary
-.
-.TP
-\fB@\fR
-Accept word, but leave out of dictionary
-.
-.TP
-\fB#\fR
-Save current personal dictionary
-.
-.TP
-\fB~\fR
-Set parameters based on filename
-.
-.TP
-\fB+\fR
-Enter TeX mode
-.
-.TP
-\fB\-\fR
-Exit TeX mode
-.
-.TP
-\fB!\fR
-Enter terse mode
-.
-.TP
-\fB%\fR
-Exit terse mode
-.
-.TP
-\fB`\fR
-Enter verbose\-correction mode
-.
-.TP
-\fB^\fR
-Spell\-check rest of line
-.
-.IP
-In terse mode, hunspell will not print lines beginning with \fB*\fR, \fB+\fR, or \fB\-\fR, all of which indicate correct words\. This significantly improves running speed when the driving program is going to ignore correct words anyway\.
-.
-.IP
-In verbose\-correction mode, hunspell includes the original word immediately after the indicator character in output lines beginning with \fB*\fR, \fB+\fR, and \fB\-\fR, which simplifies interaction for some programs\.
+The \-a option is intended to be used from other programs through a pipe\.
 .
 .TP
 \fB\-\-check\-apostrophe\fR
@@ -294,6 +189,114 @@ Print misspelled words (= lines) from one word/line input\.
 \fB\-X\fR
 The input file is in XML format\.
 .
+.SH "Pipe Mode"
+In this mode (\fB\-a\fR), hunspell prints a one\-line version identification message, and then begins reading lines of input\. For each input line, a single line is written to the standard output for each word checked for spelling on the line\. If the word was found in the main dictionary, or your personal dictionary, then the line contains only a \fB*\fR\. If the word was found through affix removal, then the line contains a \fB+\fR, a space, and the root word\. If the word was found through compound formation (concatenation of two words, then the line contains only a \fB\-\fR\.
+.
+.P
+If the word is not in the dictionary, but there are near misses, then the line contains an \fB&\fR, a space, the misspelled word, a space, the number of near misses, the number of characters between the beginning of the line and the beginning of the misspelled word, a colon, another space, and a list of the near misses separated by commas and spaces\.
+.
+.P
+Also, each near miss or guess is capitalized the same as the input word unless such capitalization is illegal; in the latter case each near miss is capitalized correctly according to the dictionary\.
+.
+.P
+Finally, if the word does not appear in the dictionary, and there are no near misses, then the line contains a \fB#\fR, a space, the misspelled word, a space, and the character offset from the beginning of the line\. Each sentence of text input is terminated with an additional blank line, indicating that hunspell has completed processing the input line\.
+.
+.P
+These output lines can be summarized as follows:
+.
+.TP
+OK
+\fB*\fR
+.
+.TP
+Root
+\fB+ <root>\fR
+.
+.TP
+Compound
+\fB\-\fR
+.
+.TP
+Miss
+\fB& <original> <count> <offset>: <miss>, <miss>, \.\.\.\fR
+.
+.TP
+None
+\fB# <original> <offset>\fR
+.
+.P
+For example, a dummy dictionary containing the words "fray", "Frey", "fry", and "refried" might produce the following response to the command "echo \'frqy refries | hunspell \-a":
+.
+.IP "" 4
+.
+.nf
+
+(#) Hunspell 0\.4\.1 (beta), 2005\-05\-26
+& frqy 3 0: fray, Frey, fry
+& refries 1 5: refried
+.
+.fi
+.
+.IP "" 0
+.
+.P
+This mode is also suitable for interactive use when you want to figure out the spelling of a single word (but this is the default behavior of hunspell without \-a, too)\.
+.
+.P
+When in the \-a mode, hunspell will also accept lines of single words prefixed with any of \fB*\fR, \fB&\fR, \fB@\fR, \fB+\fR, \fB\-\fR, \fB~\fR, \fB#\fR, \fB!\fR, \fB%\fR, \fB`\fR, or \fB^\fR\. A line starting with \fB*\fR tells hunspell to insert the word into the user\'s dictionary (similar to the I command)\. A line starting with \fB&\fR tells hunspell to insert an all\-lowercase version of the word into the user\'s dictionary (similar to the U command)\. A line starting with \fB@\fR causes hunspell to accept this word in the future (similar to the A command)\. A line starting with \fB+\fR, followed immediately by tex or nroff will cause hunspell to parse future input according the syntax of that formatter\. A line consisting solely of a \fB+\fR will place hunspell in TeX/LaTeX mode (similar to the \-t option) and \fB\-\fR returns hunspell to nroff/troff mode (but these commands are obsolete)\. However, the string character type is not changed; the \fB~\fR command must be used to do this\. A line starting with \fB~\fR causes hunspell to set internal parameters (in particular, the default string character type) based on the filename given in the rest of the line\. (A file suffix is sufficient, but the period must be included\. Instead of a file name or suffix, a unique name, as listed in the language affix file, may be specified\.) However, the formatter parsing is not changed; the \fB+\fR command must be used to change the formatter\. A line prefixed with \fB#\fR will cause the personal dictionary to be saved\. A line prefixed with \fB!\fR will turn on terse mode (see below), and a line prefixed with \fB%\fR will return hunspell to normal (non\-terse) mode\. A line prefixed with \fB`\fR will turn on verbose\-correction mode (see below); this mode can only be disabled by turning on terse mode with \fB%\fR\.
+.
+.P
+Any input following the prefix characters \fB+\fR, \fB\-\fR, \fB#\fR, \fB!\fR, \fB%\fR, or \fB`\fR is ignored, as is any input following the filename on a \fB~\fR line\. To allow spell\-checking of lines beginning with these characters, a line starting with \fB^\fR has that character removed before it is passed to the spell\-checking code\. It is recommended that programmatic interfaces prefix every data line with an uparrow to protect themselves against future changes in hunspell\.
+.
+.P
+To summarize these:
+.
+.TP
+\fB*\fR
+Add to personal dictionary
+.
+.TP
+\fB@\fR
+Accept word, but leave out of dictionary
+.
+.TP
+\fB#\fR
+Save current personal dictionary
+.
+.TP
+\fB~\fR
+Set parameters based on filename
+.
+.TP
+\fB+\fR
+Enter TeX mode
+.
+.TP
+\fB\-\fR
+Exit TeX mode
+.
+.TP
+\fB!\fR
+Enter terse mode
+.
+.TP
+\fB%\fR
+Exit terse mode
+.
+.TP
+\fB`\fR
+Enter verbose\-correction mode
+.
+.TP
+\fB^\fR
+Spell\-check rest of line
+.
+.P
+In terse mode, hunspell will not print lines beginning with \fB*\fR, \fB+\fR, or \fB\-\fR, all of which indicate correct words\. This significantly improves running speed when the driving program is going to ignore correct words anyway\.
+.
+.P
+In verbose\-correction mode, hunspell includes the original word immediately after the indicator character in output lines beginning with \fB*\fR, \fB+\fR, and \fB\-\fR, which simplifies interaction for some programs\.
+.
 .SH "EXAMPLES"
 .
 .TP
@@ -351,7 +354,7 @@ The default dictionary depends on the locale settings\. The following environmen
 \fB$HOME/\.hunspell_default\fR\. Default path to personal dictionary\.
 .
 .SH "SEE ALSO"
-hunspell (3), hunspell(5)
+hunspell(3), hunspell(5)
 .
 .SH "AUTHOR"
 Author of Hunspell executable is László Németh\. For Hunspell library, see hunspell(3)\.

@@ -78,127 +78,7 @@ characters as follows (case is ignored):
 
   - `-a`:
     The -a option is intended to be used from other programs
-    through a pipe. In this mode, hunspell prints a one-line version
-    identification message, and then begins reading lines of input. For
-    each input line, a single line is written to the standard output for
-    each word checked for spelling on the line. If the word was found in
-    the main dictionary, or your personal dictionary, then the line
-    contains only a `*`. If the word was found through affix removal,
-    then the line contains a `+`, a space, and the root word. If the
-    word was found through compound formation (concatenation of two
-    words, then the line contains only a `-`.
-    
-    If the word is not in the dictionary, but there are near misses,
-    then the line contains an `&`, a space, the misspelled word, a
-    space, the number of near misses, the number of characters between
-    the beginning of the line and the beginning of the misspelled word,
-    a colon, another space, and a list of the near misses separated by
-    commas and spaces.
-    
-    Also, each near miss or guess is capitalized the same as the input
-    word unless such capitalization is illegal; in the latter case each
-    near miss is capitalized correctly according to the dictionary.
-    
-    Finally, if the word does not appear in the dictionary, and there
-    are no near misses, then the line contains a `#`, a space, the
-    misspelled word, a space, and the character offset from the
-    beginning of the line. Each sentence of text input is terminated
-    with an additional blank line, indicating that hunspell has
-    completed processing the input line.
-    
-    These output lines can be summarized as follows:
-    
-      - OK:
-        `*`
-      - Root:
-        `+ <root>`
-      - Compound:
-        `-`
-      - Miss:
-        `& <original> <count> <offset>: <miss>, <miss>, ...`
-      - None:
-        `# <original> <offset>`
-    
-    For example, a dummy dictionary containing the words "fray", "Frey",
-    "fry", and "refried" might produce the following response to the
-    command "echo 'frqy refries | hunspell -a":
-    
-        (#) Hunspell 0.4.1 (beta), 2005-05-26
-        & frqy 3 0: fray, Frey, fry
-        & refries 1 5: refried
-
-    This mode is also suitable for interactive use when you want to
-    figure out the spelling of a single word (but this is the default
-    behavior of hunspell without -a, too).
-    
-    When in the -a mode, hunspell will also accept lines of single words
-    prefixed with any of `*`, `&`, `@`, `+`, `-`, `~`, `#`, `!`, `%`,
-    `` ` ``, or `^`. A line starting with `*` tells hunspell to insert
-    the word into the user's dictionary (similar to the I command). A
-    line starting with `&` tells hunspell to insert an all-lowercase
-    version of the word into the user's dictionary (similar to the U
-    command). A line starting with `@` causes hunspell to accept this
-    word in the future (similar to the A command). A line starting with
-    `+`, followed immediately by tex or nroff will cause hunspell to
-    parse future input according the syntax of that formatter. A line
-    consisting solely of a `+` will place hunspell in TeX/LaTeX mode
-    (similar to the -t option) and `-` returns hunspell to nroff/troff
-    mode (but these commands are obsolete). However, the string
-    character type is not changed; the `~` command must be used to do
-    this. A line starting with `~` causes hunspell to set internal
-    parameters (in particular, the default string character type) based
-    on the filename given in the rest of the line. (A file suffix is
-    sufficient, but the period must be included. Instead of a file name
-    or suffix, a unique name, as listed in the language affix file, may
-    be specified.) However, the formatter parsing is not changed; the
-    `+` command must be used to change the formatter. A line prefixed
-    with `#` will cause the personal dictionary to be saved. A line
-    prefixed with `!` will turn on terse mode (see below), and a line
-    prefixed with `%` will return hunspell to normal (non-terse) mode. A
-    line prefixed with `` ` `` will turn on verbose-correction mode (see
-    below); this mode can only be disabled by turning on terse mode with
-    `%`.
-    
-    Any input following the prefix characters `+`, `-`, `#`, `!`, `%`,
-    or `` ` `` is ignored, as is any input following the filename on a
-    `~` line. To allow spell-checking of lines beginning with these
-    characters, a line starting with `^` has that character removed
-    before it is passed to the spell-checking code. It is recommended
-    that programmatic interfaces prefix every data line with an uparrow
-    to protect themselves against future changes in hunspell.
-    
-    To summarize these:
-    
-      - `*`:
-        Add to personal dictionary
-      - `@`:
-        Accept word, but leave out of dictionary
-      - `#`:
-        Save current personal dictionary
-      - `~`:
-        Set parameters based on filename
-      - `+`:
-        Enter TeX mode
-      - `-`:
-        Exit TeX mode
-      - `!`:
-        Enter terse mode
-      - `%`:
-        Exit terse mode
-      - `` ` ``:
-        Enter verbose-correction mode
-      - `^`:
-        Spell-check rest of line
-    
-    In terse mode, hunspell will not print lines beginning with `*`,
-    `+`, or `-`, all of which indicate correct words. This significantly
-    improves running speed when the driving program is going to ignore
-    correct words anyway.
-    
-    In verbose-correction mode, hunspell includes the original word
-    immediately after the indicator character in output lines beginning
-    with `*`, `+`, and `-`, which simplifies interaction for some
-    programs.
+    through a pipe.
 
   - `--check-apostrophe`:
     Check and force Unicode apostrophes (U+2019),
@@ -216,9 +96,9 @@ characters as follows (case is ignored):
   - `-d <dict>,<dict2>,...`:
     Set dictionaries by their base names with
     or without paths. Example of the syntax:
-    
+
     `-d en_US,en_geo,en_med,de_DE,de_med`
-    
+
     `en_US` and `de_DE` are base dictionaries, they consist of aff and
     dic file pairs: `en_US.aff, en_US.dic` and `de_DE.aff, de_DE.dic`.
     `En_geo, en_med, de_med` are special dictionaries: dictionaries
@@ -270,7 +150,7 @@ characters as follows (case is ignored):
     depends on the locale settings. The following environment variables
     are searched: `LC_ALL`, `LC_MESSAGES`, and `LANG`. If none are set
     then the default personal dictionary is `$HOME/.hunspell_default`.
-    
+
     Setting -d or the DICTIONARY environmental variable, personal
     dictionary will be `$HOME/.hunspell_dicname`
 
@@ -296,6 +176,130 @@ characters as follows (case is ignored):
 
   - `-X`:
     The input file is in XML format.
+
+## Pipe Mode
+
+In this mode (`-a`), hunspell prints a one-line version
+identification message, and then begins reading lines of input. For
+each input line, a single line is written to the standard output for
+each word checked for spelling on the line. If the word was found in
+the main dictionary, or your personal dictionary, then the line
+contains only a `*`. If the word was found through affix removal,
+then the line contains a `+`, a space, and the root word. If the
+word was found through compound formation (concatenation of two
+words, then the line contains only a `-`.
+
+If the word is not in the dictionary, but there are near misses,
+then the line contains an `&`, a space, the misspelled word, a
+space, the number of near misses, the number of characters between
+the beginning of the line and the beginning of the misspelled word,
+a colon, another space, and a list of the near misses separated by
+commas and spaces.
+
+Also, each near miss or guess is capitalized the same as the input
+word unless such capitalization is illegal; in the latter case each
+near miss is capitalized correctly according to the dictionary.
+
+Finally, if the word does not appear in the dictionary, and there
+are no near misses, then the line contains a `#`, a space, the
+misspelled word, a space, and the character offset from the
+beginning of the line. Each sentence of text input is terminated
+with an additional blank line, indicating that hunspell has
+completed processing the input line.
+
+These output lines can be summarized as follows:
+
+  - OK:
+    `*`
+  - Root:
+    `+ <root>`
+  - Compound:
+    `-`
+  - Miss:
+    `& <original> <count> <offset>: <miss>, <miss>, ...`
+  - None:
+    `# <original> <offset>`
+
+For example, a dummy dictionary containing the words "fray", "Frey",
+"fry", and "refried" might produce the following response to the
+command "echo 'frqy refries | hunspell -a":
+
+    (#) Hunspell 0.4.1 (beta), 2005-05-26
+    & frqy 3 0: fray, Frey, fry
+    & refries 1 5: refried
+
+This mode is also suitable for interactive use when you want to
+figure out the spelling of a single word (but this is the default
+behavior of hunspell without -a, too).
+
+When in the -a mode, hunspell will also accept lines of single words
+prefixed with any of `*`, `&`, `@`, `+`, `-`, `~`, `#`, `!`, `%`,
+`` ` ``, or `^`. A line starting with `*` tells hunspell to insert
+the word into the user's dictionary (similar to the I command). A
+line starting with `&` tells hunspell to insert an all-lowercase
+version of the word into the user's dictionary (similar to the U
+command). A line starting with `@` causes hunspell to accept this
+word in the future (similar to the A command). A line starting with
+`+`, followed immediately by tex or nroff will cause hunspell to
+parse future input according the syntax of that formatter. A line
+consisting solely of a `+` will place hunspell in TeX/LaTeX mode
+(similar to the -t option) and `-` returns hunspell to nroff/troff
+mode (but these commands are obsolete). However, the string
+character type is not changed; the `~` command must be used to do
+this. A line starting with `~` causes hunspell to set internal
+parameters (in particular, the default string character type) based
+on the filename given in the rest of the line. (A file suffix is
+sufficient, but the period must be included. Instead of a file name
+or suffix, a unique name, as listed in the language affix file, may
+be specified.) However, the formatter parsing is not changed; the
+`+` command must be used to change the formatter. A line prefixed
+with `#` will cause the personal dictionary to be saved. A line
+prefixed with `!` will turn on terse mode (see below), and a line
+prefixed with `%` will return hunspell to normal (non-terse) mode. A
+line prefixed with `` ` `` will turn on verbose-correction mode (see
+below); this mode can only be disabled by turning on terse mode with
+`%`.
+
+Any input following the prefix characters `+`, `-`, `#`, `!`, `%`,
+or `` ` `` is ignored, as is any input following the filename on a
+`~` line. To allow spell-checking of lines beginning with these
+characters, a line starting with `^` has that character removed
+before it is passed to the spell-checking code. It is recommended
+that programmatic interfaces prefix every data line with an uparrow
+to protect themselves against future changes in hunspell.
+
+To summarize these:
+
+  - `*`:
+    Add to personal dictionary
+  - `@`:
+    Accept word, but leave out of dictionary
+  - `#`:
+    Save current personal dictionary
+  - `~`:
+    Set parameters based on filename
+  - `+`:
+    Enter TeX mode
+  - `-`:
+    Exit TeX mode
+  - `!`:
+    Enter terse mode
+  - `%`:
+    Exit terse mode
+  - `` ` ``:
+    Enter verbose-correction mode
+  - `^`:
+    Spell-check rest of line
+
+In terse mode, hunspell will not print lines beginning with `*`,
+`+`, or `-`, all of which indicate correct words. This significantly
+improves running speed when the driving program is going to ignore
+correct words anyway.
+
+In verbose-correction mode, hunspell includes the original word
+immediately after the indicator character in output lines beginning
+with `*`, `+`, and `-`, which simplifies interaction for some
+programs.
 
 ## EXAMPLES
 
@@ -353,7 +357,7 @@ hunspell(5).
 
 ## SEE ALSO
 
-hunspell (3), hunspell(5)
+hunspell(3), hunspell(5)
 
 ## AUTHOR
 

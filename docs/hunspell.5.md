@@ -4,7 +4,8 @@ hunspell(5) -- format of Hunspell dictionaries and affix files
 ## DESCRIPTION
 
 Hunspell(1)  Hunspell  requires two files to define the way a language
-is being spell checked: a dictionary file containing words and  applicable  flags,  and  an  affix file that specifies how these flags will
+is being spell checked: a dictionary file containing words and  applicable
+flags,  and  an  affix file that specifies how these flags will
 control spell checking.  An optional file is the  personal  dictionary
 file.
 
@@ -1182,4 +1183,4 @@ with frequency order to set edit distance suggestions:
 
 ## SEE ALSO
 
-hunspell (1), ispell (1), ispell (5)
+hunspell(1), ispell(1), ispell(5)
