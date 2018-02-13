@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-02-10 15:36+0000\n"
-"Last-Translator: Julien Lepiller <roptat@lepiller.eu>\n"
+"PO-Revision-Date: 2018-02-14 23:36+0000\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/hunspell/translations/fr/>\n"
 "Language: fr\n"
@@ -249,7 +249,7 @@ msgstr "Impossible d'ouvrir outputfile"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Utilisation : hunspell [OPTION]... [FICHIER]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
@@ -406,6 +406,8 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"CHEMIN DE RECHERCHER :\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
