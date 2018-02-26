@@ -92,6 +92,7 @@ Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key) {
   encoding = NULL;
   csconv = NULL;
   utf8 = 0;
+  agglutinative = 0;
   complexprefixes = 0;
   affixpath = mystrdup(affpath);
   maxdic = 0;
@@ -113,6 +114,7 @@ Hunspell::Hunspell(const char* affpath, const char* dpath, const char* key) {
   utf8 = pAMgr->get_utf8();
   if (!utf8)
     csconv = get_current_cs(encoding);
+  agglutinative = pAMgr->get_agglutinative();
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
 
@@ -717,7 +719,10 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
   // check with affixes
   if (!he && pAMgr) {
     // try stripping off affixes */
-    he = pAMgr->affix_check(word, len, 0);
+    if (this->agglutinative)
+      he = pAMgr->affix_check_agglut(word, len);
+    else
+      he = pAMgr->affix_check(word, len, 0);
 
     // check compound restriction and onlyupcase
     if (he && he->astr &&

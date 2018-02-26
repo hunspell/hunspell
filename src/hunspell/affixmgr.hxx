@@ -90,8 +90,45 @@
 #define dupSFX (1 << 0)
 #define dupPFX (1 << 1)
 
+#define maxAFF 5    // SJC
+
 class PfxEntry;
 class SfxEntry;
+
+
+// For managing affixes in fully agglutinative system.
+class AffStack {
+  PfxEntry* pfxstack[maxAFF+1];  // see PfxEntry::checkword_agglut()
+  SfxEntry* sfxstack[maxAFF];
+public:
+  int pfxi;
+  int sfxi;
+  AffStack();
+  void set_pfx(PfxEntry* ppfx) { pfxstack[pfxi] = ppfx; }
+  void set_sfx(SfxEntry* psfx) { sfxstack[sfxi] = psfx; }
+  PfxEntry* curr_pfx() { return pfxstack[pfxi]; }
+  SfxEntry* curr_sfx() { return sfxstack[sfxi]; }
+  int inc_pfxi() { pfxi++; return pfxi; }
+  int inc_sfxi() { sfxi++; return sfxi; }
+  int dec_pfxi() { pfxi--; return pfxi; }
+  int dec_sfxi() { sfxi--; return sfxi; }
+
+  int push_pfx(PfxEntry* ppfx) { pfxstack[pfxi] = ppfx; pfxi++; return pfxi; }
+  int push_sfx(SfxEntry* spfx) { sfxstack[sfxi] = spfx; sfxi++; return sfxi; }
+  
+  void pop_pfx() { pfxi--; pfxstack[pfxi] = NULL; }
+  void pop_sfx() { sfxi--; sfxstack[sfxi] = NULL; }
+
+  PfxEntry* top_pfx() { return (pfxi == 0) ? NULL : pfxstack[pfxi-1]; }
+  SfxEntry* top_sfx() { return (sfxi == 0) ? NULL : sfxstack[sfxi-1]; }
+
+  bool permits_next_prefix(PfxEntry* ppfx);
+  bool permits_next_suffix(SfxEntry* psfx);
+  bool affix_permitted(FLAG aflag); // not used
+
+  void showdebug(const char* baseword);
+};
+
 
 class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   PfxEntry* pStart[SETSIZE];
@@ -107,6 +144,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   struct cs_info* csconv;
   int utf8;
   int complexprefixes;
+  int agglutinative;
   FLAG compoundflag;
   FLAG compoundbegin;
   FLAG compoundmiddle;
@@ -240,6 +278,17 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                                   PfxEntry* ppfx,
                                   const FLAG needflag = FLAG_NULL);
 
+  struct hentry* affix_check_agglut(const char* word,       // SJC
+                                    int len);
+  struct hentry* prefix_check_agglut(const char* word,      // SJC
+                                     int len,
+                                     AffStack* paffgfstack);
+
+  struct hentry* suffix_check_agglut(const char* word,      // SJC
+                                     int len,
+                                     ///PfxEntry* ppfx,
+                                     AffStack* paffstack);
+
   char* morphgen(const char* ts,
                  int wl,
                  const unsigned short* ap,
@@ -337,6 +386,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   const char* get_version() const;
   int have_contclass() const;
   int get_utf8() const;
+  int get_agglutinative() const;
   int get_complexprefixes() const;
   char* get_suffixed(char) const;
   int get_maxngramsugs() const;

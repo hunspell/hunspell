@@ -60,7 +60,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffEntry {
   std::string appnd;
   std::string strip;
   unsigned char numconds;
-  char opts;
+  char opts;  // eg, aeXPRODUCT
   unsigned short aflag;
   union {
     char conds[MAXCONDLEN];

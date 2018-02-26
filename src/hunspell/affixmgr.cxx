@@ -100,6 +100,7 @@ AffixMgr::AffixMgr(const char* affpath,
   encoding = NULL;
   csconv = NULL;
   utf8 = 0;
+  agglutinative = 0;
   complexprefixes = 0;
   maptable = NULL;
   nummap = 0;
@@ -423,6 +424,10 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 #endif
       }
     }
+
+    /* parse AGGLUTINATIVE for fully agglutinative languages */
+    if (strncmp(line, "AGGLUTINATIVE", 13) == 0)   // SJC
+      agglutinative = 1;                           // SJC
 
     /* parse COMPLEXPREFIXES for agglutinative languages with right-to-left
      * writing system */
@@ -1103,9 +1108,9 @@ int AffixMgr::process_sfx_order() {
     ptr = sStart[i];
 
     // look through the remainder of the list
-    //  and find next entry with affix that
-    // the current one is not a subset of
-    // mark that as destination for NextNE
+    // and find next entry with affix that
+    // the current one is not a subset of;
+    // mark that as destination for NextNE;
     // use next in list that you are a subset
     // of as NextEQ
 
@@ -1637,7 +1642,7 @@ inline int AffixMgr::candidate_check(const char* word, int len) {
   if (rv)
     return 1;
 
-  //  rv = prefix_check(word,len,1);
+  //  rv = prefix_check(word, len, 1);
   //  if (rv) return 1;
 
   rv = affix_check(word, len);
@@ -2934,9 +2939,9 @@ struct hentry* AffixMgr::suffix_check(const char* word,
             return rv;
           }
         }
-      sptr = sptr->getNextEQ();
+      sptr = sptr->getNextEQ();   // subset of this suffix
     } else {
-      sptr = sptr->getNextNE();
+      sptr = sptr->getNextNE();   // not a subset of this suffix
     }
   }
 
@@ -3608,6 +3613,11 @@ char* AffixMgr::get_encoding() {
 // return text encoding of dictionary
 int AffixMgr::get_langnum() const {
   return langnum;
+}
+
+// fully agglutinative
+int AffixMgr::get_agglutinative() const {
+  return agglutinative;
 }
 
 // return double prefix option
@@ -4695,13 +4705,13 @@ int AffixMgr::parse_affix(char* line,
   while (piece) {
     if (*piece != '\0') {
       switch (i) {
-        // piece 1 - is type of affix
+        // piece 1 - is type of affix - prefix/suffix
         case 0: {
           np++;
           break;
         }
 
-        // piece 2 - is affix char
+        // piece 2 - is affix char (ID)
         case 1: {
           np++;
           aflag = pHMgr->decode_flag(piece);
@@ -4792,7 +4802,7 @@ int AffixMgr::parse_affix(char* line,
             break;
           }
 
-          // piece 2 - is affix char
+          // piece 2 - is affix char (ID)
           case 1: {
             np++;
             if (pHMgr->decode_flag(piece) != aflag) {
@@ -5115,4 +5125,179 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
     }
   }
   return suff_words_cnt;
+}
+
+
+/*  FULLY AGGLUTINATIVE SYSTEMS  */
+/*                               */
+/*  Added by Sharon Correll      */
+
+struct hentry* AffixMgr::affix_check_agglut(
+                            const char* word,
+                            int len) {
+
+  // This method assumes that *word* has been checked and is not a legal base.
+
+  struct hentry* rv = NULL;
+
+  AffStack affstack;
+
+  // First try with no prefixes.
+  rv = suffix_check_agglut(word, len, &affstack);
+  if (!rv) {
+    // Now try stripping prefixes off one by one.
+    rv = prefix_check_agglut(word, len, &affstack);
+  }
+
+  if (rv)
+    affstack.showdebug(rv->word);
+
+  return rv;
+}
+
+
+struct hentry* AffixMgr::prefix_check_agglut(
+                            const char* word,
+                            int len,
+                            AffStack* paffstack) {
+
+  struct hentry* rv = NULL;
+
+  if (len == 0)
+    return NULL;
+
+  // Strip off possible prefixes. After stripping each one,
+  // strip off all possible suffixes and test for a legal base.
+
+  unsigned char sp = *((const unsigned char*)word);
+  PfxEntry* pptr = pStart[sp];
+  while (pptr) {
+    if (isSubset(pptr->getKey(), word)) {
+      if (paffstack->permits_next_prefix(pptr)) {
+        rv = pptr->checkword_agglut(word, len, paffstack);
+        if (rv) {
+          paffstack->set_pfx(pptr);
+          return rv;
+        }
+      }
+      pptr = pptr->getNextEQ();
+    } else {
+      pptr = pptr->getNextNE();
+    }
+  }
+
+  return NULL;
+}
+
+
+struct hentry* AffixMgr::suffix_check_agglut(const char* word,
+                                   int len,
+                                   ///PfxEntry* ppfx,
+                                   AffStack* paffstack) {
+
+   struct hentry* rv = NULL;
+
+   if (len == 0)
+     return NULL;
+
+  unsigned char sp = *((const unsigned char*)(word + len - 1));
+  SfxEntry* sptr = sStart[sp];
+  while (sptr) {
+    if (isRevSubset(sptr->getKey(), word + len - 1, len)) {
+      if (paffstack->permits_next_suffix(sptr)) {
+        rv = sptr->checkword_agglut(word, len, paffstack);
+        if (rv) {
+          paffstack->set_sfx(sptr);
+          return rv;
+        }
+      }
+      sptr = sptr->getNextEQ();
+    } else {
+      sptr = sptr->getNextNE();
+    }
+  }
+
+  return NULL;
+}
+
+
+AffStack::AffStack() {
+  for (int i = 0; i < maxAFF; i++) {
+    pfxstack[i] = NULL;
+    sfxstack[i] = NULL;
+    pfxi = 0;
+    sfxi = 0;
+  }
+}
+
+
+// Determine if the given inner preffix permits the next outer one
+// (which we already found).
+bool AffStack::permits_next_prefix(PfxEntry* ppfxInner) {
+  if (top_pfx()) {
+    PfxEntry* toppfx = top_pfx();
+    unsigned short outerAflag = toppfx->getFlag();
+    if (ppfxInner->getCont() && TESTAFF(ppfxInner->getCont(), outerAflag, ppfxInner->getContLen())) {
+      return true;  // prefix permitted
+    } else {
+      return false;
+    }
+  }
+  return true;  // no outer prefix
+}
+
+
+// Determine if the given inner suffix permits the next outer one
+// (which we already found).
+bool AffStack::permits_next_suffix(SfxEntry* psfxInner) {
+  if (top_sfx()) {
+    SfxEntry* topsfx = top_sfx();
+    unsigned short outerAflag = topsfx->getFlag();
+    if (psfxInner->getCont() && TESTAFF(psfxInner->getCont(), outerAflag, psfxInner->getContLen())) {
+      return true;  // suffix permitted
+    } else {
+      return false;
+    }
+  }
+  return true;  // no outer suffix
+}
+
+// currently not used
+bool AffStack::affix_permitted(FLAG aflag) {
+  // Either the most recent prefix or the most recent suffix
+  // must permit this one.
+  if (top_pfx()) {
+    PfxEntry* toppfx = top_pfx();
+    if (toppfx->getCont() && TESTAFF(toppfx->getCont(), aflag, toppfx->getContLen())) {
+      return true;  // prefix permits it
+    } else {
+      return false;
+    }
+  }
+  if (top_sfx()) {
+    SfxEntry* topsfx = top_sfx();
+    if (topsfx->getCont() && TESTAFF(topsfx->getCont(), aflag, topsfx->getContLen())) {
+      return true;  // suffix permits it
+    } else {
+      return false;
+    }
+  }
+  return true; // no prefix or suffix
+}
+
+
+
+void AffStack::showdebug(const char* baseword) {
+  for (int i = 0; i < maxAFF; i++) {
+    if (pfxstack[i]) {
+      fprintf(stdout, "%s- ", pfxstack[i]->getAffix());
+    }
+  }
+  fprintf(stdout, "%s", baseword);
+  for (int i = maxAFF - 1; i >= 0; i--) {
+    if (sfxstack[i]) {
+      fprintf(stdout, " -%s", sfxstack[i]->getAffix());
+    }
+  }
+  fprintf(stdout, "\n");
 }

@@ -948,6 +948,122 @@ struct hentry* SfxEntry::get_next_homonym(struct hentry* he,
   return NULL;
 }
 
+
+/*  FULLY AGGLUTINATIVE SYSTEMS  */
+/*                               */
+/*  Added by Sharon Correll      */
+
+
+struct hentry* PfxEntry::checkword_agglut(
+                            const char* word,
+                            int len,
+                            AffStack* paffstack) {
+
+  struct hentry* he;  // hash entry of root word or NULL
+
+  int tmpl = len - appnd.size(); // length of tmpword
+
+  if (tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) {
+
+    // Generate new root word by removing prefix and adding
+    // back any characters that would have been stripped.
+    std::string tmpword(strip);
+    tmpword.append(word + appnd.size());
+
+    // test conditions for this prefix
+    if (test_condition(tmpword.c_str())) {
+      tmpl += strip.size();
+
+      if ((he = pmyMgr->lookup(tmpword.c_str())) != NULL) {
+        // found a legal base
+        do {
+          if (TESTAFF(he->astr, aflag, he->alen)) {  // prefix permitted on this base
+            paffstack->set_pfx(this);
+            return he;
+          }
+          he = he->next_homonym;  // identical-looking base
+        } while (he);
+      }
+
+      // Prefix matched but no root word was found. Try stripping suffixes.
+      paffstack->push_pfx(this); // make stack big enough that this doesn't overflow
+
+      he = pmyMgr->suffix_check_agglut(tmpword.c_str(), tmpl, paffstack);
+      if (he) {
+        paffstack->dec_pfxi();
+        return he;
+      }
+
+      // Try stripping an additional prefix(es) and repeat the process.
+      if (paffstack->pfxi < maxAFF) {
+        he = pmyMgr->prefix_check_agglut(tmpword.c_str(), tmpl, paffstack);
+        if (he) {
+          paffstack->dec_pfxi();
+          return he;
+        }
+      }
+      paffstack->pop_pfx();
+    }
+  }
+  return NULL;
+}
+
+
+struct hentry* SfxEntry::checkword_agglut(const char* word,
+                              int len,
+                              ///PfxEntry* ppfx,
+                              AffStack* paffstack) {
+
+  struct hentry* he;  // hash entry pointer
+
+  int tmpl = len - appnd.size();
+  if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip()))
+        && (tmpl + strip.size() >= numconds)) {
+
+    // Generate new root word by removing suffix and adding
+    // back any characters that would have been stripped.
+    std::string tmpword(word);
+    tmpword.resize(tmpl);
+    tmpword.append(strip);
+    tmpl += strip.size();
+
+    // need these pointers because we examine the base from the end backwards:
+    const char* beg = tmpword.c_str();
+    const char* end = beg + tmpl;
+
+    // test conditions for this suffix
+    if (test_condition(end, beg)) {
+      tmpl += strip.size();
+
+      if ((he = pmyMgr->lookup(tmpword.c_str())) != NULL) {
+        // found a legal base
+        do {
+          if (TESTAFF(he->astr, aflag, he->alen)) {  // suffix permitted on this base
+            paffstack->set_sfx(this);
+            return he;
+          }
+          he = he->next_homonym;  // identical-looking base
+        } while (he);
+      }
+ 
+      // This suffix is legal, but still does not produce a valid base.
+      // Try recursion to handle another suffix.
+
+      if (paffstack->sfxi < maxAFF) {
+        paffstack->push_sfx(this);
+        he = pmyMgr->suffix_check_agglut(tmpword.c_str(), tmpl, paffstack);
+        if (he) {
+          paffstack->dec_sfxi();
+          return he;
+        }
+        paffstack->pop_sfx();
+      }
+    }
+  }
+  return NULL;
+}
+
+
 #if 0
 
 Appendix:  Understanding Affix Code

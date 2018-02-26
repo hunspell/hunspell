@@ -106,6 +106,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   struct cs_info* csconv;
   int langnum;
   int utf8;
+  int agglutinative;     // SJC
   int complexprefixes;
   char** wordbreak;
 
