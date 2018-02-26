@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-02-26 09:29+0000\n"
+"PO-Revision-Date: 2018-02-26 09:33+0000\n"
 "Last-Translator: Robert Antoni Buj Gelonch <robert.buj@gmail.com>\n"
 "Language-Team: Catalan "
 "<https://hosted.weblate.org/projects/hunspell/translations/ca/>\n"
@@ -88,8 +88,8 @@ msgid ""
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[ESPAI] S)ubstitieix A)ccepta I)nsereix M)inúscules A)rrel S(u)rt T)anca o ? "
-"per a l'ajuda\n"
+"[ESPAI] S)ubstitueix A)ccepta I)nsereix M)inúscules A(r)rel S(u)rt T)anca o "
+"? per a l'ajuda\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
@@ -216,7 +216,7 @@ msgstr "a"
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1377
 msgid "s"
-msgstr "a"
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
