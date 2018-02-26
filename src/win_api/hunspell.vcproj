@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="hunspell"
 	ProjectGUID="{6A0453F4-B12A-4810-B9A2-8AB059316ED7}"
 	RootNamespace="hunspell"
@@ -181,6 +181,10 @@
 				RelativePath="..\tools\hunspell.cxx"
 				>
 			</File>
+			<File
+				RelativePath="..\hunspell\hunspell.hxx"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="parsers"
@@ -218,11 +222,55 @@
 				>
 			</File>
 			<File
+				RelativePath="..\parsers\odfparser.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\odfparser.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\parsers\textparser.cxx"
 				>
 			</File>
 			<File
 				RelativePath="..\parsers\textparser.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\xmlparser.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\parsers\xmlparser.hxx"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="agglut extensions"
+			>
+			<File
+				RelativePath="..\hunspell\affentry.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\affentry.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\affixmgr.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\affixmgr.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\atypes.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\baseaffix.hxx"
 				>
 			</File>
 		</Filter>

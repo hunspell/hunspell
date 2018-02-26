@@ -60,7 +60,7 @@ static const char* PATTERN[][2] = {
 
 #define PATTERN_LEN (sizeof(PATTERN) / (sizeof(char*) * 2))
 
-static const char* PATTERN2[][2] = {};
+static const char* PATTERN2[][2] = {{}};
 
 #define PATTERN_LEN2 (sizeof(PATTERN2) / (sizeof(char*) * 2))
 
