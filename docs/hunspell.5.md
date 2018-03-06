@@ -566,7 +566,7 @@ this parameter.
     This flag signs virtual stems in  the  dictionary,  words  only
     valid  when  affixed.   Except,  if  the  dictionary word has a
     homonym or a zero affix.  NEEDAFFIX works  also  with  prefixes
-    and prefix + suffix combinations (see `tests/pseudoroot5.*`).
+    and prefix + suffix combinations (see `tests/needaffix*`).
 
   - `PSEUDOROOT <flag>`:
     Deprecated. (Former name of the NEEDAFFIX option.)
