@@ -1,14 +1,22 @@
 #!/bin/sh
 # makealias: make alias compressed dic and aff files
 # Usage: alias.sh dic aff (not alias.sh aff dic!)
-# Version: 2007-10-26
+# Author: László Németh
+# Version: 2018-03-06
+
+export LC_ALL=C
 
 case $# in
 0|1) 
 echo 'makealias: make alias compressed dic and aff files
-Usage: makealias file.dic file.aff (not makefile file.aff file.dic!)' >/dev/stderr
+Usage: makealias [--minimize-diff oldfile.aff] file.dic file.aff (not makefile file.aff file.dic!)' >/dev/stderr
 exit;;
 esac
+
+if [ "$1" = "--minimize-diff" ]; then
+  AWK_ARG="-v mindiff=$2"
+  shift; shift
+fi
 
 DIC=`basename $1 .dic`
 AFF=`basename $2 .aff`
@@ -16,13 +24,34 @@ AFF=`basename $2 .aff`
 # FLAG type definition must be before alias definitions
 grep '^FLAG' $2 >"${AFF}_alias.aff"
 
-awk 'BEGIN{n=1;m=1}
+# space conversion
+cat $1 | sed 's/ /_/g' > "${DIC}_alias.tmp.dic"
+
+awk $AWK_ARG '
+BEGIN{
+  n=0;m=0
+  if (mindiff != "") while ((getline var < mindiff) > 0) {
+	  if (var~/^AF /) {
+		  b[n] = gensub(" #.*$", "", 1, substr(var, 4))
+		  a[b[n]] = n
+		  n = n + 1
+          }
+	  if (var~/^AM /) {
+		  c[m] = substr(var, 4)
+		  a2[c[m]] = m
+		  m = m + 1
+	  }
+  } else {
+    n=1;m=1
+  }
+}
 function cutslash(st) {
     if (split(st,t,"/") > 1) return t[1]
     return st
 }
 function ltrim(st) {
     sub(/^ +/,"",st)
+    sub("\t"," ",st)
     return st
 }
 FILENAME ~ /.dic$/ && $1 ~ "/[^ \t]" {
@@ -34,12 +63,12 @@ FILENAME ~ /.dic$/ && $1 ~ "/[^ \t]" {
     }
     if (NF > 1) {
         $1 = ""
-        if(!a2[$0]){
-            a2[$0]=m
-            c[m]=$0
+	if(!a2[ltrim($0)]){
+		a2[ltrim($0)]=m
+	    c[m]=ltrim($0)
             m++
         }
-        print t[1]"/"a[t[2]] "\t" a2[$0]
+	print t[1]"/"a[t[2]] "\t" a2[ltrim($0)]
     } else {
         print t[1]"/"a[t[2]]
     }
@@ -48,12 +77,12 @@ FILENAME ~ /.dic$/ && $1 ~ "/[^ \t]" {
 FILENAME ~ /.dic$/ && NF > 1 {
     x = $1
     $1 = ""
-    if(!a2[$0]){
-        a2[$0]=m
-        c[m]=$0
+    if(!a2[ltrim($0)]){
+	    a2[ltrim($0)]=m
+	    c[m]=ltrim($0)
         m++
     }
-    print cutslash(x) "\t" a2[$0]
+    print cutslash(x) "\t" a2[ltrim($0)]
     next
 }
 FILENAME ~ /.dic$/ { print cutslash($1) }
@@ -72,12 +101,12 @@ FILENAME ~ /.aff$/ && /^[PS]FX/ && ($4 ~ /\/[^	 ]/) && NF > 4 {
     $4 = ""
     $5 = ""
     if(ok){
-        if(!a2[$0]){
-            a2[$0]=m
-            c[m]=$0
+	    if(!a2[ltrim($0)]){
+		    a2[ltrim($0)]=m
+		    c[m]=ltrim($0)
             m++
         }
-        print begin " " a2[$0] >>"/dev/stderr"
+	print begin " " a2[ltrim($0)] >>"/dev/stderr"
     } else print begin >>"/dev/stderr"
     next
 }
@@ -90,12 +119,12 @@ FILENAME ~ /.aff$/ && /^[PS]FX/ && NF > 4 {
     $4 = ""
     $5 = ""
     if(ok) {
-        if (!a2[$0]){
-            a2[$0]=m
-            c[m]=$0
+	    if (!a2[ltrim($0)]){
+		    a2[ltrim($0)]=m
+		    c[m]=ltrim($0)
             m++
         }
-        print begin " " a2[$0] >>"/dev/stderr"
+	print begin " " a2[ltrim($0)] >>"/dev/stderr"
     } else print begin >>"/dev/stderr"
     next
 }
@@ -109,7 +138,9 @@ END{
         print "AM", m-1 >>"'${AFF}_alias.aff'"
         for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>"'${AFF}_alias.aff'"
     }
-}' $1 $2 >${DIC}_alias.dic 2>${AFF}_alias.$$
-grep -v '^FLAG' ${AFF}_alias.$$ >>${AFF}_alias.aff
+}' "${DIC}_alias.tmp.dic" $2 >"${DIC}_alias.tmp" 2>"${AFF}_alias.$$"
+cat "${DIC}_alias.tmp" | sed 's/_/ /g' > "${DIC}_alias.dic"
+grep -v '^FLAG' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
-rm ${AFF}_alias.$$
+
+rm ${DIC}_alias.tmp ${DIC}_alias.tmp.dic ${AFF}_alias.$$
