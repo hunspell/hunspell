@@ -506,24 +506,8 @@ int HashMgr::remove_forbidden_flag(const std::string& word) {
   if (!dp)
     return 1;
   while (dp) {
-    if (dp->astr && TESTAFF(dp->astr, forbiddenword, dp->alen)) {
-      if (dp->alen == 1)
-        dp->alen = 0;  // XXX forbidden words of personal dic.
-      else {
-        unsigned short* flags2 =
-            (unsigned short*)malloc(sizeof(unsigned short) * (dp->alen - 1));
-        if (!flags2)
-          return 1;
-        int i, j = 0;
-        for (i = 0; i < dp->alen; i++) {
-          if (dp->astr[i] != forbiddenword)
-            flags2[j++] = dp->astr[i];
-        }
-        dp->alen--;
-        free(dp->astr);
-        dp->astr = flags2;  // XXX allowed forbidden words
-      }
-    }
+    if (dp->astr && TESTAFF(dp->astr, forbiddenword, dp->alen))
+      dp->alen = 0;  // XXX forbidden words of personal dic.
     dp = dp->next_homonym;
   }
   return 0;
