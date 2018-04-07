@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-04-07 14:58+0000\n"
+"PO-Revision-Date: 2018-04-07 15:13+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_PT/>\n"
@@ -114,46 +114,52 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R Substituir a palavra com erros ortográficos completamente.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Espaço\tAceitar a palavra apenas esta vez.\n"
 
 #: src/tools/hunspell.cxx:1268
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A Aceitar a palavra para o resto da sessão.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I Aceitar a palavra e colocá-la no seu dicionário particular.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U Aceitar e adicionar a versão minúscula ao dicionário privado.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S Pergunte um tronco e um modelo da palavra e armazená-las no dicionário "
+"particular.\n"
+"O tronco também será aceite com os afixos do modelo da palavra.\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n Substituir com uma das palavras sugeridas.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X Escrever o resto deste ficheiro, ignorando os erros de ortografia e "
+"iniciar o próximo ficheiro.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
+"Q Sair imediatamente. Vai pedir uma confirmação. Deixa ficheiro inalterado.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z Suspender o programa. Reiniciar com o comando fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
