@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-04-14 18:14+0000\n"
+"PO-Revision-Date: 2018-04-23 23:37+0000\n"
 "Last-Translator: Nathan Follens <nathan@email.is>\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/hunspell/"
 "translations/nl_BE/>\n"
@@ -36,20 +36,20 @@ msgstr "fout - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
-msgstr "Kan tijdelijke map niet aanmaken"
+msgstr "Kan tijdelijke map nie aanmaken"
 
 #: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:689
 #: src/tools/hunspell.cxx:1558 src/tools/hunspell.cxx:1588
 #: src/tools/hunspell.cxx:1601
 msgid "Can't open inputfile"
-msgstr "Kan invoerbestand niet openen"
+msgstr "Kan invoerbestand nie openen"
 
 #: src/tools/hunspell.cxx:679 src/tools/hunspell.cxx:1590
 #: src/tools/hunspell.cxx:2001 src/tools/hunspell.cxx:2153
 #: src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr "Kan %s niet openen.\n"
+msgstr "Kan %s nie openen.\n"
 
 #: src/tools/hunspell.cxx:759 src/tools/hunspell.cxx:1345
 #: src/tools/hunspell.cxx:1457
@@ -99,11 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"Wanneer dat een woord wordt gevonden dat niet in het woordenboek\n"
-"staat, wordt het op de eerste regel van het scherm getoond. Als\n"
-"het woordenboek gelijkaardige woorden bevat, worden deze met\n"
-"een nummer naast mekaar getoond. Ge kunt het woord volledig\n"
-"vervangen, of een van de aanbevolen woorden kiezen.\n"
+"Wanneer dat een woord word gevonden da nie in het woordenboek\n"
+"staat, word het op d’eerste regel van het scherm getoond. Als’t\n"
+"woordenboek gelijkaardige woorden bevat, worden deze met\n"
+"een nummer naast mekaar getoond. Ge kund het woord volledig\n"
+"vervangen, of een van d’aanbevolen woorden kiezen.\n"
 
 #: src/tools/hunspell.cxx:1264
 msgid ""
@@ -117,7 +117,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "R\tVervang het verkeerd gespelde woord volledig.\n"
+msgstr "R\tVervangd het verkeerd gespelde woord volledig.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
@@ -129,12 +129,12 @@ msgstr "A\tAanvaard het woord voor de rest van deze sessie.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "I\tAanvaard het woord en bewaar het in uw persoonlijk woordenboek.\n"
+msgstr "I\tAanvaard het woord en bewaard het in uw persoonlijk woordenboek.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
-"L\tAanvaard en bewaar een versie in kleine letters in uw persoonlijk "
+"L\tAanvaard en bewaard een versie in kleine letters in uw persoonlijk "
 "woordenboek.\n"
 
 #: src/tools/hunspell.cxx:1274
@@ -142,25 +142,25 @@ msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"S\tVraag voor een stam en een modelwoord en sla ze op in het persoonlijk "
+"S\tVraagd voor een stam en een modelwoord en slaad z’op in het persoonlijk "
 "woordenboek.\n"
-"\tDe stam zal aanvaard worden met de affixen van het modelwoord.\n"
+"\tDe stam zal aanvaard worden met d’affixen van het modelwoord.\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tVervang door een van de aanbevolen woorden.\n"
+msgstr "0-n\tVervangd door een van d’aanbevolen woorden.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
-"T\tSchrijf de rest van dit bestand, negeer verkeerde gespelde woorden, en "
-"begin met het volgend bestand.\n"
+"T\tSchrijfd de rest van dit bestand, negeerd verkeerde gespelde woorden, en "
+"begind met het volgend bestand.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
-"F\tOnmiddellijk afsluiten. Vraagt bevestiging. Bestanden blijven ongewijzigd."
+"F\tOnmiddellijk afsluiten. Vraagd bevestiging. Bestanden blijven ongewijzigd."
 "\n"
 
 #: src/tools/hunspell.cxx:1285
@@ -169,7 +169,7 @@ msgstr "^Z\tProgramma pauzeren. Start opnieuw met fg-opdracht.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr "?\tToon dit hulpscherm.\n"
+msgstr "?\tToond dit hulpscherm.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -177,7 +177,7 @@ msgid ""
 "-- Type space to continue -- \n"
 msgstr ""
 "\n"
-"-- Druk op spatie voor verder te gaan -- \n"
+"-- Drukt op spatie voor verder te gaan -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -188,7 +188,7 @@ msgstr "r"
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr "Vervang met: "
+msgstr "Vervangen door: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -207,7 +207,7 @@ msgstr "i"
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr "Kan persoonlijk woordenboek niet bijwerken."
+msgstr "Kan persoonlijk woordenboek nie bijwerken."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -231,7 +231,7 @@ msgstr "Modelwoord (een vergelijkbaar woordenboekwoord): "
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
 msgstr ""
-"Modelwoord moet in het woordenboek staan. Druk op een toets voor verder te "
+"Modelwoord moet in het woordenboek staan. Drukt op een toets voor verder te "
 "gaan!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
@@ -250,7 +250,7 @@ msgstr "f"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Zijt ge zeker dat ge uw wijzigingen wilt verwerpen? "
+msgstr "Zijd ge zeker da’ g’uw wijzigingen wild verwerpen? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -260,11 +260,11 @@ msgstr "j"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
-msgstr "Kan tijdelijk bestand niet aanmaken"
+msgstr "Kan tijdelijk bestand nie aanmaken"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
-msgstr "Kan uitvoerbestand niet openen"
+msgstr "Kan uitvoerbestand nie openen"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
@@ -275,14 +275,14 @@ msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
-"Controleer de spelling van elk BESTAND. Zonder BESTAND wordt standaardinvoer "
+"Controleerd de spelling van elk BESTAND. Zonder BESTAND word standaardinvoer "
 "gecontroleerd.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1824
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
-"  -1\t\tcontroleer enkel eerste veld in regels (scheidingsteken = tab)\n"
+"  -1\t\tcontroleerd enkel eerste veld in regels (scheidingsteken = tab)\n"
 
 #: src/tools/hunspell.cxx:1826
 msgid "  -a\t\tIspell's pipe interface\n"
@@ -290,27 +290,27 @@ msgstr "  -a\t\tpipe-interface van Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr "  --check-url\tcontroleer URL's, e-mailadressen en mappaden\n"
+msgstr "  --check-url\tcontroleerd URL's, e-mailadressen en mappaden\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr "  --check-apostrophe\tcontroleer typografischen Unicode-apostrof\n"
+msgstr "  --check-apostrophe\tcontroleerd typografischen Unicode-apostrof\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr "  -d d[,d2,...]\tgebruik woordenboeken d (d2, enz.)\n"
+msgstr "  -d d[,d2,...]\tgebruikt woordenboeken d (d2, enz.)\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr "  -D\t\ttoon beschikbare woordenboeken\n"
+msgstr "  -D\t\ttoond beschikbare woordenboeken\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr "  -G\t\ttoon enkel juste woorden of regels\n"
+msgstr "  -G\t\ttoond enkel juste woorden of regels\n"
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr "  -h, --help\ttoon dezen hulp en stop\n"
+msgstr "  -h, --help\ttoond dezen hulp en stopt\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
@@ -322,15 +322,15 @@ msgstr "  -i cod\tinvoerscodering\n"
 
 #: src/tools/hunspell.cxx:1840
 msgid "  -l\t\tprint misspelled words\n"
-msgstr "  -l\t\ttoon verkeerd gespelde woorden\n"
+msgstr "  -l\t\ttoond verkeerd gespelde woorden\n"
 
 #: src/tools/hunspell.cxx:1841
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr "  -L\t\ttoon regels met verkeerd gespelde woorden\n"
+msgstr "  -L\t\ttoond regels me’ verkeerd gespelde woorden\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr "  -m \t\tanalyseer de woorden van den invoertekst\n"
+msgstr "  -m \t\tanalyseerd de woorden van den invoertekst\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -n\t\tnroff/troff input file format\n"
@@ -342,24 +342,24 @@ msgstr "  -O\t\tOpenDocument (ODF of platten ODF)-invoerbestandsformaat\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr "  -p wdbk\tstel aangepast woordenboek in\n"
+msgstr "  -p wdbk\tsteld aangepast woordenboek in\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
 msgstr ""
-"  -r\t\ttoon waarschuwing voor mogelijke fouten (ongebruikelijke woorden)\n"
+"  -r\t\ttoond waarschuwing voor mogelijke fouten (ongebruikelijke woorden)\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr "  -P paswoord\tstel paswoord voor versleutelde woordenboeken in\n"
+msgstr "  -P paswoord\tsteld paswoord voor versleutelde woordenboeken in\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr "  -s \t\ttoon stam van woorden van invoertekst\n"
+msgstr "  -s \t\ttoond stam van woorden van invoertekst\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr "  -S \t\ttoon suffix van woorden van invoertekst\n"
+msgstr "  -S \t\ttoond suffix van woorden van invoertekst\n"
 
 #: src/tools/hunspell.cxx:1857
 msgid "  -t\t\tTeX/LaTeX input file format\n"
@@ -367,16 +367,16 @@ msgstr "  -t\t\tTeX-/LaTeX-invoerbestandsformaat\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid "  -v, --version\tprint version number\n"
-msgstr "  -v, --version\ttoon versienummer\n"
+msgstr "  -v, --version\ttoond versienummer\n"
 
 #: src/tools/hunspell.cxx:1860
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr "  -vv\t\ttoon Ispell-compatibel versienummer\n"
+msgstr "  -vv\t\ttoond Ispell-compatibel versienummer\n"
 
 #: src/tools/hunspell.cxx:1861
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
-"  -w\t\ttoon verkeerd gespelde woorden (= regels) van invoer van één woord/"
+"  -w\t\ttoond verkeerd gespelde woorden (= regels) van invoer van één woord/"
 "regel.\n"
 
 #: src/tools/hunspell.cxx:1863
@@ -407,22 +407,22 @@ msgid ""
 "\n"
 msgstr ""
 "Voorbeeld: hunspell -d nl_BE bestand.txt    # interactieve spelling\n"
-"         hunspell -i utf-8 bestand.txt    # controleer bestand in UTF-8-"
+"         hunspell -i utf-8 bestand.txt    # controleerd bestand in UTF-8-"
 "codering\n"
-"         hunspell -l *.odt             # toon verkeerd gespelde woorden in "
+"         hunspell -l *.odt             # toond verkeerd gespelde woorden in "
 "ODF-bestanden\n"
 "\n"
 "         # Snelle verbetering van ODF-documenten door aanmaken van "
 "persoonlijk woordenboek\n"
 "\n"
-"         # 1 Maak ne gereduceerde lijst van verkeerd gespelde en onbekende "
+"         # 1 Maakt ne gereduceerde lijst van verkeerd gespelde en onbekende "
 "woorden:\n"
 "\n"
 "         hunspell -l *.odt | sort | uniq >woorden\n"
 "\n"
-"         # 2 Verwijder verkeerd gespelde woorden uit het bestand met nen "
+"         # 2 Verwijderd verkeerd gespelde woorden uit het bestand met nen "
 "tekstverwerker.\n"
-"         # 3 Gebruik dit persoonlijk woordenboek voor de verkeerd gespelde "
+"         # 3 Gebruikt dit persoonlijk woordenboek voor de verkeerd gespelde "
 "woorden te verbeteren:\n"
 "\n"
 "         hunspell -p woorden *.odt\n"
@@ -454,9 +454,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
-"Dit is vrije software; bekijk de broncode voor kopieervoorwaarden.  Der is "
+"Dit is vrije software; bekijkt de broncode voor kopieervoorwaarden.  Der is "
 "GEEN\n"
-"garantie, zelfs niet voor VERHANDELBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD "
+"garantie, zelfs nie’ voor VERHANDELBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD "
 "DOEL,\n"
 "voorzover toegelaten door de wet.\n"
 
@@ -471,7 +471,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr "BESCHIKBARE WOORDENBOEKEN (pad is niet verplicht voor optie -d):\n"
+msgstr "BESCHIKBARE WOORDENBOEKEN (pad is nie’ verplicht voor optie -d):\n"
 
 #: src/tools/hunspell.cxx:2074
 #, c-format
@@ -487,13 +487,13 @@ msgstr ""
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr "fout - %s overschrijdt woordenboeklimiet.\n"
+msgstr "fout - %s overschrijd woordenboeklimiet.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
-"Kan affix- of woordenboekbestanden voor woordenboek genaamd \"%s\" niet "
+"Kan affix- of woordenboekbestanden voor woordenboek genaamd \"%s\" nie "
 "openen.\n"
 
 #: src/tools/hunspell.cxx:2183
