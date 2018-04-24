@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2016-07-21 02:15-0500\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2018-04-25 08:41+0000\n"
+"Last-Translator: Toni Estévez <toni.estevez@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/hunspell/"
+"translations/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -246,7 +247,7 @@ msgstr "t"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr "¿Confirma que quiere descartar sus cambios?"
+msgstr "¿Confirma que quiere descartar sus cambios? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
