@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Icelandic (Hunspell)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-26 10:15+0200\n"
-"PO-Revision-Date: 2018-04-26 09:31+0000\n"
+"PO-Revision-Date: 2018-04-27 09:38+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <https://hosted.weblate.org/projects/hunspell/"
 "translations/is/>\n"
@@ -233,7 +233,7 @@ msgstr "h"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Ertu viss um að þú viljir henda breytingunum þínum?"
+msgstr "Ertu viss um að þú viljir henda breytingunum þínum? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
