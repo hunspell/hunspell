@@ -1,13 +1,9 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the hunspell package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Sveinn í Felli <sv1@fellsnet.is>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: hunspell 1.5.0\n"
-"Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
-"POT-Creation-Date: 2016-08-30 09:19+0100\n"
+"Project-Id-Version: Icelandic (Hunspell)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-26 10:15+0200\n"
 "PO-Revision-Date: 2018-04-26 09:31+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <https://hosted.weblate.org/projects/hunspell/"
@@ -27,12 +23,12 @@ msgstr "villa - iconv_open: %s -> %s\n"
 #: src/tools/hunspell.cxx:272
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "villa - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:317 src/tools/hunspell.cxx:339
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "villa - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
@@ -76,6 +72,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tSkrá: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -85,6 +83,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[SPACE] s(K)ipta-út s(A)mþykkja setja-(I)nn L)ágstaf S)tofn H)ætta (X)-loka "
+"eða á ? fyrir aðstoð\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
@@ -101,26 +102,30 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Mögulegar skipanir eru:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "K\tSkipta alveg út misritaða orðinu.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Bil\tSamþykkja orðið einungis í þetta skipti.\n"
 
 #: src/tools/hunspell.cxx:1268
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tSamþykkja orðið til loka setunnar.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tSamþykkja orðið, og setja það í einkaorðasafnið þitt.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
+"L\tSamþykkja orðið, og setja lágstafa útgáfu þess í einkaorðasafnið þitt.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
@@ -130,16 +135,18 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tSkipta út með einni af tillögunum um orð.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tSkrifa afganginn af skránni, hunsar stafsetningarvillur, og byrjar á "
+"næstu skrá.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "H\tHætta strax. Spyr um staðfestingu. Breytir ekki skránni.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
@@ -147,24 +154,26 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tBirtir þennan hjálparskjá.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Ýttu á bilslá til að halda áfram -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1299
 msgid "r"
-msgstr ""
+msgstr "k"
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Skipta út með: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -174,31 +183,31 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1332 src/tools/hunspell.cxx:1368
 msgid "u"
-msgstr ""
+msgstr "l"
 
 #: src/tools/hunspell.cxx:1333 src/tools/hunspell.cxx:1368
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Get ekki uppfært einkaorðasafn."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1377
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Nýtt orð (stofn): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
@@ -213,24 +222,24 @@ msgstr ""
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1490
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1496
 msgid "q"
-msgstr ""
+msgstr "h"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Ertu viss um að þú viljir henda breytingunum þínum?"
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1502
 msgid "y"
-msgstr ""
+msgstr "j"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
@@ -242,7 +251,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Notkun: hunspell [VALKOSTUR]... [SKRÁ]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
@@ -280,7 +289,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tbirtir þessa hjálp og hættir\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
@@ -399,6 +408,8 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"LEITARSLÓÐ:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
