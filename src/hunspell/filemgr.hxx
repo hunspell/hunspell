@@ -72,6 +72,9 @@
 #ifndef FILEMGR_HXX_
 #define FILEMGR_HXX_
 
+#ifdef MOZILLA_CLIENT
+#include "mozHunspellRLBoxSandbox.h"
+#else
 #include "hunzip.hxx"
 #include <cstdio>
 #include <string>
@@ -93,4 +96,5 @@ class FileMgr {
   bool getline(std::string&);
   int getlinenum();
 };
+#endif
 #endif
