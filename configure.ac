@@ -85,11 +85,13 @@ AC_ARG_WITH(
 )
 READLINELIB=""
 AS_IF([test "x$with_readline" != xno],
-	[AC_CHECK_LIB([curses],[tparm],[
+	[AC_CHECK_LIB([tinfo],[tgetent], [
+		TERMLIB=-ltinfo
+        ],[AC_CHECK_LIB([curses],[tparm],[
 		TERMLIB=-lncurses
 	],[AC_CHECK_LIB([termcap],[tgetent],[
 		TERMLIB=-ltermcap
-	])])
+	])])])
 	LDSAVE=$LDFLAGS
 	LDFLAGS="$LDFLAGS $TERMLIB"
 	AC_CHECK_LIB([readline],[readline],[
