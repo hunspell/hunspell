@@ -2639,6 +2639,7 @@ int AffixMgr::compound_check_morph(const char* word,
             result.append(MORPH_PART);
             result.append(word + i);
             line_uniq_app(m, MSEP_REC);
+            result.push_back(MSEP_FLD);
             result.append(m);
           }
           result.push_back(MSEP_REC);
