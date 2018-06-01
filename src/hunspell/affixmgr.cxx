@@ -1014,7 +1014,7 @@ int AffixMgr::process_sfx_order() {
 // add flags to the result for dictionary debugging
 std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
   char* st = encode_flag(flag);
-  result.append(" ");
+  result.push_back(MSEP_FLD);
   result.append(MORPH_FLAG);
   if (st) {
     result.append(st);
@@ -2435,22 +2435,22 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (rv && words && words[wnum + 1]) {
           result.append(presult);
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
           result.append(word + i);
           if (complexprefixes && HENTRY_DATA(rv))
             result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
-            result.append(" ");
+            result.push_back(MSEP_FLD);
             result.append(MORPH_STEM);
             result.append(HENTRY_WORD(rv));
           }
           // store the pointer of the hash entry
           if (!complexprefixes && HENTRY_DATA(rv)) {
-            result.append(" ");
+            result.push_back(MSEP_FLD);
             result.append(HENTRY_DATA2(rv));
           }
-          result.append("\n");
+          result.push_back(MSEP_REC);
           return 0;
         }
 
@@ -2492,7 +2492,7 @@ int AffixMgr::compound_check_morph(const char* word,
             ((!checkcompounddup || (rv != rv_first)))) {
           // bad compound word
           result.append(presult);
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
           result.append(word + i);
 
@@ -2500,17 +2500,17 @@ int AffixMgr::compound_check_morph(const char* word,
             if (complexprefixes)
               result.append(HENTRY_DATA2(rv));
             if (!HENTRY_FIND(rv, MORPH_STEM)) {
-              result.append(" ");
+              result.push_back(MSEP_FLD);
               result.append(MORPH_STEM);
               result.append(HENTRY_WORD(rv));
             }
             // store the pointer of the hash entry
             if (!complexprefixes) {
-              result.append(" ");
+              result.push_back(MSEP_FLD);
               result.append(HENTRY_DATA2(rv));
             }
           }
-          result.append("\n");
+          result.push_back(MSEP_REC);
           ok = 1;
         }
 
@@ -2549,7 +2549,7 @@ int AffixMgr::compound_check_morph(const char* word,
               line_uniq_app(m, MSEP_REC);
               result.append(m);
             }
-            result.append("\n");
+            result.push_back(MSEP_REC);
             ok = 1;
           }
         }
@@ -2865,17 +2865,17 @@ std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
         if (ppfx) {
           if (ppfx->getMorph()) {
             result.append(ppfx->getMorph());
-            result.append(" ");
+            result.push_back(MSEP_FLD);
           } else
             debugflag(result, ppfx->getFlag());
         }
         result.append(st);
         if (se->getMorph()) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(se->getMorph());
         } else
           debugflag(result, se->getFlag());
-        result.append("\n");
+        result.push_back(MSEP_REC);
       }
     }
     se = se->getNext();
@@ -2900,12 +2900,12 @@ std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
           result3.clear();
 
           if (sptr->getMorph()) {
-            result3.append(" ");
+            result3.push_back(MSEP_FLD);
             result3.append(sptr->getMorph());
           } else
             debugflag(result3, sptr->getFlag());
           strlinecat(result2, result3);
-          result2.append("\n");
+          result2.push_back(MSEP_REC);
           result.append(result2);
         }
       }
@@ -2968,28 +2968,28 @@ std::string AffixMgr::suffix_check_morph(const char* word,
         if (ppfx) {
           if (ppfx->getMorph()) {
             result.append(ppfx->getMorph());
-            result.append(" ");
+            result.push_back(MSEP_FLD);
           } else
             debugflag(result, ppfx->getFlag());
         }
         if (complexprefixes && HENTRY_DATA(rv))
           result.append(HENTRY_DATA2(rv));
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(MORPH_STEM);
           result.append(HENTRY_WORD(rv));
         }
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(HENTRY_DATA2(rv));
         }
         if (se->getMorph()) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(se->getMorph());
         } else
           debugflag(result, se->getFlag());
-        result.append("\n");
+        result.push_back(MSEP_REC);
         rv = se->get_next_homonym(rv, sfxopts, ppfx, cclass, needflag);
       }
     }
@@ -3035,29 +3035,29 @@ std::string AffixMgr::suffix_check_morph(const char* word,
         if (ppfx) {
           if (ppfx->getMorph()) {
             result.append(ppfx->getMorph());
-            result.append(" ");
+            result.push_back(MSEP_FLD);
           } else
             debugflag(result, ppfx->getFlag());
         }
         if (complexprefixes && HENTRY_DATA(rv))
           result.append(HENTRY_DATA2(rv));
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(MORPH_STEM);
           result.append(HENTRY_WORD(rv));
         }
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(HENTRY_DATA2(rv));
         }
 
         if (sptr->getMorph()) {
-          result.append(" ");
+          result.push_back(MSEP_FLD);
           result.append(sptr->getMorph());
         } else
           debugflag(result, sptr->getFlag());
-        result.append("\n");
+        result.push_back(MSEP_REC);
         rv = sptr->get_next_homonym(rv, sfxopts, ppfx, cclass, needflag);
       }
       sptr = sptr->getNextEQ();
@@ -3246,7 +3246,7 @@ std::string AffixMgr::morphgen(const char* ts,
   // use input suffix fields, if exist
   if (strstr(morph, MORPH_INFL_SFX) || strstr(morph, MORPH_DERI_SFX)) {
     mymorph.assign(morph);
-    mymorph.append(" ");
+    mymorph.push_back(MSEP_FLD);
     stemmorphcatpos = mymorph.size();
   } else {
     stemmorphcatpos = std::string::npos;

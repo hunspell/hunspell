@@ -1715,15 +1715,15 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
           TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
           TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen))) {
       if (!HENTRY_FIND(rv, MORPH_STEM)) {
-        result.append(" ");
+        result.push_back(MSEP_FLD);
         result.append(MORPH_STEM);
         result.append(w);
       }
       if (HENTRY_DATA(rv)) {
-        result.append(" ");
+        result.push_back(MSEP_FLD);
         result.append(HENTRY_DATA2(rv));
       }
-      result.append("\n");
+      result.push_back(MSEP_REC);
     }
     rv = rv->next_homonym;
   }
@@ -1779,7 +1779,7 @@ std::string SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
                                       HENTRY_DATA(rv), pattern, 0);
     if (!aff.empty()) {
       result.append(aff);
-      result.append("\n");
+      result.push_back(MSEP_REC);
     }
   }
 
@@ -1803,7 +1803,7 @@ std::string SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
                                             rv2->alen, HENTRY_DATA(rv2), pattern, 0);
           if (!aff.empty()) {
             result.append(aff);
-            result.append("\n");
+            result.push_back(MSEP_REC);
           }
         }
       }
