@@ -471,8 +471,11 @@ int SuggestMgr::replchars(std::vector<std::string>& wlst,
   return wlst.size();
 }
 
-// perhaps we doubled two characters (pattern aba -> ababa, for example vacation
-// -> vacacation)
+// perhaps we doubled two characters
+// (for example vacation -> vacacation)
+// The recognized pattern with regex back-references:
+// "(.)(.)\1\2\1" or "..(.)(.)\1\2"
+
 int SuggestMgr::doubletwochars(std::vector<std::string>& wlst,
                                const char* word,
                                int cpdsuggest) {
@@ -483,7 +486,7 @@ int SuggestMgr::doubletwochars(std::vector<std::string>& wlst,
   for (int i = 2; i < wl; i++) {
     if (word[i] == word[i - 2]) {
       state++;
-      if (state == 3) {
+      if (state == 3 || (state == 2 && i >= 4)) {
         std::string candidate(word, word + i - 1);
         candidate.insert(candidate.end(), word + i + 1, word + wl);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
@@ -496,8 +499,11 @@ int SuggestMgr::doubletwochars(std::vector<std::string>& wlst,
   return wlst.size();
 }
 
-// perhaps we doubled two characters (pattern aba -> ababa, for example vacation
-// -> vacacation)
+// perhaps we doubled two characters
+// (for example vacation -> vacacation)
+// The recognized pattern with regex back-references:
+// "(.)(.)\1\2\1" or "..(.)(.)\1\2"
+
 int SuggestMgr::doubletwochars_utf(std::vector<std::string>& wlst,
                                    const w_char* word,
                                    int wl,
@@ -508,7 +514,7 @@ int SuggestMgr::doubletwochars_utf(std::vector<std::string>& wlst,
   for (int i = 2; i < wl; i++) {
     if (word[i] == word[i - 2]) {
       state++;
-      if (state == 3) {
+      if (state == 3 || (state == 2 && i >= 4)) {
         std::vector<w_char> candidate_utf(word, word + i - 1);
         candidate_utf.insert(candidate_utf.end(), word + i + 1, word + wl);
         std::string candidate;
