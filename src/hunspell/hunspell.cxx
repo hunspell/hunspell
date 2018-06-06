@@ -235,7 +235,20 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   dest.clear();
   dest_utf.clear();
 
-  const char* q = src.c_str();
+  std::string w2;
+  w2.assign(src);
+  const char* ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
+  if (ignoredchars != NULL) {
+    if (utf8) {
+      const std::vector<w_char>& ignoredchars_utf16 =
+          pAMgr->get_ignore_utf16();
+      remove_ignored_chars_utf(w2, ignoredchars_utf16);
+    } else {
+      remove_ignored_chars(w2, ignoredchars);
+    }
+  }
+
+  const char* q = w2.c_str();
 
   // first skip over any leading blanks
   while (*q == ' ')
