@@ -10,11 +10,19 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
 
-# the folowing 4 lines are used for pkg-check's .pc.in file
+# the following 4 lines are used for pkg-check's .pc.in file
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
+
+# check C++11 compiling environment for thread_local
+# to handle time limits better also with threads
+AS_CASE([$CXXFLAGS],
+        [*-std=c++11*], [HAVE_CXX11=1],
+        [HAVE_CXX11=0]
+])
+AC_SUBST(HAVE_CXX11)
 
 AX_CODE_COVERAGE
 AS_IF([test x$enable_code_coverage = xyes],[

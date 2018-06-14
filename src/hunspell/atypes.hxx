@@ -95,6 +95,11 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 
 #define TESTAFF(a, b, c) (std::binary_search(a, a + c, b))
 
+// timelimit: max ~1/4 sec (process time on Linux) for a time consuming function
+#define TIMELIMIT (CLOCKS_PER_SEC / 4)
+#define MINTIMER 100
+#define MAXPLUSTIMER 100
+
 struct guessword {
   char* word;
   bool allow;
