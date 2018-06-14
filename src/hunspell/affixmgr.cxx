@@ -4589,7 +4589,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->appnd = std::string(start_piece, dash);
             std::string dash_str(dash + 1, iter);
 
-            if (!ignorechars.empty()) {
+            if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
                 remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
               } else {
@@ -4625,7 +4625,7 @@ bool AffixMgr::parse_affix(const std::string& line,
           } else {
             entry->appnd = std::string(start_piece, iter);
 
-            if (!ignorechars.empty()) {
+            if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
                 remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
               } else {

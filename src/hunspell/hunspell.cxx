@@ -748,7 +748,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   int len;
 
   const char* ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
-  if (ignoredchars != NULL) {
+  if (ignoredchars != NULL && !has_no_ignored_chars(w, ignoredchars)) {
     w2.assign(w);
     if (utf8) {
       const std::vector<w_char>& ignoredchars_utf16 =
