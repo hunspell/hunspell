@@ -213,6 +213,11 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
 
   for (int cpdsuggest = 0; (cpdsuggest < 2) && (nocompoundtwowords == 0) && !good_suggestion;
        cpdsuggest++) {
+
+    HUNSPELL_THREAD_LOCAL clock_t timelimit;
+    // initialize both in non-compound and compound cycles
+    timelimit = clock();
+
     // limit compound suggestion
     if (cpdsuggest > 0)
       oldSug = slst.size();
@@ -235,12 +240,16 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       if (slst.size() > i)
         good_suggestion = true;
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // perhaps we made chose the wrong char from a related set
     if ((slst.size() < maxSug) &&
         (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       mapchars(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // only suggest compound words when no other suggestion
     if ((cpdsuggest == 0) && (slst.size() > nsugorig))
@@ -253,6 +262,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         swapchar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we swap the order of non adjacent chars by mistake
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -261,6 +272,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         longswapchar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we just hit the wrong key in place of a good char (case and keyboard)
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -269,6 +282,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         badcharkey(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we add a char that should not be there
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -277,6 +292,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         extrachar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we forgot a char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -285,6 +302,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         forgotchar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we move a char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -293,6 +312,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         movechar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we just hit the wrong key in place of a good char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -301,6 +322,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         badchar(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // did we double two characters
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
@@ -309,6 +332,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         doubletwochars(slst, word, cpdsuggest);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
     // perhaps we forgot to hit space and two words ran together
     // (dictionary word pairs have top priority here, so
@@ -317,6 +342,8 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     if (!cpdsuggest || (!nosplitsugs && slst.size() < oldSug + maxcpdsugs)) {
       good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion);
     }
+    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+      return good_suggestion;
 
   }  // repeating ``for'' statement compounding support
 
