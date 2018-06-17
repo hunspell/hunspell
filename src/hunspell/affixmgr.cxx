@@ -1599,9 +1599,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   HUNSPELL_THREAD_LOCAL clock_t timelimit;
 
-  if (wordnum == 0) {
+  if (wordnum == 0)
       timelimit = clock();
-  } else if (wordnum == 5 && timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
+  else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
       timelimit = 0;
   }
 
