@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-05-17 15:40+0000\n"
-"Last-Translator: Robson Cassiano <robson.cordeiro777@gmail.com>\n"
+"PO-Revision-Date: 2018-06-21 21:44+0000\n"
+"Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -83,13 +83,10 @@ msgstr ""
 #. in your translation and translate the standalone letter accordingly later
 #.
 #: src/tools/hunspell.cxx:1187
-#, fuzzy
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
-"\n"
-"[SPACE] R)ejeitar A)ceitar I)nserir U)ncap S)tem Q)uit e(X)it or ? for help\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
