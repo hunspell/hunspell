@@ -87,7 +87,6 @@
 #include "affixmgr.hxx"
 #include "hashmgr.hxx"
 #include "langnum.hxx"
-#include <time.h>
 
 enum { LCS_UP, LCS_LEFT, LCS_UPLEFT };
 

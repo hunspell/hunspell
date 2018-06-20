@@ -18,7 +18,7 @@
 /* use thread_local, if it's possible, otherwise static */
 
 #if defined(_WIN32)
-#  define HUNSPELL_THREAD_LOCAL __declspec(thread)
+#  define HUNSPELL_THREAD_LOCAL thread_local
 #elif @HAVE_CXX11@
 #  define HUNSPELL_THREAD_LOCAL thread_local
 #else
