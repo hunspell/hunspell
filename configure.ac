@@ -19,10 +19,10 @@ AC_SUBST(HUNSPELL_VERSION_MINOR)
 # check C++11 compiling environment for thread_local
 # to handle time limits better also with threads
 AS_CASE([$CXXFLAGS],
-        [*-std=c++11*], [HAVE_CXX11=1],
-        [HAVE_CXX11=0]
+        [*-std=c++11*], [HUNSPELL_HAVE_CXX11=1],
+        [HUNSPELL_HAVE_CXX11=0]
 ])
-AC_SUBST(HAVE_CXX11)
+AC_SUBST(HUNSPELL_HAVE_CXX11)
 
 AX_CODE_COVERAGE
 AS_IF([test x$enable_code_coverage = xyes],[
