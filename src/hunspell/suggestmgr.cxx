@@ -1096,7 +1096,7 @@ int SuggestMgr::movechar(char** wlst,
   }
 
   for (std::string::iterator p = candidate.begin() + candidate.size() - 1; p > candidate.begin(); --p) {
-    for (std::string::iterator q = p - 1; q >= candidate.begin() && std::distance(q, p) < 10; --q) {
+    for (std::string::iterator q = p - 1; q > candidate.begin() && std::distance(q, p) < 10; --q) {
       std::swap(*q, *(q + 1));
       if (std::distance(q, p) < 2)
         continue;  // omit swap char
