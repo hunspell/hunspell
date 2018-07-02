@@ -5,6 +5,7 @@ SUBDIRS = suggestiontest
 XFAIL_TESTS = @XFAILED@
 
 TESTS =	\
+agglut_bogus.test \
 affixes.test \
 condition.test \
 condition_utf.test \
@@ -125,6 +126,11 @@ distclean-local:
         
 EXTRA_DIST = \
 test.sh \
+agglut_bogus.aff \
+agglut_bogus.dic \
+agglut_bogus.good \
+agglut_bogus.test \
+agglut_bogus.wrong \
 affixes.aff \
 affixes.dic \
 affixes.good \
