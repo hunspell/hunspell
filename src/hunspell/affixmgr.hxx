@@ -127,6 +127,7 @@ public:
   bool affix_permitted(FLAG aflag); // not used
 
   void showdebug(const char* baseword);
+  std::string showdebugStripped(std::string base, std::string pstrip, std::string sstrip);
 };
 
 

@@ -5149,8 +5149,8 @@ struct hentry* AffixMgr::affix_check_agglut(
     rv = prefix_check_agglut(word, len, &affstack);
   }
 
-  if (rv)
-    affstack.showdebug(rv->word);
+  //if (rv)
+  //  affstack.showdebug(rv->word);
 
   return rv;
 }
@@ -5195,10 +5195,10 @@ struct hentry* AffixMgr::suffix_check_agglut(const char* word,
                                    ///PfxEntry* ppfx,
                                    AffStack* paffstack) {
 
-   struct hentry* rv = NULL;
+  struct hentry* rv = NULL;
 
-   if (len == 0)
-     return NULL;
+  if (len == 0)
+    return NULL;
 
   unsigned char sp = *((const unsigned char*)(word + len - 1));
   SfxEntry* sptr = sStart[sp];
@@ -5288,16 +5288,72 @@ bool AffStack::affix_permitted(FLAG aflag) {
 
 
 void AffStack::showdebug(const char* baseword) {
+
+  // Figure out how many suffixes we have.
+  int firstSfx = -1;
+  for (int i = 0; i < maxAFF; i++) {
+    if (sfxstack[i]) {
+	  firstSfx = i;
+	}
+  }
+
+  int lastPfx = -1;
   for (int i = 0; i < maxAFF; i++) {
     if (pfxstack[i]) {
-      fprintf(stdout, "%s- ", pfxstack[i]->getAffix());
+      std::string afx(pfxstack[i]->getAffix());
+	  std::string strip = ((i == 0) ? "" : pfxstack[i-1]->getStrip());
+	  std::string afx2 = this->showdebugStripped(afx, strip, "");
+	  fprintf(stdout, "%s- ", afx2.c_str());
+	  //if (strip != "") fprintf(stdout, "(%s)", strip.c_str());
+	  lastPfx = i;
     }
   }
-  fprintf(stdout, "%s", baseword);
-  for (int i = maxAFF - 1; i >= 0; i--) {
+
+  //fprintf(stdout, "%s", baseword);
+  std::string base2 = this->showdebugStripped(baseword,
+	  ((lastPfx == -1) ? "" : pfxstack[lastPfx]->getStrip()),
+	  ((firstSfx == -1) ? "" : sfxstack[firstSfx]->getStrip()));
+  fprintf(stdout, "%s", base2.c_str());
+
+  for (int i = maxAFF - 1; i >= 0; i--) { // suffixes with higher indices are closer to the root
     if (sfxstack[i]) {
-      fprintf(stdout, " -%s", sfxstack[i]->getAffix());
+	  std::string afx(sfxstack[i]->getAffix());
+	  //std::string strip(sfxstack[i]->getStrip());
+	  //if (sfxstack[i]->getStrip() != "") fprintf(stdout, "(%s)", strip.c_str());
+	  std::string strip = ((i == 0) ? "" : sfxstack[i-1]->getStrip());
+	  std::string afx2 = this->showdebugStripped(afx, "", strip);
+	  fprintf(stdout, " -%s", afx.c_str());
     }
   }
   fprintf(stdout, "\n");
+}
+
+std::string AffStack::showdebugStripped(std::string base, std::string pstrip, std::string sstrip) {
+	std::string result;
+	if (pstrip == "") {
+		if (sstrip == "") {
+			result.append(base);
+		} else {
+			result.append(base.substr(0, base.length() - sstrip.length()));
+			result.append("(");
+			result.append(sstrip);
+			result.append(")");
+		}
+	} else {
+		if (sstrip == "") {
+			result.append("(");
+			result.append(pstrip);
+			result.append(")");
+			result.append(base.substr(pstrip.length()));
+		} else {
+			result.append("(");
+			result.append(pstrip);
+			result.append(")");
+			result.append(base.substr(pstrip.length(), (base.length() - pstrip.length() - sstrip.length())));
+			result.append("(");
+			result.append(sstrip);
+			result.append(")");
+		}
+	}
+	return result;
 }
