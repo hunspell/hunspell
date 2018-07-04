@@ -110,3 +110,6 @@ hunspell-*.tar.gz
 /Hunspell.srctrlbm
 /Hunspell.srctrldb
 /Hunspell.srctrlprj
+
+#MSVC
+/msvc/Hunspell.VC.VC.opendb
