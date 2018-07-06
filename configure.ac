@@ -24,11 +24,6 @@ AS_CASE([$CXXFLAGS],
 )
 AC_SUBST(HUNSPELL_HAVE_CXX11)
 
-AX_CODE_COVERAGE
-AS_IF([test x$enable_code_coverage = xyes],[
-	: ${CXXFLAGS=""}; : ${CFLAGS=""}
-])
-
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC

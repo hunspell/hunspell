@@ -20,12 +20,9 @@ hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
 analyze_SOURCES=analyze.cxx
 analyze_LDADD = ../hunspell/libhunspell-1.6.la
 
-bulkcheck_SOURCES=bulkcheck.cxx
-bulkcheck_LDADD = ../hunspell/libhunspell-1.6.la
-
 chmorph_SOURCES=chmorph.cxx
 chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.6.la
 
-noinst_PROGRAMS=example bulkcheck 
+noinst_PROGRAMS=example 
 
 dist_bin_SCRIPTS=makealias affixcompress wordforms ispellaff2myspell wordlist2hunspell
