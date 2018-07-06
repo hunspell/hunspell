@@ -101,6 +101,8 @@ AffixMgr::AffixMgr(const char* affpath,
   csconv = NULL;
   utf8 = 0;
   agglutinative = 0;
+  agglutMaxPre = 5;  // default
+  agglutMaxSuf = 5;  // default
   complexprefixes = 0;
   maptable = NULL;
   nummap = 0;
@@ -426,8 +428,21 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     }
 
     /* parse AGGLUTINATIVE for fully agglutinative languages */
-    if (strncmp(line, "AGGLUTINATIVE", 13) == 0)   // SJC
-      agglutinative = 1;                           // SJC
+	if (strncmp(line, "AGGLUTINATIVE", 13) == 0) {    // SJC
+      agglutinative = 1;
+	  if (parse_1_or_2_nums(line, &agglutMaxPre, &agglutMaxSuf, afflst)) {
+	    // none found; okay, assign the default
+		agglutMaxPre = agglutMaxSuf = 5;  // default
+	  } else if (agglutMaxSuf == -1) {
+	    agglutMaxSuf = agglutMaxPre;  // use one max value for both
+	  }
+	  if (agglutMaxPre > maxAFF || agglutMaxSuf > maxAFF) {
+	    HUNSPELL_WARNING(stderr, "error: line %d: maximum length of affix chain is %d\n",
+				afflst->getlinenum(), maxAFF);
+		agglutMaxPre = (agglutMaxPre > maxAFF) ? maxAFF : agglutMaxPre;
+		agglutMaxSuf = (agglutMaxSuf > maxAFF) ? maxAFF : agglutMaxSuf;
+	  }
+	}
 
     /* parse COMPLEXPREFIXES for agglutinative languages with right-to-left
      * writing system */
@@ -3620,6 +3635,16 @@ int AffixMgr::get_agglutinative() const {
   return agglutinative;
 }
 
+// max number of prefixes when fully agglutinative
+int AffixMgr::get_maxprefixes() const {
+  return agglutMaxPre;
+}
+
+// max number of suffixes when fully agglutinative
+int AffixMgr::get_maxsuffixes() const {
+  return agglutMaxSuf;
+}
+
 // return double prefix option
 int AffixMgr::get_complexprefixes() const {
   return complexprefixes;
@@ -3838,6 +3863,28 @@ int AffixMgr::parse_num(char* line, int* out, FileMgr* af) {
     return 1;
   *out = atoi(s);
   free(s);
+  return 0;
+}
+
+// Return -1 for values that are not found. Return true as an error if at least
+// one value is not found.
+int AffixMgr::parse_1_or_2_nums(char* line, int* out1, int* out2, FileMgr* af) {
+  char* s1 = NULL;
+  char* s2 = NULL;
+  if (parse_string_n(line, af->getlinenum(), &s1, &s2)) {
+	if (s1) {
+	  *out1 = atoi(s1); // only one value found - okay
+	  *out2 = -1;  // invalid
+	} else {
+      *out1 = *out2 = -1;
+	  return 1;    // none found
+	}
+  } else {
+    *out1 = atoi(s1);
+    *out2 = atoi(s2);
+  }
+  free(s1);
+  free(s2);
   return 0;
 }
 
@@ -5356,4 +5403,71 @@ std::string AffStack::showdebugStripped(std::string base, std::string pstrip, st
 		}
 	}
 	return result;
+}
+
+
+// Retrieve n arguments from the string.
+// Modeled after parse_string().
+int AffixMgr::parse_string_n(char* line, int ln, char** out1, char** out2, char** out3, char** out4) {
+  char* tp = line;
+  char* piece;
+  int i = 0;
+  int np = 0;
+  if (*out1) {
+    HUNSPELL_WARNING(stderr, "error: line %d: multiple definitions\n", ln);
+    return 1;
+  }
+  piece = mystrsep(&tp, 0);
+  while (piece) {
+    if (*piece != '\0') {
+      switch (i) {
+        case 0: { // ignore
+          np++;
+          break;
+        }
+        case 1: {
+          *out1 = mystrdup(piece);
+          if (!*out1)
+            return 1;
+          np++;
+          break;
+        }
+		case 2: {
+		  if (out2 == NULL) break;
+		  *out2 = mystrdup(piece);
+          if (!*out2)
+            return 1;
+          np++;
+          break;
+		}
+		case 3: {
+		  if (out3 == NULL) break;
+		  *out2 = mystrdup(piece);
+          if (!*out3)
+            return 1;
+          np++;
+          break;
+		}
+		case 4: {
+		  if (out4 == NULL) break;
+		  *out2 = mystrdup(piece);
+          if (!*out4)
+            return 1;
+          np++;
+          break;
+		}
+        default:
+          break;
+      }
+      i++;
+    }
+    // free(piece);
+    piece = mystrsep(&tp, 0);
+  }
+  int needed = ((out4) ? 4 : ((out3) ? 3 : ((out2) ? 2 : 1)));
+  if (np - 1 < needed) {
+    HUNSPELL_WARNING(stderr, "error: line %d: missing data; need %needed arguments\n", ln, needed);
+    return 1;
+  }
+  return 0;
 }

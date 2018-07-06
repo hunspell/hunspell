@@ -989,13 +989,13 @@ struct hentry* PfxEntry::checkword_agglut(
       paffstack->push_pfx(this); // make stack big enough that this doesn't overflow
 
       he = pmyMgr->suffix_check_agglut(tmpword.c_str(), tmpl, paffstack);
-      if (he) {
+      if (he && (TESTAFF(he->astr, aflag, he->alen))) {  // prefix permitted on this base
         paffstack->dec_pfxi();
         return he;
       }
 
-      // Try stripping an additional prefix(es) and repeat the process.
-      if (paffstack->pfxi < maxAFF) {
+      // Try stripping additional prefix(es) and repeat the process.
+	  if (paffstack->pfxi < pmyMgr->get_maxprefixes()) {
         he = pmyMgr->prefix_check_agglut(tmpword.c_str(), tmpl, paffstack);
         if (he) {
           paffstack->dec_pfxi();
@@ -1049,7 +1049,7 @@ struct hentry* SfxEntry::checkword_agglut(const char* word,
       // This suffix is legal, but still does not produce a valid base.
       // Try recursion to handle another suffix.
 
-      if (paffstack->sfxi < maxAFF) {
+	  if (paffstack->sfxi + 1 < pmyMgr->get_maxsuffixes()) {
         paffstack->push_sfx(this);
         he = pmyMgr->suffix_check_agglut(tmpword.c_str(), tmpl, paffstack);
         if (he) {

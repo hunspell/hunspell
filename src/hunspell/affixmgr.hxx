@@ -90,7 +90,8 @@
 #define dupSFX (1 << 0)
 #define dupPFX (1 << 1)
 
-#define maxAFF 5    // SJC
+// maxiumum length of affix chain supported by the data structures - SJC
+#define maxAFF 10    
 
 class PfxEntry;
 class SfxEntry;
@@ -145,7 +146,9 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   struct cs_info* csconv;
   int utf8;
   int complexprefixes;
-  int agglutinative;
+  int agglutinative;     // SJC
+  int agglutMaxPre;      // SJC
+  int agglutMaxSuf;      // SJC
   FLAG compoundflag;
   FLAG compoundbegin;
   FLAG compoundmiddle;
@@ -388,6 +391,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int have_contclass() const;
   int get_utf8() const;
   int get_agglutinative() const;
+  int get_maxprefixes() const;
+  int get_maxsuffixes() const;
   int get_complexprefixes() const;
   char* get_suffixed(char) const;
   int get_maxngramsugs() const;
@@ -408,6 +413,7 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int parse_file(const char* affpath, const char* key);
   int parse_flag(char* line, unsigned short* out, FileMgr* af);
   int parse_num(char* line, int* out, FileMgr* af);
+  int parse_1_or_2_nums(char* line, int* out1, int* out2, FileMgr* af);  // SJC added
   int parse_cpdsyllable(char* line, FileMgr* af);
   int parse_reptable(char* line, FileMgr* af);
   int parse_convtable(char* line,
@@ -436,6 +442,9 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
   int process_sfx_tree_to_list();
   int redundant_condition(char, const char* strip, int stripl, const char* cond, int);
   void finishFileMgr(FileMgr* afflst);
+
+  int parse_string_n(char* line, int ln,
+	  char** out1, char** out2 = NULL, char** out3 = NULL, char** out4 = NULL);  // SJC added
 };
 
 #endif
