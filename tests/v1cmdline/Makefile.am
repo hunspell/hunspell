@@ -128,6 +128,7 @@ forceucase.dic \
 nepali.dic \
 hu.dic \
 warn.dic \
+timelimit.dic \
 ignoresug.dic
 
 clean-local:
@@ -621,6 +622,10 @@ hu.good \
 warn.aff \
 warn.dic \
 warn.good \
+timelimit.aff \
+timelimit.dic \
+timelimit.good \
+timelimit.wrong \
 ignoresug.aff \
 ignoresug.dic \
 ignoresug.good \
