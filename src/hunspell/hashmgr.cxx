@@ -190,7 +190,7 @@ int HashMgr::add_word(const std::string& in_word,
 
   std::string *word_copy = NULL;
   std::string *desc_copy = NULL;
-  if (!ignorechars.empty() || complexprefixes) {
+  if ((!ignorechars.empty() && !has_no_ignored_chars(in_word, ignorechars)) || complexprefixes) {
     word_copy = new std::string(in_word);
 
     if (!ignorechars.empty()) {

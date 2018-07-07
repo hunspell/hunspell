@@ -1,11 +1,3 @@
 testSubDir
 *.log
 *.trs
-/*_test
-/*.catch
-
-# https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
-/*.gcno
-/*.gcda
-
-catch*.hpp

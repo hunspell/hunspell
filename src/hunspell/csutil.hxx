@@ -269,6 +269,19 @@ LIBHUNSPELL_DLL_EXPORTED void store_pointer(char* dest, char* source);
 // conversion function for protected memory
 LIBHUNSPELL_DLL_EXPORTED char* get_stored_pointer(const char* s);
 
+
+// to avoid unnecessary string copies and Unicode conversions
+// we simply check the ignored_chars characters in the word
+// (in the case of UTF-8 encoded strings, "false" means
+// "likely false", if ignored_chars characters are not ASCII)
+inline bool has_no_ignored_chars(const std::string& word,
+                            const std::string& ignored_chars) {
+  for (std::string::const_iterator it = ignored_chars.begin(), end = ignored_chars.end(); it != end; ++it)
+    if (word.find(*it) != std::string::npos)
+      return false;
+  return true;
+}
+
 // hash entry macros
 inline char* HENTRY_DATA(struct hentry* h) {
   char* ret;

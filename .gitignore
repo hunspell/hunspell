@@ -75,19 +75,11 @@ a.out
 # make dist
 hunspell-*.tar.gz
 
-# https://www.stack.nl/~dimitri/doxygen/
-/doxygen/
-/Doxyfile.bak
-
 # QtCreator
 /Makefile.am.user
 
 # https://vim.sourceforge.io/
 .?*.swp
-
-# TODO need a section to be mvoed to
-/personal-build-and-test.sh
-/personal-reconfigure.sh
 
 # found during configuring
 /confdefs.h
@@ -100,13 +92,3 @@ hunspell-*.tar.gz
 /conftest.cpp
 /conftest.err
 /conftest.er1
-# following might be /conf??????/
-/confqd6eAO/
-
-# https://github.com/linux-test-project/lcov
-/hunspell-*-*coverage*
-
-# Sourcetrail
-/Hunspell.srctrlbm
-/Hunspell.srctrldb
-/Hunspell.srctrlprj

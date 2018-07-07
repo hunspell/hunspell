@@ -72,6 +72,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <time.h>
 
 #include <algorithm>
 #include <limits>
@@ -1594,6 +1595,17 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   int checked_prefix;
 
+  // add a time limit to handle possible
+  // combinatorical explosion of the overlapping words
+
+  HUNSPELL_THREAD_LOCAL clock_t timelimit;
+
+  if (wordnum == 0)
+      timelimit = clock();
+  else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
+      timelimit = 0;
+  }
+
   setcminmax(&cmin, &cmax, word.c_str(), len);
 
   st.assign(word);
@@ -1617,6 +1629,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
       checked_prefix = 0;
 
       do {  // simplified checkcompoundpattern loop
+
+        if (timelimit == 0)
+          return 0;
 
         if (scpd > 0) {
           for (; scpd <= checkcpdtable.size() &&
@@ -2186,6 +2201,17 @@ int AffixMgr::compound_check_morph(const char* word,
   char affixed = 0;
   hentry** oldwords = words;
 
+  // add a time limit to handle possible
+  // combinatorical explosion of the overlapping words
+
+  HUNSPELL_THREAD_LOCAL clock_t timelimit;
+
+  if (wordnum == 0)
+      timelimit = clock();
+  else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
+      timelimit = 0;
+  }
+
   setcminmax(&cmin, &cmax, word, len);
 
   st.assign(word);
@@ -2203,6 +2229,9 @@ int AffixMgr::compound_check_morph(const char* word,
     int onlycpdrule = (words) ? 1 : 0;
 
     do {  // onlycpdrule loop
+
+      if (timelimit == 0)
+        return 0;
 
       oldnumsyllable = numsyllable;
       oldwordnum = wordnum;
@@ -2244,6 +2273,9 @@ int AffixMgr::compound_check_morph(const char* word,
                    defcpd_check(&words, wnum, rv, rwords, 0))))))) {
         rv = rv->next_homonym;
       }
+
+      if (timelimit == 0)
+        return 0;
 
       if (rv)
         affixed = 0;
@@ -4558,7 +4590,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->appnd = std::string(start_piece, dash);
             std::string dash_str(dash + 1, iter);
 
-            if (!ignorechars.empty()) {
+            if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
                 remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
               } else {
@@ -4594,7 +4626,7 @@ bool AffixMgr::parse_affix(const std::string& line,
           } else {
             entry->appnd = std::string(start_piece, iter);
 
-            if (!ignorechars.empty()) {
+            if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
                 remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
               } else {
