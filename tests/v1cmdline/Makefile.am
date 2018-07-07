@@ -127,7 +127,8 @@ onlyincompound2.dic \
 forceucase.dic \
 nepali.dic \
 hu.dic \
-warn.dic
+warn.dic \
+ignoresug.dic
 
 clean-local:
 	-rm -rf testSubDir
@@ -620,5 +621,9 @@ hu.good \
 warn.aff \
 warn.dic \
 warn.good \
+ignoresug.aff \
+ignoresug.dic \
+ignoresug.good \
+ignoresug.morph \
 \
 utf8_nonbmp.test
