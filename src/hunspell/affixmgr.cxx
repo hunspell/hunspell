@@ -4824,6 +4824,8 @@ int AffixMgr::parse_affix(char* line,
     return 1;
   }
 
+  bool skipline = false;  // for detecting a comment
+
   // now parse numents affentries for this affix
   std::vector<affentry>::iterator start = affentries.begin();
   std::vector<affentry>::iterator end = affentries.end();
@@ -4831,6 +4833,7 @@ int AffixMgr::parse_affix(char* line,
     if ((nl = af->getline()) == NULL)
       return 1;
     mychomp(nl);
+	skipline = false;
     tp = nl;
     i = 0;
     np = 0;
@@ -4839,6 +4842,13 @@ int AffixMgr::parse_affix(char* line,
     piece = mystrsep(&tp, 0);
     while (piece) {
       if (*piece != '\0') {
+        if (*piece == '#') {
+          // comment
+          skipline = true;
+		  --entry; // process an extra line
+		  break;
+        }
+			
         switch (i) {
           // piece 1 - is type
           case 0: {
@@ -5007,13 +5017,14 @@ int AffixMgr::parse_affix(char* line,
           }
           default:
             break;
-        }
+        } // switch
         i++;
-      }
+	  } // if
       piece = mystrsep(&tp, 0);
-    }
-    // check to make sure we parsed enough pieces
-    if (np < 4) {
+    } // while
+	if (np == 0 && skipline) {
+	  // just a comment
+	} else if (np < 4) {  // check to make sure we parsed enough pieces
       char* err = pHMgr->encode_flag(aflag);
       if (err) {
         HUNSPELL_WARNING(stderr, "error: line %d: affix %s is corrupt\n",
