@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-05-26 07:40+0000\n"
-"Last-Translator: Bogdan Khomutsky <bogdan@khomutsky.com>\n"
+"PO-Revision-Date: 2018-08-18 07:41+0000\n"
+"Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/hunspell/"
 "translations/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -149,25 +149,26 @@ msgid ""
 msgstr ""
 
 #: src/tools/hunspell.cxx:1283
-#, fuzzy
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
-"Q: Выйти немедленно. Спрашивает подтверждение. Оставляет файл без изменений."
+"Q\tВыйти немедленно. Спрашивает подтверждение. Оставляет файл без изменений."
 "\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tПриостановить программу. Продолжение по команде fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tПоказать этот справочный текст.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Для продолжения нажмите Пробел -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -178,7 +179,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Заменить на: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -197,7 +198,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Не удалось обновить словарь пользователя."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -212,15 +213,15 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Новое слово (слов. форма): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Слово-образец (из словаря): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Слова-образца нет в словаре! Нажмите любую клавишу."
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -248,123 +249,129 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Не удалось создать временный файл"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Не удалось открыть выходной файл"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Использование: hunspell [ПАРАМЕТР]... [ФАЙЛ]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Проверка орфографии каждого ФАЙЛА. Если ФАЙЛ не указан, то стандартный ввод."
+"\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1824
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1\t\tпроверять только первое поле в строке (разделитель = табулятор)\n"
 
 #: src/tools/hunspell.cxx:1826
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tканальный интерфейс Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  --check-url\tпроверка адресов URL, эл. почты и имен файлов\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tпроверка типографского апострофа\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d сл[,сл2,...]\tиспользовать словари сл (сл2 и т.д.)\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tпоказать доступные словари\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tпечать только правильных слов/строк\n"
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tвывести справку и выйти\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tвходной файл HTML\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i код\tвходная кодировка\n"
 
 #: src/tools/hunspell.cxx:1840
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tпечать неправильных слов\n"
 
 #: src/tools/hunspell.cxx:1841
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tпечать строк с ошибками\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tанализ слов входного текста\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tвходной файл nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1848
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tвходной файл OpenDocument (ODF или Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p слов\tподключить пользовательский СЛОВарь\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tпредупреждать о редких словах\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P пароль\tпароль для зашифрованных словарей\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\tпривести слова из текста к словарной форме\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tгенерация словоформ для слов входного текста\n"
 
 #: src/tools/hunspell.cxx:1857
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tвходной файл TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tвывод номера версии\n"
 
 #: src/tools/hunspell.cxx:1860
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tпечать совместимой с Ispell версии\n"
 
 #: src/tools/hunspell.cxx:1861
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
-msgstr ""
+msgstr "  -w\t\tпечать слов с ошибками (вход - одно слово на строке).\n"
 
 #: src/tools/hunspell.cxx:1863
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tвходной файл XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1867
 msgid ""
@@ -385,10 +392,27 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Example: hunspell -d ru_RU файл.txt    # интерактивная проверка\n"
+"         hunspell -i utf-8 файл.txt    # проверка файла в кодировке UTF-8\n"
+"         hunspell -l *.odt             # печать слов с ошибками из файлов "
+"ODF\n"
+"\n"
+"         # Быстрое исправление файлов ODF посредством\n"
+"         # пользовательского словаря\n"
+"\n"
+"         # 1 Создайте список неизвестных слов и слов с ошибками:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >слова\n"
+"\n"
+"         # 2 Удалите слова с ошибками из файла в текстовом редакторе.\n"
+"         # 3 Используйте этот словарь для исправления ошибок:\n"
+"\n"
+"         hunspell -p слова *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1882
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Баг-трекер: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -399,6 +423,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright (C) 2002-2014 Ласло Немет. Лицензия: MPL/GPL/LGPL.\n"
+"\n"
+"Основано на библиотеке Myspell из OpenOffice.org.\n"
+"Myspell: copyright (C) Кевин Хендрикс, 2001-2002, Лицензия: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1895
 msgid ""
@@ -413,10 +443,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"ПУТЬ ПОИСКА:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "ДОСТУПНЫЕ СЛОВАРИ (для -d путь не обязателен):\n"
 
 #: src/tools/hunspell.cxx:2074
 #, c-format
@@ -425,6 +457,9 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"ЗАГРУЖЕН СЛОВАРЬ:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2094
 #, c-format
@@ -434,8 +469,8 @@ msgstr ""
 #: src/tools/hunspell.cxx:2100
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "Не удалось открыть файл словаря или аффиксов для \"%s\".\n"
 
 #: src/tools/hunspell.cxx:2183
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell был собран без интерактивного интерфейса Ncurses.\n"
