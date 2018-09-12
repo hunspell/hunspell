@@ -1,35 +1,56 @@
-image: Visual Studio 2013
+image: Visual Studio 2017
 shallow_clone: true
 clone_depth: 1
 environment:
   matrix:
   - MSYSTEM: MINGW64
     BASH_PATH: C:\msys64\usr\bin\bash
+    build: mingw64
 #  - BASH_PATH: c:\cygwin\bin\bash
-
+#  - configuration: Debug
+  - configuration: Release
+    platform: x64
+    build: msvc-%configuration%-%platform%
 
 build_script:
 - appveyor AddMessage Building -Category Information
-- cmd: '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make"'
+- ps: |
+    if ($env:BASH_PATH) {
+      & cmd /c '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i && ./configure && make" 2>&1'
+    } else {
+      cd msvc
+      Copy-Item config.h -destination ..\
+      msbuild /p:configuration=$env:configuration /p:platform=$env:platform Hunspell.sln `
+        /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    }
+# /p:PlatformToolset=v140
 
 after_build:
-- appveyor AddMessage Installing -Category Information
-- '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; make install-strip DESTDIR=/c/inst"'
-- '%BASH_PATH% -lc "cd /mingw64/bin && cp libgcc_s_seh-1.dll libiconv-2.dll libintl-8.dll libstdc++-6.dll libwinpthread-1.dll /c/inst/mingw64/bin/"'
-- appveyor AddMessage Packing -Category Information
-- 7z.exe a -tzip -mx9 -mmt %APPVEYOR_BUILD_FOLDER%\hunspell-mingw64.zip C:\inst\mingw64\*
+- ps: |
+    if ($env:BASH_PATH) {
+      Add-AppveyorMessage -Message Installing -Category Information
+      & cmd /c '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; make install-strip DESTDIR=/c/inst" 2>&1'
+      & cmd /c '%BASH_PATH% -lc "cd /mingw64/bin && cp libgcc_s_seh-1.dll libiconv-2.dll libintl-8.dll libstdc++-6.dll libwinpthread-1.dll /c/inst/mingw64/bin/"'
+      Add-AppveyorMessage -Message  Packing -Category Information
+      & 7z.exe a -tzip -mx9 -mmt "${env:APPVEYOR_BUILD_FOLDER}\hunspell-${env:build}.zip" "C:\inst\mingw64\*"
+    } else {
+      cd ${env:APPVEYOR_BUILD_FOLDER}\msvc\${env:platform}\${env:configuration}
+      & 7z.exe a -tzip -mx9 -mmt "${env:APPVEYOR_BUILD_FOLDER}\hunspell-${env:build}.zip" *.exe *.pdb *.lib
+    }
 
 test_script:
-- appveyor AddMessage Testing -Category Information
-- appveyor AddTest Regression -Framework catch -FileName stuff -Outcome Running
-- set Outcome=Passed
-- '%BASH_PATH% -lc "env"'
-- '%BASH_PATH% -lc "cd $APPVEYOR_BUILD_FOLDER; make check" || set Outcome=Failed'
-- appveyor UpdateTest Regression -Framework catch -FileName stuff -Outcome %Outcome% -Duration 1
-- if not %Outcome%==Passed type tests\v1cmdline\test-suite.log
+- ps: |
+    if ($env:BASH_PATH) {
+      Add-AppveyorMessage -Message  Testing -Category Information
+      Add-AppveyorTest -Name Regression -Framework catch -FileName stuff -Outcome Running
+      $env:Outcome='Passed'
+      & $env:BASH_PATH -lc 'cd $APPVEYOR_BUILD_FOLDER; make check 2>&1 || export Outcome=Failed'
+      Update-AppveyorTest -Name Regression -Framework catch -FileName stuff -Outcome $env:Outcome -Duration 1
+      if ($env:Outcome -ne 'Passed') { Get-Content -Path tests\v1cmdline\test-suite.log }
+    }
 
 artifacts:
-- path: hunspell-mingw64.zip
-- path: tests/v1cmdline/test-suite.log
+- path: hunspell-%build%.zip
+# - path: tests/v1cmdline/test-suite.log
 
 # TODO https://www.appveyor.com/docs/deployment/github/
