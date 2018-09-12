@@ -51,6 +51,67 @@ test_script:
 
 artifacts:
 - path: hunspell-%build%.zip
+  name: binaries
 # - path: tests/v1cmdline/test-suite.log
 
-# TODO https://www.appveyor.com/docs/deployment/github/
+before_deploy:
+- ps: |
+    if ($env:BASH_PATH) {
+      $hunspell_version = & C:\msys64\usr\bin\grep -Po '^#define VERSION ""\K.+(?="")' ${env:APPVEYOR_BUILD_FOLDER}/msvc/config.h
+      ${env:hunspell_version} = $hunspell_version
+      Write-Host "We built version $hunspell_version"
+      cd ${env:APPVEYOR_BUILD_FOLDER}\chocolatey
+      (Get-Content hunspell.portable.nuspec).replace('VERSION', $hunspell_version) |
+        Set-Content hunspell.portable.nuspec
+      (Get-Content tools\chocolateyInstall.ps1).replace('URL', "https://github.com/${env:APPVEYOR_REPO_NAME}/releases/download/${env:APPVEYOR_REPO_TAG_NAME}/hunspell-mingw64.zip") |
+        Set-Content tools\chocolateyInstall.ps1
+      & choco pack
+      Push-AppveyorArtifact *.nupkg
+    }
+
+# after_deploy:
+# - ps: |
+#     if (-Not ($env:BASH_PATH)) {
+#       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+#       $headers = @{
+#         'Accept' = 'application/vnd.github.v3+json'
+#         'Authorization' = "token ${env:GITHUB_TOKEN}"
+#       }
+#       # Draft releases are not returned by GH API in after_deploy script unless authenticated
+#       # $uri = "https://api.github.com/repos/${env:APPVEYOR_REPO_NAME}/releases/latest"
+#       # $uri = "https://api.github.com/repos/${env:APPVEYOR_REPO_NAME}/releases/tags/appveyor_v${env:hunspell_version}"
+#       $uri = "https://api.github.com/repos/${env:APPVEYOR_REPO_NAME}/releases/tags/${env:APPVEYOR_REPO_TAG_NAME}"
+#       # $uri = "https://api.github.com/repos/${env:APPVEYOR_REPO_NAME}/releases"
+#       $release = Invoke-RestMethod -Uri $uri -Headers $headers
+#       # $release = $result | Where-Object {$_.target_commitish -eq ${env:APPVEYOR_REPO_COMMIT} -and $_.draft}
+#       $asset = $release.assets | Where-Object {$_.name -match 'mingw64'}
+#       $url = $asset.browser_download_url
+#       Write-Host "Github releases download url: $url"
+#       cd ${env:APPVEYOR_BUILD_FOLDER}\chocolatey
+#       (Get-Content hunspell.portable.nuspec).replace('VERSION', $hunspell_version) |
+#         Set-Content hunspell.portable.nuspec
+#       (Get-Content tools\chocolateyInstall.ps1).replace('URL', $url) |
+#         Set-Content tools\chocolateyInstall.ps1
+#       & choco pack
+#       & choco apikey -k ${env:CHOCOLATEY_API_KEY} -s https://push.chocolatey.org/
+#       & choco push
+#     }
+
+deploy:
+# release: appveyor_v$(hunspell_version)
+- provider: GitHub
+  description: 'Automated build from AppVeyor'
+  auth_token: $(GITHUB_TOKEN)
+  artifact: binaries
+  # We could have used a draft release, but after it is published, asset URL will change :(
+  # draft: true
+  force_update: true
+  on:
+    appveyor_repo_tag: true
+- provider: NuGet
+  server: https://push.chocolatey.org/
+  api_key: $(CHOCOLATEY_API_KEY)
+  skip_symbols: true
+  artifact: /.*\.nupkg/
+  on:
+    appveyor_repo_tag: true
