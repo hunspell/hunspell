@@ -16,14 +16,6 @@ HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
 
-# check C++11 compiling environment for thread_local
-# to handle time limits better also with threads
-AS_CASE([$CXXFLAGS],
-        [*-std=c++11*], [HUNSPELL_HAVE_CXX11=1],
-        [HUNSPELL_HAVE_CXX11=0]
-)
-AC_SUBST(HUNSPELL_HAVE_CXX11)
-
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC

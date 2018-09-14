@@ -1013,7 +1013,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
   capwords = false;
   bool good = false;
 
-  HUNSPELL_THREAD_LOCAL clock_t timelimit;
+  clock_t timelimit;
   // initialize in every suggestion call
   timelimit = clock();
 
