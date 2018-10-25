@@ -1,17 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhunspell", "libhunspell.vcproj", "{53609BB3-D874-465C-AF7B-DF626DB0D89B}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhunspell", "libhunspell.vcxproj", "{53609BB3-D874-465C-AF7B-DF626DB0D89B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testparser", "testparser.vcproj", "{611BF6C7-332A-49BB-B2A3-80AFD5B785D9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{53609BB3-D874-465C-AF7B-DF626DB0D89B} = {53609BB3-D874-465C-AF7B-DF626DB0D89B}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testparser", "testparser.vcxproj", "{611BF6C7-332A-49BB-B2A3-80AFD5B785D9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hunspell", "hunspell.vcproj", "{6A0453F4-B12A-4810-B9A2-8AB059316ED7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{53609BB3-D874-465C-AF7B-DF626DB0D89B} = {53609BB3-D874-465C-AF7B-DF626DB0D89B}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hunspell", "hunspell.vcxproj", "{6A0453F4-B12A-4810-B9A2-8AB059316ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0D1E255-AA11-43AA-835C-729090E6B927}
 	EndGlobalSection
 EndGlobal

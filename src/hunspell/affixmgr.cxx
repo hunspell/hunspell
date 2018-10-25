@@ -652,8 +652,8 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
       }
     }
 
-    /* parse in the ignored characters (for example, Arabic optional diacretics
-     * charachters */
+    /* parse in the ignored characters (for example, Arabic optional diacritic
+     * characters */
     if (strncmp(line, "IGNORE", 6) == 0) {
       if (!parse_array(line, &ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
@@ -5207,8 +5207,8 @@ struct hentry* AffixMgr::affix_check_agglut(
     rv = prefix_check_agglut(word, len, &affstack);
   }
 
-  //if (rv)
-  //  affstack.showdebug(rv->word);
+  if (rv)
+    affstack.showdebug(rv->word);
 
   return rv;
 }
