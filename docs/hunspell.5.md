@@ -554,7 +554,7 @@ this parameter.
     Define  input  conversion  table.   Note: useful to convert one
     type of quote to another one, or change ligature.
 
-  - `OCONV <number_of_ICONV_definitions>`:
+  - `OCONV <number_of_OCONV_definitions>`:
 
   - `OCONV <pattern> <pattern2>`:
     Define output conversion table.
