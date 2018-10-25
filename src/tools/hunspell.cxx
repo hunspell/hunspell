@@ -418,8 +418,8 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   }
 #else
   if (strcmp(denc, "UTF-8") == 0) {
-    const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
-    wordchars_utf16 = &vec_wordchars_utf16[0];
+	const std::vector<w_char>& vec_wordchars_utf16 = pMS->get_wordchars_utf16();
+	wordchars_utf16 = (vec_wordchars_utf16.size() == 0) ? NULL : &vec_wordchars_utf16[0];
     wordchars_utf16_len = vec_wordchars_utf16.size();
     io_utf8 = 1;
   } else {
