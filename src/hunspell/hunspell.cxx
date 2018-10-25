@@ -971,6 +971,10 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
 
 std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         bool& capwords, size_t& abbv, int& captype) {
+  captype = NOCAP;
+  abbv = 0;
+  capwords = false;
+
   std::vector<std::string> slst;
 
   int onlycmpdsug = 0;
@@ -988,8 +992,6 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     if (word.size() >= MAXWORDLEN)
       return slst;
   }
-  captype = NOCAP;
-  abbv = 0;
   size_t wl = 0;
 
   std::string scw;
@@ -1010,7 +1012,6 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
       return slst;
   }
 
-  capwords = false;
   bool good = false;
 
   clock_t timelimit;
