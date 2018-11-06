@@ -92,3 +92,6 @@ hunspell-*.tar.gz
 /conftest.cpp
 /conftest.err
 /conftest.er1
+
+#MSVC
+/msvc/Hunspell.VC.VC.opendb
