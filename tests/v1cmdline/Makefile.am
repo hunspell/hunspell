@@ -128,7 +128,8 @@ forceucase.dic \
 nepali.dic \
 hu.dic \
 warn.dic \
-timelimit.dic
+timelimit.dic \
+ignoresug.dic
 
 clean-local:
 	-rm -rf testSubDir
@@ -625,5 +626,9 @@ timelimit.aff \
 timelimit.dic \
 timelimit.good \
 timelimit.wrong \
+ignoresug.aff \
+ignoresug.dic \
+ignoresug.good \
+ignoresug.morph \
 \
 utf8_nonbmp.test
