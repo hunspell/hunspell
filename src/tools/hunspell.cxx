@@ -46,7 +46,7 @@
 #include <sstream>
 #include <string>
 #include <string.h>
-#include "../../config.h"
+#include <config.h>
 #include "../hunspell/atypes.hxx"
 #include "../hunspell/hunspell.hxx"
 #include "../hunspell/csutil.hxx"
@@ -617,7 +617,7 @@ bool check(Hunspell** pMS, int* d, const std::string& token, int* info, std::str
   return false;
 }
 
-static int is_zipped_odf(TextParser* parser, const char* extension) {
+static bool is_zipped_odf(TextParser* parser, const char* extension) {
   // ODFParser and not flat ODF
   return dynamic_cast<ODFParser*>(parser) && (extension && extension[0] != 'f');
 }
@@ -631,6 +631,7 @@ static bool secure_filename(const char* filename) {
 
 char* mymkdtemp(char *templ) {
 #ifdef WIN32
+  (void)templ;
   char *odftmpdir = tmpnam(NULL);
   if (!odftmpdir) {
     return NULL;
@@ -1740,7 +1741,7 @@ char* search(char* begin, char* name, const char* ext) {
       end++;
     char* res = NULL;
     if (name) {
-      res = exist2(begin, end - begin, name, ext);
+      res = exist2(begin, int(end - begin), name, ext);
     } else {
 #if !defined(WIN32) || defined(__MINGW32__)
       listdicpath(begin, end - begin);

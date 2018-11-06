@@ -221,8 +221,8 @@ bool XMLParser::next_token(std::string& t) {
 std::string XMLParser::get_word2(
         const char* PATTERN3[][2],
         unsigned int PATTERN_LEN3,
-        const std::string token) {
-  std::string word = token;
+        const std::string &tok) {
+  std::string word = tok;
   for (unsigned int i = 0; i < PATTERN_LEN3; i++) {
     size_t pos;
     while ((pos = word.find(PATTERN3[i][0])) != word.npos) {
