@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS= po src docs tests
+SUBDIRS= po src man tests
 
 pkgconfdir = $(libdir)/pkgconfig
 pkgconf_DATA = hunspell.pc

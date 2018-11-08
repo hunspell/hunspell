@@ -101,8 +101,8 @@ AC_SUBST(READLINELIB)
 AC_CONFIG_FILES([
 	Makefile
 	hunspell.pc
-	docs/Makefile
-	docs/hu/Makefile
+	man/Makefile
+	man/hu/Makefile
 	po/Makefile.in
 	src/Makefile
 	src/hunspell/Makefile
@@ -111,6 +111,5 @@ AC_CONFIG_FILES([
 	src/tools/Makefile
 	tests/Makefile
 	tests/suggestiontest/Makefile
-	tests/v1cmdline/Makefile
 ])
 AC_OUTPUT
