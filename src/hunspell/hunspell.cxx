@@ -1196,10 +1196,10 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
             return slst;
         break;
       }
-        /* FALLTHROUGH */
+      /* FALLTHROUGH */
       case HUHINITCAP:
         capwords = true;
-	/* FALLTHROUGH */
+      /* FALLTHROUGH */
       case HUHCAP: {
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
