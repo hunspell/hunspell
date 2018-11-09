@@ -1,16 +1,23 @@
-Authors of Hunspell:
-* 2002-2017, Németh László
+Author: László Németh
 
-Contributors:
-* 2014-2016, Caolán McNamara
-* 2015-2016 Paweł Hajdan, Jr.
-* 2016-2017, Dimitri Mijoski
-* 2017, Sander van Geloven
+MySpell's (Hunspell's code base) author: Kevin Hendricks
 
-See also <https://github.com/hunspell/hunspell/graphs/contributors>
+Maintainer, distinguished contributor: Caolán McNamara
 
-Hunspell is based on OpenOffice.org's Myspell. MySpell's author:
-* 2001-2002, Kevin Hendricks
+Author of rule-based transformation code for phonetic suggestions
+(PHONE/phonet.cxx, used by English dictionaries): Björn Jacke
 
-Replacement algorithms for phonetic transformation:
-* 2000, 2007 Bjoern Jacke
+
+Hunspell/MySpell code base is result of work of several
+contributors. See git log, ./THANKS, ./Changelog, ./Changelog.O,
+MySpell's README and CONTRIBUTORS files for their contributions.
+
+
+Note: Following contributors are not owners and
+not representatives of Hunspell, and they haven't got
+permission from Hunspell's author to act on the behalf
+of Hunspell project: Sander van Geloven, Dimitri Mijoski
+
+
+If you would like to support Hunspell, join the
+development or contact the author.

@@ -261,7 +261,7 @@ First REP is the header of this table and one or more REP data
 line are following it. 
 With this table, Hunspell can suggest the right forms for the typical 
 spelling mistakes when the incorrect form differs by more 
-than 1 letter from the right form.
+than 1 letter from the right form (see also "ph:").
 The search string supports the regex boundary signs (^ and $).
 For example a possible English replacement table definition
 to handle misspelled consonants:
@@ -770,6 +770,28 @@ results
 .PP
 
 Note: if available, ph: is used in n-gram similarity, too.
+
+The ASCII arrow "->" in a ph: pattern means a REP rule (see REP),
+creating arbitrary replacement rule associated to the dictionary
+item:
+.PP
+.RS
+.nf
+happy/B ph:hepy ph:hepi->happi
+.fi
+.RE
+.PP
+
+results
+
+.PP
+.RS
+.nf
+*hepy -> happy
+*hepiest -> happiest
+.fi
+.RE
+.PP
 
 .IP "st:"
 Stem. Optional: default stem is the dictionary item in morphological
