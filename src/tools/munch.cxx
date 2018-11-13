@@ -78,14 +78,14 @@ int main(int argc, char** argv) {
     wf = mystrdup(argv[1]);
   } else {
     fprintf(stderr, "correct syntax is:\n");
-    fprintf(stderr, "munch word_list_file affix_file\n");
+    fprintf(stderr, "hunspell-munch word_list_file affix_file\n");
     exit(1);
   }
   if (argv[2]) {
     af = mystrdup(argv[2]);
   } else {
     fprintf(stderr, "correct syntax is:\n");
-    fprintf(stderr, "munch word_list_file affix_file\n");
+    fprintf(stderr, "hunspell-munch word_list_file affix_file\n");
     exit(1);
   }
 

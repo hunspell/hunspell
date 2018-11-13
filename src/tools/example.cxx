@@ -48,9 +48,9 @@ int main(int argc, char** argv) {
   /* first parse the command line options */
 
   if (argc < 4) {
-    fprintf(stderr, "example (now it works with more dictionary files):\n");
+    fprintf(stderr, "hunspell-example (now it works with more dictionary files):\n");
     fprintf(stderr,
-            "example affix_file dictionary_file(s) file_of_words_to_check\n");
+            "hunspell-example affix_file dictionary_file(s) file_of_words_to_check\n");
     exit(1);
   }
 
