@@ -2116,6 +2116,10 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
+  if (showpath && -1 == arg_files) {
+      exit(0);
+  }
+
   /* open the private dictionaries */
   if (HOME) {
     buf.assign(HOME);
