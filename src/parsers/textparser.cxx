@@ -92,6 +92,14 @@ int TextParser::is_wordchar(const char* w) {
   }
 }
 
+int TextParser::is_apostrophe() {
+  return (line[actual][head] == '\'' ||
+          (is_utf8() &&
+           strncmp(line[actual].c_str() + head,
+                   UTF8_APOS,
+                   strlen(UTF8_APOS)) == 0));
+}
+
 const char* TextParser::get_latin1(const char* s) {
   if (s[0] == '&') {
     unsigned int i = 0;
@@ -173,7 +181,7 @@ bool TextParser::next_token(std::string &t) {
     switch (state) {
       case 0:  // non word chars
         if (is_wordchar(line[actual].c_str() + head) &&
-            line[actual][head] != '\'') {
+            !is_apostrophe()) {
           state = 1;
           token = head;
         } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {

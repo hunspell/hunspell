@@ -85,6 +85,7 @@ class TextParser {
 
   size_t get_tokenpos();
   int is_wordchar(const char* w);
+  int is_apostrophe();
   inline int is_utf8() { return utf8; }
   const char* get_latin1(const char* s);
   char* next_char();
