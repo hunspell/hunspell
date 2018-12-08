@@ -65,6 +65,7 @@ class TextParser {
   size_t token;// begin of token
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
+  int wordchar_apostrophe;      // apostrophe is a wordchar
   int next_char(const char* line, size_t* pos);
   const w_char* wordchars_utf16;
   int wclen;
