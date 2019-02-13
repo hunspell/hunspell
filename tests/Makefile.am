@@ -6,6 +6,8 @@ XFAIL_TESTS = @XFAILED@
 
 TESTS =	\
 agglut_bogus.test \
+agglut_max.test\
+agglut_nsk.test\
 affixes.test \
 condition.test \
 condition_utf.test \
