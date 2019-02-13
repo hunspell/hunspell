@@ -5192,7 +5192,7 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
 
 struct hentry* AffixMgr::affix_check_agglut(
                             const char* word,
-                            int len, int debugout) {
+                            int len, int agglutdebug) {
 
   // This method assumes that *word* has been checked and is not a legal base.
 
@@ -5207,7 +5207,7 @@ struct hentry* AffixMgr::affix_check_agglut(
     rv = prefix_check_agglut(word, len, &affstack);
   }
 
-  if (rv && debugout)
+  if (rv && agglutdebug)
     affstack.showdebug(rv->word);
 
   return rv;

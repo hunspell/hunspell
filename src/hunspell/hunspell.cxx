@@ -720,7 +720,7 @@ struct hentry* Hunspell::checkword(const char* w, int* info, char** root) {
   if (!he && pAMgr) {
     // try stripping off affixes */
     if (this->agglutinative)
-      he = pAMgr->affix_check_agglut(word, len, debugout);
+      he = pAMgr->affix_check_agglut(word, len, agglutdebug);
     else
       he = pAMgr->affix_check(word, len, 0);
 
