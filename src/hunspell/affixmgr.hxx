@@ -283,7 +283,8 @@ class LIBHUNSPELL_DLL_EXPORTED AffixMgr {
                                   const FLAG needflag = FLAG_NULL);
 
   struct hentry* affix_check_agglut(const char* word,       // SJC
-                                    int len);
+                                    int len,
+	                                int debugout);
   struct hentry* prefix_check_agglut(const char* word,      // SJC
                                      int len,
                                      AffStack* paffgfstack);

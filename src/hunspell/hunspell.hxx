@@ -110,6 +110,9 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   int complexprefixes;
   char** wordbreak;
 
+public:
+  int agglutdebug;       // SJC
+
  public:
   /* Hunspell(aff, dic) - constructor of Hunspell class
    * input: path of affix file and dictionary file

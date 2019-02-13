@@ -4842,7 +4842,7 @@ int AffixMgr::parse_affix(char* line,
     piece = mystrsep(&tp, 0);
     while (piece) {
       if (*piece != '\0') {
-        if (*piece == '#') {
+        if (*piece == '#' && i == 0) {
           // comment
           skipline = true;
 		  --entry; // process an extra line
@@ -5192,7 +5192,7 @@ int AffixMgr::get_suffix_words(short unsigned* suff,
 
 struct hentry* AffixMgr::affix_check_agglut(
                             const char* word,
-                            int len) {
+                            int len, int debugout) {
 
   // This method assumes that *word* has been checked and is not a legal base.
 
@@ -5207,7 +5207,7 @@ struct hentry* AffixMgr::affix_check_agglut(
     rv = prefix_check_agglut(word, len, &affstack);
   }
 
-  if (rv)
+  if (rv && debugout)
     affstack.showdebug(rv->word);
 
   return rv;
