@@ -95,6 +95,7 @@ maputf.dic \
 reputf.dic \
 ignore.dic \
 ignoreutf.dic \
+right_to_left_mark.dic \
 1592880.dic \
 1695964.dic \
 1463589.dic \
@@ -487,6 +488,9 @@ ignore.good \
 ignoreutf.aff \
 ignoreutf.dic \
 ignoreutf.good \
+right_to_left_mark.aff \
+right_to_left_mark.dic \
+right_to_left_mark.good \
 1592880.aff \
 1592880.dic \
 1592880.good \
