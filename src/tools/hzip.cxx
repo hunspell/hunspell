@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -44,7 +41,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <string>
+#include <sys/stat.h>
 
 #define CODELEN 65536
 #define BUFSIZE 65536
@@ -344,8 +343,19 @@ int hzip(const char* filename, char* key) {
   if (!f)
     return fail("hzip: %s: Permission denied\n", filename);
 
-  FILE *tempfile = tmpfile();
+  char tmpfiletemplate[] = "/tmp/hunspellXXXXXX";
+  mode_t mask = umask(S_IXUSR | S_IRWXG | S_IRWXO);
+  int tempfileno = mkstemp(tmpfiletemplate);
+  umask(mask);
+  if (tempfileno == -1) {
+    fclose(f);
+    return fail("hzip: cannot create temporary file\n", NULL);
+  }
+
+  FILE *tempfile = fdopen(tempfileno, "rw");
   if (!tempfile) {
+    close(tempfileno);
+    unlink(tmpfiletemplate);
     fclose(f);
     return fail("hzip: cannot create temporary file\n", NULL);
   }
@@ -356,6 +366,7 @@ int hzip(const char* filename, char* key) {
   if (!f2) {
     fclose(tempfile);
     fclose(f);
+    unlink(tmpfiletemplate);
     return fail("hzip: %s: Permission denied\n", out.c_str());
   }
   for (n = 0; n < CODELEN; n++)
@@ -364,6 +375,7 @@ int hzip(const char* filename, char* key) {
     fclose(f2);
     fclose(tempfile);
     fclose(f);
+    unlink(tmpfiletemplate);
     return fail("hzip: cannot write file\n", NULL);
   }
   rewind(tempfile);
@@ -375,6 +387,7 @@ int hzip(const char* filename, char* key) {
   fclose(f2);
   fclose(tempfile);
   fclose(f);
+  unlink(tmpfiletemplate);
   if (n != 0)
     return fail("hzip: cannot write file\n", NULL);
   return n;

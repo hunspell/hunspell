@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -42,24 +39,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hunzip.hxx"
+#include "../hunspell/hunzip.hxx"
 
 #define DESC                                                 \
   "hunzip - decompress a hzip file to the standard output\n" \
   "Usage: hunzip file.hz [password]\n"
 
-int fail(const char* err, const char* par) {
-  fprintf(stderr, err, par);
-  return 1;
-}
-
 int main(int argc, char** argv) {
-  Hunzip* h;
-  const char* s;
-  if (argc == 1 || strcmp(argv[1], "-h") == 0)
-    return fail(DESC, NULL);
-  h = new Hunzip(argv[1], (argc > 2) ? argv[2] : NULL);
-  while (h && (s = h->getline()))
-    printf("%s", s);
+  if (argc == 1 || strcmp(argv[1], "-h") == 0) {
+    fprintf(stderr, DESC);
+    return 1;
+  }
+  Hunzip h(argv[1], (argc > 2) ? argv[2] : NULL);
+  if (!h.is_open())
+    return 0;
+  std::string s;
+  while (h.getline(s))
+    printf("%s", s.c_str());
   return 0;
 }

@@ -1,2 +1,3 @@
-Makefile
 testSubDir
+*.log
+*.trs

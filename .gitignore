@@ -1,9 +1,97 @@
+# autom4te
+/autom4te.cache
+
+# aclocal
+/aclocal.m4
+
+# libtoolize https://www.gnu.org/software/libtool/
+/ltmain.sh
+/m4/libtool.m4
+/m4/ltoptions.m4
+/m4/ltsugar.m4
+/m4/ltversion.m4
+/m4/lt~obsolete.m4
+
+# http://www.gnu.org/software/autoconf
+/configure
+
+# autoheader
+/config.h.in
+
+# http://www.gnu.org/software/automake
+/compile
+/config.guess
+/config.sub
+/install-sh
+/missing
+
+/INSTALL
+
+/ar-lib
+/depcomp
+/mdate-sh
+/mkinstalldirs
+/py-compile
+/tap-driver.sh
+/test-driver
+/ylwrap
+
+/Makefile.in
+/src/**/Makefile.in
+/docs/**/Makefile.in
+/m4/**/Makefile.in
+/tests/**/Makefile.in
+
+# http://www.gnu.org/software/texinfo
+/texinfo.tex
+
+# autoscan
+/autoscan.log
+/autoscan-*.log
+/configure.scan
+
+# ./configure script
+/config.h
+/config.log
+/config.status
+/hunspell.pc
+/libtool
+/stamp-h1
+
+/po/Makefile.in
 Makefile
-autom4te.cache
-config.h
-config.log
-config.status
-hunspell.pc
-libtool
-stamp-h1
+
+# make
+.deps/
+.libs/
+*.lo
+*.la
+*.exe
+*.o
+*.a
+*~
+a.out
+
+# make dist
 hunspell-*.tar.gz
+
+# QtCreator
+/Makefile.am.user
+
+# https://vim.sourceforge.io/
+.?*.swp
+
+# found during configuring
+/confdefs.h
+/confinc
+/confmf
+/configure.tmp
+/conftest
+/conftest.sh
+/conftest.c
+/conftest.cpp
+/conftest.err
+/conftest.er1
+
+#MSVC
+/msvc/Hunspell.VC.VC.opendb

@@ -1,0 +1,4 @@
+*.sug text eol=lf
+*.good text eol=lf
+*.wrong text eol=lf
+*.morph text eol=lf

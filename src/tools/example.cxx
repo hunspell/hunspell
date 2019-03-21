@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -40,16 +37,13 @@
 
 #include <cstring>
 #include <cstdlib>
-#include <cstdio>
+#include <fstream>
 
-#include "hunspell.hxx"
-
-extern char* mystrdup(const char* s);
+#include "../hunspell/hunspell.hxx"
 
 using namespace std;
 
 int main(int argc, char** argv) {
-  FILE* wtclst;
 
   /* first parse the command line options */
 
@@ -61,8 +55,8 @@ int main(int argc, char** argv) {
   }
 
   /* open the words to check list */
-  wtclst = fopen(argv[argc - 1], "r");
-  if (!wtclst) {
+  std::ifstream wtclst(argv[argc - 1], std::ios_base::in);
+  if (!wtclst.is_open()) {
     fprintf(stderr, "Error - could not open file of words to check\n");
     exit(1);
   }
@@ -74,32 +68,26 @@ int main(int argc, char** argv) {
     for (int k = 3; k < argc - 1; ++k)
       pMS->add_dic(argv[k]);
 
-  char buf[100];
-  while (fgets(buf, sizeof(buf), wtclst)) {
-    buf[strcspn(buf, "\n")] = 0;
+  std::string buf;
+  while (std::getline(wtclst, buf)) {
     int dp = pMS->spell(buf);
     if (dp) {
-      fprintf(stdout, "\"%s\" is okay\n", buf);
+      fprintf(stdout, "\"%s\" is okay\n", buf.c_str());
       fprintf(stdout, "\n");
     } else {
-      fprintf(stdout, "\"%s\" is incorrect!\n", buf);
+      fprintf(stdout, "\"%s\" is incorrect!\n", buf.c_str());
       fprintf(stdout, "   suggestions:\n");
-      char** wlst;
-      int ns = pMS->suggest(&wlst, buf);
-      for (int i = 0; i < ns; i++) {
-        fprintf(stdout, "    ...\"%s\"\n", wlst[i]);
+      std::vector<std::string> wlst = pMS->suggest(buf.c_str());
+      for (size_t i = 0; i < wlst.size(); ++i) {
+        fprintf(stdout, "    ...\"%s\"\n", wlst[i].c_str());
       }
-      pMS->free_list(&wlst, ns);
       fprintf(stdout, "\n");
     }
     // for the same of testing this code path
     // do an analysis here and throw away the results
-    char** wlst;
-    int ns = pMS->analyze(&wlst, buf);
-    pMS->free_list(&wlst, ns);
+    pMS->analyze(buf);
   }
 
   delete pMS;
-  fclose(wtclst);
   return 0;
 }

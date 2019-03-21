@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -50,23 +47,19 @@
 using namespace std;
 #endif
 
-FirstParser::FirstParser(const char* wordchars) {
-  init(wordchars);
+FirstParser::FirstParser(const char* wordchars)
+  : TextParser(wordchars) {
 }
 
 FirstParser::~FirstParser() {}
 
-char* FirstParser::next_token() {
-  char* tabpos = strchr(line[actual], '\t');
-  if ((tabpos) && (tabpos - line[actual] > token)) {
-    char* t = (char*)malloc(tabpos - line[actual] + 1);
-    if (!t) {
-      fprintf(stderr, "Error - Insufficient Memory\n");
-      return NULL;
-    }
-    t[tabpos - line[actual]] = '\0';
-    token = tabpos - line[actual] + 1;
-    return strncpy(t, line[actual], tabpos - line[actual]);
+bool FirstParser::next_token(std::string& t) {
+  t.clear();
+  const size_t tabpos = line[actual].find('\t');
+  if (tabpos != std::string::npos && tabpos > token) {
+    token = tabpos;
+    t = line[actual].substr(0, tabpos);
+    return true;
   }
-  return NULL;
+  return false;
 }

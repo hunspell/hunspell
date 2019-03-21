@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -50,19 +47,17 @@
 using namespace std;
 #endif
 
-ManParser::ManParser() {}
-
-ManParser::ManParser(const char* wordchars) {
-  init(wordchars);
+ManParser::ManParser(const char* wordchars)
+  : TextParser(wordchars) {
 }
 
-ManParser::ManParser(const w_char* wordchars, int len) {
-  init(wordchars, len);
+ManParser::ManParser(const w_char* wordchars, int len)
+  : TextParser(wordchars, len) {
 }
 
 ManParser::~ManParser() {}
 
-char* ManParser::next_token() {
+bool ManParser::next_token(std::string& t) {
   for (;;) {
     switch (state) {
       case 1:  // command arguments
@@ -76,9 +71,9 @@ char* ManParser::next_token() {
         } else {
           state = 2;
         }
-      // no break
+      /* FALLTHROUGH */
       case 2:  // non word chars
-        if (is_wordchar(line[actual] + head)) {
+        if (is_wordchar(line[actual].c_str() + head)) {
           state = 3;
           token = head;
         } else if ((line[actual][head] == '\\') &&
@@ -88,17 +83,16 @@ char* ManParser::next_token() {
         }
         break;
       case 3:  // wordchar
-        if (!is_wordchar(line[actual] + head)) {
+        if (!is_wordchar(line[actual].c_str() + head)) {
           state = 2;
-          char* t = alloc_token(token, &head);
-          if (t)
-            return t;
+          if (alloc_token(token, &head, t))
+            return true;
         }
         break;
     }
-    if (next_char(line[actual], &head)) {
+    if (next_char(line[actual].c_str(), &head)) {
       state = 0;
-      return NULL;
+      return false;
     }
   }
 }

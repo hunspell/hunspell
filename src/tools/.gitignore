@@ -1,5 +1,5 @@
-Makefile
 analyze
+bulkcheck
 chmorph
 example
 hunspell
@@ -7,5 +7,3 @@ hunzip
 hzip
 munch
 unmunch
-.deps
-.libs

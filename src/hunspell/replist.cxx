@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -90,16 +87,9 @@ RepList::RepList(int n) {
 
 RepList::~RepList() {
   for (int i = 0; i < pos; i++) {
-    free(dat[i]->pattern);
-    for (int j = 0; j < 4; ++j)
-        free(dat[i]->outstrings[j]);
-    free(dat[i]);
+    delete dat[i];
   }
   free(dat);
-}
-
-int RepList::get_pos() {
-  return pos;
 }
 
 replentry* RepList::item(int n) {
@@ -109,130 +99,98 @@ replentry* RepList::item(int n) {
 int RepList::find(const char* word) {
   int p1 = 0;
   int p2 = pos - 1;
+  int ret = -1;
   while (p1 <= p2) {
-    int m = (p1 + p2) / 2;
-    int c = strncmp(word, dat[m]->pattern, dat[m]->plen);
+    int m = ((unsigned)p1 + (unsigned)p2) >> 1;
+    int c = strncmp(word, dat[m]->pattern.c_str(), dat[m]->pattern.size());
     if (c < 0)
       p2 = m - 1;
     else if (c > 0)
       p1 = m + 1;
-    else {      // scan back for a longer match
-      for (p1 = m - 1; p1 >= 0; --p1)
-        if (!strncmp(word, dat[p1]->pattern, dat[p1]->plen))
-          m = p1;
-        else if (dat[p1]->plen < dat[m]->plen)
-          break;
-      return m;
+    else {      // scan in the right half for a longer match
+      ret = m;
+      p1 = m + 1;
     }
   }
-  return -1;
+  return ret;
 }
 
-char *RepList::replace(const char* word, int ind, bool atstart) {
+std::string RepList::replace(const char* word, int ind, bool atstart) {
   int type = atstart ? 1 : 0;
   if (ind < 0)
-    return NULL;
-  if (strlen(word) == dat[ind]->plen)
+    return std::string();
+  if (strlen(word) == dat[ind]->pattern.size())
     type = atstart ? 3 : 2;
-  while (type && !dat[ind]->outstrings[type])
+  while (type && dat[ind]->outstrings[type].empty())
     type = (type == 2 && !atstart) ? 0 : type - 1;
   return dat[ind]->outstrings[type];
 }
 
-int RepList::add(char* pat1, char* pat2) {
-  if (pos >= size || pat1 == NULL || pat2 == NULL) {
-    if (pat1) free(pat1);
-    if (pat2) free(pat2);
+int RepList::add(const std::string& in_pat1, const std::string& pat2) {
+  if (pos >= size || in_pat1.empty() || pat2.empty()) {
     return 1;
   }
   // analyse word context
   int type = 0;
-  if (*pat1 == '_') {
-    ++pat1;
+  std::string pat1(in_pat1);
+  if (pat1[0] == '_') {
+    pat1.erase(0, 1);
     type = 1;
   }
-  if (pat1[strlen(pat1) - 1] == '_') {
-    pat1[strlen(pat1) - 1] = 0;
+  if (!pat1.empty() && pat1[pat1.size() - 1] == '_') {
     type = type + 2;
+    pat1.erase(pat1.size() - 1);
   }
-  pat1 = mystrrep(pat1, "_", " ");
+  mystrrep(pat1, "_", " ");
 
   // find existing entry
-  int m = find(pat1);
-  if (m >= 0 && !strcmp(dat[m]->pattern, pat1)) {
-    free(pat1);     // since already used
-    dat[m]->outstrings[type] = mystrrep(pat2, "_", " ");
+  int m = find(pat1.c_str());
+  if (m >= 0 && dat[m]->pattern == pat1) {
+    // since already used
+    dat[m]->outstrings[type] = pat2;
+    mystrrep(dat[m]->outstrings[type], "_", " ");
     return 0;
   }
 
   // make a new entry if none exists
-  replentry* r = (replentry*)calloc(1, sizeof(replentry));
+  replentry* r = new replentry;
   if (r == NULL)
     return 1;
   r->pattern = pat1;
-  r->plen = strlen(pat1);
-  r->outstrings[type] = mystrrep(pat2, "_", " ");
+  r->outstrings[type] = pat2;
+  mystrrep(r->outstrings[type], "_", " ");
   dat[pos++] = r;
   // sort to the right place in the list
   int i;
   for (i = pos - 1; i > 0; i--) {
-    int c = strncmp(r->pattern, dat[i-1]->pattern, dat[i-1]->plen);
-    if (c > 0)
+    if (strcmp(r->pattern.c_str(), dat[i - 1]->pattern.c_str()) < 0) {
+      dat[i] = dat[i - 1];
+    } else
       break;
-    else if (c == 0) { // subpatterns match. Patterns can't be identical since would catch earlier
-      for (int j = i - 2; j && !strncmp(dat[i-1]->pattern, dat[j]->pattern, dat[i-1]->plen); --j)
-        if (dat[j]->plen > r->plen ||
-              (dat[j]->plen == r->plen && strncmp(dat[j]->pattern, r->pattern, r->plen) > 0)) {
-          i = j;
-          break;
-        }
-      break;
-    }
   }
-  memmove(dat + i + 1, dat + i, (pos - i - 1) * sizeof(replentry *));
   dat[i] = r;
   return 0;
 }
 
-int RepList::conv(const char* word, char* dest, size_t destsize) {
-  size_t stl = 0;
-  int change = 0;
-  for (size_t i = 0; i < strlen(word); i++) {
-    int n = find(word + i);
-    char* l = replace(word + i, n, i == 0);
-    if (l) {
-      size_t replen = strlen(l);
-      if (stl + replen >= destsize)
-        return -1;
-      strcpy(dest + stl, l);
-      stl += replen;
-      i += dat[n]->plen - 1;
-      change = 1;
-    } else {
-      if (stl + 1 >= destsize)
-        return -1;
-      dest[stl++] = word[i];
-    }
-  }
-  dest[stl] = '\0';
-  return change;
-}
-
-bool RepList::conv(const char* word, std::string& dest) {
+bool RepList::conv(const std::string& in_word, std::string& dest) {
   dest.clear();
 
+  size_t wordlen = in_word.size();
+  const char* word = in_word.c_str();
+
   bool change = false;
-  for (size_t i = 0; i < strlen(word); i++) {
+  for (size_t i = 0; i < wordlen; ++i) {
     int n = find(word + i);
-    char *l = replace(word + i, n, i == 0);
-    if (l) {
+    std::string l = replace(word + i, n, i == 0);
+    if (!l.empty()) {
       dest.append(l);
-      i += dat[n]->plen - 1;
+      i += dat[n]->pattern.size() - 1;
       change = true;
     } else {
       dest.push_back(word[i]);
     }
   }
+
   return change;
 }
 

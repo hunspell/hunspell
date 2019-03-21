@@ -1,3 +1,50 @@
+2017-10-22  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* gettext.m4: New file, from gettext-0.19.8.1.
+	* iconv.m4: New file, from gettext-0.19.8.1.
+	* lib-ld.m4: New file, from gettext-0.19.8.1.
+	* lib-link.m4: New file, from gettext-0.19.8.1.
+	* lib-prefix.m4: New file, from gettext-0.19.8.1.
+	* nls.m4: New file, from gettext-0.19.8.1.
+	* po.m4: New file, from gettext-0.19.8.1.
+	* progtest.m4: New file, from gettext-0.19.8.1.
+	* visibility.m4: from gettext-0.19.8.1, manually copied.
+
+2016-11-02  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* gettext.m4: Upgrade to gettext-0.19.8. Manually copied.
+	* iconv.m4: Upgrade to gettext-0.19.7.
+	* lib-ld.m4: Upgrade to gettext-0.19.7.
+	* lib-link.m4: Upgrade to gettext-0.19.7.
+	* lib-prefix.m4: Upgrade to gettext-0.19.7.
+	* nls.m4: Upgrade to gettext-0.19.7.
+	* po.m4: Upgrade to gettext-0.19.7.
+	* progtest.m4: Upgrade to gettext-0.19.7.
+	* codeset.m4: Upgrade to gettext-0.19.7.
+	* fcntl-o.m4: Upgrade to gettext-0.19.7.
+	* glibc2.m4: Upgrade to gettext-0.19.7.
+	* glibc21.m4: Upgrade to gettext-0.19.7.
+	* intdiv0.m4: Upgrade to gettext-0.19.7.
+	* intl.m4: Upgrade to gettext-0.19.7.
+	* intldir.m4: Upgrade to gettext-0.19.7.
+	* intlmacosx.m4: Upgrade to gettext-0.19.7.
+	* intmax.m4: Upgrade to gettext-0.19.7.
+	* inttypes_h.m4: Upgrade to gettext-0.19.7.
+	* inttypes-pri.m4: Upgrade to gettext-0.19.7.
+	* lcmessage.m4: Upgrade to gettext-0.19.7.
+	* lock.m4: Upgrade to gettext-0.19.7.
+	* longlong.m4: Upgrade to gettext-0.19.7.
+	* printf-posix.m4: Upgrade to gettext-0.19.7.
+	* size_max.m4: Upgrade to gettext-0.19.7.
+	* stdint_h.m4: Upgrade to gettext-0.19.7.
+	* threadlib.m4: Upgrade to gettext-0.19.7.
+	* uintmax_t.m4: Upgrade to gettext-0.19.7.
+	* visibility.m4: Upgrade to gettext-0.19.7.
+	* wchar_t.m4: Upgrade to gettext-0.19.7.
+	* wint_t.m4: Upgrade to gettext-0.19.7.
+	* xsize.m4: Upgrade to gettext-0.19.7.
+	* Makefile.am (EXTRA_DIST): Add the new files.
+
 2002-05-22  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* gettext.m4: Upgrade to gettext-0.11.2.

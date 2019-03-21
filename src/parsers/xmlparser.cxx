@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -58,36 +55,36 @@ static const char* __PATTERN__[][2] = {{"<!--", "-->"},
 
 #define __PATTERN_LEN__ (sizeof(__PATTERN__) / (sizeof(char*) * 2))
 
-static const char* __PATTERN2__[][2] = {{}};
+// for checking attributes, eg. <img alt="text"> in HTML
+static const char* (*__PATTERN2__)[2] = NULL;
 
-#define __PATTERN_LEN2__ (sizeof(__PATTERN2__) / (sizeof(char*) * 2))
+#define __PATTERN_LEN2__ 0
+
+// for checking words with in-word patterns
+// for example, "exam<text:span>p</text:span>le" in ODT
+static const char* (*__PATTERN3__)[2] = NULL;
+
+#define __PATTERN_LEN3__ 0
 
 #define ENTITY_APOS "&apos;"
 #define UTF8_APOS "\xe2\x80\x99"
 #define APOSTROPHE "'"
 
-XMLParser::XMLParser()
-    : pattern_num(0),
-      pattern2_num(0),
-      prevstate(0),
-      checkattr(0),
-      quotmark(0) {}
-
 XMLParser::XMLParser(const char* wordchars)
-    : pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
-  init(wordchars);
+    : TextParser(wordchars)
+    , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
 XMLParser::XMLParser(const w_char* wordchars, int len)
-    : pattern_num(0), pattern2_num(0), prevstate(0), checkattr(0), quotmark(0) {
-  init(wordchars, len);
+    : TextParser(wordchars, len)
+    , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
 XMLParser::~XMLParser() {}
 
 int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
   for (unsigned int i = 0; i < len; i++) {
-    char* j = line[actual] + head;
+    const char* j = line[actual].c_str() + head;
     const char* k = p[i][column];
     while ((*k != '\0') && (tolower(*j) == *k)) {
       j++;
@@ -104,10 +101,14 @@ int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
  *
  */
 
-char* XMLParser::next_token(const char* PATTERN[][2],
-                            unsigned int PATTERN_LEN,
-                            const char* PATTERN2[][2],
-                            unsigned int PATTERN_LEN2) {
+bool XMLParser::next_token(const char* PATTERN[][2],
+                           unsigned int PATTERN_LEN,
+                           const char* PATTERN2[][2],
+                           unsigned int PATTERN_LEN2,
+                           const char* PATTERN3[][2],
+                           unsigned int PATTERN_LEN3,
+                           std::string& t) {
+  t.clear();
   const char* latin1;
 
   for (;;) {
@@ -120,10 +121,10 @@ char* XMLParser::next_token(const char* PATTERN[][2],
             checkattr = 1;
           }
           state = ST_TAG;
-        } else if (is_wordchar(line[actual] + head)) {
+        } else if (is_wordchar(line[actual].c_str() + head)) {
           state = ST_WORD;
           token = head;
-        } else if ((latin1 = get_latin1(line[actual] + head))) {
+        } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           state = ST_WORD;
           token = head;
           head += strlen(latin1);
@@ -132,27 +133,38 @@ char* XMLParser::next_token(const char* PATTERN[][2],
         }
         break;
       case ST_WORD:  // wordchar
-        if ((latin1 = get_latin1(line[actual] + head))) {
+        if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           head += strlen(latin1);
         } else if ((is_wordchar((char*)APOSTROPHE) ||
                     (is_utf8() && is_wordchar((char*)UTF8_APOS))) &&
-                   strncmp(line[actual] + head, ENTITY_APOS,
+                   strncmp(line[actual].c_str() + head, ENTITY_APOS,
                            strlen(ENTITY_APOS)) == 0 &&
-                   is_wordchar(line[actual] + head + strlen(ENTITY_APOS))) {
+                   is_wordchar(line[actual].c_str() + head + strlen(ENTITY_APOS))) {
           head += strlen(ENTITY_APOS) - 1;
         } else if (is_utf8() &&
                    is_wordchar((char*)APOSTROPHE) &&  // add Unicode apostrophe
                                                       // to the WORDCHARS, if
                                                       // needed
-                   strncmp(line[actual] + head, UTF8_APOS, strlen(UTF8_APOS)) ==
+                   strncmp(line[actual].c_str() + head, UTF8_APOS, strlen(UTF8_APOS)) ==
                        0 &&
-                   is_wordchar(line[actual] + head + strlen(UTF8_APOS))) {
+                   is_wordchar(line[actual].c_str() + head + strlen(UTF8_APOS))) {
           head += strlen(UTF8_APOS) - 1;
-        } else if (!is_wordchar(line[actual] + head)) {
+        } else if (!is_wordchar(line[actual].c_str() + head)) {
+          // in-word patterns
+          if ((pattern3_num = look_pattern(PATTERN3, PATTERN_LEN3, 0)) != -1) {
+            size_t pos = line[actual].find(PATTERN3[pattern3_num][1], head);
+            if (pos != std::string::npos) {
+              size_t endpos = pos + strlen(PATTERN3[pattern3_num][1]) - 1;
+              if (is_wordchar(line[actual].c_str() + endpos + 1)) {
+                head = endpos;
+                break;
+              }
+            }
+          }
           state = prevstate;
-          char* t = alloc_token(token, &head);
-          if (t)
-            return t;
+          // return with the token, except in the case of in-word patterns
+          if (alloc_token(token, &head, t))
+            return true;
         }
         break;
       case ST_TAG:  // comment, labels, etc
@@ -181,7 +193,7 @@ char* XMLParser::next_token(const char* PATTERN[][2],
           if (checkattr == 2)
             checkattr = 1;
           // for IMG ALT
-        } else if (is_wordchar(line[actual] + head) && (checkattr == 2)) {
+        } else if (is_wordchar(line[actual].c_str() + head) && (checkattr == 2)) {
           state = ST_WORD;
           token = head;
         } else if (line[actual][head] == '&') {
@@ -194,14 +206,34 @@ char* XMLParser::next_token(const char* PATTERN[][2],
           head--;
         }
     }
-    if (next_char(line[actual], &head))
-      return NULL;
+    if (next_char(line[actual].c_str(), &head))
+      return false;
   }
+  //FIXME No return, in function returning non-void
 }
 
-char* XMLParser::next_token() {
+bool XMLParser::next_token(std::string& t) {
   return next_token(__PATTERN__, __PATTERN_LEN__, __PATTERN2__,
-                    __PATTERN_LEN2__);
+                    __PATTERN_LEN2__, __PATTERN3__, __PATTERN_LEN3__, t);
+}
+
+// remove in-word patterns
+std::string XMLParser::get_word2(
+        const char* PATTERN3[][2],
+        unsigned int PATTERN_LEN3,
+        const std::string &tok) {
+  std::string word = tok;
+  for (unsigned int i = 0; i < PATTERN_LEN3; i++) {
+    size_t pos;
+    while ((pos = word.find(PATTERN3[i][0])) != word.npos) {
+      size_t endpos = word.find(PATTERN3[i][1], pos);
+      if (endpos != word.npos) {
+        word.erase(pos, endpos + strlen(PATTERN3[i][1]) - pos);
+      } else
+        return word;
+    }
+  }
+  return word;
 }
 
 int XMLParser::change_token(const char* word) {

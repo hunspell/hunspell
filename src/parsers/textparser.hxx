@@ -1,13 +1,7 @@
-/*
- * parser classes for MySpell
- *
- * implemented: text, HTML, TeX
- *
- * Copyright (C) 2002, Laszlo Nemeth
- *
- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * Copyright (C) 2002-2017 Németh László
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -19,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -46,8 +35,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef _TEXTPARSER_HXX_
-#define _TEXTPARSER_HXX_
+#ifndef TEXTPARSER_HXX_
+#define TEXTPARSER_HXX_
 
 // set sum of actual and previous lines
 #define MAXPREVLINE 4
@@ -58,6 +47,8 @@
 
 #include "../hunspell/w_char.hxx"
 
+#include <vector>
+
 /*
  * Base Text Parser
  *
@@ -65,43 +56,44 @@
 
 class TextParser {
  protected:
-  int wordcharacters[256];           // for detection of the word boundaries
-  char line[MAXPREVLINE][MAXLNLEN];  // parsed and previous lines
-  char urlline[MAXLNLEN];            // mask for url detection
+  std::vector<int> wordcharacters;// for detection of the word boundaries
+  std::string line[MAXPREVLINE];  // parsed and previous lines
+  std::vector<bool> urlline;      // mask for url detection
   int checkurl;
   int actual;  // actual line
-  int head;    // head position
-  int token;   // begin of token
+  size_t head; // head position
+  size_t token;// begin of token
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
-  int next_char(char* line, int* pos);
+  int next_char(const char* line, size_t* pos);
   const w_char* wordchars_utf16;
   int wclen;
 
  public:
-  TextParser();
   TextParser(const w_char* wordchars, int len);
-  TextParser(const char* wc);
-  void init(const char*);
-  void init(const w_char* wordchars, int len);
+  explicit TextParser(const char* wc);
   virtual ~TextParser();
 
-  void put_line(char* line);
-  char* get_line();
-  char* get_prevline(int n);
-  virtual char* next_token();
+  void put_line(const char* line);
+  std::string get_line() const;
+  std::string get_prevline(int n) const;
+  virtual bool next_token(std::string&);
+  virtual std::string get_word(const std::string &tok);
   virtual int change_token(const char* word);
   void set_url_checking(int check);
 
-  int get_tokenpos();
+  size_t get_tokenpos();
   int is_wordchar(const char* w);
   inline int is_utf8() { return utf8; }
-  const char* get_latin1(char* s);
+  const char* get_latin1(const char* s);
   char* next_char();
   int tokenize_urls();
   void check_urls();
-  int get_url(int token_pos, int* head);
-  char* alloc_token(int token, int* head);
+  int get_url(size_t token_pos, size_t* head);
+  bool alloc_token(size_t token, size_t* head, std::string& out);
+private:
+  void init(const char*);
+  void init(const w_char* wordchars, int len);
 };
 
 #endif
