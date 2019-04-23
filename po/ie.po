@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-08-18 07:40+0000\n"
+"PO-Revision-Date: 2019-04-24 04:48+0000\n"
 "Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
 "Language-Team: Occidental <https://hosted.weblate.org/projects/hunspell/"
 "translations/ie/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -36,7 +36,7 @@ msgstr "errore - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Ne successat crear un temporari fólder"
 
 #: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:689
 #: src/tools/hunspell.cxx:1558 src/tools/hunspell.cxx:1588
@@ -49,7 +49,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Ne successat aperter %s.\n"
 
 #: src/tools/hunspell.cxx:759 src/tools/hunspell.cxx:1345
 #: src/tools/hunspell.cxx:1457
@@ -64,18 +64,20 @@ msgstr "Linea %d: %s -> "
 
 #: src/tools/hunspell.cxx:1124
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "PROHIBIT!"
 
 #: src/tools/hunspell.cxx:1126
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Ortografic errore?"
 
 #: src/tools/hunspell.cxx:1128
-#, c-format
+#, c-format, fuzzy
 msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tFile: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -85,6 +87,8 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[SPACIE] R)empl A)ccpt I)nsrt M)inusc radi(C)a F)inir T)erminar  ?) Auxilie\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
@@ -101,70 +105,77 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Comandes disponibil:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tRemplazzar li errari parole completmen.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Spacie\tAccepter li parole solmen por ti-ci vez.\n"
 
 #: src/tools/hunspell.cxx:1268
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAccepter li parole por li reste de ti-ci session.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tAccepter li parole e adjunter it in vor personal dictionarium.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "M\tAccepter e adjunter li parole scrit in minuscules al pers. dict.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"C\tDemandar un radice e un modell-parole e adjunter les al pers. dict.\n"
+"\tLi radice va esser acceptat con li affixes del modell-parole.\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tRemplazzar per un del suggestiones.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
-msgstr ""
+msgstr "F\tScrir li reste del file ínchangeat e comensar con li sequent file.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "T\tTerminar ínmediatmen. Demandar confirmation. Ne modificar files.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tSuspender li programma. Reiniciar med commande fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tMonstrar ti-ci ecran de auxilie.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Tippa SPACIE por continuar -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1299
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Remplazzar per: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -174,67 +185,68 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1332 src/tools/hunspell.cxx:1368
 msgid "u"
-msgstr ""
+msgstr "m"
 
 #: src/tools/hunspell.cxx:1333 src/tools/hunspell.cxx:1368
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Ne successar actualisar li personal dictionarium."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1377
 msgid "s"
-msgstr ""
+msgstr "c"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Nov parole (radice/base): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Modell-parole (un simil parole ex li dictionarium): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
 msgstr ""
+"Li modell-parole deve exister in li dictionarium. [Presse alquel clave.]"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1490
 msgid "x"
-msgstr ""
+msgstr "f"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1496
 msgid "q"
-msgstr ""
+msgstr "t"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Esque vu vole forjettar vor modificationes? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1502
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Ne successat crear un temporari file"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
@@ -242,29 +254,33 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Usage: hunspell [OPTION]... [FILE]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Controlar li ortografia de chascun FILE. Sin FILE, controlar li STDIN.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1824
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1\t\tcontrolar solmen li unesim camp in li linea (delimitat p/TABs)\n"
 
 #: src/tools/hunspell.cxx:1826
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tInterfacie canal de Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
+"  --check-url\tcontrolar URL- e E-post-adresses, e rutes de fil-sistema\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tcontrolar li tipografic apostrof Unicode\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
@@ -276,51 +292,51 @@ msgstr "  -D\t\tmonstar disponibil dictionariums\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tprintar solmen correct paroles o lineas\n"
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tmonstrar li auxilie e salir\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tfile in li formate HTML\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i cod\tcodification del file\n"
 
 #: src/tools/hunspell.cxx:1840
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tprintar paroles con errores\n"
 
 #: src/tools/hunspell.cxx:1841
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  --L\t\tprintar lineas con errores\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m\t\tanalisar li paroles in li file\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tfile in formate nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1848
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tfile in li formate OpenDocument (ODF/Plan-ODF)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p dict\tusar li personal dictionarium «dict»\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tadvertir pri potential errores (rar paroles)\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P contrasgn\tassignar li contrasigne por ciffrat dictionariums\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
@@ -332,15 +348,15 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1857
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tfile in li formate TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tmonstrar li numeró de version\n"
 
 #: src/tools/hunspell.cxx:1860
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tmonstrar li nró de version compatibil con Ispell\n"
 
 #: src/tools/hunspell.cxx:1861
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
@@ -351,6 +367,8 @@ msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tfile in li formate XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1867
 msgid ""
@@ -371,6 +389,24 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Exemple: hunspell -d ie file.txt    # control interactiv\n"
+"         hunspell -i utf-8 file.txt    # controlar un file in codification "
+"UTF-8\n"
+"         hunspell -l *.odt             # printar errari paroles ex files "
+"ODF\n"
+"\n"
+"         # Rapid correction de documentes ODF per creation de un personal "
+"dict.\n"
+"\n"
+"         # 1 Crea un reductet liste de ínconosset e errari paroles:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >paroles\n"
+"\n"
+"         # 2 Delete li errari paroles ex li file per un redactor de textus.\n"
+"         # 3 Usa ta-ci dictionarium por correcter li removet paroles:\n"
+"\n"
+"         hunspell -p paroles *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1882
 msgid "Bug reports: http://hunspell.github.io/\n"
@@ -399,6 +435,8 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"RUTE DE SERCHA:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
@@ -418,7 +456,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "errore - %s supera li límite del dictionarium.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
@@ -429,4 +467,4 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2183
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell esset compilat sin interfacie de usator Ncurses.\n"
