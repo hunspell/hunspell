@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-08-18 07:41+0000\n"
+"PO-Revision-Date: 2019-04-24 04:48+0000\n"
 "Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/hunspell/"
 "translations/ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -239,7 +239,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Вы хотите отказаться от изменений? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -464,7 +464,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "ошибка - %s превосходит предел словарей.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
