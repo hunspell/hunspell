@@ -9,15 +9,17 @@ msgstr ""
 "Project-Id-Version: hunspell\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2009-08-14 10:25+0200\n"
-"Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"PO-Revision-Date: 2019-04-29 11:46+0000\n"
+"Last-Translator: gvlfm78 <zirconic@protonmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/hunspell/"
+"translations/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.6.1\n"
 "X-Launchpad-Export-Date: 2009-08-12 13:40+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -25,9 +27,9 @@ msgid "error - iconv_open: %s -> %s\n"
 msgstr "errore - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:272
-#, fuzzy, c-format
+#, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr "errore - iconv_open: %s -> %s\n"
+msgstr "errore - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:317 src/tools/hunspell.cxx:339
 #, c-format
@@ -35,16 +37,14 @@ msgid "error - iconv_open: UTF-8 -> %s\n"
 msgstr "errore - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
-#, fuzzy
 msgid "Can't create tmp dir"
-msgstr "Impossibile creare il file temporaneo %s.\n"
+msgstr "Impossibile creare la cartella temporanea %s"
 
 #: src/tools/hunspell.cxx:677 src/tools/hunspell.cxx:689
 #: src/tools/hunspell.cxx:1558 src/tools/hunspell.cxx:1588
 #: src/tools/hunspell.cxx:1601
-#, fuzzy
 msgid "Can't open inputfile"
-msgstr "Impossibile aprire %s.\n"
+msgstr "Impossibile aprire il file di input %s"
 
 #: src/tools/hunspell.cxx:679 src/tools/hunspell.cxx:1590
 #: src/tools/hunspell.cxx:2001 src/tools/hunspell.cxx:2153
@@ -66,11 +66,11 @@ msgstr "Riga %d: %s -> "
 
 #: src/tools/hunspell.cxx:1124
 msgid "FORBIDDEN!"
-msgstr "PROIBITO."
+msgstr "PROIBITO!"
 
 #: src/tools/hunspell.cxx:1126
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Errore ortografico?"
 
 #: src/tools/hunspell.cxx:1128
 #, c-format
@@ -210,7 +210,7 @@ msgstr "i"
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr "Impossibile aggiornare il dizionario personale"
+msgstr "Impossibile aggiornare il dizionario personale."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -225,7 +225,7 @@ msgstr "o"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr "Nuova parola (origine):"
+msgstr "Nuova parole (radice): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
@@ -260,14 +260,12 @@ msgid "y"
 msgstr "s"
 
 #: src/tools/hunspell.cxx:1611
-#, fuzzy
 msgid "Can't create tempfile"
-msgstr "Impossibile creare il file temporaneo %s.\n"
+msgstr "Impossibile creare il file temporaneo"
 
 #: src/tools/hunspell.cxx:1656
-#, fuzzy
 msgid "Can't open outputfile"
-msgstr "Impossibile aprire %s.\n"
+msgstr "Impossibile aprire il file di output"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
@@ -300,7 +298,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tcontrolla apostrofo tipografico di Unicode\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
@@ -352,7 +350,7 @@ msgstr "  -p diz\tImposta diz come dizionario personalizzato\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tavvisa di possibili errori (parole rare)\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
@@ -365,11 +363,8 @@ msgstr ""
 "input\n"
 
 #: src/tools/hunspell.cxx:1856
-#, fuzzy
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
-"  -s \t\tRecupera la parte principale (stem) delle parole del testo di "
-"input\n"
+msgstr "  -S \t\tsuffissa le parole del testo di input\n"
 
 #: src/tools/hunspell.cxx:1857
 msgid "  -t\t\tTeX/LaTeX input file format\n"
@@ -415,6 +410,26 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Esempio: hunspell -d en_US file.txt    # controllo ortografico interattivo\n"
+"         hunspell -i utf-8 file.txt    # controlla file codificato in UTF-8\n"
+"         hunspell -l *.odt             # stampa parole con errori "
+"ortografici dai file ODF\n"
+"\n"
+"         # Correzione rapida dei documenti ODF tramite creazione di "
+"dizionari personali\n"
+"\n"
+"         # 1 Crea una lista ridotta da parole con errori ortografici e "
+"sconosciute:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 Elimina parole con errori ortografici dal file con un editor di "
+"testo.\n"
+"         # 3 Utilizza questo dizionario privato per aggiustare le parole "
+"eliminate:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1882
 msgid "Bug reports: http://hunspell.github.io/\n"
