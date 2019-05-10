@@ -1,28 +1,51 @@
 #!/bin/sh
 # makealias: make alias compressed dic and aff files
-# Usage: alias.sh dic aff (not alias.sh aff dic!)
 # Author: László Németh
-# Version: 2018-05-16
+# Version: 2019-05-10
 
 export LC_ALL=C
 
-case $# in
-0|1) 
-echo 'makealias: make alias compressed dic and aff files
+usage()
+{
+echo 'makealias: make alias compressed dic and aff files for faster load and smaller memory footprint
 Usage: makealias [--minimize-diff old_file_without_file_extension] file.dic file.aff' >/dev/stderr
-exit;;
+exit
+}
+
+filecheck()
+{
+  if [ ! -f $1 ]; then
+    echo File not found: $1
+    exit
+  fi
+}
+
+case $# in
+0|1|3) usage;;
 esac
 
 if [ "$1" = "--minimize-diff" ]; then
+  filecheck $2.aff
   AWK_ARG="-v mindiff=$2.aff"
   shift; shift
 fi
 
+case $1 in
+*.dic) filecheck $1;;
+*) usage;;
+esac
+
+case $2 in
+*.aff) filecheck $2;;
+*) usage;;
+esac
+
 DIC=`basename $1 .dic`
 AFF=`basename $2 .aff`
 
-# FLAG type definition must be before alias definitions
-grep '^FLAG' $2 >"${AFF}_alias.aff"
+# Alias definitions must be between FLAG type definition and SFX/PFX lines.
+# copy aff content before SFX/PFX lines
+sed '/^[SP]FX/,$d;s/\s\+$//' $2 >"${AFF}_alias.aff"
 
 # space conversion (space separated multi-word expressions
 # are allowed in the dictionary)
@@ -189,7 +212,7 @@ END {
     }
 }' "${DIC}_alias.tmp.dic" $2 >"${DIC}_alias.tmp" 2>"${AFF}_alias.$$"
 cat "${DIC}_alias.tmp" | sed 's/_/ /g' > "${DIC}_alias.dic"
-grep -v '^FLAG' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
+sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
 
 rm ${DIC}_alias.tmp ${DIC}_alias.tmp.dic ${AFF}_alias.$$
