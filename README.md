@@ -110,12 +110,18 @@ In Ubuntu, the packages are:
 # Compiling on OSX and macOS
 
 On macOS for compiler always use `clang` and not `g++` because Homebrew
-dependencies are build with that.
+dependencies are built with that.
 
     brew install autoconf automake libtool gettext
     brew link gettext --force
 
-Then run autoreconf, configure, make. See above.
+Then run
+
+    autoreconf -vfi
+    ./configure
+    make
+
+See the [Compiling on GNU/Linux and Unixes section](#compiling-on-gnulinux-and-unixes) for details.
 
 # Compiling on Windows
 
