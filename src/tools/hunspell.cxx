@@ -2044,6 +2044,13 @@ int main(int argc, char** argv) {
     if (getenv("DICPATH")) {
       path_std_str.append(getenv("DICPATH")).append(PATHSEP);
     }
+    if (getenv("XDG_DATA_DIRS")) {
+      char* dir = strtok(getenv("XDG_DATA_DIRS"), ":");
+      while (dir != NULL) {
+        path_std_str.append(dir).append("/hunspell:");
+        dir = strtok(NULL, ":");
+      }
+    }
     path_std_str.append(LIBDIR).append(PATHSEP);
     if (HOME) {
       const char * userooodir[] = USEROOODIR;
