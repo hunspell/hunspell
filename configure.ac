@@ -52,11 +52,23 @@ AC_ARG_WITH(
 AS_IF([test "x$with_ui" != xno], [
 	AC_CHECK_LIB([ncursesw],[tparm],[
 		CURSESLIB=-lncursesw
+        AC_CHECK_LIB([tinfow],[tgetent], [
+            CURSESLIB="$CURSESLIB -ltinfow"
+        ])
 	],[AC_CHECK_LIB([curses],[tparm],[
 		CURSESLIB=-lcurses
+        AC_CHECK_LIB([tinfo],[tgetent], [
+            CURSESLIB="$CURSESLIB -ltinfo"
+        ])
 	],[AC_CHECK_LIB([ncurses],[tparm],[
 		CURSESLIB=-lncurses
-	])])])
+        AC_CHECK_LIB([tinfo],[tgetent], [
+            CURSESLIB="$CURSESLIB -ltinfo"
+        ])
+	],
+    [-ltinfo])],
+    [-ltinfo])],
+    [-ltinfow])
    if test "$CURSESLIB" != "" ; then
 	echo Compiling with curses user interface.
 	AC_CHECK_HEADERS([curses.h])
@@ -78,13 +90,15 @@ AC_ARG_WITH(
 )
 READLINELIB=""
 AS_IF([test "x$with_readline" != xno],
-	[AC_CHECK_LIB([tinfo],[tgetent], [
+	[AC_CHECK_LIB([tinfow],[tgetent], [
+		TERMLIB=-ltinfow
+    ],[AC_CHECK_LIB([tinfo],[tgetent], [
 		TERMLIB=-ltinfo
-        ],[AC_CHECK_LIB([curses],[tparm],[
+    ],[AC_CHECK_LIB([curses],[tparm],[
 		TERMLIB=-lncurses
 	],[AC_CHECK_LIB([termcap],[tgetent],[
 		TERMLIB=-ltermcap
-	])])])
+	])])])])
 	LDSAVE=$LDFLAGS
 	LDFLAGS="$LDFLAGS $TERMLIB"
 	AC_CHECK_LIB([readline],[readline],[
