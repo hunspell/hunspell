@@ -1,21 +1,23 @@
-# Brazilian Portuguese translations for hunspell package.
-# Copyright (C) 2017 Free Software Foundation, Inc.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the hunspell package.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2017.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: hunspell 1.6.2\n"
+"Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2017-09-04 21:29-0200\n"
+"PO-Revision-Date: 2019-06-22 04:01+0000\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
-"Language-Team: \n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"hunspell/translations/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Virtaal 1.0.0-beta1\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.7\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -86,7 +88,8 @@ msgid ""
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[ESPAÇO] S)ubst A)ceit I)nserir min(U)s R)aiz S)air (T)erminar ou ? para ajuda\n"
+"[ESPAÇO] S)ubst A)ceit I)nserir min(U)s R)aiz S)air (T)erminar ou ? para "
+"ajuda\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
@@ -145,14 +148,16 @@ msgid "0-n\tReplace with one of the suggested words.\n"
 msgstr "0-n\tSubstitui com uma das palavras sugeridas.\n"
 
 #: src/tools/hunspell.cxx:1280
-msgid "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
+msgid ""
+"X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
 "T\tEscreve o resto deste arquivo, ignorando erros de escrita\n"
 "\t  e inicia o próximo arquivo.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr "S\tSai imediatamente. Pede por confirmação. Deixa o arquivo inalterado.\n"
+msgstr ""
+"S\tSai imediatamente. Pede por confirmação. Deixa o arquivo inalterado.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
@@ -264,7 +269,8 @@ msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
-"Verifica a ortografia de cada ARQUIVO. Sem ARQUIVO, verifica a entrada padrão.\n"
+"Verifica a ortografia de cada ARQUIVO. Sem ARQUIVO, verifica a entrada "
+"padrão.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1824
@@ -279,7 +285,8 @@ msgstr "  -a\t\tinterface pipe do Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr "  --check-url\tverifica URLs, endereços de e-mail e caminhos de diretórios\n"
+msgstr ""
+"  --check-url\tverifica URLs, endereços de e-mail e caminhos de diretórios\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
@@ -379,7 +386,8 @@ msgstr ""
 msgid ""
 "Example: hunspell -d en_US file.txt    # interactive spelling\n"
 "         hunspell -i utf-8 file.txt    # check UTF-8 encoded file\n"
-"         hunspell -l *.odt             # print misspelled words of ODF files\n"
+"         hunspell -l *.odt             # print misspelled words of ODF "
+"files\n"
 "\n"
 "         # Quick fix of ODF documents by personal dictionary creation\n"
 "\n"
@@ -395,9 +403,11 @@ msgid ""
 msgstr ""
 "Exemplo: hunspell -d pt_BR arq.txt # verificação ortográfica interativa\n"
 "         hunspell -i utf-8 arq.txt # verifica arquivo codificado em UTF-8\n"
-"         hunspell -l *.odt         # exibe erros ortográficos em arquivos ODF\n"
+"         hunspell -l *.odt         # exibe erros ortográficos em arquivos "
+"ODF\n"
 "\n"
-"         # Correção rápida de documentos ODF por criação de dicionário pessoal\n"
+"         # Correção rápida de documentos ODF por criação de dicionário "
+"pessoal\n"
 "\n"
 "         # 1 Faça uma lista reduzida de palavras com erro de escrita\n"
 "               e desconhecidas:\n"
@@ -406,7 +416,8 @@ msgstr ""
 "\n"
 "         # 2 Exclua palavras com erros ortográficos do arquivo\n"
 "               por um editor de texto.\n"
-"         # 3 Use esse dicionário pessoal para corrigir as palavras excluídas:\n"
+"         # 3 Use esse dicionário pessoal para corrigir as palavras excluídas:"
+"\n"
 "\n"
 "         hunspell -p palavras *.odt\n"
 "\n"
@@ -473,7 +484,9 @@ msgstr "erro - %s excede o limite de dicionários.\n"
 #: src/tools/hunspell.cxx:2100
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr "Não foi possível arquivos de dicionário ou afixos para o diretório chamado \"%s\".\n"
+msgstr ""
+"Não foi possível arquivos de dicionário ou afixos para o diretório chamado \""
+"%s\".\n"
 
 #: src/tools/hunspell.cxx:2183
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
