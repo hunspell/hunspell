@@ -219,6 +219,7 @@ int showpath = 0;   // show detected path of the dictionary
 int checkurl = 0;   // check URLs and mail addresses
 int checkapos = 0;  // force typographic apostrophe
 int warn = 0;  // warn potential mistakes (dictionary words with WARN flags)
+int ignore_file_exts = 0;  // ignore file extensions
 const char* ui_enc = NULL;  // locale character encoding (default for I/O)
 const char* io_enc = NULL;  // I/O character encoding
 
@@ -444,7 +445,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     }
   }
 
-  if ((!p) && (extension)) {
+  if ((!p) && (extension) && (!ignore_file_exts)) {
     if ((strcmp(extension, "html") == 0) || (strcmp(extension, "htm") == 0) ||
         (strcmp(extension, "xhtml") == 0)) {
       if (io_utf8) {
@@ -1983,6 +1984,8 @@ int main(int argc, char** argv) {
       warn = 1;
     } else if ((strcmp(argv[i], "--check-url") == 0)) {
       checkurl = 1;
+    } else if ((strcmp(argv[i], "-I") == 0)) {
+      ignore_file_exts = 1;
     } else if ((strcmp(argv[i], "--check-apostrophe") == 0)) {
       checkapos = 1;
     } else if ((arg_files == -1) &&
