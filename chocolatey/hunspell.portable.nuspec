@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>hunspell.portable</id>
+    <version>VERSION</version>
+    <title>Hunspell (Portable)</title>
+    <authors>László Németh</authors>
+    <owners>mlt,laszlonemeth</owners>
+    <projectUrl>http://hunspell.github.io/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Hunspell is the spell checker of LibreOffice, OpenOffice.org, Mozilla Firefox 3 &amp; Thunderbird, Google Chrome, and it is also used by proprietary software packages, like Mac OS X, InDesign, memoQ, Opera and SDL Trados.</description>
+    <summary />
+    <releaseNotes>At bare minimum do the following in emacs: 1) Install rw-hunspell with M-x package-list-packages, 2) Add C:/Chocolatey/bin to your exec-path, 3) Put somewhere in your .emacs 
+(setq ispell-local-dictionary-alist (quote ((nil "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US") nil utf-8))))</releaseNotes>
+    <tags>emacs ispell aspell spell-checker proof-reading</tags>
+  </metadata>
+<files>
+  <file src="tools\**" target="tools" />
+</files>
+</package>
