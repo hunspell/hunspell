@@ -11,7 +11,10 @@ os:
   - osx
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        brew --version;
+        HOMEBREW_NO_ENV_FILTERING=1 brew update;
+    fi
 
 install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
