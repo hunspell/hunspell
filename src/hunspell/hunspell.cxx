@@ -770,7 +770,6 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
 }
 
 struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::string* root) {
-  bool usebuffer = false;
   std::string w2;
   const char* word;
   int len;
@@ -780,26 +779,19 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 
   word = w2.c_str();
   len = w2.size();
-  usebuffer = true;
 
   if (!len)
     return NULL;
 
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
-    if (!usebuffer) {
-      w2.assign(word);
-      usebuffer = true;
-    }
     if (utf8)
       reverseword_utf(w2);
     else
       reverseword(w2);
   }
 
-  if (usebuffer) {
-    word = w2.c_str();
-  }
+  word = w2.c_str();
 
   // look word in hash table
   struct hentry* he = NULL;
