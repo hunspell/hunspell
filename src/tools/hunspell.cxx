@@ -1180,9 +1180,9 @@ void dialogscreen(TextParser* parser,
   mvprintw(MAXPREVLINE + 2, 0, "\n");
   for (size_t i = 0; i < wlst.size(); ++i) {
     if ((wlst.size() > 10) && (i < 10)) {
-      printw(" 0%d: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
+      printw(" 0%zu: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     } else {
-      printw(" %d: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
+      printw(" %u: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     }
   }
 
