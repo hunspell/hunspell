@@ -31,8 +31,9 @@
 #include <dirent.h>
 #include <string.h>
 #include <libgen.h>
+#include <memory>
 
-std::vector<Hunspell*> dictionaries;
+std::vector<std::unique_ptr<Hunspell>> dictionaries;
 
 bool endswith(const std::string &str, const std::string &suffix)
 {
@@ -54,7 +55,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         if (endswith(entry, ".aff"))
         {
             std::string dic = entry.substr(0, entry.size() - 4) + ".dic";
-            dictionaries.push_back(new Hunspell(entry.c_str(), dic.c_str()));
+            dictionaries.emplace_back(new Hunspell(entry.c_str(), dic.c_str()));
         }
     }
     closedir(d);
@@ -66,9 +67,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
 {
     std::string word(data, size);
-    for (std::vector<Hunspell*>::const_iterator it = dictionaries.begin(); it != dictionaries.end(); ++it)
+    for (auto& dict : dictionaries)
     {
-        Hunspell *dict = *it;
         if (!dict->spell(word))
             dict->suggest(word);
     }
