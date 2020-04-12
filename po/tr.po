@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2019-11-25 07:04+0000\n"
+"PO-Revision-Date: 2020-04-14 13:11+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/hunspell/"
 "translations/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -133,7 +133,7 @@ msgstr "I\tKelimeyi kabul et, ve özel sözlüğe ekle.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr "U\tKabul et ve küçük harfli versiyonunu özel sözlüğe ekle.\n"
+msgstr "U\tKabul et ve küçük harfli biçimini özel sözlüğe ekle.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
@@ -306,7 +306,7 @@ msgstr "  -h, --help\tbu yardımı görüntüle ve çık\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
-msgstr "  -H\t\tHTML giriş dosyası formatı\n"
+msgstr "  -H\t\tHTML giriş dosyası biçimi\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -i enc\tinput encoding\n"
@@ -326,11 +326,11 @@ msgstr "  -m \t\tgiriş metninin kelimelerini analiz et\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr "  -n\t\tnroff/troff giriş dosyası formatı\n"
+msgstr "  -n\t\tnroff/troff giriş dosyası biçimi\n"
 
 #: src/tools/hunspell.cxx:1848
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr "  -O\t\tOpenDocument (ODF veya Flat ODF) giriş dosyası formatı\n"
+msgstr "  -O\t\tOpenDocument (ODF veya Flat ODF) giriş dosyası biçimi\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
@@ -354,15 +354,15 @@ msgstr "  -S \t\tgiriş metnindeki kelimelere son ek ekle\n"
 
 #: src/tools/hunspell.cxx:1857
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr "  -t\t\tTeX/LaTeX giriş dosyası formatı\n"
+msgstr "  -t\t\tTeX/LaTeX giriş dosyası biçimi\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid "  -v, --version\tprint version number\n"
-msgstr "  -v, --version\tversiyon numarasını yazdır\n"
+msgstr "  -v, --version\tsürüm numarasını yazdır\n"
 
 #: src/tools/hunspell.cxx:1860
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr "  -vv\t\tIspell uyumlu versiyon numarasını yazdır\n"
+msgstr "  -vv\t\tIspell uyumlu sürüm numarasını yazdır\n"
 
 #: src/tools/hunspell.cxx:1861
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
@@ -375,7 +375,7 @@ msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
-"  -X\t\tXML giriş dosyası formatı\n"
+"  -X\t\tXML giriş dosyası biçimi\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1867
