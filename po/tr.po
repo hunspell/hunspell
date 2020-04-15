@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-04-14 13:11+0000\n"
+"PO-Revision-Date: 2020-04-16 20:11+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/hunspell/"
 "translations/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.0.1-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -294,7 +294,7 @@ msgstr "  -d d[,d2,...]\td (d2 vs.) sözlüklerini kullan\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr "  -D\t\tmevcut sözlükleri göster\n"
+msgstr "  -D\t\tkullanılabilir sözlükleri göster\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
@@ -411,8 +411,8 @@ msgstr ""
 "\n"
 "         hunspell -l *.odt | sort | uniq >kelimeler\n"
 "\n"
-"         # 2 Dosyadaki yanlış yazılmış kelimeleri bir metin editörüyle silin."
-"\n"
+"         # 2 Dosyadaki yanlış yazılmış kelimeleri bir metin düzenleyicisiyle "
+"silin.\n"
 "         # 3 Silinen kelimeleri düzeltmek için bu kişisel sözlüğü kullanın.:"
 "\n"
 "\n"
@@ -433,10 +433,10 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Copyright (C) 2002-2014 László Németh. Lisans: MPL/GPL/LGPL.\n"
+"Telif Hakkı (C) 2002-2014 László Németh. Lisans: MPL/GPL/LGPL.\n"
 "\n"
 "OpenOffice.org'un Myspell kütüphanesi temel alınarak.\n"
-"Myspell'in copyright'ı (C) Kevin Hendricks, 2001-2002, Lisans: BSD.\n"
+"Myspell'in Telif Hakkı (C) Kevin Hendricks, 2001-2002, Lisans: BSD.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1895
@@ -460,7 +460,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2060
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr "MEVCUT SÖZLÜKLER (-d seçeneği için yol zorunlu değildir):\n"
+msgstr "KULLANILABİLİR SÖZLÜKLER (-d seçeneği için yol zorunlu değildir):\n"
 
 #: src/tools/hunspell.cxx:2074
 #, c-format
