@@ -1739,22 +1739,36 @@ int listdicpath(char* dir, int len) {
 #else  // _WIN32  || __MINGW32__
     WIN32_FIND_DATA de;
     HANDLE handle = FindFirstFile((buf + "*").c_str(), &de);
+    char lpath[MAX_PATH];
     if (handle != INVALID_HANDLE_VALUE) {
       do {
         char *name = de.cFileName;
         // ignore directories, hidden files
         if ((de.dwFileAttributes  & FILE_ATTRIBUTE_HIDDEN) == FILE_ATTRIBUTE_HIDDEN) continue;
-        if ((de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==  FILE_ATTRIBUTE_DIRECTORY) continue;
+        if (((de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) &&
+          (strncmp(".", name, 1) != 0) && (strncmp("..", name, 2) != 0)) {
+            sprintf(lpath, "%s\\%s", buf.c_str(), name);
+            listdicpath(lpath, strlen(lpath));
+        }
         if (name[0] == '.') continue;
         len = strlen(name);
-        if ((len > 4 && strcmp(name + len - 4, ".dic") == 0) ||
-          (len > 7 && strcmp(name + len - 7, ".dic.hz") == 0)) {
+        if (((len > 4 && strcmp(name + len - 4, ".dic") == 0) ||
+             (len > 7 && strcmp(name + len - 7, ".dic.hz") == 0))
+            /* ignore hyph_ dictionaries */
+            && (strncmp(name, "hyph_", 5) != 0)) {
           char* s = mystrdup(name);
           s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
           fprintf(stderr, "%s%s\n", buf.c_str(), s);
         }
       } while (FindNextFile(handle, &de));
-      FindClose(handle);
+      if (GetLastError() != ERROR_NO_MORE_FILES) {
+        fprintf(stderr, "FindNextFile died for some reason; path = \"%s\"\n", buf.c_str());
+        abort();
+      }
+      if (FindClose(handle) == FALSE) {
+        fprintf(stderr, "FindClose failed\n");
+        abort();
+      }
     }
 #endif  // _WIN32  || __MINGW32__
   return 1;
