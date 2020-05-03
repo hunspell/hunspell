@@ -72,7 +72,10 @@
 #include <windows.h>
 
 #define LIBDIR "C:\\Hunspell\\"
-#define USEROOODIR { "Application Data\\OpenOffice.org 2\\user\\wordbook" }
+#define USEROOODIR {                                    \
+  "Application Data\\OpenOffice.org 2\\user\\wordbook", \
+  "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
+}
 #define OOODIR                                                 \
   "C:\\Program files\\OpenOffice.org 2.4\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
@@ -80,6 +83,9 @@
   "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\"
 #define HOME getenv("USERPROFILE")
+#define LODIR                                               \
+  "C:\\Program Files\\LibreOffice\\share\\extensions;"      \
+  "C:\\Program Files (x86)\\LibreOffice\\share\\extensions"
 #define DICBASENAME "hunspell_"
 #define LOGFILE "C:\\Hunspell\\log"
 #define DIRSEPCH '\\'
@@ -2072,6 +2078,7 @@ int main(int argc, char** argv) {
         path_std_str.append(userooodir[i]).append(PATHSEP);
       }
       path_std_str.append(OOODIR);
+      if (LODIR) path_std_str.append(LODIR);
     }
     path = mystrdup(path_std_str.c_str());
   }
