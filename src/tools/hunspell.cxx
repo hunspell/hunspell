@@ -78,7 +78,7 @@
   "C:\\Program files\\OpenOffice.org 2.2\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\"
-#define HOME "%USERPROFILE%\\"
+#define HOME getenv("USERPROFILE")
 #define DICBASENAME "hunspell_"
 #define LOGFILE "C:\\Hunspell\\log"
 #define DIRSEPCH '\\'
@@ -2101,9 +2101,7 @@ int main(int argc, char** argv) {
       const char * userooodir[] = USEROOODIR;
       for (auto& i : userooodir) {
         path_std_str += HOME;
-#ifndef _WIN32
         path_std_str += DIRSEP;
-#endif
         path_std_str.append(i).append(PATHSEP);
       }
       path_std_str.append(OOODIR);
