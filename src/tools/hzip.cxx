@@ -345,7 +345,7 @@ int hzip(const char* filename, char* key) {
   if (!f)
     return fail("hzip: %s: Permission denied\n", filename);
 
-  std::FILE *tempfile = std::tmpfile();
+  FILE *tempfile = tmpfile();
   if (!tempfile) {
     fclose(f);
     return fail("hzip: cannot create temporary file\n", NULL);
