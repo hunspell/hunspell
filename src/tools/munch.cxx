@@ -40,7 +40,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif  // #endif
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
