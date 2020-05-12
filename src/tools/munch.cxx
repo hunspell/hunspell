@@ -393,7 +393,7 @@ void encodeit(struct affent* ptr, char* cs) {
   int nc;
   int neg;
   int grp;
-  int n;
+  short n;
   int ec;
   int nm;
   int i, j, k;
