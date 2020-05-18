@@ -44,7 +44,7 @@ Main features of Hunspell library, developed by László Németh:
   - Morphological analysis (in custom item and arrangement style)
   - Morphological generation
   - SPELLML XML API over plain spell() API function for easier integration
-    of stemming, morpological generation and custom dictionaries with affixation
+    of stemming, morphological generation and custom dictionaries with affixation
   - Language specific algorithms, like special casing of Azeri or Turkish
     dotted i and German sharp s, and special compound rules of Hungarian.
 
