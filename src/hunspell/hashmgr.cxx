@@ -782,7 +782,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       *result = (unsigned short*)malloc(len * sizeof(unsigned short));
       if (!*result)
         return -1;
-      memcpy(*result, &w[0], len * sizeof(short));
+      memcpy(*result, w.data(), len * sizeof(short));
       break;
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
@@ -853,7 +853,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       size_t len = w.size();
       size_t origsize = result.size();
       result.resize(origsize + len);
-      memcpy(&result[origsize], &w[0], len * sizeof(short));
+      memcpy(result.data() + origsize, w.data(), len * sizeof(short));
       break;
     }
     default: {  // Ispell's one-character flags (erfg -> e r f g)
@@ -884,7 +884,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       std::vector<w_char> w;
       u8_u16(w, f);
       if (!w.empty())
-          memcpy(&s, &w[0], 1 * sizeof(short));
+          memcpy(&s, w.data(), 1 * sizeof(short));
       break;
     }
     default:
