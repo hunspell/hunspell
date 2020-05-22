@@ -92,6 +92,14 @@ int TextParser::is_wordchar(const char* w) {
   }
 }
 
+int TextParser::is_apostrophe() {
+  return (line[actual][head] == '\'' ||
+          (is_utf8() &&
+           strncmp(line[actual].c_str() + head,
+                   UTF8_APOS,
+                   strlen(UTF8_APOS)) == 0));
+}
+
 const char* TextParser::get_latin1(const char* s) {
   if (s[0] == '&') {
     unsigned int i = 0;
@@ -118,6 +126,7 @@ void TextParser::init(const char* wordchars) {
   for (unsigned int j = 0; j < strlen(wordchars); ++j) {
     wordcharacters[(wordchars[j] + 256) % 256] = 1;
   }
+  wordchar_apostrophe = is_wordchar((char*)APOSTROPHE);
 }
 
 void TextParser::init(const w_char* wc, int len) {
@@ -129,6 +138,8 @@ void TextParser::init(const w_char* wc, int len) {
   checkurl = 0;
   wordchars_utf16 = wc;
   wclen = len;
+  wordchar_apostrophe = (is_wordchar((char*)APOSTROPHE) ||
+                         is_wordchar((char*)UTF8_APOS));
 }
 
 int TextParser::next_char(const char* ln, size_t* pos) {
@@ -169,7 +180,8 @@ bool TextParser::next_token(std::string &t) {
   for (;;) {
     switch (state) {
       case 0:  // non word chars
-        if (is_wordchar(line[actual].c_str() + head)) {
+        if (is_wordchar(line[actual].c_str() + head) &&
+            !is_apostrophe()) {
           state = 1;
           token = head;
         } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {
@@ -181,23 +193,36 @@ bool TextParser::next_token(std::string &t) {
       case 1:  // wordchar
         if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           head += strlen(latin1);
-        } else if ((is_wordchar((char*)APOSTROPHE) ||
-                    (is_utf8() && is_wordchar((char*)UTF8_APOS))) &&
-                   !line[actual].empty() && line[actual][head] == '\'' &&
-                   is_wordchar(line[actual].c_str() + head + 1)) {
-          head++;
-        } else if (is_utf8() &&
-                   is_wordchar((char*)APOSTROPHE) &&  // add Unicode apostrophe
-                                                      // to the WORDCHARS, if
-                                                      // needed
-                   strncmp(line[actual].c_str() + head, UTF8_APOS, strlen(UTF8_APOS)) ==
-                       0 &&
-                   is_wordchar(line[actual].c_str() + head + strlen(UTF8_APOS))) {
-          head += strlen(UTF8_APOS) - 1;
-        } else if (!is_wordchar(line[actual].c_str() + head)) {
-          state = 0;
-          if (alloc_token(token, &head, t))
-            return true;
+        } else {
+          bool is_wordchar_apostrophe = false;
+          bool is_end_apostrophe = false; // track WORDCHAR apostrophes ending words
+          if (wordchar_apostrophe) {
+            if (line[actual][head] == '\'') {
+              is_wordchar_apostrophe = true;
+              if (is_wordchar(line[actual].c_str() + head + 1)) {
+                head++;
+              } else {
+                is_end_apostrophe = true;
+              }
+            } else if (is_utf8() && // add Unicode apostrophe to the WORDCHARS if needed
+                       strncmp(line[actual].c_str() + head,
+                               UTF8_APOS,
+                               strlen(UTF8_APOS)) == 0) {
+              is_wordchar_apostrophe = true;
+              if (is_wordchar(line[actual].c_str() + head + strlen(UTF8_APOS))) {
+                head += strlen(UTF8_APOS) - 1;
+              } else {
+                is_end_apostrophe = true;
+              }
+            }
+          }
+          if (!(is_wordchar(line[actual].c_str() + head) ||
+                is_wordchar_apostrophe) ||
+              is_end_apostrophe) { // treat apostrophes ending words as non-WORDCHARS
+            state = 0;
+            if (alloc_token(token, &head, t))
+              return true;
+          }
         }
         break;
     }

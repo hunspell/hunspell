@@ -132,7 +132,9 @@ nepali.dic \
 hu.dic \
 warn.dic \
 timelimit.dic \
-ignoresug.dic
+ignoresug.dic \
+apostrophe1.dic \
+apostrophe2.dic
 
 clean-local:
 	-rm -rf testSubDir
@@ -637,5 +639,11 @@ ignoresug.aff \
 ignoresug.dic \
 ignoresug.good \
 ignoresug.morph \
+apostrophe1.aff \
+apostrophe1.dic \
+apostrophe1.test \
+apostrophe2.aff \
+apostrophe2.dic \
+apostrophe2.test \
 \
 utf8_nonbmp.test

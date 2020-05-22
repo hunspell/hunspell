@@ -1,0 +1,6 @@
+SET UTF-8
+TRY sintSINT'
+ICONV 1
+ICONV ’ '
+
+WORDCHARS '
