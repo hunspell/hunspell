@@ -42,7 +42,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif  // #endif
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -311,7 +313,7 @@ void encodeit(struct affent* ptr, char* cs) {
   int nc;
   int neg;
   int grp;
-  int n;
+  short n;
   int ec;
   int nm;
   int i, j, k;
