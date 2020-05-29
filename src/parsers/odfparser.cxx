@@ -57,9 +57,11 @@ static const char* PATTERN[][2] = {
 
 #define PATTERN_LEN (sizeof(PATTERN) / (sizeof(char*) * 2))
 
+
 static const char* (*PATTERN2)[2] = NULL;
 
 #define PATTERN_LEN2 0
+
 
 static const char* PATTERN3[][2] = {
     {"<text:span", ">"},   // part of the reedited words

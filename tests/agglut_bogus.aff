@@ -1,0 +1,46 @@
+# Successes: balutu telosutu dasulosuvu cabalutuvu fasolo faszulatu
+# Failures:
+#   balotu:       -otu must change to -utu
+#		dalotuvusu:   -vu-su illegal
+#		cabatelosu:   ca-ba illegal
+#		camino:       ca-mino illegal
+#   baminovu:     mino-vu illegal
+#   cabalotuvu:   o-tu must be u-tu
+#   falesutu:     fa- cannot go before l
+#   faxolotu:     -tu not permitted
+#   fazula:       z must go to sz
+
+SET ISO8859-1
+
+AGGLUTINATIVE
+
+
+PFX B Y 1
+PFX B   0    ba       .
+
+PFX C Y 3
+PFX C   f    caav     f
+PFX C   ff   caaf     ff
+PFX C   0    ca       [^f]
+
+PFX D Y 1
+PFX D   0    da/DCB   .
+
+PFX F Y 2
+PFX F   x    fas/CB   x
+PFX F   z    fas/CB   z
+
+SFX S Y 1
+SFX S   0    su/TVW   .
+
+SFX T Y 2
+SFX T   o    utu/V    o
+SFX T   0    tu/V     [^o]
+
+SFX V Y 1
+SFX V   0    vu      .
+
+SFX W Y 3
+SFX W   o    uwu     o
+SFX W   0    ywu     u
+SFX W   0    wu      [^ou]

@@ -1,0 +1,60 @@
+# Test data based on a small sample of Naskapi words
+
+SET ISO8859-1
+
+AGGLUTINATIVE 3 2
+
+
+PFX R Y 1
+PFX R        mi      maa      miy
+
+PFX Y Y 1
+PFX Y        w       wiy      w
+
+PFX N Y 1
+PFX N        0       naa      n
+
+PFX H Y 1
+PFX H        0       ni       n
+
+PFX Q Y 1
+PFX Q        ni      naa      ni
+
+PFX K Y 1
+PFX K        0       ki/A     .
+
+PFX A Y 1
+PFX A        0       ati      .
+
+# future
+PFX F Y 1
+PFX F        0       chaa     .
+
+PFX D Y 1
+PFX D        0       chii/C   .
+
+PFX C Y 1
+PFX C        0       chiki/G  .
+
+# negative marker
+PFX G Y 1
+PFX G        0       mi       .
+
+
+# obviative category
+SFX B Y 1
+SFX B        0       a        .
+
+SFX H Y 1
+SFX H        im      aahk     .
+
+SFX T Y 1
+SFX T        aaw     aat      .
+
+SFX V Y 1
+SFX V        w       tin      w
+
+SFX Z Y 1
+SFX Z        0       aan      .
+
+

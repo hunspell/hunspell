@@ -86,8 +86,46 @@
 #define dupSFX (1 << 0)
 #define dupPFX (1 << 1)
 
+// maxiumum length of affix chain supported by the data structures - SJC
+#define maxAFF 10    
+
 class PfxEntry;
 class SfxEntry;
+
+// For managing affixes in fully agglutinative system.
+class AffStack {
+  PfxEntry* pfxstack[maxAFF+1];  // see PfxEntry::checkword_agglut()
+  SfxEntry* sfxstack[maxAFF];
+public:
+  int pfxi;
+  int sfxi;
+  AffStack();
+  void set_pfx(PfxEntry* ppfx) { pfxstack[pfxi] = ppfx; }
+  void set_sfx(SfxEntry* psfx) { sfxstack[sfxi] = psfx; }
+  PfxEntry* curr_pfx() { return pfxstack[pfxi]; }
+  SfxEntry* curr_sfx() { return sfxstack[sfxi]; }
+  int inc_pfxi() { pfxi++; return pfxi; }
+  int inc_sfxi() { sfxi++; return sfxi; }
+  int dec_pfxi() { pfxi--; return pfxi; }
+  int dec_sfxi() { sfxi--; return sfxi; }
+
+  int push_pfx(PfxEntry* ppfx) { pfxstack[pfxi] = ppfx; pfxi++; return pfxi; }
+  int push_sfx(SfxEntry* spfx) { sfxstack[sfxi] = spfx; sfxi++; return sfxi; }
+  
+  void pop_pfx() { pfxi--; pfxstack[pfxi] = NULL; }
+  void pop_sfx() { sfxi--; sfxstack[sfxi] = NULL; }
+
+  PfxEntry* top_pfx() { return (pfxi == 0) ? NULL : pfxstack[pfxi-1]; }
+  SfxEntry* top_sfx() { return (sfxi == 0) ? NULL : sfxstack[sfxi-1]; }
+
+  bool permits_next_prefix(PfxEntry* ppfx);
+  bool permits_next_suffix(SfxEntry* psfx);
+  bool affix_permitted(FLAG aflag); // not used
+
+  void showdebug(const char* baseword);
+  std::string showdebugStripped(std::string base, std::string pstrip, std::string sstrip);
+};
+
 
 class AffixMgr {
   PfxEntry* pStart[SETSIZE];
@@ -102,6 +140,9 @@ class AffixMgr {
   struct cs_info* csconv;
   int utf8;
   int complexprefixes;
+  int agglutinative;     // SJC
+  int agglutMaxPre;      // SJC
+  int agglutMaxSuf;      // SJC
   FLAG compoundflag;
   FLAG compoundbegin;
   FLAG compoundmiddle;
@@ -229,6 +270,18 @@ class AffixMgr {
                                         PfxEntry* ppfx,
                                         const FLAG needflag = FLAG_NULL);
 
+  struct hentry* affix_check_agglut(const char* word,       // SJC
+                                    int len,
+	                                int agglutdebug);
+  struct hentry* prefix_check_agglut(const char* word,      // SJC
+                                     int len,
+                                     AffStack* paffgfstack);
+
+  struct hentry* suffix_check_agglut(const char* word,      // SJC
+                                     int len,
+                                     ///PfxEntry* ppfx,
+                                     AffStack* paffstack);
+
   std::string morphgen(const char* ts,
                        int wl,
                        const unsigned short* ap,
@@ -317,6 +370,9 @@ class AffixMgr {
   const std::string& get_version() const;
   int have_contclass() const;
   int get_utf8() const;
+  int get_agglutinative() const;
+  int get_maxprefixes() const;
+  int get_maxsuffixes() const;
   int get_complexprefixes() const;
   char* get_suffixed(char) const;
   int get_maxngramsugs() const;
@@ -337,7 +393,8 @@ class AffixMgr {
   int parse_file(const char* affpath, const char* key);
   bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
-  bool parse_cpdsyllable(const std::string& line, FileMgr* af);
+  bool parse_1_or_2_nums(const std::string&, int* out1, int* out2, FileMgr* af);  // SJC added
+   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   bool parse_convtable(const std::string& line,
                       FileMgr* af,
                       RepList** rl,
@@ -363,6 +420,9 @@ class AffixMgr {
   int process_sfx_tree_to_list();
   int redundant_condition(char, const char* strip, int stripl, const char* cond, int);
   void finishFileMgr(FileMgr* afflst);
+
+  bool parse_string_n(const std::string& line, int ln,
+	  std::string * pout1, std::string * pout2 = NULL, std::string * pout3 = NULL, std::string * pout4 = NULL);  // SJC added
 };
 
 #endif
