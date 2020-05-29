@@ -304,8 +304,8 @@ Hunspell (MySpell) dictionaries:
   - https://wiki.documentfoundation.org/Language_support_of_LibreOffice
   - http://cgit.freedesktop.org/libreoffice/dictionaries
   - http://extensions.libreoffice.org
-  - http://extensions.openoffice.org
-  - http://wiki.services.openoffice.org/wiki/Dictionaries
+  - https://extensions.openoffice.org
+  - https://wiki.openoffice.org/wiki/Dictionaries
 
 Aspell dictionaries (conversion: man 5 hunspell):
 
