@@ -1,4 +1,4 @@
-bin_PROGRAMS=analyze chmorph hunspell munch unmunch hzip hunzip
+bin_PROGRAMS=hunspell-analyze hunspell-chmorph hunspell hunspell-munch hunspell-unmunch hzip hunzip
 
 AM_CPPFLAGS=-I${top_builddir}/src/hunspell -I${top_srcdir}/src/hunspell -I${top_srcdir}/src/parsers
 
@@ -6,8 +6,8 @@ hzip_SOURCES=hzip.cxx
 hunzip_SOURCES=hunzip.cxx
 hunzip_LDADD = ../hunspell/libhunspell-1.7.la
 
-munch_SOURCES=munch.cxx munch.h
-unmunch_SOURCES=unmunch.cxx unmunch.h
+hunspell_munch_SOURCES=munch.cxx munch.h
+hunspell_unmunch_SOURCES=unmunch.cxx unmunch.h
 
 example_SOURCES=example.cxx
 example_LDADD = ../hunspell/libhunspell-1.7.la
@@ -17,11 +17,11 @@ nodist_hunspell_SOURCES= ../../config.h
 hunspell_LDADD = @LIBINTL@ @LIBICONV@ ../parsers/libparsers.a \
 	../hunspell/libhunspell-1.7.la @CURSESLIB@ @READLINELIB@
 
-analyze_SOURCES=analyze.cxx
-analyze_LDADD = ../hunspell/libhunspell-1.7.la
+hunspell_analyze_SOURCES=analyze.cxx
+hunspell_analyze_LDADD = ../hunspell/libhunspell-1.7.la
 
-chmorph_SOURCES=chmorph.cxx
-chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.7.la
+hunspell_chmorph_SOURCES=chmorph.cxx
+hunspell_chmorph_LDADD = ../parsers/libparsers.a ../hunspell/libhunspell-1.7.la
 
 noinst_PROGRAMS=example 
 
