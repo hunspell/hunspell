@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2019-08-07 13:23+0000\n"
-"Last-Translator: Julien Lepiller <roptat@lepiller.eu>\n"
+"PO-Revision-Date: 2020-06-12 12:41+0000\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/hunspell/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.8-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -169,7 +169,7 @@ msgstr "^Z\tSuspend le programme. Redémarrez avec la commande fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr "?\tMontrer cet écran d'aide.\n"
+msgstr "?\tAfficher cet écran d'aide.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -447,8 +447,8 @@ msgstr ""
 "\n"
 "Copyright (C) 2002-2014 László Németh. Licence : MPL/GPL/LGPL.\n"
 "\n"
-"Basé sur la bibliothèque myspell d'OpenOffice.org.\n"
-"copyright de Myspell (C) Kevin Hendricks, 2001-2002,  Licence : BSD.\n"
+"Basé sur la bibliothèque Myspell d'OpenOffice.org.\n"
+"copyright de Myspell (C) Kevin Hendricks, 2001-2002, Licence : BSD.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1895
