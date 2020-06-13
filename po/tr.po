@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-04-16 20:11+0000\n"
+"PO-Revision-Date: 2020-06-14 09:41+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/hunspell/"
 "translations/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.1-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -334,7 +334,7 @@ msgstr "  -O\t\tOpenDocument (ODF veya Flat ODF) giriş dosyası biçimi\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr "  -p szlk\tszlk'ü özel sözlük olarak ayarla\n"
+msgstr "  -p szlk\tözel sözlük olarak szlk'ü ayarla\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
