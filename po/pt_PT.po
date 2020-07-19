@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-03-30 12:35+0000\n"
-"Last-Translator: José Vieira <jvieira33@sapo.pt>\n"
+"PO-Revision-Date: 2020-07-20 18:41+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_PT/>\n"
 "Language: pt_PT\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -336,7 +336,8 @@ msgstr "  -n\t\tformato de ficheiro de entrada nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1848
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr "  -O\t\tformato de arquivo de entrada OpenDocument (ODF ou ODF plana)\n"
+msgstr ""
+"  -O\t\tformato de ficheiro de entrada OpenDocument (ODF ou ODF plana)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
@@ -348,7 +349,8 @@ msgstr "  -r\t\talertar sobre erros potenciais (raras palavras)\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr "  -P senha\tdefinir senha para dicionários criptografados\n"
+msgstr ""
+"  -P palavra-passe\tdefinir palavra-passe para dicionários criptografados\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
@@ -381,7 +383,7 @@ msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
-"  -X\t\tformato de arquivo de entrada XML\n"
+"  -X\t\tformato de ficheiro de entrada XML\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1867
