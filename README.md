@@ -60,6 +60,12 @@ Main features of Hunspell command line tool, developed by László Németh:
 
 See man hunspell, man 3 hunspell, man 5 hunspell for complete manual.
 
+Translations: Hunspell has been translated into several languages already. If your language is missing or incomplete, please use [Weblate](https://hosted.weblate.org/engage/hunspell/) to help translate Hunspell.
+
+<a href="https://hosted.weblate.org/engage/hunspell/">
+<img src="https://hosted.weblate.org/widgets/hunspell/-/translations/horizontal-auto.svg" alt="Stanje prijevoda" />
+</a>
+
 # Dependencies
 
 Build only dependencies:
