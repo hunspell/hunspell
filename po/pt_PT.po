@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-07-20 18:41+0000\n"
+"PO-Revision-Date: 2020-09-23 14:41+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_PT/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -246,7 +246,7 @@ msgstr "c"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Tem certeza que deseja descartar suas alterações? "
+msgstr "Tem certeza que deseja descartar as suas alterações? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
