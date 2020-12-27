@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-04-20 11:11+0000\n"
+"PO-Revision-Date: 2020-12-28 20:29+0000\n"
 "Last-Translator: Muḥend Belqasem <belkacem77@gmail.com>\n"
 "Language-Team: Kabyle <https://hosted.weblate.org/projects/hunspell/"
 "translations/kab/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.0.2-dev\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -98,6 +98,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Ticki awal yettwafen maca ulac-it deg umawal\n"
+"ad d-iban deg yizirig amezwaru deg ugdil. Ma yella amawal\n"
+"igber awalen yettemcabin, ad d-banen s wuṭṭun\n"
+"ara d-qablen yal awal. Tzemreḍ ad temselsiḍ maṛṛa awal,\n"
+"neɣ ad tferneḍ yiwen seg wawalen i d-yettwasumren.\n"
 
 #: src/tools/hunspell.cxx:1264
 msgid ""
@@ -127,51 +132,57 @@ msgstr "I\tQbel awal, sakin sers-it deg umawal-ik uslig.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tQbel daɣen rnu lqem s usekkil meẓẓiyen ɣer umawal udmawan.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S\tSuter aẓar akked tneɣruft n wawal sakin sekles-iten deg umawal udmawan.\n"
+"\tAẓar ad yettwaqbel daɣen s yiwṣilen n tneɣruft n wawal.\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tSelselsi s yiwen seg wawalen i d-yettwasuren.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tAru ayen i d-yeqqimen deg ufaylu, zgel tuccḍiqin n tira, sakin bdu afaylu "
+"i d-iteddun.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "Q\tFfeɣ tura. Ad isuter asentem. Ad yeǧǧ afaylu akken yella.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tSefsex ahil. Ales asenker s tladna fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tSken agli-a n tallelt.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Senned ɣef usekkil ilem akken ad tkemmleḍ -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1299
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
-msgstr ""
+msgstr "Semselsi s: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -181,89 +192,91 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1332 src/tools/hunspell.cxx:1368
 msgid "u"
-msgstr ""
+msgstr "u"
 
 #: src/tools/hunspell.cxx:1333 src/tools/hunspell.cxx:1368
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Ur izmir ara ad ileqqem amawal udmawal."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1377
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Awal amaynut (aẓar): "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Taneɣruft n wawal (awal icuban deg umawal): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Taneɣruft n wawal issefk ad tili deg umawal. Senned ɣef yiwet tqeffalt!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1490
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1496
 msgid "q"
-msgstr ""
+msgstr "q"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Tebɣiḍ ad tzegleḍ ibeddilen-ik? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1502
 msgid "y"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Ur izmir ara ad yernu afaylu askudan"
 
 #: src/tools/hunspell.cxx:1656
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Ur izmir ara ad d-yeldi afaylu n tuffɣa"
 
 #: src/tools/hunspell.cxx:1821
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Aseqdec: hunspell [OPTION]... [FILE]...\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Senqed tira n yal AFAYLU. War AFAYLU, senqed tuffɣa tamewert.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1824
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr ""
+msgstr "  -1\t\tsenqed kan urti amezwaru n yal izirig (anabraz = tarigla)\n"
 
 #: src/tools/hunspell.cxx:1826
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tagrudem n usuddes n Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
