@@ -521,7 +521,7 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
     case HUHCAP:
     /* FALLTHROUGH */
     case HUHINITCAP:
-      *info += SPELL_ORIGCAP;
+      *info |= SPELL_ORIGCAP;
     /* FALLTHROUGH */
     case NOCAP:
       rv = checkword(scw, info, root);
@@ -532,7 +532,7 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
       }
       break;
     case ALLCAP: {
-      *info += SPELL_ORIGCAP;
+      *info |= SPELL_ORIGCAP;
       rv = checkword(scw, info, root);
       if (rv)
         break;
@@ -603,7 +603,7 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
     case INITCAP: {
       // handle special capitalization of dotted I
       bool Idot = (utf8 && (unsigned char) scw[0] == 0xc4 && (unsigned char) scw[1] == 0xb0);
-      *info += SPELL_ORIGCAP;
+      *info |= SPELL_ORIGCAP;
       if (captype == ALLCAP) {
           mkallsmall2(scw, sunicw);
           mkinitcap2(scw, sunicw);
@@ -611,10 +611,10 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
              scw.replace(0, 1, "\xc4\xb0");
       }
       if (captype == INITCAP)
-        *info += SPELL_INITCAP;
+        *info |= SPELL_INITCAP;
       rv = checkword(scw, info, root);
       if (captype == INITCAP)
-        *info -= SPELL_INITCAP;
+        *info &= ~SPELL_INITCAP;
       // forbid bad capitalization
       // (for example, ijs -> Ijs instead of IJs in Dutch)
       // use explicit forms in dic: Ijs/F (F = FORBIDDENWORD flag)
@@ -639,10 +639,10 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
           u8buffer = scw;
           u8buffer.push_back('.');
           if (captype == INITCAP)
-            *info += SPELL_INITCAP;
+            *info |= SPELL_INITCAP;
           rv = checkword(u8buffer, info, root);
           if (captype == INITCAP)
-            *info -= SPELL_INITCAP;
+            *info &= ~SPELL_INITCAP;
           if (rv && is_keepcase(rv) && (captype == ALLCAP))
             rv = NULL;
           break;
@@ -663,7 +663,7 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
   if (rv) {
     if (pAMgr && pAMgr->get_warn() && rv->astr &&
         TESTAFF(rv->astr, pAMgr->get_warn(), rv->alen)) {
-      *info += SPELL_WARN;
+      *info |= SPELL_WARN;
       if (pAMgr->get_forbidwarn())
         return false;
       return true;
@@ -802,13 +802,13 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
     if ((he) && (he->astr) && (pAMgr) &&
         TESTAFF(he->astr, pAMgr->get_forbiddenword(), he->alen)) {
       if (info)
-        *info += SPELL_FORBIDDEN;
+        *info |= SPELL_FORBIDDEN;
       // LANG_hu section: set dash information for suggestions
       if (langnum == LANG_hu) {
         if (pAMgr->get_compoundflag() &&
             TESTAFF(he->astr, pAMgr->get_compoundflag(), he->alen)) {
           if (info)
-            *info += SPELL_COMPOUND;
+            *info |= SPELL_COMPOUND;
         }
       }
       return NULL;
@@ -843,7 +843,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       if ((he->astr) && (pAMgr) &&
           TESTAFF(he->astr, pAMgr->get_forbiddenword(), he->alen)) {
         if (info)
-          *info += SPELL_FORBIDDEN;
+          *info |= SPELL_FORBIDDEN;
         return NULL;
       }
       if (root) {
@@ -876,7 +876,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
           }
         }
         if (info)
-          *info += SPELL_COMPOUND;
+          *info |= SPELL_COMPOUND;
       }
     }
   }

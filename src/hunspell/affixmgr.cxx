@@ -1052,7 +1052,7 @@ int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
     } else if (cs[MAXCONDLEN]) {
       //there is more conditions than fit in fixed space, so its
       //a long condition
-      entry.opts += aeLONGCOND;
+      entry.opts |= aeLONGCOND;
       entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
       if (!entry.c.l.conds2)
         return 1;
@@ -4492,11 +4492,11 @@ bool AffixMgr::parse_affix(const std::string& line,
 
         char opts = ff;
         if (utf8)
-          opts += aeUTF8;
+          opts |= aeUTF8;
         if (pHMgr->is_aliasf())
-          opts += aeALIASF;
+          opts |= aeALIASF;
         if (pHMgr->is_aliasm())
-          opts += aeALIASM;
+          opts |= aeALIASM;
         affentries.initialize(numents, opts, aflag);
       }
 
