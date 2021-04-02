@@ -2274,8 +2274,6 @@ int AffixMgr::compound_check_morph(const char* word,
         rv = rv->next_homonym;
       }
 
-      if (timelimit == 0)
-        return 0;
 
       if (rv)
         affixed = 0;
