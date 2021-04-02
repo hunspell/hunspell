@@ -2271,8 +2271,6 @@ int AffixMgr::compound_check_morph(const std::string& word,
         rv = rv->next_homonym;
       }
 
-      if (timelimit == 0)
-        return 0;
 
       if (rv)
         affixed = 0;
