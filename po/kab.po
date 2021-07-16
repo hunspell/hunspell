@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-12-28 20:29+0000\n"
+"PO-Revision-Date: 2021-07-17 12:32+0000\n"
 "Last-Translator: Muḥend Belqasem <belkacem77@gmail.com>\n"
 "Language-Team: Kabyle <https://hosted.weblate.org/projects/hunspell/"
 "translations/kab/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.7.2-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -280,7 +280,7 @@ msgstr "  -a\t\tagrudem n usuddes n Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  Senqed tansiwin URL, tansiwin n yimayl akked ikaramen\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
@@ -288,35 +288,35 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tsemres imawalen d (d2 etc.)\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tSken imawalen yellan\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tsken-d kan awalen neɣ izirigen imeɣta\n"
 
 #: src/tools/hunspell.cxx:1837
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tsken-d talllelt-a sakin ffeɣ\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tamasal n ufaylu n unekcum s HTML\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tasettengel n unekcum\n"
 
 #: src/tools/hunspell.cxx:1840
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tsken-d awalen ur nuri ara akken iwata\n"
 
 #: src/tools/hunspell.cxx:1841
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tsken-d izirigen s wawalen ur nuri ara akken iwat\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -m \t\tanalyze the words of the input text\n"
