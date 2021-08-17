@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: hunspell\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-09-13 18:18+0000\n"
-"Last-Translator: flekken <flekken@gmail.com>\n"
+"PO-Revision-Date: 2021-08-18 09:33+0000\n"
+"Last-Translator: Áron Kovács <aronkvh@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/hunspell/"
 "translations/hu/>\n"
 "Language: hu\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 4.8-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -147,12 +147,14 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tA javasolt szavak közül az adott sorszámúra cserél.\n"
+msgstr "0-n\tCserélje le a javasolt szavak egyikére.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
-msgstr "V\tMenti az eddigi javításokat, és rátér a következő állományra.\n"
+msgstr ""
+"X\tMentse az eddigi javításokat a helyesírási hibák figyelmen kívül "
+"hagyásával, és váltson a következő fájlra.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
