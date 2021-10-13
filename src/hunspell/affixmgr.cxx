@@ -1600,8 +1600,12 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   HUNSPELL_THREAD_LOCAL clock_t timelimit;
 
-  if (wordnum == 0)
-      timelimit = clock();
+  if (wordnum == 0) {
+      // get the start time, seeing as we're reusing this set to 0
+      // to flag timeout, use clock() + 1 to avoid start clock()
+      // of 0 as being a timeout
+      timelimit = clock() + 1;
+  }
   else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
       timelimit = 0;
   }
@@ -2206,8 +2210,12 @@ int AffixMgr::compound_check_morph(const char* word,
 
   HUNSPELL_THREAD_LOCAL clock_t timelimit;
 
-  if (wordnum == 0)
-      timelimit = clock();
+  if (wordnum == 0) {
+      // get the start time, seeing as we're reusing this set to 0
+      // to flag timeout, use clock() + 1 to avoid start clock()
+      // of 0 as being a timeout
+      timelimit = clock() + 1;
+  }
   else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
       timelimit = 0;
   }
