@@ -10,6 +10,10 @@ os:
   - linux
   - osx
 
+arch:
+  - amd64
+  - ppc64le
+
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         brew --version;
