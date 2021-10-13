@@ -1,3 +1,5 @@
+throw away
+
 # About Hunspell
 
 Hunspell is a free spell checker and morphological analyzer library
