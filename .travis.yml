@@ -32,7 +32,7 @@ install:
     fi
 
 script:
-  - autoreconf -vfi && ./configure && make && make check
+  - autoreconf -vfi -I m4 && ./configure && make && make check
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
 # might be needed for future
 
