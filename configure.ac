@@ -35,8 +35,8 @@ gl_VISIBILITY
 # Checks for library functions.
 
 dnl internationalization macros
-AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_REQUIRE_VERSION(0.17)
+AM_GNU_GETTEXT([external])
 
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages],[
 	AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")

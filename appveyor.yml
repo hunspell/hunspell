@@ -6,5 +6,5 @@ environment:
       MSYSTEM: MINGW64
 
 build_script:
- - cmd: C:\msys64\usr\bin\bash -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi -I m4 && ./configure && make && make check"
- - sh: cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi -I m4 && ./configure && make && make check
+ - cmd: C:\msys64\usr\bin\bash -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi && ./configure && make && make check"
+ - sh: cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi && ./configure && make && make check
