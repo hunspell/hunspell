@@ -25,22 +25,8 @@ jobs:
      compiler: clang
      arch: ppc64le
 
-before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        brew --version;
-        HOMEBREW_NO_ENV_FILTERING=1 brew update;
-    fi
-
-install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      brew install gettext;
-      brew link gettext --force;
-    fi
-
 script:
   - autoreconf -vfi && ./configure && make && make check
-#  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
-# might be needed for future
 
 after_failure:
   - cat tests/test-suite.log
