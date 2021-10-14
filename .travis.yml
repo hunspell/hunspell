@@ -8,7 +8,7 @@ sudo: false
 
 os:
   - linux
-  - osx
+#  - osx
 
 arch:
   - amd64
