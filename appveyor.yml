@@ -1,6 +1,7 @@
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       MSYSTEM: MINGW64
 
