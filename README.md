@@ -1,4 +1,4 @@
-throw away
+throw away, throw away
 
 # About Hunspell
 
