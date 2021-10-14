@@ -1,20 +1,23 @@
 language: cpp
 
-compiler:
-  - clang
-  - gcc
+os: linux
 
 sudo: false
 
-os:
-  - linux
-#  - osx
-
-arch:
-  - amd64
-  - arm64
-  - ppc64le
-  - s390x
+jobs:
+  include:
+   - name: gcc
+     compiler: gcc
+     arch:
+       - amd64
+       - ppc64le
+       - arm64
+       - s390x
+   - name: clang
+     compiler: clang
+     arch:
+       - amd64
+       - ppc64le
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
@@ -27,16 +30,9 @@ install:
       brew install gettext;
       brew link gettext --force;
     fi
-# Don't use real gcc on OS X, problems arise when
-# Hunspell built with gcc is linked with cppunit built with clang.
-# Homebrew builds are build with clang
-before_script:
-  - if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
-      export CXX="g++-5" CC="gcc-5";
-    fi
 
 script:
-  - autoreconf -i && ./configure && make && make check
+  - autoreconf -vfi && ./configure && make && make check
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
 # might be needed for future
 
@@ -51,5 +47,3 @@ addons:
     - autoconf
     - automake
     - autopoint
-    - gcc-5
-    - g++-5
