@@ -249,15 +249,15 @@ int HashMgr::add_word(const std::string& in_word,
 
   // store the description string or its pointer
   if (desc) {
-    hp->var += H_OPT;
+    hp->var |= H_OPT;
     if (aliasm) {
-      hp->var += H_OPT_ALIASM;
+      hp->var |= H_OPT_ALIASM;
       store_pointer(hpw + word->size() + 1, get_aliasm(atoi(desc->c_str())));
     } else {
       strcpy(hpw + word->size() + 1, desc->c_str());
     }
     if (strstr(HENTRY_DATA(hp), MORPH_PHON)) {
-      hp->var += H_OPT_PHON;
+      hp->var |= H_OPT_PHON;
       // store ph: fields (pronounciation, misspellings, old orthography etc.)
       // of a morphological description in reptable to use in REP replacements.
       if (reptable.capacity() < (unsigned int)(tablesize/MORPH_PHON_RATIO))
