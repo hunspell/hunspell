@@ -8,28 +8,31 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-10-22 00:50+0000\n"
+"Last-Translator: Timur Seber <seber.tatsoft@gmail.com>\n"
+"Language-Team: Tatar <https://hosted.weblate.org/projects/hunspell/"
+"translations/tt/>\n"
 "Language: tt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "хата - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:272
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "хата - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:317 src/tools/hunspell.cxx:339
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "хата - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
