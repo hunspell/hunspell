@@ -83,7 +83,9 @@ class FileMgr {
   FileMgr& operator=(const FileMgr&);
 
  protected:
+  std::string fn;
   std::ifstream fin;
+  FILE *ps;
   Hunzip* hin;
   char in[BUFSIZE + 50];  // input buffer
   int fail(const char* err, const char* par);
