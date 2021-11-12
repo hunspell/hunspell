@@ -80,22 +80,83 @@ int FileMgr::fail(const char* err, const char* par) {
   return -1;
 }
 
+// test a string (it) for if it ends with and ending
+bool endswith(std::string const &it, std::string const &ending) {
+  if (it.length() >= ending.length()) {
+    return (0 == it.compare(it.length() - ending.length(),
+                            ending.length(), ending));
+    }
+  return false;
+}
+
+// open a pipe to gunzip to retrieve the contents of a
+// compressed file.
+FILE *gunzip(const char *fn) {
+  FILE *fp = fopen(fn,"r");
+  if (!fp) return fp;
+  fclose(fp);
+  std::string cmd = getenv("GUNZIP") ? getenv("GUNZIP") : "gzip -dc";
+  cmd.append(" ");
+  cmd.append(fn);
+  fp = popen(cmd.c_str(),"r");
+  return fp;
+}
+
 FileMgr::FileMgr(const char* file, const char* key) : hin(NULL), linenum(0) {
   in[0] = '\0';
 
+  fn = file;
+  //open according to extension : .hz -> Hunzip
+  if (endswith(fn,HZIP_EXTENSION)) {
+    hin = new Hunzip(fn.c_str(), key);
+    if (! hin->is_open() ) fail(MSG_OPEN, file);
+    return;
+  }
+
+  std::string gz=".gz";
+  if (endswith(fn,gz)) { // .gz -> gunzip
+    ps = gunzip(file);
+    if (! ps ) fail(MSG_OPEN, file);
+    return;
+  }
+
+  // everything else is just a file
   myopen(fin, file, std::ios_base::in);
-  if (!fin.is_open()) {
-    // check hzipped file
+  if (fin.is_open()) return;
+
+  // file didnt exist try appending an extension for 
+  // compressed formats
+  if (1) { // check hzipped file
     std::string st(file);
     st.append(HZIP_EXTENSION);
     hin = new Hunzip(st.c_str(), key);
+    if (hin->is_open()) return;
+    delete hin;
+    hin=0;
   }
-  if (!fin.is_open() && !hin->is_open())
-    fail(MSG_OPEN, file);
+
+  if (1) { // check gzipped file
+    std::string st(file);
+    st.append(gz);
+    ps = gunzip(st.c_str());
+    if (ps) return;
+  }
+
+  // nothing worked so...
+  fail(MSG_OPEN, file);
 }
 
 FileMgr::~FileMgr() {
-  delete hin;
+if (fin.is_open()) fin.close();
+else if (hin && hin->is_open()) delete hin;
+else if (ps)
+  {
+  char c; // suck in rest to make gunzip happy
+  while ((c = getc(ps)) != EOF) ;
+  pclose(ps);
+  }
+
+else fail("FileMgr destructor is confused\n",fn.c_str());
 }
 
 bool FileMgr::getline(std::string& dest) {
@@ -103,8 +164,17 @@ bool FileMgr::getline(std::string& dest) {
   ++linenum;
   if (fin.is_open()) {
     ret = static_cast<bool>(std::getline(fin, dest));
-  } else if (hin->is_open()) {
+  } else if (hin && hin->is_open()) {
     ret = hin->getline(dest);
+  } else if (ps) {
+    char c;
+    dest = "";
+    ret = false;
+    while ((c = getc(ps)) != EOF) {
+      ret = true;
+      if (c=='\n') break;
+      dest.push_back(c);
+    }
   }
   if (!ret) {
     --linenum;
