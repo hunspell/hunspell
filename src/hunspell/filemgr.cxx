@@ -95,8 +95,8 @@ FILE *gunzip(const char *fn) {
   FILE *fp = fopen(fn,"r");
   if (!fp) return fp;
   fclose(fp);
-
-  std::string cmd = "/usr/bin/gunzip -c ";
+  std::string cmd = getenv("GUNZIP") ? getenv("GUNZIP") : "gzip -dc";
+  cmd.append(" ");
   cmd.append(fn);
   fp = popen(cmd.c_str(),"r");
   return fp;
