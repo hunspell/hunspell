@@ -1111,43 +1111,41 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; j++) {
     std::string nl;
-    if (!af->getline(nl))
-      return false;
-    mychomp(nl);
-    i = 0;
     aliasf[j] = NULL;
     aliasflen[j] = 0;
-    iter = nl.begin();
-    start_piece = mystrsep(nl, iter);
-    while (start_piece != nl.end()) {
-      switch (i) {
-        case 0: {
-          if (nl.compare(start_piece - nl.begin(), 2, "AF", 2) != 0) {
-            numaliasf = 0;
-            free(aliasf);
-            free(aliasflen);
-            aliasf = NULL;
-            aliasflen = NULL;
-            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                             af->getlinenum());
-            return false;
-          }
-          break;
-        }
-        case 1: {
-          std::string piece(start_piece, iter);
-          aliasflen[j] =
-              (unsigned short)decode_flags(&(aliasf[j]), piece, af);
-          std::sort(aliasf[j], aliasf[j] + aliasflen[j]);
-          break;
-        }
-        default:
-          break;
-      }
-      ++i;
+    i = 0;
+    if (af->getline(nl)) {
+      mychomp(nl);
+      iter = nl.begin();
       start_piece = mystrsep(nl, iter);
+      bool errored = false;
+      while (!errored && start_piece != nl.end()) {
+        switch (i) {
+          case 0: {
+            if (nl.compare(start_piece - nl.begin(), 2, "AF", 2) != 0) {
+              errored = true;
+              break;
+            }
+            break;
+          }
+          case 1: {
+            std::string piece(start_piece, iter);
+            aliasflen[j] =
+                (unsigned short)decode_flags(&(aliasf[j]), piece, af);
+            std::sort(aliasf[j], aliasf[j] + aliasflen[j]);
+            break;
+          }
+          default:
+            break;
+        }
+        ++i;
+        start_piece = mystrsep(nl, iter);
+      }
     }
     if (!aliasf[j]) {
+      for (int k = 0; k < j; ++k) {
+        free(aliasf[k]);
+      }
       free(aliasf);
       free(aliasflen);
       aliasf = NULL;
@@ -1226,47 +1224,47 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   /* now parse the numaliasm lines to read in the remainder of the table */
   for (int j = 0; j < numaliasm; j++) {
     std::string nl;
-    if (!af->getline(nl))
-      return false;
-    mychomp(nl);
     aliasm[j] = NULL;
-    iter = nl.begin();
-    i = 0;
-    start_piece = mystrsep(nl, iter);
-    while (start_piece != nl.end()) {
-      switch (i) {
-        case 0: {
-          if (nl.compare(start_piece - nl.begin(), 2, "AM", 2) != 0) {
-            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                             af->getlinenum());
-            numaliasm = 0;
-            free(aliasm);
-            aliasm = NULL;
-            return false;
-          }
-          break;
-        }
-        case 1: {
-          // add the remaining of the line
-          std::string::const_iterator end = nl.end();
-          std::string chunk(start_piece, end);
-          if (complexprefixes) {
-            if (utf8)
-              reverseword_utf(chunk);
-            else
-              reverseword(chunk);
-          }
-          aliasm[j] = mystrdup(chunk.c_str());
-          break;
-        }
-        default:
-          break;
-      }
-      ++i;
+    if (af->getline(nl)) {
+      mychomp(nl);
+      iter = nl.begin();
+      i = 0;
       start_piece = mystrsep(nl, iter);
+      bool errored = false;
+      while (!errored && start_piece != nl.end()) {
+        switch (i) {
+          case 0: {
+            if (nl.compare(start_piece - nl.begin(), 2, "AM", 2) != 0) {
+              errored = true;
+              break;
+            }
+            break;
+          }
+          case 1: {
+            // add the remaining of the line
+            std::string::const_iterator end = nl.end();
+            std::string chunk(start_piece, end);
+            if (complexprefixes) {
+              if (utf8)
+                reverseword_utf(chunk);
+              else
+                reverseword(chunk);
+            }
+            aliasm[j] = mystrdup(chunk.c_str());
+            break;
+          }
+          default:
+            break;
+        }
+        ++i;
+        start_piece = mystrsep(nl, iter);
+      }
     }
     if (!aliasm[j]) {
       numaliasm = 0;
+      for (int k = 0; k < j; ++k) {
+        free(aliasm[k]);
+      }
       free(aliasm);
       aliasm = NULL;
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
@@ -1332,46 +1330,45 @@ bool HashMgr::parse_reptable(const std::string& line, FileMgr* af) {
   /* now parse the numrep lines to read in the remainder of the table */
   for (int j = 0; j < numrep; ++j) {
     std::string nl;
-    if (!af->getline(nl))
-      return false;
-    mychomp(nl);
     reptable.push_back(replentry());
-    iter = nl.begin();
-    i = 0;
     int type = 0;
-    start_piece = mystrsep(nl, iter);
-    while (start_piece != nl.end()) {
-      switch (i) {
-        case 0: {
-          if (nl.compare(start_piece - nl.begin(), 3, "REP", 3) != 0) {
-            HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
-                             af->getlinenum());
-            reptable.clear();
-            return false;
-          }
-          break;
-        }
-        case 1: {
-          if (*start_piece == '^')
-            type = 1;
-          reptable.back().pattern.assign(start_piece + type, iter);
-          mystrrep(reptable.back().pattern, "_", " ");
-          if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
-            type += 2;
-            reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
-          }
-          break;
-        }
-        case 2: {
-          reptable.back().outstrings[type].assign(start_piece, iter);
-          mystrrep(reptable.back().outstrings[type], "_", " ");
-          break;
-        }
-        default:
-          break;
-      }
-      ++i;
+    if (af->getline(nl)) {
+      mychomp(nl);
+      iter = nl.begin();
+      i = 0;
       start_piece = mystrsep(nl, iter);
+      bool errored = false;
+      while (!errored && start_piece != nl.end()) {
+        switch (i) {
+          case 0: {
+            if (nl.compare(start_piece - nl.begin(), 3, "REP", 3) != 0) {
+              errored = true;
+              break;
+            }
+            break;
+          }
+          case 1: {
+            if (*start_piece == '^')
+              type = 1;
+            reptable.back().pattern.assign(start_piece + type, iter);
+            mystrrep(reptable.back().pattern, "_", " ");
+            if (!reptable.back().pattern.empty() && reptable.back().pattern[reptable.back().pattern.size() - 1] == '$') {
+              type += 2;
+              reptable.back().pattern.resize(reptable.back().pattern.size() - 1);
+            }
+            break;
+          }
+          case 2: {
+            reptable.back().outstrings[type].assign(start_piece, iter);
+            mystrrep(reptable.back().outstrings[type], "_", " ");
+            break;
+          }
+          default:
+            break;
+        }
+        ++i;
+        start_piece = mystrsep(nl, iter);
+      }
     }
     if (reptable.back().pattern.empty() || reptable.back().outstrings[type].empty()) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
