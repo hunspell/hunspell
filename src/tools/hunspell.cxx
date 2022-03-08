@@ -581,7 +581,7 @@ const char* basename(const char* s, char c) {
 #ifdef HAVE_CURSES_H
 char* scanline(const char* message) {
   char input[INPUTLEN];
-  printw(message);
+  printw("%s", message);
   echo();
   getnstr(input, INPUTLEN);
   noecho();
