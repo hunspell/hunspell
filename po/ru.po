@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2019-04-24 04:48+0000\n"
-"Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
+"PO-Revision-Date: 2022-06-06 13:14+0000\n"
+"Last-Translator: Сергей <sw@atrus.ru>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/hunspell/"
 "translations/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.7-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -84,15 +84,13 @@ msgstr ""
 #. in your translation and translate the standalone letter accordingly later
 #.
 #: src/tools/hunspell.cxx:1187
-#, fuzzy
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"ПЕРЕВОДЧИКИ: заглавные буквы являются ссылками, пометьте одну букву "
-"аналогично\n"
-"в своем переводе и переведите отдельностоящую букву позднее.\n"
+"[ПРОБЕЛ] З)амен П)ринять в(С)тавить М)ал О)снов В)ыйти за(К)ончить или ? для "
+"справки\n"
 
 #: src/tools/hunspell.cxx:1258
 msgid ""
@@ -102,6 +100,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Всякий раз, когда встречается слово, которого нет в словаре\n"
+"оно будет отображено в первой строке экрана. Если в словаре\n"
+"содержатся любые похожие слова, они будут перечислены\n"
+"под номерами. Вы можете заменить слово полностью или\n"
+"выбрать одно из предложенных.\n"
 
 #: src/tools/hunspell.cxx:1264
 msgid ""
@@ -115,38 +118,43 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tЗаменить полностью слово с ошибкой.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Пробел\tПринять это слово только один раз.\n"
 
 #: src/tools/hunspell.cxx:1268
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tПринимать слово до конца сеанса.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tПринять слово и поместить в собственный словарь.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tПринять и добавить слово строчными буквами в собственный словарь.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S\tСпросить основу и образец слова и сохранить их в собственном словаре.\n"
+"\tОснова будет считаться приемлемой, если использованы аффиксы модели слова."
+"\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tЗаменить одним из предложенных слов.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tЗаписать остальную часть этого файла, игнорируя орфографические ошибки, и "
+"начать следующий файл.\n"
 
 #: src/tools/hunspell.cxx:1283
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
@@ -175,7 +183,7 @@ msgstr ""
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1299
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1308
 msgid "Replace with: "
@@ -189,11 +197,11 @@ msgstr "Заменить на: "
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1332 src/tools/hunspell.cxx:1368
 msgid "u"
-msgstr ""
+msgstr "u"
 
 #: src/tools/hunspell.cxx:1333 src/tools/hunspell.cxx:1368
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
@@ -202,14 +210,14 @@ msgstr "Не удалось обновить словарь пользовате
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1377
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
@@ -221,21 +229,21 @@ msgstr "Слово-образец (из словаря): "
 
 #: src/tools/hunspell.cxx:1480
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr "Слова-образца нет в словаре! Нажмите любую клавишу."
+msgstr "Образец слова должен быть в словаре! Нажмите любую клавишу!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1490
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1496
 msgid "q"
-msgstr ""
+msgstr "q"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
@@ -245,7 +253,7 @@ msgstr "Вы хотите отказаться от изменений? "
 #. * letter y)es
 #: src/tools/hunspell.cxx:1502
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
@@ -339,7 +347,7 @@ msgstr "  -r\t\tпредупреждать о редких словах\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr "  -P пароль\tпароль для зашифрованных словарей\n"
+msgstr "  -P password\tустановить пароль для зашифрованных словарей\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
@@ -392,13 +400,13 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
-"Example: hunspell -d ru_RU файл.txt    # интерактивная проверка\n"
+"Пример: hunspell -d ru_RU файл.txt    # интерактивная проверка\n"
 "         hunspell -i utf-8 файл.txt    # проверка файла в кодировке UTF-8\n"
 "         hunspell -l *.odt             # печать слов с ошибками из файлов "
 "ODF\n"
 "\n"
-"         # Быстрое исправление файлов ODF посредством\n"
-"         # пользовательского словаря\n"
+"         # Быстрое исправление файлов ODF путём создания пользовательского "
+"словаря\n"
 "\n"
 "         # 1 Создайте список неизвестных слов и слов с ошибками:\n"
 "\n"
@@ -436,6 +444,11 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Это свободное программное обеспечение; условия копирования изложены в его "
+"исходных кодах.\n"
+"Лицензия не предусматривает никаких гарантий; в частности гарантий "
+"работоспособности или пригодности\n"
+"для определенной цели, в рамках законодательства.\n"
 
 #: src/tools/hunspell.cxx:2056
 #, c-format
