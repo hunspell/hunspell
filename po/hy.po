@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-07-31 21:04+0000\n"
+"Last-Translator: Davit Mayilyan <davit.mayilyan@protonmail.ch>\n"
+"Language-Team: Armenian <https://hosted.weblate.org/projects/hunspell/"
+"translations/hy/>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -46,7 +49,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Չկարողացա բացել %s\n"
 
 #: src/tools/hunspell.cxx:759 src/tools/hunspell.cxx:1345
 #: src/tools/hunspell.cxx:1457
@@ -57,7 +60,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:844
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Տող %d: %s -> "
 
 #: src/tools/hunspell.cxx:1124
 msgid "FORBIDDEN!"
@@ -98,6 +101,9 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Հրամաններն են.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
@@ -195,7 +201,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1392
 msgid "New word (stem): "
-msgstr ""
+msgstr "Նոր բառ (արմատ)՝ "
 
 #: src/tools/hunspell.cxx:1420
 msgid "Model word (a similar dictionary word): "
