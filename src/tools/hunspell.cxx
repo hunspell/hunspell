@@ -799,7 +799,8 @@ nextline:
         mystrrep(token, ENTITY_APOS, "'");
         switch (filter_mode) {
           case BADWORD: {
-            if (!check(pMS, &d, token, NULL, NULL)) {
+            int info;
+            if (!check(pMS, &d, token, &info, NULL)) {
               bad = 1;
               if (!printgood)
                 fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
@@ -811,7 +812,8 @@ nextline:
           }
 
           case WORDFILTER: {
-            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
+            int info;
+            if (!check(pMS, &d, parser->get_word(token), &info, NULL)) {
               if (!printgood)
                 fprintf(stdout, "%s\n", buf);
             } else {
@@ -822,7 +824,8 @@ nextline:
           }
 
           case BADLINE: {
-            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
+            int info;
+            if (!check(pMS, &d, parser->get_word(token), &info, NULL)) {
               bad = 1;
             }
             continue;
@@ -833,7 +836,8 @@ nextline:
           case AUTO2:
           case AUTO3: {
             FILE* f = (filter_mode == AUTO) ? stderr : stdout;
-            if (!check(pMS, &d, parser->get_word(token), NULL, NULL)) {
+            int info;
+            if (!check(pMS, &d, parser->get_word(token), &info, NULL)) {
               bad = 1;
               std::vector<std::string> wlst =
                   pMS[d]->suggest(chenc(parser->get_word(token), io_enc, dic_enc[d]));
