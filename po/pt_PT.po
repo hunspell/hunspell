@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-04-07 19:05+0000\n"
+"PO-Revision-Date: 2020-09-23 14:41+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_PT/>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -55,7 +55,7 @@ msgstr "Não foi possível abrir %s.\n"
 #: src/tools/hunspell.cxx:1457
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr "erro - variável HOME faltante\n"
+msgstr "erro - variável HOME em falta\n"
 
 #: src/tools/hunspell.cxx:844
 #, c-format
@@ -99,11 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"Sempre que uma palavra é encontrada que não está no dicionário\n"
-"ela será impressa na primeira linha da tela. Se o dicionário\n"
-"contém palavras semelhantes, elas serão listadas com um número\n"
-"ao lado. Você tem a opção de substituir a palavra\n"
-"completamente, ou escolher uma das palavras sugeridas.\n"
+"Sempre que é encontrada uma palavra que não está no dicionário\n"
+"ela será mostrada na primeira linha do ecrã. Se o dicionário\n"
+"contiver palavras semelhantes, elas serão listadas com um \n"
+"número ao lado. O utilizador tem a opção de substituir a palavra\n"
+"manualmente, ou escolher uma das palavras sugeridas.\n"
 
 #: src/tools/hunspell.cxx:1264
 msgid ""
@@ -117,7 +117,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1265
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "R\tSubstituir a palavra com erros ortográficos completamente.\n"
+msgstr "R\tSubstituir manualmente a palavra com erros ortográficos.\n"
 
 #: src/tools/hunspell.cxx:1266
 msgid "Space\tAccept the word this time only.\n"
@@ -129,30 +129,30 @@ msgstr "A\tAceitar a palavra para o resto da sessão.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "I\tAceitar a palavra e colocá-la no seu dicionário particular.\n"
+msgstr "I\tAceitar a palavra e colocá-la no dicionário particular.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr "U\tAceitar e adicionar a versão minúscula ao dicionário privado.\n"
+msgstr "U\tAceitar e adicionar a versão minúscula ao dicionário particular.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"T\tPergunte um tronco e um modelo da palavra e armazená-las no dicionário "
+"T\tSolicitar um tronco e um modelo da palavra e armazená-las no dicionário "
 "particular.\n"
 "O tronco também será aceite com os afixos do modelo da palavra.\n"
 
 #: src/tools/hunspell.cxx:1278
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tSubstituir com uma das palavras sugeridas.\n"
+msgstr "0-n\tSubstituir por uma das palavras sugeridas.\n"
 
 #: src/tools/hunspell.cxx:1280
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
-"S\tEscrever o resto deste ficheiro, ignorando os erros de ortografia e "
+"S\tEscrever o resto deste ficheiro ignorando os erros de ortografia e "
 "iniciar o próximo ficheiro.\n"
 
 #: src/tools/hunspell.cxx:1283
@@ -167,7 +167,7 @@ msgstr "^Z Suspender o programa. Reiniciar com o comando fg.\n"
 
 #: src/tools/hunspell.cxx:1286
 msgid "?\tShow this help screen.\n"
-msgstr "?\tExibe esta tela de ajuda.\n"
+msgstr "?\tMostrar este ecrã de ajuda.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -246,7 +246,7 @@ msgstr "c"
 
 #: src/tools/hunspell.cxx:1499
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Tem certeza que deseja descartar suas alterações? "
+msgstr "Tem certeza que deseja descartar as suas alterações? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -336,7 +336,8 @@ msgstr "  -n\t\tformato de ficheiro de entrada nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1848
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr "  -O\t\tformato de arquivo de entrada OpenDocument (ODF ou ODF plana)\n"
+msgstr ""
+"  -O\t\tformato de ficheiro de entrada OpenDocument (ODF ou ODF plana)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -p dict\tset dict custom dictionary\n"
@@ -348,7 +349,8 @@ msgstr "  -r\t\talertar sobre erros potenciais (raras palavras)\n"
 
 #: src/tools/hunspell.cxx:1854
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr "  -P senha\tdefinir senha para dicionários criptografados\n"
+msgstr ""
+"  -P palavra-passe\tdefinir palavra-passe para dicionários criptografados\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -s \t\tstem the words of the input text\n"
@@ -381,7 +383,7 @@ msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
-"  -X\t\tformato de arquivo de entrada XML\n"
+"  -X\t\tformato de ficheiro de entrada XML\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1867
