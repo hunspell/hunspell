@@ -95,7 +95,7 @@ For dictionary development, use the `--with-warnings` option of
 configure.
 
 For interactive user interface of Hunspell executable, use the
-`--with-ui option`.
+`--with-ui` option.
 
 Optional developer packages:
 
