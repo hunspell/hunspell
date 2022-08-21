@@ -121,7 +121,11 @@ dependencies are build with that.
     brew install autoconf automake libtool gettext
     brew link gettext --force
 
-Then run autoreconf, configure, make. See above.
+Then run:
+
+    autoreconf -vfi
+    ./configure
+    make
 
 # Compiling on Windows
 
