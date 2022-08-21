@@ -131,6 +131,8 @@ static struct {
                {{"\\psfig", NULL}, 1},
                {{"\\url", NULL}, 1},
                {{"\\eqref", NULL}, 1},
+               {{"\\cref", NULL}, 1},
+               {{"\\Cref", NULL}, 1},
                {{"\\vskip", NULL}, 1},
                {{"\\vglue", NULL}, 1},
                {{"\'\'", NULL}, 1}};
