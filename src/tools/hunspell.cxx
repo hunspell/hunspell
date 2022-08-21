@@ -1182,7 +1182,7 @@ void dialogscreen(TextParser* parser,
     if ((wlst.size() > 10) && (i < 10)) {
       printw(" 0%zu: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     } else {
-      printw(" %u: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
+      printw(" %zu: %s\n", i, chenc(wlst[i], io_enc, ui_enc).c_str());
     }
   }
 
