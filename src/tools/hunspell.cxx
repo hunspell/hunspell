@@ -2066,9 +2066,6 @@ int main(int argc, char** argv) {
         gettext(
             "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"));
     search(path, NULL, NULL);
-    if (-1 == arg_files) {
-      exit(0);
-    }
   }
 
   if (!privdicname)
