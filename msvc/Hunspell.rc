@@ -23,7 +23,7 @@ BEGIN
             VALUE "FileDescription", "libhunspell"
             VALUE "FileVersion", "1.7.0"
             VALUE "InternalName", "libhunspell"
-            VALUE "LegalCopyright", "Copyright (c) 2007-2018"
+            VALUE "LegalCopyright", "Copyright (c) 2007-2022"
             VALUE "OriginalFilename", "libhunspell.dll"
             VALUE "ProductName", "Hunspell Dynamic Link Library"
             VALUE "ProductVersion", "1.7.0"
