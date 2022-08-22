@@ -1889,7 +1889,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             }
 
             // check FORCEUCASE
-            if (rv && forceucase && (rv) &&
+            if (rv && forceucase &&
                 (TESTAFF(rv->astr, forceucase, rv->alen)) &&
                 !(info && *info & SPELL_ORIGCAP))
               rv = NULL;
@@ -1998,7 +1998,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             }
 
             // check FORCEUCASE
-            if (rv && forceucase && (rv) &&
+            if (rv && forceucase &&
                 (TESTAFF(rv->astr, forceucase, rv->alen)) &&
                 !(info && *info & SPELL_ORIGCAP))
               rv = NULL;
