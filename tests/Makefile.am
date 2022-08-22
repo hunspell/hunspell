@@ -525,12 +525,16 @@ i68568utf.wrong \
 1706659.dic \
 1706659.wrong \
 1748408-1.aff \
+1748408-1.dic \
 1748408-1.good \
 1748408-2.aff \
+1748408-2.dic \
 1748408-2.good \
 1748408-3.aff \
+1748408-3.dic \
 1748408-3.good \
 1748408-4.aff \
+1748408-4.dic \
 1748408-4.good \
 digits_in_words.aff \
 digits_in_words.dic \
