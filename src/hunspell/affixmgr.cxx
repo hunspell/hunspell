@@ -1330,7 +1330,7 @@ int AffixMgr::cpdpat_check(const char* word,
          ((checkcpdtable[i].pattern[0] == '0' && r1->blen <= pos &&
            strncmp(word + pos - r1->blen, r1->word, r1->blen) == 0) ||
           (checkcpdtable[i].pattern[0] != '0' &&
-           ((len = checkcpdtable[i].pattern.size()) != 0) &&
+           ((len = checkcpdtable[i].pattern.size()) != 0) && len <= pos &&
            strncmp(word + pos - len, checkcpdtable[i].pattern.c_str(), len) == 0)))) {
       return 1;
     }
