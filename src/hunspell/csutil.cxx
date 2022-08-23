@@ -171,8 +171,10 @@ std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
 }
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src) {
-  dest.clear();
-  dest.reserve(src.size());
+  // faster to oversize initially, assign to elements and resize to what's used
+  // than to reserve and push_back
+  dest.resize(src.size());
+  std::vector<w_char>::iterator u16 = dest.begin();
   std::string::const_iterator u8 = src.begin();
   std::string::const_iterator u8_max = src.end();
 
@@ -254,16 +256,18 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
                          src.c_str());
         u2.h = 0xff;
         u2.l = 0xfd;
-        dest.push_back(u2);
+        *u16++ = u2;
+        dest.resize(u16 - dest.begin());
         return -1;
       }
     }
-    dest.push_back(u2);
+    *u16++ = u2;
     ++u8;
   }
 
-  dest.shrink_to_fit();
-  return dest.size();
+  int size = u16 - dest.begin();
+  dest.resize(size);
+  return size;
 }
 
 namespace {
