@@ -134,6 +134,7 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
+  dest.reserve(src.size());
   std::vector<w_char>::const_iterator u2 = src.begin();
   std::vector<w_char>::const_iterator u2_max = src.end();
   while (u2 < u2_max) {
@@ -171,6 +172,7 @@ std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src) {
   dest.clear();
+  dest.reserve(src.size());
   std::string::const_iterator u8 = src.begin();
   std::string::const_iterator u8_max = src.end();
 
@@ -260,6 +262,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src) {
     ++u8;
   }
 
+  dest.shrink_to_fit();
   return dest.size();
 }
 
