@@ -181,13 +181,13 @@ bool TextParser::next_token(std::string &t) {
       case 1:  // wordchar
         if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           head += strlen(latin1);
-        } else if ((is_wordchar((char*)APOSTROPHE) ||
-                    (is_utf8() && is_wordchar((char*)UTF8_APOS))) &&
+        } else if ((is_wordchar(APOSTROPHE) ||
+                    (is_utf8() && is_wordchar(UTF8_APOS))) &&
                    !line[actual].empty() && line[actual][head] == '\'' &&
                    is_wordchar(line[actual].c_str() + head + 1)) {
           head++;
         } else if (is_utf8() &&
-                   is_wordchar((char*)APOSTROPHE) &&  // add Unicode apostrophe
+                   is_wordchar(APOSTROPHE) &&  // add Unicode apostrophe
                                                       // to the WORDCHARS, if
                                                       // needed
                    strncmp(line[actual].c_str() + head, UTF8_APOS, strlen(UTF8_APOS)) ==
