@@ -135,7 +135,8 @@ LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
 
 // convert UTF-8 characters to UTF-16
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
-                                    const std::string& src);
+                                    const std::string& src,
+                                    bool only_convert_first_letter = false);
 
 // remove end of line char(s)
 LIBHUNSPELL_DLL_EXPORTED void mychomp(std::string& s);
