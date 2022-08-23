@@ -79,7 +79,7 @@ int TextParser::is_wordchar(const char* w) {
     return 0;
   if (utf8) {
     unsigned short idx;
-    u8_u16(wc, w);
+    u8_u16(wc, w, true);
     if (wc.empty())
         return 0;
     idx = (wc[0].h << 8) + wc[0].l;
