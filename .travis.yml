@@ -1,38 +1,32 @@
 language: cpp
 
-compiler:
-  - clang
-  - gcc
+os: linux
 
 sudo: false
 
-os:
-  - linux
-  - osx
-
-before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        brew --version;
-        HOMEBREW_NO_ENV_FILTERING=1 brew update;
-    fi
-
-install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      brew install gettext;
-      brew link gettext --force;
-    fi
-# Don't use real gcc on OS X, problems arise when
-# Hunspell built with gcc is linked with cppunit built with clang.
-# Homebrew builds are build with clang
-before_script:
-  - if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
-      export CXX="g++-5" CC="gcc-5";
-    fi
+jobs:
+  include:
+   - name: gcc - linux - x86_64
+     compiler: gcc
+     arch: amd64
+   - name: gcc - linux - ppc64le
+     compiler: gcc
+     arch: ppc64le
+   - name: gcc - linux - aarch64
+     compiler: gcc
+     arch: arm64
+   - name: gcc - linux - s390x
+     compiler: gcc
+     arch: s390x
+   - name: clang - linux - x86_64
+     compiler: clang
+     arch: amd64
+   - name: clang - linux - ppc64le
+     compiler: clang
+     arch: ppc64le
 
 script:
-  - autoreconf -i && ./configure && make && make check
-#  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then autoreconf -i -I /usr/local/share/aclocal && ./configure && make && make check; fi
-# might be needed for future
+  - autoreconf -vfi && ./configure && make && make check
 
 after_failure:
   - cat tests/test-suite.log
@@ -45,5 +39,3 @@ addons:
     - autoconf
     - automake
     - autopoint
-    - gcc-5
-    - g++-5
