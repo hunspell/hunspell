@@ -16,3 +16,4 @@ $CXX $CXXFLAGS -o $OUT/fuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/fuzzer.cx
 #dic/aff combos to test
 cp -f ./tests/korean.* $OUT/
 cp -f ./tests/utf8_nonbmp.* $OUT/
+cp -f ./tests/checkcompoundpattern*.* $OUT/
