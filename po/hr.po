@@ -1,15 +1,14 @@
-# Croatian translation for hunspell.
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the hunspell package.
-# Translators:
-# Milo Ivir <mail@milotype.de>, 2020., 2021.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-10-13 14:52+0200\n"
+"PO-Revision-Date: 2022-08-25 15:09+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/hunspell/"
 "translations/hr/>\n"
@@ -19,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -130,18 +129,18 @@ msgstr "P\tPrihvati riječ do kraja ove sesije.\n"
 
 #: src/tools/hunspell.cxx:1270
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "U\tPrihvati riječ i stavi je u privatni rječnik.\n"
+msgstr "U\tPrihvati riječ i stavi je u privatnu mapu.\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr "M\tPrihvati i dodaj verziju s malim slovima u privatni rječnik.\n"
+msgstr "M\tPrihvati i dodaj verziju s malim slovima u privatnu mapu.\n"
 
 #: src/tools/hunspell.cxx:1274
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"K\tUpitaj korijen i uzornu riječ te ih spremi u privatni rječnik.\n"
+"K\tUpitaj korijen i uzornu riječ te ih spremi u privatnu mapu.\n"
 "\tKorijen će se prihvatiti i s afiksima uzorne riječi.\n"
 
 #: src/tools/hunspell.cxx:1278
@@ -173,7 +172,7 @@ msgid ""
 "-- Type space to continue -- \n"
 msgstr ""
 "\n"
-"-- Nastavi pritiskom razmaknice -- \n"
+"-- Nastavi pritiskanjem razmaknice -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -203,7 +202,7 @@ msgstr "u"
 #: src/tools/hunspell.cxx:1361 src/tools/hunspell.cxx:1473
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr "Nije moguće aktualizirati osobni rječnik."
+msgstr "Nije moguće aktualizirati osobnu mapu."
 
 #: src/tools/hunspell.cxx:1369
 msgid "a"
@@ -250,7 +249,7 @@ msgstr "Stvarno želiš odbaciti sve tvoje promjene?"
 #. * letter y)es
 #: src/tools/hunspell.cxx:1502
 msgid "y"
-msgstr "d"
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1611
 msgid "Can't create tempfile"
@@ -292,8 +291,7 @@ msgstr "  --check-apostrophe\tprovjeri Unicode za tipografske izostavnike\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
-"  -d r[,r2,...]\tkoristi r (r2 itd.) rječnike\n"
+msgstr "  -d rječnik[,rječnik2,...]\tkoristi rječnik (rječnik2 itd.) rječnike\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -D\t\tshow available dictionaries\n"
@@ -401,9 +399,9 @@ msgid ""
 "\n"
 msgstr ""
 "Primjer: hunspell -d en_US datoteka.txt    # interaktivni pravopis\n"
-"         hunspell -i utf-8 datoteka.txt    # provjeri UTF-8 kodiranu "
-"datoteku\n"
-"         hunspell -l * .odt                # ispiši pogrešno napisane "
+"         hunspell -i utf-8 datoteka.txt    # provjeri datoteku kodiranu u "
+"UTF-8 formatu\n"
+"         hunspell -l * .odt                # ispiši pogrešno napisanih "
 "riječi ODF datoteka\n"
 "\n"
 "         # Brzo popravljanje ODF dokumenata izradom osobnog rječnika\n"
@@ -476,12 +474,12 @@ msgstr ""
 #: src/tools/hunspell.cxx:2094
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr "greška – %s prekoračuje ograničenje rječnika.\n"
+msgstr "greška – %s prekoračuje ograničenje mape.\n"
 
 #: src/tools/hunspell.cxx:2100
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr "Nije moguće otvoriti afiks ili datoteke za rječnik „%s”.\n"
+msgstr "Nije moguće otvoriti afiks ili datoteke mape „%s”.\n"
 
 #: src/tools/hunspell.cxx:2183
 msgid "Hunspell has been compiled without Ncurses user interface.\n"

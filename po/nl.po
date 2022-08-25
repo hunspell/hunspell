@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2020-06-19 15:41+0000\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"PO-Revision-Date: 2022-08-25 15:08+0000\n"
+"Last-Translator: Pander <pander@users.sourceforge.net>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/hunspell/"
 "translations/nl/>\n"
 "Language: nl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1.1\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -376,8 +376,8 @@ msgstr "  -vv\t\ttoon Ispell-compatibel versienummer\n"
 #: src/tools/hunspell.cxx:1861
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
-"  -w\t\ttoon verkeerd gespelde woorden (= regels) van invoer van één "
-"woord/regel.\n"
+"  -w\t\ttoon verkeerd gespelde woorden (= regels) van invoer van één woord/"
+"regel.\n"
 
 #: src/tools/hunspell.cxx:1863
 msgid ""

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-04-25 08:41+0000\n"
+"PO-Revision-Date: 2022-08-25 15:08+0000\n"
 "Last-Translator: Toni Estévez <toni.estevez@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/hunspell/"
 "translations/es/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
@@ -272,8 +272,8 @@ msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
-"Revisar la ortografía del ARCHIVO. Sin ARCHIVO, revisar la entrada "
-"estándar.\n"
+"Revisar la ortografía del ARCHIVO. Sin ARCHIVO, revisar la entrada estándar."
+"\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1824
@@ -288,8 +288,7 @@ msgstr "  -a\t\tInterfaz de canalización de Ispell\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
-"  --check-url\trevisar URL, direcciones de correo y rutas de carpetas\n"
+msgstr "  --check-url\trevisar URL, direcciones de correo y rutas de carpetas\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: nemeth@numbertext.org\n"
 "POT-Creation-Date: 2016-08-30 09:19+0100\n"
-"PO-Revision-Date: 2018-06-12 17:40+0000\n"
+"PO-Revision-Date: 2022-08-25 15:09+0000\n"
 "Last-Translator: Ilyas Bakirov <i.bakirov@gmail.com>\n"
 "Language-Team: Kyrgyz <https://hosted.weblate.org/projects/hunspell/"
 "translations/ky/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
 #, c-format
