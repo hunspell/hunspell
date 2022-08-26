@@ -218,7 +218,8 @@ int printgood = 0;  // print only good words and lines
 int showpath = 0;   // show detected path of the dictionary
 int checkurl = 0;   // check URLs and mail addresses
 int checkapos = 0;  // force typographic apostrophe
-int warn = 0;  // warn potential mistakes (dictionary words with WARN flags)
+int warn = 0;       // warn potential mistakes (dictionary words with WARN flags)
+int agglutdebug = 0;   // write debuggers   // SJC added
 const char* ui_enc = NULL;  // locale character encoding (default for I/O)
 const char* io_enc = NULL;  // I/O character encoding
 
@@ -1985,6 +1986,8 @@ int main(int argc, char** argv) {
       showpath = 1;
     } else if ((strcmp(argv[i], "-r") == 0)) {
       warn = 1;
+	} else if ((strcmp(argv[i], "-z") == 0)) {	// SJC added
+	  agglutdebug = 1;
     } else if ((strcmp(argv[i], "--check-url") == 0)) {
       checkurl = 1;
     } else if ((strcmp(argv[i], "--check-apostrophe") == 0)) {
@@ -2085,6 +2088,7 @@ int main(int argc, char** argv) {
       fprintf(stderr, gettext("LOADED DICTIONARY:\n%s\n%s\n"), aff, dic);
     }
     pMS[0] = new Hunspell(aff, dic, key);
+    pMS[0]->set_agglut_debug(agglutdebug);   // SJC
     dic_enc[0] = pMS[0]->get_dict_encoding().c_str();
     dmax = 1;
     while (dicplus) {
@@ -2201,6 +2205,7 @@ int main(int argc, char** argv) {
             "Hunspell has been compiled without Ncurses user interface.\n"));
 #endif
   }
+
 
   if (dicname)
     free(dicname);

@@ -1,0 +1,36 @@
+# For testing limits on length of affix chains. Also tests several comments approaches.
+
+SET ISO8859-1
+
+AGGLUTINATIVE 4 3
+
+
+# Prefixes
+PFX A Y 1
+PFX A        0       aa/B     .  # comment
+
+PFX B Y 1
+PFX B        0       bb/C     .
+
+PFX C Y 1
+PFX C        0       cc/D     .
+
+PFX D Y 1
+PFX D        0       dd/E     .
+
+PFX E Y 1
+PFX E        0       ee/E     .
+
+
+# Suffixes
+SFX F Y 1
+SFX F        0       ff/G     .   # comment
+
+SFX G Y 1
+SFX G        0       gg/H     .
+
+SFX H Y 1
+SFX H        0       hh       .
+
+SFX J Y 1
+SFX J        0       jj/J     .

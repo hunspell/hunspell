@@ -94,6 +94,9 @@ AffixMgr::AffixMgr(const char* affpath,
   // register hash manager and load affix data from aff file
   csconv = NULL;
   utf8 = 0;
+  agglutinative = 0;
+  agglutMaxPre = 5;  // default
+  agglutMaxSuf = 5;  // default
   complexprefixes = 0;
   parsedmaptable = false;
   parsedbreaktable = false;
@@ -310,6 +313,23 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
       }
     }
 
+    /* parse AGGLUTINATIVE for fully agglutinative languages */
+	if (line.compare(0, 13, "AGGLUTINATIVE", 13) == 0) {    // SJC
+      agglutinative = 1;
+	  if (!parse_1_or_2_nums(line, &agglutMaxPre, &agglutMaxSuf, afflst)) {
+	    // none found; okay, assign the default
+		agglutMaxPre = agglutMaxSuf = 5;  // default
+	  } else if (agglutMaxSuf == -1) {
+	    agglutMaxSuf = agglutMaxPre;  // use one max value for both
+	  }
+	  if (agglutMaxPre > maxAFF || agglutMaxSuf > maxAFF) {
+	    HUNSPELL_WARNING(stderr, "error: line %d: maximum length of affix chain is %d\n",
+				afflst->getlinenum(), maxAFF);
+		agglutMaxPre = (agglutMaxPre > maxAFF) ? maxAFF : agglutMaxPre;
+		agglutMaxSuf = (agglutMaxSuf > maxAFF) ? maxAFF : agglutMaxSuf;
+	  }
+	}
+
     /* parse COMPLEXPREFIXES for agglutinative languages with right-to-left
      * writing system */
     if (line.compare(0, 15, "COMPLEXPREFIXES", 15) == 0)
@@ -519,8 +539,9 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
       }
     }
 
-    /* parse in the ignored characters (for example, Arabic optional diacretics
-     * charachters */
+
+    /* parse in the ignored characters (for example, Arabic optional diacritic
+     * characters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
       if (!parse_array(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
@@ -972,9 +993,9 @@ int AffixMgr::process_sfx_order() {
     ptr = sStart[i];
 
     // look through the remainder of the list
-    //  and find next entry with affix that
-    // the current one is not a subset of
-    // mark that as destination for NextNE
+    // and find next entry with affix that
+    // the current one is not a subset of;
+    // mark that as destination for NextNE;
     // use next in list that you are a subset
     // of as NextEQ
 
@@ -1507,7 +1528,7 @@ inline int AffixMgr::candidate_check(const char* word, int len) {
   if (rv)
     return 1;
 
-  //  rv = prefix_check(word,len,1);
+  //  rv = prefix_check(word, len, 1);
   //  if (rv) return 1;
 
   rv = affix_check(word, len);
@@ -2833,9 +2854,9 @@ struct hentry* AffixMgr::suffix_check(const char* word,
             return rv;
           }
         }
-      sptr = sptr->getNextEQ();
+      sptr = sptr->getNextEQ();   // subset of this suffix
     } else {
-      sptr = sptr->getNextNE();
+      sptr = sptr->getNextNE();   // not a subset of this suffix
     }
   }
 
@@ -3534,6 +3555,21 @@ int AffixMgr::get_langnum() const {
   return langnum;
 }
 
+// fully agglutinative
+int AffixMgr::get_agglutinative() const {
+  return agglutinative;
+}
+
+// max number of prefixes when fully agglutinative
+int AffixMgr::get_maxprefixes() const {
+  return agglutMaxPre;
+}
+
+// max number of suffixes when fully agglutinative
+int AffixMgr::get_maxsuffixes() const {
+  return agglutMaxSuf;
+}
+
 // return double prefix option
 int AffixMgr::get_complexprefixes() const {
   return complexprefixes;
@@ -3722,6 +3758,27 @@ bool AffixMgr::parse_num(const std::string& line, int* out, FileMgr* af) {
   if (!parse_string(line, s, af->getlinenum()))
     return false;
   *out = atoi(s.c_str());
+  return true;
+}
+
+// Return -1 for values that are not found. Return true as an error if at least
+// one value is not found.
+bool AffixMgr::parse_1_or_2_nums(const std::string& line, int* out1, int* out2, FileMgr* af) {
+  std::string s1 = "";
+  std::string s2 = "";
+  if (!parse_string_n(line, af->getlinenum(), &s1, &s2)) {
+	if (!s1.empty()) {
+	  // only got one value instead of two - okay
+	  *out1 = atoi(s1.c_str());
+	  *out2 = -1;  // invalid
+	} else {
+      *out1 = *out2 = -1;
+	  return false;    // none found
+	}
+  } else {
+    *out1 = atoi(s1.c_str());
+    *out2 = atoi(s2.c_str());
+  }
   return true;
 }
 
@@ -4461,7 +4518,6 @@ bool AffixMgr::parse_affix(const std::string& line,
         np++;
         break;
       }
-
       // piece 2 - is affix char
       case 1: {
         np++;
@@ -4472,6 +4528,7 @@ bool AffixMgr::parse_affix(const std::string& line,
               stderr,
               "error: line %d: multiple definitions of an affix flag\n",
               af->getlinenum());
+
         }
         dupflags[aflag] += (char)((at == 'S') ? dupSFX : dupPFX);
         break;
@@ -4511,10 +4568,11 @@ bool AffixMgr::parse_affix(const std::string& line,
 
       default:
         break;
-    }
+    }  // switch
     ++i;
     start_piece = mystrsep(line, iter);
-  }
+  }  // while
+
   // check to make sure we parsed enough pieces
   if (np != 4) {
     char* err = pHMgr->encode_flag(aflag);
@@ -4526,6 +4584,8 @@ bool AffixMgr::parse_affix(const std::string& line,
     return false;
   }
 
+  bool skipline = false;  // for detecting a comment
+
   // now parse numents affentries for this affix
   AffEntry* entry = affentries.first_entry();
   for (int ent = 0; ent < numents; ++ent) {
@@ -4533,7 +4593,7 @@ bool AffixMgr::parse_affix(const std::string& line,
     if (!af->getline(nl))
       return false;
     mychomp(nl);
-
+	skipline = false;
     iter = nl.begin();
     i = 0;
     np = 0;
@@ -4541,6 +4601,13 @@ bool AffixMgr::parse_affix(const std::string& line,
     // split line into pieces
     start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
+	  if (*start_piece == '#' && i == 0) {
+	    // comment
+	    skipline = true;
+	    --entry; // process an extra line
+        break;
+	  }
+
       switch (i) {
         // piece 1 - is type
         case 0: {
@@ -4570,7 +4637,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->aflag = start_entry->aflag;
           }
           break;
-        }
+        }  // case 1
 
         // piece 3 - is string to strip or 0 for null
         case 2: {
@@ -4586,7 +4653,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->strip.clear();
           }
           break;
-        }
+        }  // case 2
 
         // piece 4 - is affix string or 0 for null
         case 3: {
@@ -4655,7 +4722,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->appnd.clear();
           }
           break;
-        }
+        }  // case 3
 
         // piece 5 - is the conditions descriptions
         case 4: {
@@ -4687,36 +4754,38 @@ bool AffixMgr::parse_affix(const std::string& line,
           if (pHMgr->is_aliasm()) {
             int index = atoi(chunk.c_str());
             entry->morphcode = pHMgr->get_aliasm(index);
-          } else {
-            if (complexprefixes) {  // XXX - fix me for morph. gen.
-              if (utf8)
-                reverseword_utf(chunk);
-              else
-                reverseword(chunk);
-            }
-            // add the remaining of the line
-            std::string::const_iterator end = nl.end();
-            if (iter != end) {
-              chunk.append(iter, end);
-            }
-            entry->morphcode = mystrdup(chunk.c_str());
-            if (!entry->morphcode)
-              return false;
-          }
-          break;
-        }
+		  }
+		  else {
+			  if (complexprefixes) {  // XXX - fix me for morph. gen.
+				  if (utf8)
+					  reverseword_utf(chunk);
+				  else
+					  reverseword(chunk);
+			  }
+			  // add the remaining of the line
+			  std::string::const_iterator end = nl.end();
+			  if (iter != end) {
+				  chunk.append(iter, end);
+			  }
+			  entry->morphcode = mystrdup(chunk.c_str());
+			  if (!entry->morphcode)
+				  return false;
+		  }
+		  break;
+		}  // case 5
         default:
           break;
-      }
+      }   // switch
       i++;
       start_piece = mystrsep(nl, iter);
-    }
-    // check to make sure we parsed enough pieces
-    if (np < 4) {
+    }  // while
+	if (np == 0 && skipline) {
+	  // just a comment
+	} else if (np < 4) {  // check to make sure we parsed enough pieces
       char* err = pHMgr->encode_flag(aflag);
       if (err) {
         HUNSPELL_WARNING(stderr, "error: line %d: affix %s is corrupt\n",
-                         af->getlinenum(), err);
+                       af->getlinenum(), err);
         free(err);
       }
       return false;
@@ -4873,4 +4942,298 @@ std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
     }
   }
   return slst;
+}
+
+
+/*  FULLY AGGLUTINATIVE SYSTEMS  */
+/*                               */
+/*  Added by Sharon Correll      */
+
+struct hentry* AffixMgr::affix_check_agglut(
+                            const char* word,
+                            int len, int agglutdebug) {
+
+  // This method assumes that *word* has been checked and is not a legal base.
+
+  struct hentry* rv = NULL;
+
+  AffStack affstack;
+
+  // First try with no prefixes.
+  rv = suffix_check_agglut(word, len, &affstack);
+  if (!rv) {
+    // Now try stripping prefixes off one by one.
+    rv = prefix_check_agglut(word, len, &affstack);
+  }
+
+  if (rv && agglutdebug)
+    affstack.showdebug(rv->word);
+
+  return rv;
+}
+
+
+struct hentry* AffixMgr::prefix_check_agglut(
+                            const char* word,
+                            int len,
+                            AffStack* paffstack) {
+
+  struct hentry* rv = NULL;
+
+  if (len == 0)
+    return NULL;
+
+  // Strip off possible prefixes. After stripping each one,
+  // strip off all possible suffixes and test for a legal base.
+
+  unsigned char sp = *((const unsigned char*)word);
+  PfxEntry* pptr = pStart[sp];
+  while (pptr) {
+    if (isSubset(pptr->getKey(), word)) {
+      if (paffstack->permits_next_prefix(pptr)) {
+        rv = pptr->checkword_agglut(word, len, paffstack);
+        if (rv) {
+          paffstack->set_pfx(pptr);
+          return rv;
+        }
+      }
+      pptr = pptr->getNextEQ();
+    } else {
+      pptr = pptr->getNextNE();
+    }
+  }
+
+  return NULL;
+}
+
+
+struct hentry* AffixMgr::suffix_check_agglut(const char* word,
+                                   int len,
+                                   ///PfxEntry* ppfx,
+                                   AffStack* paffstack) {
+
+  struct hentry* rv = NULL;
+
+  if (len == 0)
+    return NULL;
+
+  unsigned char sp = *((const unsigned char*)(word + len - 1));
+  SfxEntry* sptr = sStart[sp];
+  while (sptr) {
+    if (isRevSubset(sptr->getKey(), word + len - 1, len)) {
+      if (paffstack->permits_next_suffix(sptr)) {
+        rv = sptr->checkword_agglut(word, len, paffstack);
+        if (rv) {
+          paffstack->set_sfx(sptr);
+          return rv;
+        }
+      }
+      sptr = sptr->getNextEQ();
+    } else {
+      sptr = sptr->getNextNE();
+    }
+  }
+
+  return NULL;
+}
+
+
+AffStack::AffStack() {
+  for (int i = 0; i < maxAFF; i++) {
+    pfxstack[i] = NULL;
+    sfxstack[i] = NULL;
+    pfxi = 0;
+    sfxi = 0;
+  }
+}
+
+
+// Determine if the given inner preffix permits the next outer one
+// (which we already found).
+bool AffStack::permits_next_prefix(PfxEntry* ppfxInner) {
+  if (top_pfx()) {
+    PfxEntry* toppfx = top_pfx();
+    unsigned short outerAflag = toppfx->getFlag();
+    if (ppfxInner->getCont() && TESTAFF(ppfxInner->getCont(), outerAflag, ppfxInner->getContLen())) {
+      return true;  // prefix permitted
+    } else {
+      return false;
+    }
+  }
+  return true;  // no outer prefix
+}
+
+
+// Determine if the given inner suffix permits the next outer one
+// (which we already found).
+bool AffStack::permits_next_suffix(SfxEntry* psfxInner) {
+  if (top_sfx()) {
+    SfxEntry* topsfx = top_sfx();
+    unsigned short outerAflag = topsfx->getFlag();
+    if (psfxInner->getCont() && TESTAFF(psfxInner->getCont(), outerAflag, psfxInner->getContLen())) {
+      return true;  // suffix permitted
+    } else {
+      return false;
+    }
+  }
+  return true;  // no outer suffix
+}
+
+// currently not used
+bool AffStack::affix_permitted(FLAG aflag) {
+  // Either the most recent prefix or the most recent suffix
+  // must permit this one.
+  if (top_pfx()) {
+    PfxEntry* toppfx = top_pfx();
+    if (toppfx->getCont() && TESTAFF(toppfx->getCont(), aflag, toppfx->getContLen())) {
+      return true;  // prefix permits it
+    } else {
+      return false;
+    }
+  }
+  if (top_sfx()) {
+    SfxEntry* topsfx = top_sfx();
+    if (topsfx->getCont() && TESTAFF(topsfx->getCont(), aflag, topsfx->getContLen())) {
+      return true;  // suffix permits it
+    } else {
+      return false;
+    }
+  }
+  return true; // no prefix or suffix
+}
+
+
+
+void AffStack::showdebug(const char* baseword) {
+
+  // Figure out how many suffixes we have.
+  int firstSfx = -1;
+  for (int i = 0; i < maxAFF; i++) {
+    if (sfxstack[i]) {
+	  firstSfx = i;
+	}
+  }
+
+  int lastPfx = -1;
+  for (int i = 0; i < maxAFF; i++) {
+    if (pfxstack[i]) {
+      std::string afx(pfxstack[i]->getAffix());
+	  std::string strip = ((i == 0) ? "" : pfxstack[i-1]->getStrip());
+	  std::string afx2 = this->showdebugStripped(afx, strip, "");
+	  fprintf(stdout, "%s- ", afx2.c_str());
+	  //if (strip != "") fprintf(stdout, "(%s)", strip.c_str());
+	  lastPfx = i;
+    }
+  }
+
+  //fprintf(stdout, "%s", baseword);
+  std::string base2 = this->showdebugStripped(baseword,
+	  ((lastPfx == -1) ? "" : pfxstack[lastPfx]->getStrip()),
+	  ((firstSfx == -1) ? "" : sfxstack[firstSfx]->getStrip()));
+  fprintf(stdout, "%s", base2.c_str());
+
+  for (int i = maxAFF - 1; i >= 0; i--) { // suffixes with higher indices are closer to the root
+    if (sfxstack[i]) {
+	  std::string afx(sfxstack[i]->getAffix());
+	  //std::string strip(sfxstack[i]->getStrip());
+	  //if (sfxstack[i]->getStrip() != "") fprintf(stdout, "(%s)", strip.c_str());
+	  std::string strip = ((i == 0) ? "" : sfxstack[i-1]->getStrip());
+	  std::string afx2 = this->showdebugStripped(afx, "", strip);
+	  fprintf(stdout, " -%s", afx.c_str());
+    }
+  }
+  fprintf(stdout, "\n");
+}
+
+std::string AffStack::showdebugStripped(std::string base, std::string pstrip, std::string sstrip) {
+	std::string result;
+	if (pstrip == "") {
+		if (sstrip == "") {
+			result.append(base);
+		} else {
+			result.append(base.substr(0, base.length() - sstrip.length()));
+			result.append("(");
+			result.append(sstrip);
+			result.append(")");
+		}
+	} else {
+		if (sstrip == "") {
+			result.append("(");
+			result.append(pstrip);
+			result.append(")");
+			result.append(base.substr(pstrip.length()));
+		} else {
+			result.append("(");
+			result.append(pstrip);
+			result.append(")");
+			result.append(base.substr(pstrip.length(), (base.length() - pstrip.length() - sstrip.length())));
+			result.append("(");
+			result.append(sstrip);
+			result.append(")");
+		}
+	}
+	return result;
+}
+
+// Retrieve n arguments from the string, where n = number of args passed.
+// Modeled after parse_string().
+bool AffixMgr::parse_string_n(const std::string& line, int ln,
+		std::string * pout1, std::string * pout2, std::string * pout3, std::string * pout4) {
+  if (!pout1->empty()) {
+    HUNSPELL_WARNING(stderr, "error: line %d: multiple definitions\n", ln);
+    return false;
+  }
+  int i = 0;
+  int np = 0;
+  std::string::const_iterator iter = line.begin();
+  std::string::const_iterator start_piece = mystrsep(line, iter);
+  while (start_piece != line.end()) {
+      switch (i) {
+        case 0: { // ignore
+          np++;
+          break;
+        }
+        case 1: {
+          pout1->assign(start_piece, iter);
+          //if (!*out1)
+          //  return 1;
+          np++;
+          break;
+        }
+		case 2: {
+		  if (pout2 == NULL) break;
+		  pout2->assign(start_piece, iter);
+          //if (!*out2)
+          //  return 1;
+          np++;
+          break;
+		}
+		case 3: {
+		  if (pout3 == NULL) break;
+		  pout3->assign(start_piece, iter);
+          //if (!*out3)
+          //  return 1;
+          np++;
+          break;
+		}
+		case 4: {
+		  if (pout4 == NULL) break;
+		  pout4->assign(start_piece, iter);
+          //if (!*out4)
+          //  return 1;
+          np++;
+          break;
+		}
+        default:
+          break;
+      }
+      i++;
+	  start_piece = mystrsep(line, iter);
+  }
+  int needed = ((pout4) ? 4 : ((pout3) ? 3 : ((pout2) ? 2 : 1)));
+  if (np - 1 < needed) {
+    HUNSPELL_WARNING(stderr, "error: line %d: missing data; need %needed arguments\n", ln, needed);
+    return false;
+  }
+  return true;
 }

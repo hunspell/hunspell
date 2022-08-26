@@ -9,6 +9,9 @@ AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/tools/hunspell; \
 DIC_LOG_COMPILER = $(top_srcdir)/tests/test.sh
 
 TESTS =	\
+agglut_bogus.dic \
+agglut_max.dic\
+agglut_nsk.dic\
 affixes.dic \
 condition.dic \
 condition_utf.dic \
@@ -143,6 +146,18 @@ clean-local:
         
 EXTRA_DIST = \
 test.sh \
+agglut_bogus.aff \
+agglut_bogus.dic \
+agglut_bogus.good \
+agglut_bogus.wrong \
+agglut_max.aff \
+agglut_max.dic \
+agglut_max.good \
+agglut_max.wrong \
+agglut_nsk.aff \
+agglut_nsk.dic \
+agglut_nsk.good \
+agglut_nsk.wrong \
 affixes.aff \
 affixes.dic \
 affixes.good \

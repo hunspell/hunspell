@@ -108,6 +108,7 @@ public:
   int remove(const std::string& word);
   const std::string& get_version_cpp() const;
   struct cs_info* get_csconv();
+  void set_agglut_debug(int);  // SJC - debugging
 
   int spell(const char* word, int* info = NULL, char** root = NULL);
   int suggest(char*** slst, const char* word);
@@ -132,8 +133,10 @@ private:
   struct cs_info* csconv;
   int langnum;
   int utf8;
+  int agglutinative;      // SJC
   int complexprefixes;
   std::vector<std::string> wordbreak;
+  int agglutdebug;       // SJC - debugging
 
 private:
   std::vector<std::string> analyze_internal(const std::string& word);
@@ -172,6 +175,7 @@ private:
 HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key) {
   csconv = NULL;
   utf8 = 0;
+  agglutinative = 0;
   complexprefixes = 0;
   affixpath = mystrdup(affpath);
 
@@ -190,6 +194,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   utf8 = pAMgr->get_utf8();
   if (!utf8)
     csconv = get_current_cs(encoding);
+  agglutinative = pAMgr->get_agglutinative();
   complexprefixes = pAMgr->get_complexprefixes();
   wordbreak = pAMgr->get_breaktable();
 
@@ -828,7 +833,10 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   // check with affixes
   if (!he && pAMgr) {
     // try stripping off affixes */
-    he = pAMgr->affix_check(word, len, 0);
+    if (this->agglutinative)
+      he = pAMgr->affix_check_agglut(word, len, agglutdebug);
+    else
+      he = pAMgr->affix_check(word, len, 0);
 
     // check compound restriction and onlyupcase
     if (he && he->astr &&
@@ -1414,6 +1422,10 @@ const std::string& HunspellImpl::get_version_cpp() const {
 
 struct cs_info* HunspellImpl::get_csconv() {
   return csconv;
+}
+
+void HunspellImpl::set_agglut_debug(int flag) {  // SJC - debugging
+  agglutdebug = flag;
 }
 
 void HunspellImpl::cat_result(std::string& result, const std::string& st) {
@@ -2158,6 +2170,10 @@ const char* Hunspell::get_version() const {
 
 int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
   return m_Impl->input_conv(word, dest, destsize);
+}
+
+void Hunspell::set_agglut_debug(int flag) {  // SJC - debugging
+	return m_Impl->set_agglut_debug(flag);
 }
 
 Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {

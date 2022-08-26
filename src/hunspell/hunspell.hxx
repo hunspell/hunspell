@@ -227,6 +227,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* need for putdic */
   bool input_conv(const std::string& word, std::string& dest);
   H_DEPRECATED int input_conv(const char* word, char* dest, size_t destsize);
+
+  void set_agglut_debug(int);  // SJC - debugging
 };
 
 #endif

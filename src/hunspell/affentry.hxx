@@ -114,6 +114,11 @@ class PfxEntry : public AffEntry {
                                  char in_compound,
                                  const FLAG needflag = FLAG_NULL);
 
+  struct hentry* checkword_agglut(    // SJC
+                            const char* word,
+                            int len,
+                            AffStack* paffstack);
+
   FLAG getFlag() { return aflag; }
   const char* getKey() { return appnd.c_str(); }
   std::string add(const char* word, size_t len);
@@ -124,6 +129,8 @@ class PfxEntry : public AffEntry {
 
   inline const unsigned short* getCont() { return contclass; }
   inline short getContLen() { return contclasslen; }
+  inline const char* getAffix() { return appnd.c_str(); }	// SJC added
+  inline const char* getStrip() { return strip.c_str(); }   // SJC added
 
   inline PfxEntry* getNext() { return next; }
   inline PfxEntry* getNextNE() { return nextne; }
@@ -182,6 +189,11 @@ class SfxEntry : public AffEntry {
                                  int optflags,
                                  PfxEntry* ppfx,
                                  const FLAG needflag = FLAG_NULL);
+
+  struct hentry* checkword_agglut(const char* word,  // SJC added
+	int len,
+	AffStack* paffstack);
+
   struct hentry* get_next_homonym(struct hentry* he);
   struct hentry* get_next_homonym(struct hentry* word,
                                   int optflags,
@@ -198,6 +210,7 @@ class SfxEntry : public AffEntry {
   inline const unsigned short* getCont() { return contclass; }
   inline short getContLen() { return contclasslen; }
   inline const char* getAffix() { return appnd.c_str(); }
+  inline const char* getStrip() { return strip.c_str(); }  // SJC added
 
   inline short getKeyLen() { return appnd.size(); }
 
