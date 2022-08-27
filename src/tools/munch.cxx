@@ -366,6 +366,7 @@ int parse_aff_file(FILE* afflst) {
           numpfx++;
         } else {
           fprintf(stderr, "prefix buffer ptable is full\n");
+          free(ptr);
         }
       } else {
         if (numsfx < MAX_SUFFIXES) {
@@ -375,6 +376,7 @@ int parse_aff_file(FILE* afflst) {
           numsfx++;
         } else {
           fprintf(stderr, "suffix buffer stable is full\n");
+          free(ptr);
         }
       }
       ptr = NULL;
