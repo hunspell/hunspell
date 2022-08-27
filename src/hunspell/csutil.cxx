@@ -250,7 +250,8 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
         }
         break;
       }
-      case 0xf0: {  // 4 or more byte UTF-8 codes
+      default: {  // 4 or more byte UTF-8 codes
+        assert(((*u8) & 0xf0) == 0xf0 && "can only be 0xf0");
         HUNSPELL_WARNING(stderr,
                          "This UTF-8 encoding can't convert to UTF-16:\n%s\n",
                          src.c_str());
