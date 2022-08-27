@@ -6,21 +6,15 @@ sudo: false
 
 jobs:
   include:
-   - name: gcc - linux - x86_64
-     compiler: gcc
-     arch: amd64
-   - name: gcc - linux - ppc64le
-     compiler: gcc
-     arch: ppc64le
    - name: gcc - linux - aarch64
      compiler: gcc
      arch: arm64
+   - name: gcc - linux - ppc64le
+     compiler: gcc
+     arch: ppc64le
    - name: gcc - linux - s390x
      compiler: gcc
      arch: s390x
-   - name: clang - linux - x86_64
-     compiler: clang
-     arch: amd64
    - name: clang - linux - ppc64le
      compiler: clang
      arch: ppc64le
