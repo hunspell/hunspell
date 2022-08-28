@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:09+0000\n"
-"Last-Translator: Arnold Marko <arnold.marko@gmail.com>\n"
+"PO-Revision-Date: 2022-08-29 23:50+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/hunspell/"
 "translations/sl/>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
-"n%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -37,26 +37,26 @@ msgstr "napaka - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Začasne mape ni mogoče ustvariti"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Vhodne datoteke ni mogoče ustvariti"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "%s ni mogoče odpreti.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr "napaka - manjkajočja HOME spremenljivka\n"
+msgstr "napaka - manjkajoča spremenljivka HOME\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
@@ -122,19 +122,19 @@ msgstr "Z\tZamenjaj celo nepravilno zapisano besedo.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr "Preslednica - Potrdi to besedo samo tokrat.\n"
+msgstr "Preslednica - Sprejmi to besedo samo tokrat.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr "P\tPotrdi to besedo do konca te seje.\n"
+msgstr "P\tSprejmi to besedo do konca te seje.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "U\tUpoštevaj to besedo in jo shrani v osebni slovar.\n"
+msgstr "U\tSprejmi to besedo in jo shrani v osebni slovar.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr "M\tUpoštevaj to besedo in jo z malimi črkami zapiši v osebni slovar.\n"
+msgstr "M\tSprejmi to besedo in jo z malimi črkami zapiši v osebni slovar.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
@@ -181,11 +181,11 @@ msgstr ""
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "z"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Zamenjaj z: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -204,7 +204,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Osebnega slovarja ni mogoče posodobiti."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -219,7 +219,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Nova beseda (koren): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
@@ -423,7 +423,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "SLOVARJI NA VOLJO (pot ni obvezna za možnost -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -432,11 +432,14 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"NALOŽENI SLOVAR:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "napaka - %s presega omejitev slovarja.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
@@ -445,4 +448,4 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell je preveden brez uporabniškega vmesnika Ncurses.\n"
