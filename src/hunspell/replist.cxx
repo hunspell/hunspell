@@ -88,10 +88,6 @@ RepList::~RepList() {
   }
 }
 
-replentry* RepList::item(int n) {
-  return dat[n];
-}
-
 int RepList::find(const char* word) {
   int p1 = 0;
   int p2 = pos - 1;

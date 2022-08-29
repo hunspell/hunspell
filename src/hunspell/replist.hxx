@@ -92,7 +92,6 @@ class RepList {
   ~RepList();
 
   int add(const std::string& pat1, const std::string& pat2);
-  replentry* item(int n);
   int find(const char* word);
   std::string replace(const char* word, int n, bool atstart);
   bool conv(const std::string& word, std::string& dest);
