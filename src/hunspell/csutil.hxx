@@ -322,7 +322,8 @@ inline const char* HENTRY_DATA2(
 
 inline char* HENTRY_FIND(struct hentry* h,
                                                   const char* p) {
-  return (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL);
+  char* data = HENTRY_DATA(h);
+  return data ? strstr(data, p) : NULL;
 }
 
 #endif

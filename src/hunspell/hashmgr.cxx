@@ -256,7 +256,7 @@ int HashMgr::add_word(const std::string& in_word,
     } else {
       strcpy(hpw + word->size() + 1, desc->c_str());
     }
-    if (strstr(HENTRY_DATA(hp), MORPH_PHON)) {
+    if (HENTRY_FIND(hp, MORPH_PHON)) {
       hp->var |= H_OPT_PHON;
       // store ph: fields (pronounciation, misspellings, old orthography etc.)
       // of a morphological description in reptable to use in REP replacements.
