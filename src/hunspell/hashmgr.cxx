@@ -89,9 +89,6 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
       complexprefixes(0),
       utf8(0),
       forbiddenword(FORBIDDENWORD)  // forbidden word signing flag
-      ,
-      numaliasf(0),
-      numaliasm(0)
 {
   langnum = 0;
   csconv = 0;
@@ -130,11 +127,11 @@ HashMgr::~HashMgr() {
   }
   tablesize = 0;
 
-  for (int j = 0; j < numaliasf; ++j)
+  for (size_t j = 0, numaliasf = aliasf.size(); j < numaliasf; ++j)
     free(aliasf[j]);
   aliasf.clear();
 
-  for (int j = 0; j < numaliasm; ++j)
+  for (size_t j = 0, numaliasm = aliasm.size(); j < numaliasm; ++j)
     free(aliasm[j]);
   aliasm.clear();
 
@@ -1038,13 +1035,14 @@ int HashMgr::load_config(const char* affpath, const char* key) {
 
 /* parse in the ALIAS table */
 bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
-  if (numaliasf != 0) {
+  if (!aliasf.empty()) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return false;
   }
   int i = 0;
   int np = 0;
+  int numaliasf = 0;
   std::string::const_iterator iter = line.begin();
   std::string::const_iterator start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
@@ -1056,7 +1054,6 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
       case 1: {
         numaliasf = atoi(std::string(start_piece, iter).c_str());
         if (numaliasf < 1) {
-          numaliasf = 0;
           aliasf.clear();
           aliasflen.clear();
           HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
@@ -1075,7 +1072,6 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
     start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
-    numaliasf = 0;
     aliasf.clear();
     aliasflen.clear();
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
@@ -1084,7 +1080,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   }
 
   /* now parse the numaliasf lines to read in the remainder of the table */
-  for (int j = 0; j < numaliasf; j++) {
+  for (int j = 0; j < numaliasf; ++j) {
     std::string nl;
     aliasf[j] = NULL;
     aliasflen[j] = 0;
@@ -1123,7 +1119,6 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
       }
       aliasf.clear();
       aliasflen.clear();
-      numaliasf = 0;
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       return false;
@@ -1137,7 +1132,7 @@ int HashMgr::is_aliasf() const {
 }
 
 int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) const {
-  if ((index > 0) && (index <= numaliasf)) {
+  if (index > 0 && static_cast<size_t>(index) <= aliasflen.size()) {
     *fvec = aliasf[index - 1];
     return aliasflen[index - 1];
   }
@@ -1149,13 +1144,14 @@ int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) const {
 
 /* parse morph alias definitions */
 bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
-  if (numaliasm != 0) {
+  if (!aliasm.empty()) {
     HUNSPELL_WARNING(stderr, "error: line %d: multiple table definitions\n",
                      af->getlinenum());
     return false;
   }
   int i = 0;
   int np = 0;
+  int numaliasm = 0;
   std::string::const_iterator iter = line.begin();
   std::string::const_iterator start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
@@ -1182,7 +1178,6 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
     start_piece = mystrsep(line, iter);
   }
   if (np != 2) {
-    numaliasm = 0;
     aliasm.clear();
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
@@ -1190,7 +1185,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   }
 
   /* now parse the numaliasm lines to read in the remainder of the table */
-  for (int j = 0; j < numaliasm; j++) {
+  for (size_t j = 0, numaliasm = aliasm.size(); j < numaliasm; ++j) {
     std::string nl;
     aliasm[j] = NULL;
     if (af->getline(nl)) {
@@ -1229,8 +1224,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
       }
     }
     if (!aliasm[j]) {
-      numaliasm = 0;
-      for (int k = 0; k < j; ++k) {
+      for (size_t k = 0; k < j; ++k) {
         free(aliasm[k]);
       }
       aliasm.clear();
@@ -1247,7 +1241,7 @@ int HashMgr::is_aliasm() const {
 }
 
 char* HashMgr::get_aliasm(int index) const {
-  if ((index > 0) && (index <= numaliasm))
+  if (index > 0 && static_cast<size_t>(index) <= aliasm.size())
     return aliasm[index - 1];
   HUNSPELL_WARNING(stderr, "error: bad morph. alias index: %d\n", index);
   return NULL;

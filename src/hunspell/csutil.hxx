@@ -78,6 +78,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <assert.h>
 #include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
