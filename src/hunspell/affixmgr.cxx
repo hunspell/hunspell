@@ -1574,7 +1574,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                         char hu_mov_rule = 0,
                                         char is_sug = 0,
                                         int* info = NULL) {
-  int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   struct hentry* rv = NULL;
   struct hentry* rv_first;
@@ -1614,7 +1613,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   st.assign(word);
 
-  for (i = cmin; i < cmax; i++) {
+  for (int i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
@@ -2188,7 +2187,6 @@ int AffixMgr::compound_check_morph(const char* word,
                                    char hu_mov_rule,
                                    std::string& result,
                                    const std::string* partresult) {
-  int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   int ok = 0;
 
@@ -2225,7 +2223,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   st.assign(word);
 
-  for (i = cmin; i < cmax; i++) {
+  for (int i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
