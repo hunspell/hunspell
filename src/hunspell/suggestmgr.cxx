@@ -424,7 +424,7 @@ int SuggestMgr::map_related(const char* word,
   for (size_t j = 0; j < maptable.size(); ++j) {
     for (size_t k = 0; k < maptable[j].size(); ++k) {
       size_t len = maptable[j][k].size();
-      if (strncmp(maptable[j][k].c_str(), word + wn, len) == 0) {
+      if (len && strncmp(maptable[j][k].c_str(), word + wn, len) == 0) {
         in_map = 1;
         size_t cn = candidate.size();
         for (size_t l = 0; l < maptable[j].size(); ++l) {
