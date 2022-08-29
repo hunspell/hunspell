@@ -1060,8 +1060,8 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        aliasf.resize(numaliasf);
-        aliasflen.resize(numaliasf);
+        aliasf.reserve(numaliasf);
+        aliasflen.reserve(numaliasf);
         np++;
         break;
       }
@@ -1082,8 +1082,8 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; ++j) {
     std::string nl;
-    aliasf[j] = NULL;
-    aliasflen[j] = 0;
+    unsigned short* alias = NULL;
+    unsigned aliaslen = 0;
     i = 0;
     if (af->getline(nl)) {
       mychomp(nl);
@@ -1101,9 +1101,9 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
           }
           case 1: {
             std::string piece(start_piece, iter);
-            aliasflen[j] =
-                (unsigned short)decode_flags(&(aliasf[j]), piece, af);
-            std::sort(aliasf[j], aliasf[j] + aliasflen[j]);
+            aliaslen =
+                (unsigned short)decode_flags(&alias, piece, af);
+            std::sort(alias, alias + aliaslen);
             break;
           }
           default:
@@ -1113,7 +1113,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
         start_piece = mystrsep(nl, iter);
       }
     }
-    if (!aliasf[j]) {
+    if (!alias) {
       for (int k = 0; k < j; ++k) {
         free(aliasf[k]);
       }
@@ -1123,6 +1123,9 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
                        af->getlinenum());
       return false;
     }
+
+    aliasf.push_back(alias);
+    aliasflen.push_back(aliaslen);
   }
   return true;
 }
@@ -1167,7 +1170,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        aliasm.resize(numaliasm);
+        aliasm.reserve(numaliasm);
         np++;
         break;
       }
@@ -1185,9 +1188,9 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   }
 
   /* now parse the numaliasm lines to read in the remainder of the table */
-  for (size_t j = 0, numaliasm = aliasm.size(); j < numaliasm; ++j) {
+  for (int j = 0; j < numaliasm; ++j) {
     std::string nl;
-    aliasm[j] = NULL;
+    char* alias = NULL;
     if (af->getline(nl)) {
       mychomp(nl);
       iter = nl.begin();
@@ -1213,7 +1216,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
               else
                 reverseword(chunk);
             }
-            aliasm[j] = mystrdup(chunk.c_str());
+            alias = mystrdup(chunk.c_str());
             break;
           }
           default:
@@ -1223,8 +1226,8 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
         start_piece = mystrsep(nl, iter);
       }
     }
-    if (!aliasm[j]) {
-      for (size_t k = 0; k < j; ++k) {
+    if (!alias) {
+      for (int k = 0; k < j; ++k) {
         free(aliasm[k]);
       }
       aliasm.clear();
@@ -1232,6 +1235,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
                        af->getlinenum());
       return false;
     }
+    aliasm.push_back(alias);
   }
   return true;
 }
