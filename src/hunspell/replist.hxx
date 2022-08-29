@@ -82,10 +82,7 @@ class RepList {
   RepList(const RepList&);
   RepList& operator=(const RepList&);
 
- protected:
   std::vector<replentry*> dat;
-  int size;
-  int pos;
 
  public:
   explicit RepList(int n);
