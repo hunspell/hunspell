@@ -91,10 +91,8 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
       forbiddenword(FORBIDDENWORD)  // forbidden word signing flag
       ,
       numaliasf(0),
-      aliasf(NULL),
-      aliasflen(0),
-      numaliasm(0),
-      aliasm(NULL) {
+      numaliasm(0)
+{
   langnum = 0;
   csconv = 0;
   load_config(apath, key);
@@ -122,7 +120,7 @@ HashMgr::~HashMgr() {
       while (pt) {
         nt = pt->next;
         if (pt->astr &&
-            (!aliasf || TESTAFF(pt->astr, ONLYUPCASEFLAG, pt->alen)))
+            (aliasf.empty() || TESTAFF(pt->astr, ONLYUPCASEFLAG, pt->alen)))
           free(pt->astr);
         free(pt);
         pt = nt;
@@ -132,22 +130,13 @@ HashMgr::~HashMgr() {
   }
   tablesize = 0;
 
-  if (aliasf) {
-    for (int j = 0; j < (numaliasf); j++)
-      free(aliasf[j]);
-    free(aliasf);
-    aliasf = NULL;
-    if (aliasflen) {
-      free(aliasflen);
-      aliasflen = NULL;
-    }
-  }
-  if (aliasm) {
-    for (int j = 0; j < (numaliasm); j++)
-      free(aliasm[j]);
-    free(aliasm);
-    aliasm = NULL;
-  }
+  for (int j = 0; j < numaliasf; ++j)
+    free(aliasf[j]);
+  aliasf.clear();
+
+  for (int j = 0; j < numaliasm; ++j)
+    free(aliasm[j]);
+  aliasm.clear();
 
 #ifndef OPENOFFICEORG
 #ifndef MOZILLA_CLIENT
@@ -207,7 +196,7 @@ int HashMgr::add_word(const std::string& in_word,
       else
         reverseword(*word_copy);
 
-      if (in_desc && !aliasm) {
+      if (in_desc && aliasm.empty()) {
         desc_copy = new std::string(*in_desc);
 
         if (complexprefixes) {
@@ -224,7 +213,7 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   bool upcasehomonym = false;
-  int descl = desc ? (aliasm ? sizeof(char*) : desc->size() + 1) : 0;
+  int descl = desc ? (!aliasm.empty() ? sizeof(char*) : desc->size() + 1) : 0;
   // variable-length hash record with word and optional fields
   struct hentry* hp =
       (struct hentry*)malloc(sizeof(struct hentry) + word->size() + descl);
@@ -250,7 +239,7 @@ int HashMgr::add_word(const std::string& in_word,
   // store the description string or its pointer
   if (desc) {
     hp->var |= H_OPT;
-    if (aliasm) {
+    if (!aliasm.empty()) {
       hp->var |= H_OPT_ALIASM;
       store_pointer(hpw + word->size() + 1, get_aliasm(atoi(desc->c_str())));
     } else {
@@ -534,7 +523,7 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
   if (dp && dp->astr) {
     int captype;
     int wcl = get_clen_and_captype(word, &captype);
-    if (aliasf) {
+    if (!aliasf.empty()) {
       add_word(word, wcl, dp->astr, dp->alen, NULL, false, captype);
     } else {
       unsigned short* flags =
@@ -665,7 +654,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     if (ap_pos != std::string::npos && ap_pos != ts.size()) {
       std::string ap(ts.substr(ap_pos + 1));
       ts.resize(ap_pos);
-      if (aliasf) {
+      if (!aliasf.empty()) {
         int index = atoi(ap.c_str());
         al = get_aliasf(index, &flags, dict);
         if (!al) {
@@ -1068,26 +1057,14 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
         numaliasf = atoi(std::string(start_piece, iter).c_str());
         if (numaliasf < 1) {
           numaliasf = 0;
-          aliasf = NULL;
-          aliasflen = NULL;
+          aliasf.clear();
+          aliasflen.clear();
           HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
                            af->getlinenum());
           return false;
         }
-        aliasf =
-            (unsigned short**)malloc(numaliasf * sizeof(unsigned short*));
-        aliasflen =
-            (unsigned short*)malloc(numaliasf * sizeof(unsigned short));
-        if (!aliasf || !aliasflen) {
-          numaliasf = 0;
-          if (aliasf)
-            free(aliasf);
-          if (aliasflen)
-            free(aliasflen);
-          aliasf = NULL;
-          aliasflen = NULL;
-          return false;
-        }
+        aliasf.resize(numaliasf);
+        aliasflen.resize(numaliasf);
         np++;
         break;
       }
@@ -1099,10 +1076,8 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   }
   if (np != 2) {
     numaliasf = 0;
-    free(aliasf);
-    free(aliasflen);
-    aliasf = NULL;
-    aliasflen = NULL;
+    aliasf.clear();
+    aliasflen.clear();
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
     return false;
@@ -1146,10 +1121,8 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
       for (int k = 0; k < j; ++k) {
         free(aliasf[k]);
       }
-      free(aliasf);
-      free(aliasflen);
-      aliasf = NULL;
-      aliasflen = NULL;
+      aliasf.clear();
+      aliasflen.clear();
       numaliasf = 0;
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
@@ -1160,7 +1133,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
 }
 
 int HashMgr::is_aliasf() const {
-  return (aliasf != NULL);
+  return !aliasf.empty();
 }
 
 int HashMgr::get_aliasf(int index, unsigned short** fvec, FileMgr* af) const {
@@ -1198,11 +1171,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        aliasm = (char**)malloc(numaliasm * sizeof(char*));
-        if (!aliasm) {
-          numaliasm = 0;
-          return false;
-        }
+        aliasm.resize(numaliasm);
         np++;
         break;
       }
@@ -1214,8 +1183,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
   }
   if (np != 2) {
     numaliasm = 0;
-    free(aliasm);
-    aliasm = NULL;
+    aliasm.clear();
     HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
                      af->getlinenum());
     return false;
@@ -1265,8 +1233,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
       for (int k = 0; k < j; ++k) {
         free(aliasm[k]);
       }
-      free(aliasm);
-      aliasm = NULL;
+      aliasm.clear();
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
       return false;
@@ -1276,7 +1243,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
 }
 
 int HashMgr::is_aliasm() const {
-  return (aliasm != NULL);
+  return !aliasm.empty();
 }
 
 char* HashMgr::get_aliasm(int index) const {
