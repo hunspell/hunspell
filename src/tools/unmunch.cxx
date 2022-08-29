@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Copyright (C) 2002-2017 Németh László
+ * Copyright (C) 2002-2022 Németh László
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -284,17 +284,27 @@ int parse_aff_file(FILE* afflst) {
       }
       if (ptr) {
         if (ft == 'P') {
-          ptable[numpfx].aep = ptr;
-          ptable[numpfx].num = numents;
-          fprintf(stderr, "ptable %d num is %d flag %c\n", numpfx,
-                  ptable[numpfx].num, ptr->achar);
-          numpfx++;
+          if (numpfx < MAX_PREFIXES) {
+            ptable[numpfx].aep = ptr;
+            ptable[numpfx].num = numents;
+            fprintf(stderr, "ptable %d num is %d flag %c\n", numpfx,
+                    ptable[numpfx].num, ptr->achar);
+            numpfx++;
+          } else {
+            fprintf(stderr, "prefix buffer ptable is full\n");
+            free(ptr);
+          }
         } else if (ft == 'S') {
-          stable[numsfx].aep = ptr;
-          stable[numsfx].num = numents;
-          fprintf(stderr, "stable %d num is %d flag %c\n", numsfx,
-                  stable[numsfx].num, ptr->achar);
-          numsfx++;
+          if (numsfx < MAX_SUFFIXES) {
+            stable[numsfx].aep = ptr;
+            stable[numsfx].num = numents;
+            fprintf(stderr, "stable %d num is %d flag %c\n", numsfx,
+                    stable[numsfx].num, ptr->achar);
+	    numsfx++;
+          } else {
+            fprintf(stderr, "suffix buffer stable is full\n");
+            free(ptr);
+          }
         }
         ptr = NULL;
       }

@@ -1,3 +1,9 @@
+2022-08-22: Hunspell 1.7.1 release:
+  - Merge chromium fix for #714 OOB string write in hunspell
+  - Merge firefox fix for #756 various issues parsing incomplete aff files
+  - Fix #492 crash with hunspell -l -r
+  - Merge in weblate translations
+
 2018-11-12: Hunspell 1.7.0 release:
 
   New features and bug fixes by László Németh, supported by FSF.hu Foundation:

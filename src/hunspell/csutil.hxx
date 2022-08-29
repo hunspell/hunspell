@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Copyright (C) 2002-2017 Németh László
+ * Copyright (C) 2002-2022 Németh László
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -78,6 +78,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <assert.h>
 #include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
@@ -135,7 +136,8 @@ LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
 
 // convert UTF-8 characters to UTF-16
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
-                                    const std::string& src);
+                                    const std::string& src,
+                                    bool only_convert_first_letter = false);
 
 // remove end of line char(s)
 LIBHUNSPELL_DLL_EXPORTED void mychomp(std::string& s);
@@ -321,7 +323,8 @@ inline const char* HENTRY_DATA2(
 
 inline char* HENTRY_FIND(struct hentry* h,
                                                   const char* p) {
-  return (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL);
+  char* data = HENTRY_DATA(h);
+  return data ? strstr(data, p) : NULL;
 }
 
 #endif

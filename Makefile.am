@@ -6,4 +6,4 @@ pkgconfdir = $(libdir)/pkgconfig
 pkgconf_DATA = hunspell.pc
 
 EXTRA_DIST = license.myspell license.hunspell \
-        ChangeLog.O COPYING.LESSER hunspell.pc.in
+        ChangeLog.O COPYING.LESSER COPYING.MPL hunspell.pc.in
