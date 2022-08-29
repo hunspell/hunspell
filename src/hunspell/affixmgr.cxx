@@ -3993,7 +3993,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        checkcpdtable.reserve(numcheckcpd);
+        checkcpdtable.reserve(std::min(numcheckcpd, 16384));
         np++;
         break;
       }
@@ -4090,7 +4090,7 @@ bool AffixMgr::parse_defcpdtable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        defcpdtable.reserve(numdefcpd);
+        defcpdtable.reserve(std::min(numdefcpd, 16384));
         np++;
         break;
       }
@@ -4193,7 +4193,7 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        maptable.reserve(nummap);
+        maptable.reserve(std::min(nummap, 16384));
         np++;
         break;
       }
@@ -4302,7 +4302,7 @@ bool AffixMgr::parse_breaktable(const std::string& line, FileMgr* af) {
         }
         if (numbreak == 0)
           return true;
-        breaktable.reserve(numbreak);
+        breaktable.reserve(std::min(numbreak, 16384));
         np++;
         break;
       }
@@ -4409,7 +4409,7 @@ public:
   }
   void initialize(int numents,
                   char opts, unsigned short aflag) {
-    entries.reserve(numents);
+    entries.reserve(std::min(numents, 16384));
 
     if (m_at == 'P') {
       entries.push_back(new PfxEntry(m_mgr));
