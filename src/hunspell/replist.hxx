@@ -83,7 +83,7 @@ class RepList {
   RepList& operator=(const RepList&);
 
  protected:
-  replentry** dat;
+  std::vector<replentry*> dat;
   int size;
   int pos;
 

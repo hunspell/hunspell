@@ -77,11 +77,8 @@
 #include "csutil.hxx"
 
 RepList::RepList(int n) {
-  dat = (replentry**)malloc(sizeof(replentry*) * n);
-  if (dat == 0)
-    size = 0;
-  else
-    size = n;
+  dat.resize(n);
+  size = n;
   pos = 0;
 }
 
@@ -89,7 +86,6 @@ RepList::~RepList() {
   for (int i = 0; i < pos; i++) {
     delete dat[i];
   }
-  free(dat);
 }
 
 replentry* RepList::item(int n) {
