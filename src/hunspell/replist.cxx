@@ -77,7 +77,7 @@
 #include "csutil.hxx"
 
 RepList::RepList(int n) {
-  dat.reserve(n);
+  dat.reserve(std::min(n, 16384));
 }
 
 RepList::~RepList() {

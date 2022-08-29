@@ -12,6 +12,7 @@ autoreconf -vfi
 make clean
 make -j$(nproc)
 $CXX $CXXFLAGS -o $OUT/fuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/fuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
+$CXX $CXXFLAGS -o $OUT/affdicfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/affdicfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 
 #dic/aff combos to test
 cp -f ./tests/arabic.* $OUT/
