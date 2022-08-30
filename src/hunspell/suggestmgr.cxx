@@ -397,15 +397,15 @@ int SuggestMgr::mapchars(std::vector<std::string>& wlst,
                      maptable, &timer, &timelimit);
 }
 
-int SuggestMgr::map_related(const char* word,
+int SuggestMgr::map_related(const std::string& word,
                             std::string& candidate,
-                            int wn,
+                            size_t wn,
                             std::vector<std::string>& wlst,
                             int cpdsuggest,
                             const std::vector<mapentry>& maptable,
                             int* timer,
                             clock_t* timelimit) {
-  if (*(word + wn) == '\0') {
+  if (word.size() == wn) {
     int cwrd = 1;
     for (size_t m = 0; m < wlst.size(); ++m) {
       if (wlst[m] == candidate) {
@@ -424,7 +424,7 @@ int SuggestMgr::map_related(const char* word,
   for (size_t j = 0; j < maptable.size(); ++j) {
     for (size_t k = 0; k < maptable[j].size(); ++k) {
       size_t len = maptable[j][k].size();
-      if (len && strncmp(maptable[j][k].c_str(), word + wn, len) == 0) {
+      if (len && word.compare(wn, len, maptable[j][k]) == 0) {
         in_map = 1;
         size_t cn = candidate.size();
         for (size_t l = 0; l < maptable[j].size(); ++l) {
@@ -439,7 +439,7 @@ int SuggestMgr::map_related(const char* word,
     }
   }
   if (!in_map) {
-    candidate.push_back(*(word + wn));
+    candidate.push_back(word[wn]);
     map_related(word, candidate, wn + 1, wlst, cpdsuggest,
                 maptable, timer, timelimit);
   }
