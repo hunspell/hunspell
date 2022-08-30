@@ -449,31 +449,30 @@ int SuggestMgr::map_related(const char* word,
 // suggestions for a typical fault of spelling, that
 // differs with more, than 1 letter from the right form.
 int SuggestMgr::replchars(std::vector<std::string>& wlst,
-                          const char* word,
+                          const std::string& word,
                           int cpdsuggest) {
   std::string candidate;
-  int wl = strlen(word);
+  int wl = word.size();
   if (wl < 2 || !pAMgr)
     return wlst.size();
   const std::vector<replentry>& reptable = pAMgr->get_reptable();
   for (size_t i = 0; i < reptable.size(); ++i) {
-    const char* r = word;
+    size_t r = 0;
     // search every occurence of the pattern in the word
-    while ((r = strstr(r, reptable[i].pattern.c_str())) != NULL) {
-      int type = (r == word) ? 1 : 0;
-      if (r - word + reptable[i].pattern.size() == strlen(word))
+    while ((r = word.find(reptable[i].pattern, r)) != std::string::npos) {
+      int type = (r == 0) ? 1 : 0;
+      if (r + reptable[i].pattern.size() == word.size())
         type += 2;
       while (type && reptable[i].outstrings[type].empty())
-        type = (type == 2 && r != word) ? 0 : type - 1;
+        type = (type == 2 && r != 0) ? 0 : type - 1;
       const std::string&out = reptable[i].outstrings[type];
       if (out.empty()) {
         ++r;
         continue;
       }
-      candidate.assign(word);
-      candidate.resize(r - word);
+      candidate.assign(word, 0, r);
       candidate.append(reptable[i].outstrings[type]);
-      candidate.append(r + reptable[i].pattern.size());
+      candidate.append(word, r + reptable[i].pattern.size(), std::string::npos);
       testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       // check REP suggestions with space
       size_t sp = candidate.find(' ');
