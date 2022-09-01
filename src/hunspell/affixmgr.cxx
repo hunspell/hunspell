@@ -4672,7 +4672,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             reverse_condition(chunk);
           }
           if (!entry->strip.empty() && chunk != "." &&
-              redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
+              redundant_condition(at, entry->strip, chunk,
                                   af->getlinenum()))
             chunk = ".";
           if (at == 'S') {
@@ -4759,17 +4759,15 @@ bool AffixMgr::parse_affix(const std::string& line,
 }
 
 int AffixMgr::redundant_condition(char ft,
-                                  const char* strip,
-                                  int stripl,
-                                  const char* cond,
+                                  const std::string& strip,
+                                  const std::string& cond,
                                   int linenum) {
-  int condl = strlen(cond);
-  int i;
-  int j;
+  int stripl = strip.size(), condl = cond.size();
+  int i, j;
   int neg;
   int in;
   if (ft == 'P') {  // prefix
-    if (strncmp(strip, cond, condl) == 0)
+    if (strip.compare(0, condl, cond) == 0)
       return 1;
     if (utf8) {
     } else {
@@ -4793,7 +4791,7 @@ int AffixMgr::redundant_condition(char ft,
           if (j == (condl - 1) && (cond[j] != ']')) {
             HUNSPELL_WARNING(stderr,
                              "error: line %d: missing ] in condition:\n%s\n",
-                             linenum, cond);
+                             linenum, cond.c_str());
             return 0;
           }
           if ((!neg && !in) || (neg && in)) {
@@ -4809,7 +4807,7 @@ int AffixMgr::redundant_condition(char ft,
         return 1;
     }
   } else {  // suffix
-    if ((stripl >= condl) && strcmp(strip + stripl - condl, cond) == 0)
+    if ((stripl >= condl) && strip.compare(stripl - condl, std::string::npos, cond) == 0)
       return 1;
     if (utf8) {
     } else {
@@ -4832,7 +4830,7 @@ int AffixMgr::redundant_condition(char ft,
           if ((j == 0) && (cond[j] != '[')) {
             HUNSPELL_WARNING(stderr,
                              "error: line: %d: missing ] in condition:\n%s\n",
-                             linenum, cond);
+                             linenum, cond.c_str());
             return 0;
           }
           neg = (cond[j + 1] == '^') ? 1 : 0;
