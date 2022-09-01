@@ -107,8 +107,12 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-void HashMgr::free_table()
-{
+void HashMgr::free_flag(unsigned short* astr, short alen) {
+  if (astr && (aliasf.empty() || TESTAFF(astr, ONLYUPCASEFLAG, alen)))
+    free(astr);
+}
+
+void HashMgr::free_table() {
   if (tableptr) {
     // now pass through hash table freeing up everything
     // go through column by column of the table
@@ -117,9 +121,7 @@ void HashMgr::free_table()
       struct hentry* nt = NULL;
       while (pt) {
         nt = pt->next;
-        if (pt->astr &&
-            (aliasf.empty() || TESTAFF(pt->astr, ONLYUPCASEFLAG, pt->alen)))
-          free(pt->astr);
+        free_flag(pt->astr, pt->alen);
         free(pt);
         pt = nt;
       }
@@ -219,6 +221,7 @@ int HashMgr::add_word(const std::string& in_word,
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
+    free_flag(aff, al);
     return 1;
   }
 
@@ -230,6 +233,7 @@ int HashMgr::add_word(const std::string& in_word,
   if (!hp) {
     delete desc_copy;
     delete word_copy;
+    free_flag(aff, al);
     return 1;
   }
 
