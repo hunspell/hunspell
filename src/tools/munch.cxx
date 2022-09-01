@@ -40,7 +40,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>

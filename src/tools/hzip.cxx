@@ -38,10 +38,13 @@
 /* hzip: file compression for sorted dictionaries with optional encryption,
  * algorithm: prefix-suffix encoding and 16-bit Huffman encoding */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif /* HAVE_UNISTD_H */
 #include <string>
 #include <sys/stat.h>
 
