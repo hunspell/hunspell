@@ -151,6 +151,7 @@ class HashMgr {
   bool parse_aliasm(const std::string& line, FileMgr* af);
   bool parse_reptable(const std::string& line, FileMgr* af);
   int remove_forbidden_flag(const std::string& word);
+  void free_table();
 };
 
 #endif
