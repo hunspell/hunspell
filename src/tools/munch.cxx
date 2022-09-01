@@ -40,9 +40,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif /* HAVE_UNISTD_H */
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
