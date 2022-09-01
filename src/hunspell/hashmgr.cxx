@@ -97,7 +97,7 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   if (ec) {
     /* error condition - what should we do here */
     HUNSPELL_WARNING(stderr, "Hash Manager Error : %d\n", ec);
-    free(tableptr);
+    free_table();
     //keep tablesize to 1 to fix possible division with zero
     tablesize = 1;
     tableptr = (struct hentry**)calloc(tablesize, sizeof(struct hentry*));
@@ -107,7 +107,8 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-HashMgr::~HashMgr() {
+void HashMgr::free_table()
+{
   if (tableptr) {
     // now pass through hash table freeing up everything
     // go through column by column of the table
@@ -126,6 +127,10 @@ HashMgr::~HashMgr() {
     free(tableptr);
   }
   tablesize = 0;
+}
+
+HashMgr::~HashMgr() {
+  free_table();
 
   for (size_t j = 0, numaliasf = aliasf.size(); j < numaliasf; ++j)
     free(aliasf[j]);
