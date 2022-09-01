@@ -209,6 +209,14 @@ int HashMgr::add_word(const std::string& in_word,
     word = word_copy;
   }
 
+  // limit of hp->blen
+  if (word->size() > std::numeric_limits<unsigned char>::max()) {
+    HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
+    delete desc_copy;
+    delete word_copy;
+    return 1;
+  }
+
   bool upcasehomonym = false;
   int descl = desc ? (!aliasm.empty() ? sizeof(char*) : desc->size() + 1) : 0;
   // variable-length hash record with word and optional fields
