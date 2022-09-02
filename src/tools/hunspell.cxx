@@ -81,9 +81,9 @@
   "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.2\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\" \
-  "C:\\Program Files\\LibreOffice\\share\\extensions;"      \
-  "C:\\Program Files (x86)\\LibreOffice\\share\\extensions"
+  "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\;" \
+  "C:\\Program Files\\LibreOffice\\share\\extensions;"         \
+  "C:\\Program Files (x86)\\LibreOffice\\share\\extensions;"
 #define HOME getenv("USERPROFILE")
 #define DICBASENAME "hunspell_"
 #define LOGFILE "C:\\Hunspell\\log"
