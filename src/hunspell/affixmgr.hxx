@@ -185,7 +185,7 @@ class AffixMgr {
                               char in_compound,
                               const FLAG needflag = FLAG_NULL);
   inline int isSubset(const char* s1, const char* s2);
-  struct hentry* prefix_check_twosfx(const char* word,
+  struct hentry* prefix_check_twosfx(const std::string& word,
                                      int len,
                                      char in_compound,
                                      const FLAG needflag = FLAG_NULL);
@@ -197,7 +197,7 @@ class AffixMgr {
                               const FLAG cclass = FLAG_NULL,
                               const FLAG needflag = FLAG_NULL,
                               char in_compound = IN_CPD_NOT);
-  struct hentry* suffix_check_twosfx(const char* word,
+  struct hentry* suffix_check_twosfx(const std::string& word,
                                      int len,
                                      int sfxopts,
                                      PfxEntry* ppfx,
