@@ -136,7 +136,7 @@ class PfxEntry : public AffEntry {
   inline void setFlgNxt(PfxEntry* ptr) { flgnxt = ptr; }
 
   inline char* nextchar(char* p);
-  inline int test_condition(const char* st);
+  inline int test_condition(const std::string& st);
 };
 
 /* A Suffix Entry */
