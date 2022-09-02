@@ -95,3 +95,21 @@ hunspell-*.tar.gz
 
 #MSVC
 /msvc/Hunspell.VC.VC.opendb
+/Debug/
+/Release/
+/Backup*/
+/x64/
+/*.db
+/*.user
+*.sdf
+*.opensdf
+*.suo
+UpgradeLog.htm
+build*/
+msvc/Win*/*
+msvc/.vs/*
+msvc/x64/*
+msvc/Release/*
+msvc/Debug/*
+msvc/Report*
+msvc/*.user
