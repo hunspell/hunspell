@@ -1685,9 +1685,9 @@ int SuggestMgr::checkword(const std::string& word,
     }
 
     if (!rv && pAMgr->have_contclass()) {
-      rv = pAMgr->suffix_check_twosfx(word.c_str(), word.size(), 0, NULL, FLAG_NULL);
+      rv = pAMgr->suffix_check_twosfx(word, word.size(), 0, NULL, FLAG_NULL);
       if (!rv)
-        rv = pAMgr->prefix_check_twosfx(word.c_str(), word.size(), 0, FLAG_NULL);
+        rv = pAMgr->prefix_check_twosfx(word, word.size(), 0, FLAG_NULL);
     }
 
     // check forbidden words
