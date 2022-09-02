@@ -100,11 +100,9 @@ class HashMgr {
   struct cs_info* csconv;
   std::string ignorechars;
   std::vector<w_char> ignorechars_utf16;
-  int numaliasf;  // flag vector `compression' with aliases
-  unsigned short** aliasf;
-  unsigned short* aliasflen;
-  int numaliasm;  // morphological desciption `compression' with aliases
-  char** aliasm;
+  std::vector<unsigned short*> aliasf; // flag vector `compression' with aliases
+  std::vector<unsigned short> aliasflen;
+  std::vector<char*> aliasm; // morphological desciption `compression' with aliases
   // reptable created from REP table of aff file and from "ph:" fields
   // of the dic file. It contains phonetic and other common misspellings
   // (letters, letter groups and words) for better suggestions
@@ -153,6 +151,8 @@ class HashMgr {
   bool parse_aliasm(const std::string& line, FileMgr* af);
   bool parse_reptable(const std::string& line, FileMgr* af);
   int remove_forbidden_flag(const std::string& word);
+  void free_table();
+  void free_flag(unsigned short* astr, short alen);
 };
 
 #endif

@@ -40,9 +40,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif  // #endif
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -368,6 +365,7 @@ int parse_aff_file(FILE* afflst) {
           numpfx++;
         } else {
           fprintf(stderr, "prefix buffer ptable is full\n");
+          free(ptr);
         }
       } else {
         if (numsfx < MAX_SUFFIXES) {
@@ -377,6 +375,7 @@ int parse_aff_file(FILE* afflst) {
           numsfx++;
         } else {
           fprintf(stderr, "suffix buffer stable is full\n");
+          free(ptr);
         }
       }
       ptr = NULL;

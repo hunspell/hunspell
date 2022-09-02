@@ -1574,7 +1574,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                         char hu_mov_rule = 0,
                                         char is_sug = 0,
                                         int* info = NULL) {
-  int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   struct hentry* rv = NULL;
   struct hentry* rv_first;
@@ -1614,7 +1613,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   st.assign(word);
 
-  for (i = cmin; i < cmax; i++) {
+  for (int i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
@@ -1958,19 +1957,20 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             // perhaps second word has prefix or/and suffix
             sfx = NULL;
             sfxflag = FLAG_NULL;
-            rv = (compoundflag && !onlycpdrule)
+            rv = (compoundflag && !onlycpdrule && i < word.size())
                      ? affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundflag,
                                    IN_CPD_END)
                      : NULL;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = NULL;
               pfx = NULL;
-              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend,
-                               IN_CPD_END);
+              if (i < word.size())
+                rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend, IN_CPD_END);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
-              rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
+              if (i < word.size())
+                rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
@@ -2187,7 +2187,6 @@ int AffixMgr::compound_check_morph(const char* word,
                                    char hu_mov_rule,
                                    std::string& result,
                                    const std::string* partresult) {
-  int i;
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
   int ok = 0;
 
@@ -2224,7 +2223,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   st.assign(word);
 
-  for (i = cmin; i < cmax; i++) {
+  for (int i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
@@ -4239,6 +4238,11 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
                 --k;
               }
             }
+            if (chb == che) {
+              HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
+                              af->getlinenum());
+            }
+
             maptable.back().push_back(std::string(chb, che));
           }
           break;
@@ -4668,7 +4672,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             reverse_condition(chunk);
           }
           if (!entry->strip.empty() && chunk != "." &&
-              redundant_condition(at, entry->strip.c_str(), entry->strip.size(), chunk.c_str(),
+              redundant_condition(at, entry->strip, chunk,
                                   af->getlinenum()))
             chunk = ".";
           if (at == 'S') {
@@ -4755,17 +4759,15 @@ bool AffixMgr::parse_affix(const std::string& line,
 }
 
 int AffixMgr::redundant_condition(char ft,
-                                  const char* strip,
-                                  int stripl,
-                                  const char* cond,
+                                  const std::string& strip,
+                                  const std::string& cond,
                                   int linenum) {
-  int condl = strlen(cond);
-  int i;
-  int j;
+  int stripl = strip.size(), condl = cond.size();
+  int i, j;
   int neg;
   int in;
   if (ft == 'P') {  // prefix
-    if (strncmp(strip, cond, condl) == 0)
+    if (strip.compare(0, condl, cond) == 0)
       return 1;
     if (utf8) {
     } else {
@@ -4789,7 +4791,7 @@ int AffixMgr::redundant_condition(char ft,
           if (j == (condl - 1) && (cond[j] != ']')) {
             HUNSPELL_WARNING(stderr,
                              "error: line %d: missing ] in condition:\n%s\n",
-                             linenum, cond);
+                             linenum, cond.c_str());
             return 0;
           }
           if ((!neg && !in) || (neg && in)) {
@@ -4805,7 +4807,7 @@ int AffixMgr::redundant_condition(char ft,
         return 1;
     }
   } else {  // suffix
-    if ((stripl >= condl) && strcmp(strip + stripl - condl, cond) == 0)
+    if ((stripl >= condl) && strip.compare(stripl - condl, std::string::npos, cond) == 0)
       return 1;
     if (utf8) {
     } else {
@@ -4828,7 +4830,7 @@ int AffixMgr::redundant_condition(char ft,
           if ((j == 0) && (cond[j] != '[')) {
             HUNSPELL_WARNING(stderr,
                              "error: line: %d: missing ] in condition:\n%s\n",
-                             linenum, cond);
+                             linenum, cond.c_str());
             return 0;
           }
           neg = (cond[j + 1] == '^') ? 1 : 0;
