@@ -3709,7 +3709,7 @@ bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr*
   std::string s;
   if (!parse_string(line, s, af->getlinenum()))
     return false;
-  *out = pHMgr->decode_flag(s.c_str());
+  *out = pHMgr->decode_flag(s);
   return true;
 }
 
@@ -4029,7 +4029,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
           if (slash_pos != std::string::npos) {
             std::string chunk(checkcpdtable.back().pattern, slash_pos + 1);
             checkcpdtable.back().pattern.resize(slash_pos);
-            checkcpdtable.back().cond = pHMgr->decode_flag(chunk.c_str());
+            checkcpdtable.back().cond = pHMgr->decode_flag(chunk);
           }
           break;
         }
@@ -4039,7 +4039,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
           if (slash_pos != std::string::npos) {
             std::string chunk(checkcpdtable.back().pattern2, slash_pos + 1);
             checkcpdtable.back().pattern2.resize(slash_pos);
-            checkcpdtable.back().cond2 = pHMgr->decode_flag(chunk.c_str());
+            checkcpdtable.back().cond2 = pHMgr->decode_flag(chunk);
           }
           break;
         }
@@ -4474,7 +4474,7 @@ bool AffixMgr::parse_affix(const std::string& line,
       // piece 2 - is affix char
       case 1: {
         np++;
-        aflag = pHMgr->decode_flag(std::string(start_piece, iter).c_str());
+        aflag = pHMgr->decode_flag(std::string(start_piece, iter));
         if (((at == 'S') && (dupflags[aflag] & dupSFX)) ||
             ((at == 'P') && (dupflags[aflag] & dupPFX))) {
           HUNSPELL_WARNING(
@@ -4563,7 +4563,7 @@ bool AffixMgr::parse_affix(const std::string& line,
         case 1: {
           np++;
           std::string chunk(start_piece, iter);
-          if (pHMgr->decode_flag(chunk.c_str()) != aflag) {
+          if (pHMgr->decode_flag(chunk) != aflag) {
             char* err = pHMgr->encode_flag(aflag);
             if (err) {
               HUNSPELL_WARNING(stderr,
