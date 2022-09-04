@@ -869,7 +869,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
   return true;
 }
 
-unsigned short HashMgr::decode_flag(const char* f) const {
+unsigned short HashMgr::decode_flag(const std::string& f) const {
   unsigned short s = 0;
   int i;
   switch (flag_mode) {
@@ -877,7 +877,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       s = ((unsigned short)((unsigned char)f[0]) << 8) + (unsigned char)f[1];
       break;
     case FLAG_NUM:
-      i = atoi(f);
+      i = atoi(f.c_str());
       if (i >= DEFAULTFLAGS)
         HUNSPELL_WARNING(stderr, "error: flag id %d is too large (max: %d)\n",
                          i, DEFAULTFLAGS - 1);
@@ -891,7 +891,7 @@ unsigned short HashMgr::decode_flag(const char* f) const {
       break;
     }
     default:
-      s = *(unsigned char*)f;
+      s = (unsigned char)f[0];
   }
   if (s == 0)
     HUNSPELL_WARNING(stderr, "error: 0 is wrong flag id\n");
@@ -974,7 +974,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
         delete afflst;
         return 1;
       }
-      forbiddenword = decode_flag(st.c_str());
+      forbiddenword = decode_flag(st);
     }
 
     if (line.compare(0, 3, "SET", 3) == 0) {

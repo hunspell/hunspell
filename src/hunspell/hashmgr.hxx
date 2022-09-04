@@ -121,7 +121,7 @@ class HashMgr {
   int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
   bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
-  unsigned short decode_flag(const char* flag) const;
+  unsigned short decode_flag(const std::string& flag) const;
   char* encode_flag(unsigned short flag) const;
   int is_aliasf() const;
   int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
