@@ -88,8 +88,7 @@ enum flag { FLAG_CHAR, FLAG_LONG, FLAG_NUM, FLAG_UNI };
 #define MORPH_PHON_RATIO 500
 
 class HashMgr {
-  int tablesize;
-  struct hentry** tableptr;
+  std::vector<struct hentry*> tableptr;
   flag flag_mode;
   int complexprefixes;
   int utf8;
