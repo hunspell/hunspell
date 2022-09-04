@@ -1334,13 +1334,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
 
   lp = MAX_GUESS - 1;
 
-  struct guessword* glst;
-  glst = (struct guessword*)calloc(MAX_WORDS, sizeof(struct guessword));
-  if (!glst) {
-    if (nonbmp)
-      utf8 = 1;
-    return;
-  }
+  std::vector<guessword> glst(MAX_WORDS);
 
   for (int i = 0; i < MAX_ROOTS; i++) {
     if (roots[i]) {
@@ -1351,7 +1345,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       if ((rp->var & H_OPT_PHON) && copy_field(f, HENTRY_DATA(rp), MORPH_PHON))
           field = f.c_str();
       int nw = pAMgr->expand_rootword(
-          glst, MAX_WORDS, HENTRY_WORD(rp), rp->blen, rp->astr, rp->alen, word,
+          glst.data(), MAX_WORDS, HENTRY_WORD(rp), rp->blen, rp->astr, rp->alen, word,
           nc, field);
 
       for (int k = 0; k < nw; k++) {
@@ -1408,7 +1402,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       }
     }
   }
-  free(glst);
+  glst.clear();
 
   // now we are done generating guesses
   // sort in order of decreasing score
