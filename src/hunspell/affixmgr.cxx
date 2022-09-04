@@ -4858,7 +4858,7 @@ int AffixMgr::redundant_condition(char ft,
 
 std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
                                int len,
-                               const char* root_word) {
+                               const std::string& root_word) {
   std::vector<std::string> slst;
   short unsigned* start_ptr = suff;
   for (int j = 0; j < SETSIZE; j++) {
