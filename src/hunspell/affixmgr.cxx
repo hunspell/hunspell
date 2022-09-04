@@ -2176,8 +2176,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
 // check if compound word is correctly spelled
 // hu_mov_rule = spec. Hungarian rule (XXX)
-int AffixMgr::compound_check_morph(const char* word,
-                                   int len,
+int AffixMgr::compound_check_morph(const std::string& word,
                                    short wordnum,
                                    short numsyllable,
                                    short maxwordnum,
@@ -2203,6 +2202,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   char affixed = 0;
   hentry** oldwords = words;
+  size_t len = word.size();
 
   // add a time limit to handle possible
   // combinatorical explosion of the overlapping words
@@ -2219,7 +2219,7 @@ int AffixMgr::compound_check_morph(const char* word,
       timelimit = 0;
   }
 
-  setcminmax(&cmin, &cmax, word, len);
+  setcminmax(&cmin, &cmax, word.c_str(), len);
 
   st.assign(word);
 
@@ -2434,8 +2434,8 @@ int AffixMgr::compound_check_morph(const char* word,
              (
                  // test CHECKCOMPOUNDPATTERN
                  !checkcpdtable.empty() && !words &&
-                 cpdpat_check(word, i, rv, NULL, affixed)) ||
-             (checkcompoundcase && !words && cpdcase_check(word, i))))
+                 cpdpat_check(word.c_str(), i, rv, NULL, affixed)) ||
+             (checkcompoundcase && !words && cpdcase_check(word.c_str(), i))))
           // LANG_hu section: spec. Hungarian rule
           ||
           ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
@@ -2459,7 +2459,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         // NEXT WORD(S)
         rv_first = rv;
-        rv = lookup((word + i));  // perhaps without prefix
+        rv = lookup((word.c_str() + i));  // perhaps without prefix
 
         // search homonym with compound flag
         while ((rv) && ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||
@@ -2476,7 +2476,7 @@ int AffixMgr::compound_check_morph(const char* word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word + i);
+          result.append(word, i);
           if (complexprefixes && HENTRY_DATA(rv))
             result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
@@ -2533,7 +2533,7 @@ int AffixMgr::compound_check_morph(const char* word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word + i);
+          result.append(word, i);
 
           if (HENTRY_DATA(rv)) {
             if (complexprefixes)
@@ -2561,30 +2561,30 @@ int AffixMgr::compound_check_morph(const char* word,
         sfxflag = FLAG_NULL;
 
         if (compoundflag && !onlycpdrule)
-          rv = affix_check((word + i), strlen(word + i), compoundflag);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
         else
           rv = NULL;
 
         if (!rv && compoundend && !onlycpdrule) {
           sfx = NULL;
           pfx = NULL;
-          rv = affix_check((word + i), strlen(word + i), compoundend);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
-          rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
-              m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+              m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
             if (m.empty() && compoundend) {
-              m = affix_check_morph((word + i), strlen(word + i), compoundend);
+              m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundend);
             }
             result.append(presult);
             if (!m.empty()) {
               result.push_back(MSEP_FLD);
               result.append(MORPH_PART);
-              result.append(word + i);
+              result.append(word, i);
               line_uniq_app(m, MSEP_REC);
               result.append(m);
             }
@@ -2614,7 +2614,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(word + i);
+          numsyllable += get_syllable(word.c_str() + i);
 
           // - affix syllable num.
           // XXX only second suffix (inflections, not derivations)
@@ -2668,15 +2668,15 @@ int AffixMgr::compound_check_morph(const char* word,
             ((!checkcompounddup || (rv != rv_first)))) {
           std::string m;
           if (compoundflag)
-            m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+            m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
           if (m.empty() && compoundend) {
-            m = affix_check_morph((word + i), strlen(word + i), compoundend);
+            m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundend);
           }
           result.append(presult);
           if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
-            result.append(word + i);
+            result.append(word, i);
             line_uniq_app(m, MSEP_REC);
             result.push_back(MSEP_FLD);
             result.append(m);
@@ -2690,7 +2690,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         // perhaps second word is a compound word (recursive call)
         if ((wordnum + 2 < maxwordnum) && (ok == 0)) {
-          compound_check_morph((word + i), strlen(word + i), wordnum + 1,
+          compound_check_morph(word.substr(i), wordnum + 1,
                                numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                result, &presult);
         } else {

@@ -1779,8 +1779,7 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
 
   if (pAMgr->get_compound() && result.empty()) {
     struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
-    pAMgr->compound_check_morph(w.c_str(), w.size(), 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, result,
-                                NULL);
+    pAMgr->compound_check_morph(w, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, result, NULL);
   }
 
   line_uniq(result, MSEP_REC);
