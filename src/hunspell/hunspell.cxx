@@ -195,8 +195,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
 
   /* and finally set up the suggestion manager */
   pSMgr = new SuggestMgr(try_string, MAXSUGGESTION, pAMgr);
-  if (try_string)
-    free(try_string);
+  delete[] try_string;
 }
 
 HunspellImpl::~HunspellImpl() {
@@ -210,8 +209,7 @@ HunspellImpl::~HunspellImpl() {
   delete[] csconv;
 #endif
   csconv = NULL;
-  if (affixpath)
-    free(affixpath);
+  delete[] affixpath;
   affixpath = NULL;
 }
 
@@ -1924,9 +1922,7 @@ namespace {
       *slst = NULL;
       return 0;
     } else {
-      *slst = (char**)malloc(sizeof(char*) * items.size());
-      if (!*slst)
-        return 0;
+      *slst = new char*[items.size()];
       for (size_t i = 0; i < items.size(); ++i)
         (*slst)[i] = mystrdup(items[i].c_str());
     }
@@ -1960,8 +1956,8 @@ int HunspellImpl::suffix_suggest(char*** slst, const char* root_word) {
 void HunspellImpl::free_list(char*** slst, int n) {
   if (slst && *slst) {
     for (int i = 0; i < n; i++)
-      free((*slst)[i]);
-    free(*slst);
+      delete[] (*slst)[i];
+    delete[] *slst;
     *slst = NULL;
   }
 }

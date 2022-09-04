@@ -144,12 +144,10 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
 
 SuggestMgr::~SuggestMgr() {
   pAMgr = NULL;
-  if (ckey)
-    free(ckey);
+  delete[] ckey;
   ckey = NULL;
   ckeyl = 0;
-  if (ctry)
-    free(ctry);
+  delete[] ctry;
   ctry = NULL;
   ctryl = 0;
   maxSug = 0;
@@ -802,7 +800,7 @@ bool SuggestMgr::twowords(std::vector<std::string>& wlst,
   if (langnum == LANG_hu)
     forbidden = check_forbidden(word, wl);
 
-  char* candidate = (char*)malloc(wl + 2);
+  char* candidate = new char[wl + 2];
   strcpy(candidate + 1, word);
 
   // split the string into two pieces after every char
@@ -895,7 +893,7 @@ bool SuggestMgr::twowords(std::vector<std::string>& wlst,
       }
     }
   }
-  free(candidate);
+  delete[] candidate;
   return good;
 }
 
@@ -1374,9 +1372,9 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         if (sc > thresh) {
           if (sc > gscore[lp]) {
             if (guess[lp]) {
-              free(guess[lp]);
+              delete[] guess[lp];
               if (guessorig[lp]) {
-                free(guessorig[lp]);
+                delete[] guessorig[lp];
                 guessorig[lp] = NULL;
               }
             }
@@ -1390,14 +1388,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
                 lval = gscore[j];
               }
           } else {
-            free(glst[k].word);
-            if (glst[k].orig)
-              free(glst[k].orig);
+            delete[] glst[k].word;
+            delete[] glst[k].orig;
           }
         } else {
-          free(glst[k].word);
-          if (glst[k].orig)
-            free(glst[k].orig);
+          delete[] glst[k].word;
+          delete[] glst[k].orig;
         }
       }
     }
@@ -1556,9 +1552,8 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
           same = 1;
           // keep the best ngram suggestions, unless in ONLYMAXDIFF mode
           if (wlst.size() > oldns || (pAMgr && pAMgr->get_onlymaxdiff())) {
-            free(guess[i]);
-            if (guessorig[i])
-              free(guessorig[i]);
+            delete[] guess[i];
+            delete[] guessorig[i];
             continue;
           }
         }
@@ -1580,13 +1575,11 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
             wlst.push_back(guess[i]);
           }
         }
-        free(guess[i]);
-        if (guessorig[i])
-          free(guessorig[i]);
+        delete[] guess[i];
+        delete[] guessorig[i];
       } else {
-        free(guess[i]);
-        if (guessorig[i])
-          free(guessorig[i]);
+        delete[] guess[i];
+        delete[] guessorig[i];
       }
     }
   }
@@ -2177,16 +2170,13 @@ void SuggestMgr::bubblesort(char** rword, char** rword2, int* rsc, int n) {
 }
 
 // longest common subsequence
-void SuggestMgr::lcs(const char* s,
-                     const char* s2,
-                     int* l1,
-                     int* l2,
-                     char** result) {
+char* SuggestMgr::lcs(const char* s,
+                      const char* s2,
+                      int* l1,
+                      int* l2) {
   int n, m;
   std::vector<w_char> su;
   std::vector<w_char> su2;
-  char* b;
-  char* c;
   int i;
   int j;
   if (utf8) {
@@ -2196,16 +2186,8 @@ void SuggestMgr::lcs(const char* s,
     m = strlen(s);
     n = strlen(s2);
   }
-  c = (char*)malloc((m + 1) * (n + 1));
-  b = (char*)malloc((m + 1) * (n + 1));
-  if (!c || !b) {
-    if (c)
-      free(c);
-    if (b)
-      free(b);
-    *result = NULL;
-    return;
-  }
+  char* c = new char[(m + 1) * (n + 1)];
+  char* b = new char[(m + 1) * (n + 1)];
   for (i = 1; i <= m; i++)
     c[i * (n + 1)] = 0;
   for (j = 0; j <= n; j++)
@@ -2225,10 +2207,10 @@ void SuggestMgr::lcs(const char* s,
       }
     }
   }
-  *result = b;
-  free(c);
+  delete[] c;
   *l1 = m;
   *l2 = n;
+  return b;
 }
 
 int SuggestMgr::lcslen(const char* s, const char* s2) {
@@ -2236,11 +2218,8 @@ int SuggestMgr::lcslen(const char* s, const char* s2) {
   int n;
   int i;
   int j;
-  char* result;
   int len = 0;
-  lcs(s, s2, &m, &n, &result);
-  if (!result)
-    return 0;
+  char* result = lcs(s, s2, &m, &n);
   i = m;
   j = n;
   while ((i != 0) && (j != 0)) {
@@ -2253,7 +2232,7 @@ int SuggestMgr::lcslen(const char* s, const char* s2) {
     } else
       j--;
   }
-  free(result);
+  delete[] result;
   return len;
 }
 

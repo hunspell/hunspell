@@ -1054,9 +1054,7 @@ int AffixMgr::encodeit(AffEntry& entry, const std::string& cs) {
       //a long condition
       entry.opts |= aeLONGCOND;
       size_t remaining = cs.size() - MAXCONDLEN_1;
-      entry.c.l.conds2 = (char*)malloc(1 + remaining);
-      if (!entry.c.l.conds2)
-        return 1;
+      entry.c.l.conds2 = new char[1 + remaining];
       memcpy(entry.c.l.conds2, cs.data() + MAXCONDLEN_1, remaining);
       entry.c.l.conds2[remaining] = 0;
     }
