@@ -864,9 +864,9 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
   return s;
 }
 
-char* HashMgr::encode_flag(unsigned short f) const {
+std::string HashMgr::encode_flag(unsigned short f) const {
   if (f == 0)
-    return mystrdup("(NULL)");
+    return "(NULL)";
   std::string ch;
   if (flag_mode == FLAG_LONG) {
     ch.push_back((unsigned char)(f >> 8));
@@ -882,7 +882,7 @@ char* HashMgr::encode_flag(unsigned short f) const {
   } else {
     ch.push_back((unsigned char)(f));
   }
-  return mystrdup(ch.c_str());
+  return ch;
 }
 
 // read in aff file and set flag mode
