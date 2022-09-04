@@ -261,7 +261,7 @@ class AffixMgr {
                    hentry** rwords,
                    char all);
   int cpdcase_check(const char* word, int len);
-  inline int candidate_check(const char* word, int len);
+  inline int candidate_check(const std::string& word);
   void setcminmax(int* cmin, int* cmax, const char* word, int len);
   struct hentry* compound_check(const std::string& word,
                                 short wordnum,
