@@ -164,7 +164,8 @@ class SuggestMgr {
                   int,
                   const std::vector<mapentry>&,
                   int*,
-                  clock_t*);
+                  clock_t*,
+                  int depth);
   int ngram(int n, const std::vector<w_char>& su1,
             const std::vector<w_char>& su2, int opt);
   int ngram(int n, const std::string& s1, const std::string& s2, int opt);
