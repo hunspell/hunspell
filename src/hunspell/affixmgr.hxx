@@ -274,8 +274,7 @@ class AffixMgr {
                                 char is_sug,
                                 int* info);
 
-  int compound_check_morph(const char* word,
-                           int len,
+  int compound_check_morph(const std::string& word,
                            short wordnum,
                            short numsyllable,
                            short maxwordnum,
