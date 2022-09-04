@@ -1282,7 +1282,7 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
       while ((r = strstr(r, get_reptable()[i].pattern.c_str())) != NULL) {
         std::string candidate(word);
         candidate.replace(r - word, lenp, get_reptable()[i].outstrings[0]);
-        if (candidate_check(candidate.c_str(), candidate.size()))
+        if (candidate_check(candidate))
           return 1;
         ++r;  // search for the next letter
       }
@@ -1302,7 +1302,7 @@ int AffixMgr::cpdwordpair_check(const char * word, int wl) {
       if (utf8 && ((word[i] & 0xc0) == 0x80))
           continue;
       candidate.insert(i, 1, ' ');
-      if (candidate_check(candidate.c_str(), candidate.size()))
+      if (candidate_check(candidate))
         return 1;
       candidate.erase(i, 1);
     }
@@ -1501,16 +1501,16 @@ int AffixMgr::defcpd_check(hentry*** words,
   return 0;
 }
 
-inline int AffixMgr::candidate_check(const char* word, int len) {
+inline int AffixMgr::candidate_check(const std::string& word) {
 
-  struct hentry* rv = lookup(word);
+  struct hentry* rv = lookup(word.c_str());
   if (rv)
     return 1;
 
   //  rv = prefix_check(word,len,1);
   //  if (rv) return 1;
 
-  rv = affix_check(word, len);
+  rv = affix_check(word.c_str(), word.size());
   if (rv)
     return 1;
   return 0;
