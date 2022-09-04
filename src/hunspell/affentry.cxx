@@ -78,11 +78,11 @@
 
 AffEntry::~AffEntry() {
   if (opts & aeLONGCOND)
-    free(c.l.conds2);
+    delete[] c.l.conds2;
   if (morphcode && !(opts & aeALIASM))
-    free(morphcode);
+    delete[] morphcode;
   if (contclass && !(opts & aeALIASF))
-    free(contclass);
+    delete[] contclass;
 }
 
 PfxEntry::PfxEntry(AffixMgr* pmgr)
