@@ -1025,10 +1025,12 @@ std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
 }
 
 // calculate the character length of the condition
-int AffixMgr::condlen(const char* st) {
+int AffixMgr::condlen(const std::string& s) {
   int l = 0;
   bool group = false;
-  for (; *st; st++) {
+  std::string::const_iterator st = s.begin();
+  std::string::const_iterator end = s.end();
+  while (st != end) {
     if (*st == '[') {
       group = true;
       l++;
@@ -1036,13 +1038,14 @@ int AffixMgr::condlen(const char* st) {
       group = false;
     else if (!group && (!utf8 || (!(*st & 0x80) || ((*st & 0xc0) == 0x80))))
       l++;
+    ++st;
   }
   return l;
 }
 
 int AffixMgr::encodeit(AffEntry& entry, const std::string& cs) {
   if (cs.compare(".") != 0) {
-    entry.numconds = (char)condlen(cs.c_str());
+    entry.numconds = (char)condlen(cs);
     const size_t cslen = cs.size();
     const size_t short_part = std::min<size_t>(MAXCONDLEN, cslen);
     memcpy(entry.c.conds, cs.data(), short_part);
