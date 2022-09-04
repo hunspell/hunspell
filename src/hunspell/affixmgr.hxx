@@ -351,7 +351,7 @@ class AffixMgr {
   void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const char*);
-  int encodeit(AffEntry& entry, const char* cs);
+  int encodeit(AffEntry& entry, const std::string& cs);
   int build_pfxtree(PfxEntry* pfxptr);
   int build_sfxtree(SfxEntry* sfxptr);
   int process_pfx_order();

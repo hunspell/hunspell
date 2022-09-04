@@ -1040,12 +1040,12 @@ int AffixMgr::condlen(const char* st) {
   return l;
 }
 
-int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
-  if (strcmp(cs, ".") != 0) {
-    entry.numconds = (char)condlen(cs);
-    const size_t cslen = strlen(cs);
+int AffixMgr::encodeit(AffEntry& entry, const std::string& cs) {
+  if (cs.compare(".") != 0) {
+    entry.numconds = (char)condlen(cs.c_str());
+    const size_t cslen = cs.size();
     const size_t short_part = std::min<size_t>(MAXCONDLEN, cslen);
-    memcpy(entry.c.conds, cs, short_part);
+    memcpy(entry.c.conds, cs.data(), short_part);
     if (short_part < MAXCONDLEN) {
       //blank out the remaining space
       memset(entry.c.conds + short_part, 0, MAXCONDLEN - short_part);
@@ -1053,9 +1053,12 @@ int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
       //there is more conditions than fit in fixed space, so its
       //a long condition
       entry.opts |= aeLONGCOND;
-      entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
+      size_t remaining = cs.size() - MAXCONDLEN_1;
+      entry.c.l.conds2 = (char*)malloc(1 + remaining);
       if (!entry.c.l.conds2)
         return 1;
+      memcpy(entry.c.l.conds2, cs.data() + MAXCONDLEN_1, remaining);
+      entry.c.l.conds2[remaining] = 0;
     }
   } else {
     entry.numconds = 0;
@@ -4679,7 +4682,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             reverseword(chunk);
             reverse_condition(chunk);
           }
-          if (encodeit(*entry, chunk.c_str()))
+          if (encodeit(*entry, chunk))
             return false;
           break;
         }
