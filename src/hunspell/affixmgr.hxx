@@ -232,7 +232,7 @@ class AffixMgr {
                                         int len,
                                         char in_compound,
                                         const FLAG needflag = FLAG_NULL);
-  std::string suffix_check_twosfx_morph(const char* word,
+  std::string suffix_check_twosfx_morph(const std::string& word,
                                         int start,
                                         int len,
                                         int sfxopts,
