@@ -2965,7 +2965,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
   return result;
 }
 
-std::string AffixMgr::suffix_check_morph(const char* word,
+std::string AffixMgr::suffix_check_morph(const std::string& word,
                                          int start,
                                          int len,
                                          int sfxopts,
@@ -3010,7 +3010,7 @@ std::string AffixMgr::suffix_check_morph(const char* word,
             (ppfx &&
              !((ep->getCont()) &&
                TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
-        rv = se->checkword(word, start, len, sfxopts, ppfx, cclass,
+        rv = se->checkword(word.c_str(), start, len, sfxopts, ppfx, cclass,
                            needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
@@ -3051,7 +3051,7 @@ std::string AffixMgr::suffix_check_morph(const char* word,
   SfxEntry* sptr = sStart[sp];
 
   while (sptr) {
-    if (isRevSubset(sptr->getKey(), word + start + len - 1, len)) {
+    if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
       // suffixes are not allowed in beginning of compounds
       if (((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
             // except when signed with compoundpermitflag flag
@@ -3077,7 +3077,7 @@ std::string AffixMgr::suffix_check_morph(const char* word,
            (cclass ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())))))
-        rv = sptr->checkword(word, start, len, sfxopts, ppfx, cclass,
+        rv = sptr->checkword(word.c_str(), start, len, sfxopts, ppfx, cclass,
                              needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
@@ -3165,7 +3165,7 @@ std::string AffixMgr::affix_check_morph(const std::string& word,
   }
 
   // if still not found check all suffixes
-  st = suffix_check_morph(word.c_str(), start, len, 0, NULL, '\0', needflag, in_compound);
+  st = suffix_check_morph(word, start, len, 0, NULL, '\0', needflag, in_compound);
   if (!st.empty()) {
     result.append(st);
   }
