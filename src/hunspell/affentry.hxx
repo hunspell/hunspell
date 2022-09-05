@@ -95,6 +95,7 @@ class PfxEntry : public AffEntry {
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
+                           int start,
                            int len,
                            char in_compound,
                            const FLAG needflag = FLAG_NULL);
@@ -165,6 +166,7 @@ class SfxEntry : public AffEntry {
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const char* word,
+                           int start,
                            int len,
                            int optflags,
                            PfxEntry* ppfx,

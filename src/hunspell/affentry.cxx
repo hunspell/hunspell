@@ -211,6 +211,7 @@ inline int PfxEntry::test_condition(const std::string& s) {
 
 // check if this prefix entry matches
 struct hentry* PfxEntry::checkword(const char* word,
+                                   int start,
                                    int len,
                                    char in_compound,
                                    const FLAG needflag) {
@@ -228,7 +229,7 @@ struct hentry* PfxEntry::checkword(const char* word,
     // back any characters that would have been stripped
 
     std::string tmpword(strip);
-    tmpword.append(word + appnd.size(), tmpl);
+    tmpword.append(word + start + appnd.size(), tmpl);
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -613,6 +614,7 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
 
 // see if this suffix is present in the word
 struct hentry* SfxEntry::checkword(const char* word,
+                                   int start,
                                    int len,
                                    int optflags,
                                    PfxEntry* ppfx,
@@ -643,7 +645,7 @@ struct hentry* SfxEntry::checkword(const char* word,
     // back any characters that would have been stripped or
     // or null terminating the shorter string
 
-    std::string tmpstring(word, tmpl);
+    std::string tmpstring(word + start, tmpl);
     if (strip.size()) {
       tmpstring.append(strip);
     }
@@ -661,7 +663,7 @@ struct hentry* SfxEntry::checkword(const char* word,
 
     if (test_condition(endword, tmpword)) {
 #ifdef SZOSZABLYA_POSSIBLE_ROOTS
-      fprintf(stdout, "%s %s %c\n", word, tmpword, aflag);
+      fprintf(stdout, "%s %s %c\n", word + start, tmpword, aflag);
 #endif
       if ((he = pmyMgr->lookup(tmpword)) != NULL) {
         do {
