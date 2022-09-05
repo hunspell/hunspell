@@ -354,7 +354,7 @@ std::string PfxEntry::check_twosfx_morph(const char* word,
       // ross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        result = pmyMgr->suffix_check_twosfx_morph(tmpword.c_str(), tmpl,
+        result = pmyMgr->suffix_check_twosfx_morph(tmpword.c_str(), 0, tmpl,
                                                    aeXPRODUCT,
                                                    this, needflag);
       }
