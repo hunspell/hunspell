@@ -1961,19 +1961,19 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             sfx = NULL;
             sfxflag = FLAG_NULL;
             rv = (compoundflag && !onlycpdrule && i < word.size())
-                     ? affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), compoundflag,
+                     ? affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundflag,
                                    IN_CPD_END)
                      : NULL;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = NULL;
               pfx = NULL;
               if (i < word.size())
-                rv = affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), compoundend, IN_CPD_END);
+                rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundend, IN_CPD_END);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
               if (i < word.size())
-                rv = affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), 0, IN_CPD_END);
+                rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
@@ -2564,18 +2564,18 @@ int AffixMgr::compound_check_morph(const std::string& word,
         sfxflag = FLAG_NULL;
 
         if (compoundflag && !onlycpdrule)
-          rv = affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), compoundflag);
+          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundflag);
         else
           rv = NULL;
 
         if (!rv && compoundend && !onlycpdrule) {
           sfx = NULL;
           pfx = NULL;
-          rv = affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), compoundend);
+          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundend);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
-          rv = affix_check((word.c_str() + i), 0, strlen(word.c_str() + i), 0, IN_CPD_END);
+          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
