@@ -1668,7 +1668,7 @@ int SuggestMgr::checkword(const std::string& word,
           break;
       }
     } else
-      rv = pAMgr->prefix_check(word.c_str(), word.size(),
+      rv = pAMgr->prefix_check(word.c_str(), 0, word.size(),
                                0);  // only prefix, and prefix + suffix XXX
 
     if (rv) {
@@ -1709,7 +1709,7 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
         (TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))
       rv = NULL;
-    if (!(pAMgr->prefix_check(word, len, 1)))
+    if (!(pAMgr->prefix_check(word, 0, len, 1)))
       rv = pAMgr->suffix_check(word, len, 0, NULL,
                                FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
     // check forbidden words
