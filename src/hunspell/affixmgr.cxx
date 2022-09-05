@@ -1714,7 +1714,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundflag))) {
             if (((rv = suffix_check(
-                      st.c_str(), 0, i, 0, NULL, FLAG_NULL, compoundflag,
+                      st, 0, i, 0, NULL, FLAG_NULL, compoundflag,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(st, 0, i, 0, NULL, compoundflag)))) &&
@@ -1731,7 +1731,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           if (rv ||
               (((wordnum == 0) && compoundbegin &&
                 ((rv = suffix_check(
-                      st.c_str(), 0, i, 0, NULL, FLAG_NULL, compoundbegin,
+                      st, 0, i, 0, NULL, FLAG_NULL, compoundbegin,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
@@ -1742,7 +1742,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                     compoundbegin)))) ||
                ((wordnum > 0) && compoundmiddle &&
                 ((rv = suffix_check(
-                      st.c_str(), 0, i, 0, NULL, FLAG_NULL, compoundmiddle,
+                      st, 0, i, 0, NULL, FLAG_NULL, compoundmiddle,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
@@ -2310,7 +2310,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
             !(rv =
                   prefix_check(st, 0, i, hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                compoundflag))) {
-          if (((rv = suffix_check(st.c_str(), 0, i, 0, NULL, FLAG_NULL,
+          if (((rv = suffix_check(st, 0, i, 0, NULL, FLAG_NULL,
                                   compoundflag,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2327,7 +2327,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
         if (rv ||
             (((wordnum == 0) && compoundbegin &&
-              ((rv = suffix_check(st.c_str(), 0, i, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st, 0, i, 0, NULL, FLAG_NULL,
                                   compoundbegin,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2338,7 +2338,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
                                   compoundbegin)))) ||
              ((wordnum > 0) && compoundmiddle &&
-              ((rv = suffix_check(st.c_str(), 0, i, 0, NULL, FLAG_NULL,
+              ((rv = suffix_check(st, 0, i, 0, NULL, FLAG_NULL,
                                   compoundmiddle,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
@@ -2723,7 +2723,7 @@ inline int AffixMgr::isRevSubset(const char* s1,
 }
 
 // check word for suffixes
-struct hentry* AffixMgr::suffix_check(const char* word,
+struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       int start,
                                       int len,
                                       int sfxopts,
@@ -2785,7 +2785,7 @@ struct hentry* AffixMgr::suffix_check(const char* word,
   SfxEntry* sptr = sStart[sp];
 
   while (sptr) {
-    if (isRevSubset(sptr->getKey(), word + start + len - 1, len)) {
+    if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
       // suffixes are not allowed in beginning of compounds
       if ((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
            // except when signed with compoundpermitflag flag

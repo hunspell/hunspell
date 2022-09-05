@@ -260,7 +260,7 @@ struct hentry* PfxEntry::checkword(const std::string& word,
 
       // if ((opts & aeXPRODUCT) && in_compound) {
       if ((opts & aeXPRODUCT)) {
-        he = pmyMgr->suffix_check(tmpword.c_str(), 0, tmpl, aeXPRODUCT, this,
+        he = pmyMgr->suffix_check(tmpword, 0, tmpl, aeXPRODUCT, this,
                                   FLAG_NULL, needflag, in_compound);
         if (he)
           return he;
@@ -742,13 +742,13 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen))
-          he = pmyMgr->suffix_check(tmpword.c_str(), 0, tmpl, 0, NULL,
+          he = pmyMgr->suffix_check(tmpword, 0, tmpl, 0, NULL,
                                     (FLAG)aflag, needflag, IN_CPD_NOT);
         else
-          he = pmyMgr->suffix_check(tmpword.c_str(), 0, tmpl, optflags, ppfx,
+          he = pmyMgr->suffix_check(tmpword, 0, tmpl, optflags, ppfx,
                                     (FLAG)aflag, needflag, IN_CPD_NOT);
       } else {
-        he = pmyMgr->suffix_check(tmpword.c_str(), 0, tmpl, 0, NULL,
+        he = pmyMgr->suffix_check(tmpword, 0, tmpl, 0, NULL,
                                   (FLAG)aflag, needflag, IN_CPD_NOT);
       }
       if (he)
