@@ -1142,6 +1142,7 @@ struct hentry* AffixMgr::prefix_check(const char* word,
 
 // check word for prefixes and two-level suffixes
 struct hentry* AffixMgr::prefix_check_twosfx(const std::string& word,
+                                             int start,
                                              int len,
                                              char in_compound,
                                              const FLAG needflag) {
@@ -1155,19 +1156,19 @@ struct hentry* AffixMgr::prefix_check_twosfx(const std::string& word,
   PfxEntry* pe = pStart[0];
 
   while (pe) {
-    rv = pe->check_twosfx(word, 0, len, in_compound, needflag);
+    rv = pe->check_twosfx(word, start, len, in_compound, needflag);
     if (rv)
       return rv;
     pe = pe->getNext();
   }
 
   // now handle the general case
-  unsigned char sp = word[0];
+  unsigned char sp = word[start];
   PfxEntry* pptr = pStart[sp];
 
   while (pptr) {
-    if (isSubset(pptr->getKey(), word.c_str())) {
-      rv = pptr->check_twosfx(word, 0, len, in_compound, needflag);
+    if (isSubset(pptr->getKey(), word.c_str() + start)) {
+      rv = pptr->check_twosfx(word, start, len, in_compound, needflag);
       if (rv) {
         pfx = pptr;
         return rv;
@@ -3137,7 +3138,7 @@ struct hentry* AffixMgr::affix_check(const char* word,
     if (rv)
       return rv;
     // if still not found check all two-level suffixes
-    rv = prefix_check_twosfx(word, len, IN_CPD_NOT, needflag);
+    rv = prefix_check_twosfx(word, 0, len, IN_CPD_NOT, needflag);
   }
 
   return rv;
