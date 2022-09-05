@@ -209,6 +209,7 @@ class AffixMgr {
                                      const FLAG needflag = FLAG_NULL);
 
   std::string affix_check_morph(const char* word,
+                                int start,
                                 int len,
                                 const FLAG needflag = FLAG_NULL,
                                 char in_compound = IN_CPD_NOT);
