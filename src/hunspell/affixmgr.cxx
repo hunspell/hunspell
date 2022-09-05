@@ -4857,7 +4857,7 @@ std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
         if ((*suff) == ptr->getFlag()) {
           std::string nw(root_word);
           nw.append(ptr->getAffix());
-          hentry* ht = ptr->checkword(nw.c_str(), 0, nw.size(), 0, NULL, 0, 0, 0);
+          hentry* ht = ptr->checkword(nw, 0, nw.size(), 0, NULL, 0, 0, 0);
           if (ht) {
             slst.push_back(nw);
           }
