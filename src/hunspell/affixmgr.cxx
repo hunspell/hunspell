@@ -1198,7 +1198,7 @@ std::string AffixMgr::prefix_check_morph(const char* word,
   // first handle the special case of 0 length prefixes
   PfxEntry* pe = pStart[0];
   while (pe) {
-    std::string st = pe->check_morph(word + start, len, in_compound, needflag);
+    std::string st = pe->check_morph(word, start, len, in_compound, needflag);
     if (!st.empty()) {
       result.append(st);
     }
@@ -1211,7 +1211,7 @@ std::string AffixMgr::prefix_check_morph(const char* word,
 
   while (pptr) {
     if (isSubset(pptr->getKey(), word + start)) {
-      std::string st = pptr->check_morph(word + start, len, in_compound, needflag);
+      std::string st = pptr->check_morph(word, start, len, in_compound, needflag);
       if (!st.empty()) {
         // fogemorpheme
         if ((in_compound != IN_CPD_NOT) ||
