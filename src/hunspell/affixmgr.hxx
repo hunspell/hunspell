@@ -208,7 +208,7 @@ class AffixMgr {
                                      PfxEntry* ppfx,
                                      const FLAG needflag = FLAG_NULL);
 
-  std::string affix_check_morph(const char* word,
+  std::string affix_check_morph(const std::string& word,
                                 int start,
                                 int len,
                                 const FLAG needflag = FLAG_NULL,
