@@ -228,6 +228,7 @@ class AffixMgr {
                                  char in_compound = IN_CPD_NOT);
 
   std::string prefix_check_twosfx_morph(const char* word,
+                                        int start,
                                         int len,
                                         char in_compound,
                                         const FLAG needflag = FLAG_NULL);
