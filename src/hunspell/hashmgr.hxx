@@ -88,8 +88,7 @@ enum flag { FLAG_CHAR, FLAG_LONG, FLAG_NUM, FLAG_UNI };
 #define MORPH_PHON_RATIO 500
 
 class HashMgr {
-  int tablesize;
-  struct hentry** tableptr;
+  std::vector<struct hentry*> tableptr;
   flag flag_mode;
   int complexprefixes;
   int utf8;
@@ -121,8 +120,8 @@ class HashMgr {
   int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
   bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
-  unsigned short decode_flag(const char* flag) const;
-  char* encode_flag(unsigned short flag) const;
+  unsigned short decode_flag(const std::string& flag) const;
+  std::string encode_flag(unsigned short flag) const;
   int is_aliasf() const;
   int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
   int is_aliasm() const;

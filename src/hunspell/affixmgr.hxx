@@ -261,7 +261,7 @@ class AffixMgr {
                    hentry** rwords,
                    char all);
   int cpdcase_check(const char* word, int len);
-  inline int candidate_check(const char* word, int len);
+  inline int candidate_check(const std::string& word);
   void setcminmax(int* cmin, int* cmax, const char* word, int len);
   struct hentry* compound_check(const std::string& word,
                                 short wordnum,
@@ -274,8 +274,7 @@ class AffixMgr {
                                 char is_sug,
                                 int* info);
 
-  int compound_check_morph(const char* word,
-                           int len,
+  int compound_check_morph(const std::string& word,
                            short wordnum,
                            short numsyllable,
                            short maxwordnum,
@@ -288,7 +287,7 @@ class AffixMgr {
 
   std::vector<std::string> get_suffix_words(short unsigned* suff,
                        int len,
-                       const char* root_word);
+                       const std::string& root_word);
 
   struct hentry* lookup(const char* word);
   const std::vector<replentry>& get_reptable() const;
@@ -330,7 +329,7 @@ class AffixMgr {
   FLAG get_warn(void) const;
   int get_forbidwarn(void) const;
   int get_checksharps(void) const;
-  char* encode_flag(unsigned short aflag) const;
+  std::string encode_flag(unsigned short aflag) const;
   int get_fullstrip() const;
 
  private:
@@ -351,8 +350,8 @@ class AffixMgr {
 
   void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);
-  int condlen(const char*);
-  int encodeit(AffEntry& entry, const char* cs);
+  int condlen(const std::string& s);
+  int encodeit(AffEntry& entry, const std::string& cs);
   int build_pfxtree(PfxEntry* pfxptr);
   int build_sfxtree(SfxEntry* sfxptr);
   int process_pfx_order();

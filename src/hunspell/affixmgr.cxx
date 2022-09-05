@@ -1014,21 +1014,20 @@ int AffixMgr::process_sfx_order() {
 
 // add flags to the result for dictionary debugging
 std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
-  char* st = encode_flag(flag);
+  std::string st = encode_flag(flag);
   result.push_back(MSEP_FLD);
   result.append(MORPH_FLAG);
-  if (st) {
-    result.append(st);
-    free(st);
-  }
+  result.append(st);
   return result;
 }
 
 // calculate the character length of the condition
-int AffixMgr::condlen(const char* st) {
+int AffixMgr::condlen(const std::string& s) {
   int l = 0;
   bool group = false;
-  for (; *st; st++) {
+  std::string::const_iterator st = s.begin();
+  std::string::const_iterator end = s.end();
+  while (st != end) {
     if (*st == '[') {
       group = true;
       l++;
@@ -1036,16 +1035,17 @@ int AffixMgr::condlen(const char* st) {
       group = false;
     else if (!group && (!utf8 || (!(*st & 0x80) || ((*st & 0xc0) == 0x80))))
       l++;
+    ++st;
   }
   return l;
 }
 
-int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
-  if (strcmp(cs, ".") != 0) {
+int AffixMgr::encodeit(AffEntry& entry, const std::string& cs) {
+  if (cs.compare(".") != 0) {
     entry.numconds = (char)condlen(cs);
-    const size_t cslen = strlen(cs);
+    const size_t cslen = cs.size();
     const size_t short_part = std::min<size_t>(MAXCONDLEN, cslen);
-    memcpy(entry.c.conds, cs, short_part);
+    memcpy(entry.c.conds, cs.data(), short_part);
     if (short_part < MAXCONDLEN) {
       //blank out the remaining space
       memset(entry.c.conds + short_part, 0, MAXCONDLEN - short_part);
@@ -1053,9 +1053,10 @@ int AffixMgr::encodeit(AffEntry& entry, const char* cs) {
       //there is more conditions than fit in fixed space, so its
       //a long condition
       entry.opts |= aeLONGCOND;
-      entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
-      if (!entry.c.l.conds2)
-        return 1;
+      size_t remaining = cs.size() - MAXCONDLEN_1;
+      entry.c.l.conds2 = new char[1 + remaining];
+      memcpy(entry.c.l.conds2, cs.data() + MAXCONDLEN_1, remaining);
+      entry.c.l.conds2[remaining] = 0;
     }
   } else {
     entry.numconds = 0;
@@ -1282,7 +1283,7 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
       while ((r = strstr(r, get_reptable()[i].pattern.c_str())) != NULL) {
         std::string candidate(word);
         candidate.replace(r - word, lenp, get_reptable()[i].outstrings[0]);
-        if (candidate_check(candidate.c_str(), candidate.size()))
+        if (candidate_check(candidate))
           return 1;
         ++r;  // search for the next letter
       }
@@ -1302,7 +1303,7 @@ int AffixMgr::cpdwordpair_check(const char * word, int wl) {
       if (utf8 && ((word[i] & 0xc0) == 0x80))
           continue;
       candidate.insert(i, 1, ' ');
-      if (candidate_check(candidate.c_str(), candidate.size()))
+      if (candidate_check(candidate))
         return 1;
       candidate.erase(i, 1);
     }
@@ -1501,16 +1502,16 @@ int AffixMgr::defcpd_check(hentry*** words,
   return 0;
 }
 
-inline int AffixMgr::candidate_check(const char* word, int len) {
+inline int AffixMgr::candidate_check(const std::string& word) {
 
-  struct hentry* rv = lookup(word);
+  struct hentry* rv = lookup(word.c_str());
   if (rv)
     return 1;
 
   //  rv = prefix_check(word,len,1);
   //  if (rv) return 1;
 
-  rv = affix_check(word, len);
+  rv = affix_check(word.c_str(), word.size());
   if (rv)
     return 1;
   return 0;
@@ -2176,8 +2177,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
 // check if compound word is correctly spelled
 // hu_mov_rule = spec. Hungarian rule (XXX)
-int AffixMgr::compound_check_morph(const char* word,
-                                   int len,
+int AffixMgr::compound_check_morph(const std::string& word,
                                    short wordnum,
                                    short numsyllable,
                                    short maxwordnum,
@@ -2203,6 +2203,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
   char affixed = 0;
   hentry** oldwords = words;
+  size_t len = word.size();
 
   // add a time limit to handle possible
   // combinatorical explosion of the overlapping words
@@ -2219,7 +2220,7 @@ int AffixMgr::compound_check_morph(const char* word,
       timelimit = 0;
   }
 
-  setcminmax(&cmin, &cmax, word, len);
+  setcminmax(&cmin, &cmax, word.c_str(), len);
 
   st.assign(word);
 
@@ -2434,8 +2435,8 @@ int AffixMgr::compound_check_morph(const char* word,
              (
                  // test CHECKCOMPOUNDPATTERN
                  !checkcpdtable.empty() && !words &&
-                 cpdpat_check(word, i, rv, NULL, affixed)) ||
-             (checkcompoundcase && !words && cpdcase_check(word, i))))
+                 cpdpat_check(word.c_str(), i, rv, NULL, affixed)) ||
+             (checkcompoundcase && !words && cpdcase_check(word.c_str(), i))))
           // LANG_hu section: spec. Hungarian rule
           ||
           ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
@@ -2459,7 +2460,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         // NEXT WORD(S)
         rv_first = rv;
-        rv = lookup((word + i));  // perhaps without prefix
+        rv = lookup((word.c_str() + i));  // perhaps without prefix
 
         // search homonym with compound flag
         while ((rv) && ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||
@@ -2476,7 +2477,7 @@ int AffixMgr::compound_check_morph(const char* word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word + i);
+          result.append(word, i);
           if (complexprefixes && HENTRY_DATA(rv))
             result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
@@ -2533,7 +2534,7 @@ int AffixMgr::compound_check_morph(const char* word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word + i);
+          result.append(word, i);
 
           if (HENTRY_DATA(rv)) {
             if (complexprefixes)
@@ -2561,30 +2562,30 @@ int AffixMgr::compound_check_morph(const char* word,
         sfxflag = FLAG_NULL;
 
         if (compoundflag && !onlycpdrule)
-          rv = affix_check((word + i), strlen(word + i), compoundflag);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
         else
           rv = NULL;
 
         if (!rv && compoundend && !onlycpdrule) {
           sfx = NULL;
           pfx = NULL;
-          rv = affix_check((word + i), strlen(word + i), compoundend);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), compoundend);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
-          rv = affix_check((word + i), strlen(word + i), 0, IN_CPD_END);
+          rv = affix_check((word.c_str() + i), strlen(word.c_str() + i), 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
-              m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+              m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
             if (m.empty() && compoundend) {
-              m = affix_check_morph((word + i), strlen(word + i), compoundend);
+              m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundend);
             }
             result.append(presult);
             if (!m.empty()) {
               result.push_back(MSEP_FLD);
               result.append(MORPH_PART);
-              result.append(word + i);
+              result.append(word, i);
               line_uniq_app(m, MSEP_REC);
               result.append(m);
             }
@@ -2614,7 +2615,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         if (langnum == LANG_hu) {
           // calculate syllable number of the word
-          numsyllable += get_syllable(word + i);
+          numsyllable += get_syllable(word.c_str() + i);
 
           // - affix syllable num.
           // XXX only second suffix (inflections, not derivations)
@@ -2668,15 +2669,15 @@ int AffixMgr::compound_check_morph(const char* word,
             ((!checkcompounddup || (rv != rv_first)))) {
           std::string m;
           if (compoundflag)
-            m = affix_check_morph((word + i), strlen(word + i), compoundflag);
+            m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundflag);
           if (m.empty() && compoundend) {
-            m = affix_check_morph((word + i), strlen(word + i), compoundend);
+            m = affix_check_morph((word.c_str() + i), strlen(word.c_str() + i), compoundend);
           }
           result.append(presult);
           if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
-            result.append(word + i);
+            result.append(word, i);
             line_uniq_app(m, MSEP_REC);
             result.push_back(MSEP_FLD);
             result.append(m);
@@ -2690,7 +2691,7 @@ int AffixMgr::compound_check_morph(const char* word,
 
         // perhaps second word is a compound word (recursive call)
         if ((wordnum + 2 < maxwordnum) && (ok == 0)) {
-          compound_check_morph((word + i), strlen(word + i), wordnum + 1,
+          compound_check_morph(word.substr(i), wordnum + 1,
                                numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                result, &presult);
         } else {
@@ -3562,7 +3563,7 @@ int AffixMgr::get_checksharps() const {
   return checksharps;
 }
 
-char* AffixMgr::encode_flag(unsigned short aflag) const {
+std::string AffixMgr::encode_flag(unsigned short aflag) const {
   return pHMgr->encode_flag(aflag);
 }
 
@@ -3703,7 +3704,7 @@ bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr*
   std::string s;
   if (!parse_string(line, s, af->getlinenum()))
     return false;
-  *out = pHMgr->decode_flag(s.c_str());
+  *out = pHMgr->decode_flag(s);
   return true;
 }
 
@@ -4023,7 +4024,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
           if (slash_pos != std::string::npos) {
             std::string chunk(checkcpdtable.back().pattern, slash_pos + 1);
             checkcpdtable.back().pattern.resize(slash_pos);
-            checkcpdtable.back().cond = pHMgr->decode_flag(chunk.c_str());
+            checkcpdtable.back().cond = pHMgr->decode_flag(chunk);
           }
           break;
         }
@@ -4033,7 +4034,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
           if (slash_pos != std::string::npos) {
             std::string chunk(checkcpdtable.back().pattern2, slash_pos + 1);
             checkcpdtable.back().pattern2.resize(slash_pos);
-            checkcpdtable.back().cond2 = pHMgr->decode_flag(chunk.c_str());
+            checkcpdtable.back().cond2 = pHMgr->decode_flag(chunk);
           }
           break;
         }
@@ -4468,7 +4469,7 @@ bool AffixMgr::parse_affix(const std::string& line,
       // piece 2 - is affix char
       case 1: {
         np++;
-        aflag = pHMgr->decode_flag(std::string(start_piece, iter).c_str());
+        aflag = pHMgr->decode_flag(std::string(start_piece, iter));
         if (((at == 'S') && (dupflags[aflag] & dupSFX)) ||
             ((at == 'P') && (dupflags[aflag] & dupPFX))) {
           HUNSPELL_WARNING(
@@ -4493,12 +4494,9 @@ bool AffixMgr::parse_affix(const std::string& line,
         numents = atoi(std::string(start_piece, iter).c_str());
         if ((numents <= 0) || ((std::numeric_limits<size_t>::max() /
                                 sizeof(AffEntry)) < static_cast<size_t>(numents))) {
-          char* err = pHMgr->encode_flag(aflag);
-          if (err) {
-            HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
-                             af->getlinenum());
-            free(err);
-          }
+          std::string err = pHMgr->encode_flag(aflag);
+          HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",
+                           af->getlinenum());
           return false;
         }
 
@@ -4520,12 +4518,9 @@ bool AffixMgr::parse_affix(const std::string& line,
   }
   // check to make sure we parsed enough pieces
   if (np != 4) {
-    char* err = pHMgr->encode_flag(aflag);
-    if (err) {
-      HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
-                       af->getlinenum());
-      free(err);
-    }
+    std::string err = pHMgr->encode_flag(aflag);
+    HUNSPELL_WARNING(stderr, "error: line %d: missing data\n",
+                     af->getlinenum());
     return false;
   }
 
@@ -4557,14 +4552,11 @@ bool AffixMgr::parse_affix(const std::string& line,
         case 1: {
           np++;
           std::string chunk(start_piece, iter);
-          if (pHMgr->decode_flag(chunk.c_str()) != aflag) {
-            char* err = pHMgr->encode_flag(aflag);
-            if (err) {
-              HUNSPELL_WARNING(stderr,
-                               "error: line %d: affix %s is corrupt\n",
-                               af->getlinenum(), err);
-              free(err);
-            }
+          if (pHMgr->decode_flag(chunk) != aflag) {
+            std::string err = pHMgr->encode_flag(aflag);
+            HUNSPELL_WARNING(stderr,
+                             "error: line %d: affix %s is corrupt\n",
+                             af->getlinenum(), err.c_str());
             return false;
           }
 
@@ -4679,7 +4671,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             reverseword(chunk);
             reverse_condition(chunk);
           }
-          if (encodeit(*entry, chunk.c_str()))
+          if (encodeit(*entry, chunk))
             return false;
           break;
         }
@@ -4716,12 +4708,9 @@ bool AffixMgr::parse_affix(const std::string& line,
     }
     // check to make sure we parsed enough pieces
     if (np < 4) {
-      char* err = pHMgr->encode_flag(aflag);
-      if (err) {
-        HUNSPELL_WARNING(stderr, "error: line %d: affix %s is corrupt\n",
-                         af->getlinenum(), err);
-        free(err);
-      }
+      std::string err = pHMgr->encode_flag(aflag);
+      HUNSPELL_WARNING(stderr, "error: line %d: affix %s is corrupt\n",
+                       af->getlinenum(), err.c_str());
       return false;
     }
 
@@ -4852,7 +4841,7 @@ int AffixMgr::redundant_condition(char ft,
 
 std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
                                int len,
-                               const char* root_word) {
+                               const std::string& root_word) {
   std::vector<std::string> slst;
   short unsigned* start_ptr = suff;
   for (int j = 0; j < SETSIZE; j++) {
