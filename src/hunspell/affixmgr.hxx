@@ -187,6 +187,7 @@ class AffixMgr {
                               const FLAG needflag = FLAG_NULL);
   inline int isSubset(const char* s1, const char* s2);
   struct hentry* prefix_check_twosfx(const std::string& word,
+                                     int start,
                                      int len,
                                      char in_compound,
                                      const FLAG needflag = FLAG_NULL);
