@@ -177,6 +177,7 @@ class AffixMgr {
   AffixMgr(const char* affpath, const std::vector<HashMgr*>& ptr, const char* key = NULL);
   ~AffixMgr();
   struct hentry* affix_check(const char* word,
+                             int start,
                              int len,
                              const unsigned short needflag = (unsigned short)0,
                              char in_compound = IN_CPD_NOT);
