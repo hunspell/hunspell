@@ -1715,7 +1715,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                       st.c_str(), i, 0, NULL, FLAG_NULL, compoundflag,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
-                  (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) &&
+                  (rv = suffix_check_twosfx(st, 0, i, 0, NULL, compoundflag)))) &&
                 !hu_mov_rule && sfx->getCont() &&
                 ((compoundforbidflag &&
                   TESTAFF(sfx->getCont(), compoundforbidflag,
@@ -1733,7 +1733,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
-                       st, i, 0, NULL,
+                       st, 0, i, 0, NULL,
                        compoundbegin))) ||  // twofold suffixes + compound
                  (rv = prefix_check(st.c_str(), i,
                                     hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
@@ -1744,7 +1744,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                       hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                  (compoundmoresuffixes &&
                   (rv = suffix_check_twosfx(
-                       st, i, 0, NULL,
+                       st, 0, i, 0, NULL,
                        compoundmiddle))) ||  // twofold suffixes + compound
                  (rv = prefix_check(st.c_str(), i,
                                     hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
@@ -2312,7 +2312,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                   compoundflag,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
-                (rv = suffix_check_twosfx(st, i, 0, NULL, compoundflag)))) &&
+                (rv = suffix_check_twosfx(st, 0, i, 0, NULL, compoundflag)))) &&
               !hu_mov_rule && sfx->getCont() &&
               ((compoundforbidflag &&
                 TESTAFF(sfx->getCont(), compoundforbidflag,
@@ -2330,7 +2330,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
                 (rv = suffix_check_twosfx(
-                     st, i, 0, NULL,
+                     st, 0, i, 0, NULL,
                      compoundbegin))) ||  // twofold suffix+compound
                (rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
@@ -2341,7 +2341,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN)) ||
                (compoundmoresuffixes &&
                 (rv = suffix_check_twosfx(
-                     st, i, 0, NULL,
+                     st, 0, i, 0, NULL,
                      compoundmiddle))) ||  // twofold suffix+compound
                (rv = prefix_check(st.c_str(), i,
                                   hu_mov_rule ? IN_CPD_OTHER : IN_CPD_BEGIN,
@@ -2843,6 +2843,7 @@ struct hentry* AffixMgr::suffix_check(const char* word,
 
 // check word for two-level suffixes
 struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
+                                             int start,
                                              int len,
                                              int sfxopts,
                                              PfxEntry* ppfx,
@@ -2853,7 +2854,7 @@ struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
   SfxEntry* se = sStart[0];
   while (se) {
     if (contclasses[se->getFlag()]) {
-      rv = se->check_twosfx(word, 0, len, sfxopts, ppfx, needflag);
+      rv = se->check_twosfx(word, start, len, sfxopts, ppfx, needflag);
       if (rv)
         return rv;
     }
@@ -2863,13 +2864,13 @@ struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
   // now handle the general case
   if (len == 0)
     return NULL;  // FULLSTRIP
-  unsigned char sp = word[len - 1];
+  unsigned char sp = word[start + len - 1];
   SfxEntry* sptr = sStart[sp];
 
   while (sptr) {
-    if (isRevSubset(sptr->getKey(), word.c_str() + len - 1, len)) {
+    if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
       if (contclasses[sptr->getFlag()]) {
-        rv = sptr->check_twosfx(word, 0, len, sfxopts, ppfx, needflag);
+        rv = sptr->check_twosfx(word, start, len, sfxopts, ppfx, needflag);
         if (rv) {
           sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
           if (!sptr->getCont())
@@ -3130,7 +3131,7 @@ struct hentry* AffixMgr::affix_check(const char* word,
     if (rv)
       return rv;
     // if still not found check all two-level suffixes
-    rv = suffix_check_twosfx(word, len, 0, NULL, needflag);
+    rv = suffix_check_twosfx(word, 0, len, 0, NULL, needflag);
 
     if (rv)
       return rv;
