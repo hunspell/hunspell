@@ -3010,7 +3010,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
             (ppfx &&
              !((ep->getCont()) &&
                TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
-        rv = se->checkword(word.c_str(), start, len, sfxopts, ppfx, cclass,
+        rv = se->checkword(word, start, len, sfxopts, ppfx, cclass,
                            needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
@@ -3077,7 +3077,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
            (cclass ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())))))
-        rv = sptr->checkword(word.c_str(), start, len, sfxopts, ppfx, cclass,
+        rv = sptr->checkword(word, start, len, sfxopts, ppfx, cclass,
                              needflag, FLAG_NULL);
       while (rv) {
         if (ppfx) {
