@@ -437,7 +437,7 @@ std::string PfxEntry::check_morph(const char* word,
       // ross checked combined with a suffix
 
       if ((opts & aeXPRODUCT) && (in_compound != IN_CPD_BEGIN)) {
-        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, aeXPRODUCT, this,
+        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), 0, tmpl, aeXPRODUCT, this,
                                                     FLAG_NULL, needflag);
         if (!st.empty()) {
           result.append(st);
@@ -807,7 +807,7 @@ std::string SfxEntry::check_twosfx_morph(const char* word,
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen)) {
-          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag,
+          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), 0, tmpl, 0, NULL, aflag,
                                                       needflag);
           if (!st.empty()) {
             if (ppfx->getMorph()) {
@@ -818,7 +818,7 @@ std::string SfxEntry::check_twosfx_morph(const char* word,
             mychomp(result);
           }
         } else {
-          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, optflags, ppfx, aflag,
+          std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), 0, tmpl, optflags, ppfx, aflag,
                                                       needflag);
           if (!st.empty()) {
             result.append(st);
@@ -826,7 +826,7 @@ std::string SfxEntry::check_twosfx_morph(const char* word,
           }
         }
       } else {
-        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), tmpl, 0, NULL, aflag, needflag);
+        std::string st = pmyMgr->suffix_check_morph(tmpword.c_str(), 0, tmpl, 0, NULL, aflag, needflag);
         if (!st.empty()) {
           result.append(st);
           mychomp(result);
