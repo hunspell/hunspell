@@ -219,6 +219,7 @@ class AffixMgr {
                                  char in_compound,
                                  const FLAG needflag = FLAG_NULL);
   std::string suffix_check_morph(const char* word,
+                                 int start,
                                  int len,
                                  int sfxopts,
                                  PfxEntry* ppfx,
