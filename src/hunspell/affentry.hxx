@@ -100,6 +100,7 @@ class PfxEntry : public AffEntry {
                            const FLAG needflag = FLAG_NULL);
 
   struct hentry* check_twosfx(const std::string& word,
+                              int start,
                               int len,
                               char in_compound,
                               const FLAG needflag = FLAG_NULL);
@@ -172,6 +173,7 @@ class SfxEntry : public AffEntry {
                            const FLAG badflag);
 
   struct hentry* check_twosfx(const std::string& word,
+                              int start,
                               int len,
                               int optflags,
                               PfxEntry* ppfx,
