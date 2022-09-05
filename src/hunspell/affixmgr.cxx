@@ -1100,7 +1100,7 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
          (pe->getCont() &&
           (TESTAFF(pe->getCont(), compoundpermitflag, pe->getContLen()))))) {
       // check prefix
-      rv = pe->checkword(word.c_str(), start, len, in_compound, needflag);
+      rv = pe->checkword(word, start, len, in_compound, needflag);
       if (rv) {
         pfx = pe;  // BUG: pfx not stateless
         return rv;
@@ -1125,7 +1125,7 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
            (pptr->getCont() && (TESTAFF(pptr->getCont(), compoundpermitflag,
                                         pptr->getContLen()))))) {
         // check prefix
-        rv = pptr->checkword(word.c_str(), start, len, in_compound, needflag);
+        rv = pptr->checkword(word, start, len, in_compound, needflag);
         if (rv) {
           pfx = pptr;  // BUG: pfx not stateless
           return rv;
