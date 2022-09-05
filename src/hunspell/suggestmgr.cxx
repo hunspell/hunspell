@@ -1674,7 +1674,7 @@ int SuggestMgr::checkword(const std::string& word,
     if (rv) {
       nosuffix = 1;
     } else {
-      rv = pAMgr->suffix_check(word.c_str(), 0, word.size(), 0, NULL,
+      rv = pAMgr->suffix_check(word, 0, word.size(), 0, NULL,
                                FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // only suffix
     }
 

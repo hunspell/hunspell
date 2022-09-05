@@ -193,7 +193,7 @@ class AffixMgr {
                                      char in_compound,
                                      const FLAG needflag = FLAG_NULL);
   inline int isRevSubset(const char* s1, const char* end_of_s2, int len);
-  struct hentry* suffix_check(const char* word,
+  struct hentry* suffix_check(const std::string& word,
                               int start,
                               int len,
                               int sfxopts,
