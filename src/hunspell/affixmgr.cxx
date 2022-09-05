@@ -1154,7 +1154,7 @@ struct hentry* AffixMgr::prefix_check_twosfx(const std::string& word,
   PfxEntry* pe = pStart[0];
 
   while (pe) {
-    rv = pe->check_twosfx(word, len, in_compound, needflag);
+    rv = pe->check_twosfx(word, 0, len, in_compound, needflag);
     if (rv)
       return rv;
     pe = pe->getNext();
@@ -1166,7 +1166,7 @@ struct hentry* AffixMgr::prefix_check_twosfx(const std::string& word,
 
   while (pptr) {
     if (isSubset(pptr->getKey(), word.c_str())) {
-      rv = pptr->check_twosfx(word, len, in_compound, needflag);
+      rv = pptr->check_twosfx(word, 0, len, in_compound, needflag);
       if (rv) {
         pfx = pptr;
         return rv;
@@ -2853,7 +2853,7 @@ struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
   SfxEntry* se = sStart[0];
   while (se) {
     if (contclasses[se->getFlag()]) {
-      rv = se->check_twosfx(word, len, sfxopts, ppfx, needflag);
+      rv = se->check_twosfx(word, 0, len, sfxopts, ppfx, needflag);
       if (rv)
         return rv;
     }
@@ -2869,7 +2869,7 @@ struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + len - 1, len)) {
       if (contclasses[sptr->getFlag()]) {
-        rv = sptr->check_twosfx(word, len, sfxopts, ppfx, needflag);
+        rv = sptr->check_twosfx(word, 0, len, sfxopts, ppfx, needflag);
         if (rv) {
           sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
           if (!sptr->getCont())
