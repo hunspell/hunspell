@@ -1245,7 +1245,7 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
   // first handle the special case of 0 length prefixes
   PfxEntry* pe = pStart[0];
   while (pe) {
-    std::string st = pe->check_twosfx_morph(word.c_str(), start, len, in_compound, needflag);
+    std::string st = pe->check_twosfx_morph(word, start, len, in_compound, needflag);
     if (!st.empty()) {
       result.append(st);
     }
@@ -1258,7 +1258,7 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
 
   while (pptr) {
     if (isSubset(pptr->getKey(), word.c_str() + start)) {
-      std::string st = pptr->check_twosfx_morph(word.c_str(), start, len, in_compound, needflag);
+      std::string st = pptr->check_twosfx_morph(word, start, len, in_compound, needflag);
       if (!st.empty()) {
         result.append(st);
         pfx = pptr;
@@ -2907,7 +2907,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
   SfxEntry* se = sStart[0];
   while (se) {
     if (contclasses[se->getFlag()]) {
-      std::string st = se->check_twosfx_morph(word.c_str(), start, len, sfxopts, ppfx, needflag);
+      std::string st = se->check_twosfx_morph(word, start, len, sfxopts, ppfx, needflag);
       if (!st.empty()) {
         if (ppfx) {
           if (ppfx->getMorph()) {
@@ -2937,7 +2937,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
       if (contclasses[sptr->getFlag()]) {
-        std::string st = sptr->check_twosfx_morph(word.c_str(), start, len, sfxopts, ppfx, needflag);
+        std::string st = sptr->check_twosfx_morph(word, start, len, sfxopts, ppfx, needflag);
         if (!st.empty()) {
           sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
           if (!sptr->getCont())
