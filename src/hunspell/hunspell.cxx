@@ -716,7 +716,10 @@ bool HunspellImpl::spell_internal(const std::string& word, int* info, std::strin
         // to recognize dictionary words with wordbreak
         if (found2 > 0 && (found2 < wl - plen))
             found = found2;
-        if (!spell(scw.substr(found + plen)))
+        std::string substring(scw.substr(found + plen));
+        if (word == substring) // that's broken, cannot complete spelling
+          continue;
+        if (!spell(substring))
           continue;
         std::string suffix(scw.substr(found));
         scw.resize(found);
