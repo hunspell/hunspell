@@ -181,7 +181,7 @@ class AffixMgr {
                              int len,
                              const unsigned short needflag = (unsigned short)0,
                              char in_compound = IN_CPD_NOT);
-  struct hentry* prefix_check(const char* word,
+  struct hentry* prefix_check(const std::string& word,
                               int start,
                               int len,
                               char in_compound,

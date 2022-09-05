@@ -1668,7 +1668,7 @@ int SuggestMgr::checkword(const std::string& word,
           break;
       }
     } else
-      rv = pAMgr->prefix_check(word.c_str(), 0, word.size(),
+      rv = pAMgr->prefix_check(word, 0, word.size(),
                                0);  // only prefix, and prefix + suffix XXX
 
     if (rv) {
