@@ -198,6 +198,7 @@ class AffixMgr {
                               const FLAG needflag = FLAG_NULL,
                               char in_compound = IN_CPD_NOT);
   struct hentry* suffix_check_twosfx(const std::string& word,
+                                     int start,
                                      int len,
                                      int sfxopts,
                                      PfxEntry* ppfx,
