@@ -320,6 +320,7 @@ struct hentry* PfxEntry::check_twosfx(const std::string& word,
 
 // check if this prefix entry matches
 std::string PfxEntry::check_twosfx_morph(const char* word,
+                                         int start,
                                          int len,
                                          char in_compound,
                                          const FLAG needflag) {
@@ -336,7 +337,7 @@ std::string PfxEntry::check_twosfx_morph(const char* word,
     // back any characters that would have been stripped
 
     std::string tmpword(strip);
-    tmpword.append(word + appnd.size());
+    tmpword.append(word + start + appnd.size());
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -761,6 +762,7 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
 
 // see if two-level suffix is present in the word
 std::string SfxEntry::check_twosfx_morph(const char* word,
+                                         int start,
                                          int len,
                                          int optflags,
                                          PfxEntry* ppfx,
@@ -788,7 +790,7 @@ std::string SfxEntry::check_twosfx_morph(const char* word,
     // back any characters that would have been stripped or
     // or null terminating the shorter string
 
-    std::string tmpword(word);
+    std::string tmpword(word + start);
     tmpword.resize(tmpl);
     tmpword.append(strip);
     tmpl += strip.size();
