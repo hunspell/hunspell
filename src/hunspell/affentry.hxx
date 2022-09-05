@@ -107,6 +107,7 @@ class PfxEntry : public AffEntry {
                               const FLAG needflag = FLAG_NULL);
 
   std::string check_morph(const char* word,
+                          int start,
                           int len,
                           char in_compound,
                           const FLAG needflag = FLAG_NULL);
