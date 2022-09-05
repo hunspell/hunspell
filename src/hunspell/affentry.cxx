@@ -365,7 +365,7 @@ std::string PfxEntry::check_twosfx_morph(const std::string& word,
 }
 
 // check if this prefix entry matches
-std::string PfxEntry::check_morph(const char* word,
+std::string PfxEntry::check_morph(const std::string& word,
                                   int start,
                                   int len,
                                   char in_compound,
@@ -385,7 +385,7 @@ std::string PfxEntry::check_morph(const char* word,
     // back any characters that would have been stripped
 
     std::string tmpword(strip);
-    tmpword.append(word + start + appnd.size());
+    tmpword.append(word, start + appnd.size());
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
