@@ -2894,6 +2894,7 @@ struct hentry* AffixMgr::suffix_check_twosfx(const std::string& word,
 
 // check word for two-level suffixes and morph
 std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
+                                                int start,
                                                 int len,
                                                 int sfxopts,
                                                 PfxEntry* ppfx,
@@ -2906,7 +2907,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
   SfxEntry* se = sStart[0];
   while (se) {
     if (contclasses[se->getFlag()]) {
-      std::string st = se->check_twosfx_morph(word, len, sfxopts, ppfx, needflag);
+      std::string st = se->check_twosfx_morph(word + start, len, sfxopts, ppfx, needflag);
       if (!st.empty()) {
         if (ppfx) {
           if (ppfx->getMorph()) {
@@ -2930,13 +2931,13 @@ std::string AffixMgr::suffix_check_twosfx_morph(const char* word,
   // now handle the general case
   if (len == 0)
     return std::string();  // FULLSTRIP
-  unsigned char sp = *((const unsigned char*)(word + len - 1));
+  unsigned char sp = word[start + len - 1];
   SfxEntry* sptr = sStart[sp];
 
   while (sptr) {
-    if (isRevSubset(sptr->getKey(), word + len - 1, len)) {
+    if (isRevSubset(sptr->getKey(), word + start + len - 1, len)) {
       if (contclasses[sptr->getFlag()]) {
-        std::string st = sptr->check_twosfx_morph(word, len, sfxopts, ppfx, needflag);
+        std::string st = sptr->check_twosfx_morph(word + start, len, sfxopts, ppfx, needflag);
         if (!st.empty()) {
           sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
           if (!sptr->getCont())
@@ -3173,7 +3174,7 @@ std::string AffixMgr::affix_check_morph(const char* word,
     sfx = NULL;
     pfx = NULL;
     // if still not found check all two-level suffixes
-    st = suffix_check_twosfx_morph(word + start, len, 0, NULL, needflag);
+    st = suffix_check_twosfx_morph(word, start, len, 0, NULL, needflag);
     if (!st.empty()) {
       result.append(st);
     }
