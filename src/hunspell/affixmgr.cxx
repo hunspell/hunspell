@@ -1513,7 +1513,7 @@ inline int AffixMgr::candidate_check(const std::string& word) {
   //  rv = prefix_check(word,0,len,1);
   //  if (rv) return 1;
 
-  rv = affix_check(word.c_str(), 0, word.size());
+  rv = affix_check(word, 0, word.size());
   if (rv)
     return 1;
   return 0;
@@ -1838,7 +1838,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 cpdcase_check(word.c_str(), i))))
             // LANG_hu section: spec. Hungarian rule
             || ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
-                (rv = affix_check(st.c_str(), 0, i)) &&
+                (rv = affix_check(st, 0, i)) &&
                 (sfx && sfx->getCont() &&
                  (  // XXX hardwired Hungarian dic. codes
                      TESTAFF(sfx->getCont(), (unsigned short)'x',
@@ -1961,19 +1961,19 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             sfx = NULL;
             sfxflag = FLAG_NULL;
             rv = (compoundflag && !onlycpdrule && i < word.size())
-                     ? affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundflag,
+                     ? affix_check(word, i, word.size() - i, compoundflag,
                                    IN_CPD_END)
                      : NULL;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = NULL;
               pfx = NULL;
               if (i < word.size())
-                rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundend, IN_CPD_END);
+                rv = affix_check(word, i, word.size() - i, compoundend, IN_CPD_END);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
               if (i < word.size())
-                rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), 0, IN_CPD_END);
+                rv = affix_check(word, i, word.size() - i, 0, IN_CPD_END);
               if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
@@ -2125,7 +2125,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   if (forbiddenword) {
                     struct hentry* rv2 = lookup(word.c_str());
                     if (!rv2)
-                      rv2 = affix_check(word.c_str(), 0, len);
+                      rv2 = affix_check(word, 0, len);
                     if (rv2 && rv2->astr &&
                         TESTAFF(rv2->astr, forbiddenword, rv2->alen) &&
                         (strncmp(rv2->word, st.c_str(), i + rv->blen) == 0)) {
@@ -2442,7 +2442,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           // LANG_hu section: spec. Hungarian rule
           ||
           ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
-           (rv = affix_check(st.c_str(), 0, i)) &&
+           (rv = affix_check(st, 0, i)) &&
            (sfx && sfx->getCont() &&
             (TESTAFF(sfx->getCont(), (unsigned short)'x', sfx->getContLen()) ||
              TESTAFF(sfx->getCont(), (unsigned short)'%', sfx->getContLen()))))
@@ -2564,18 +2564,18 @@ int AffixMgr::compound_check_morph(const std::string& word,
         sfxflag = FLAG_NULL;
 
         if (compoundflag && !onlycpdrule)
-          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundflag);
+          rv = affix_check(word, i, word.size() - i, compoundflag);
         else
           rv = NULL;
 
         if (!rv && compoundend && !onlycpdrule) {
           sfx = NULL;
           pfx = NULL;
-          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), compoundend);
+          rv = affix_check(word, i, word.size() - i, compoundend);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
-          rv = affix_check(word.c_str(), i, strlen(word.c_str() + i), 0, IN_CPD_END);
+          rv = affix_check(word, i, word.size() - i, 0, IN_CPD_END);
           if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
@@ -3114,7 +3114,7 @@ std::string AffixMgr::suffix_check_morph(const char* word,
 }
 
 // check if word with affixes is correctly spelled
-struct hentry* AffixMgr::affix_check(const char* word,
+struct hentry* AffixMgr::affix_check(const std::string& word,
                                      int start,
                                      int len,
                                      const FLAG needflag,
