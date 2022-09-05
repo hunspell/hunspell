@@ -825,8 +825,8 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 
   // check with affixes
   if (!he && pAMgr) {
-    // try stripping off affixes */
-    he = pAMgr->affix_check(word, len, 0);
+    // try stripping off affixes
+    he = pAMgr->affix_check(word, 0, len, 0);
 
     // check compound restriction and onlyupcase
     if (he && he->astr &&
