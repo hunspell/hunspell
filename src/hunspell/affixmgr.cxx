@@ -3368,20 +3368,14 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
       !(al && ((needaffix && TESTAFF(ap, needaffix, al)) ||
                (onlyincompound && TESTAFF(ap, onlyincompound, al))))) {
     wlst[nh].word = mystrdup(ts);
-    if (!wlst[nh].word)
-      return 0;
     wlst[nh].allow = false;
     wlst[nh].orig = NULL;
     nh++;
     // add special phonetic version
     if (phon && (nh < maxn)) {
       wlst[nh].word = mystrdup(phon);
-      if (!wlst[nh].word)
-        return nh - 1;
       wlst[nh].allow = false;
       wlst[nh].orig = mystrdup(ts);
-      if (!wlst[nh].orig)
-        return nh - 1;
       nh++;
     }
   }
@@ -3417,12 +3411,8 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
               reverseword(key);
               prefix.append(key);
               wlst[nh].word = mystrdup(prefix.c_str());
-              if (!wlst[nh].word)
-                return nh - 1;
               wlst[nh].allow = false;
               wlst[nh].orig = mystrdup(newword.c_str());
-              if (!wlst[nh].orig)
-                return nh - 1;
               nh++;
             }
           }
@@ -4703,8 +4693,6 @@ bool AffixMgr::parse_affix(const std::string& line,
               chunk.append(iter, end);
             }
             entry->morphcode = mystrdup(chunk.c_str());
-            if (!entry->morphcode)
-              return false;
           }
           break;
         }
