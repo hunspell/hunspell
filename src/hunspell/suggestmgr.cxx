@@ -90,7 +90,6 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
   csconv = NULL;
 
   ckeyl = 0;
-  ckey = NULL;
 
   ctryl = 0;
   ctry = NULL;
@@ -119,11 +118,11 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
     complexprefixes = pAMgr->get_complexprefixes();
   }
 
-  if (ckey) {
+  if (!ckey.empty()) {
     if (utf8) {
       ckeyl = u8_u16(ckey_utf, ckey);
     } else {
-      ckeyl = strlen(ckey);
+      ckeyl = ckey.size();
     }
   }
 
@@ -144,8 +143,6 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
 
 SuggestMgr::~SuggestMgr() {
   pAMgr = NULL;
-  delete[] ckey;
-  ckey = NULL;
   ckeyl = 0;
   delete[] ctry;
   ctry = NULL;
@@ -579,19 +576,23 @@ int SuggestMgr::badcharkey(std::vector<std::string>& wlst,
       candidate[i] = tmpc;
     }
     // check neighbor characters in keyboard string
-    if (!ckey)
+    if (ckey.empty())
       continue;
-    char* loc = strchr(ckey, tmpc);
-    while (loc) {
-      if ((loc > ckey) && (*(loc - 1) != '|')) {
-        candidate[i] = *(loc - 1);
+    size_t loc = 0;
+    while ((loc < ckeyl) && ckey[loc] != tmpc)
+      ++loc;
+    while (loc < ckeyl) {
+      if ((loc > 0) && ckey[loc - 1] != '|') {
+        candidate[i] = ckey[loc - 1];
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
-      if ((*(loc + 1) != '|') && (*(loc + 1) != '\0')) {
-        candidate[i] = *(loc + 1);
+      if (((loc + 1) < ckeyl) && (ckey[loc + 1] != '|')) {
+        candidate[i] = ckey[loc + 1];
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
-      loc = strchr(loc + 1, tmpc);
+      do {
+        loc++;
+      } while ((loc < ckeyl) && ckey[loc] != tmpc);
     }
     candidate[i] = tmpc;
   }
