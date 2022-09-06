@@ -3353,6 +3353,19 @@ std::string AffixMgr::morphgen(const char* ts,
   return std::string();
 }
 
+namespace {
+  // replaces strdup with ansi version
+  char* mystrdup(const char* s) {
+    char* d = NULL;
+    if (s) {
+      size_t sl = strlen(s) + 1;
+      d = new char[sl];
+      memcpy(d, s, sl);
+    }
+    return d;
+  }
+}
+
 int AffixMgr::expand_rootword(struct guessword* wlst,
                               int maxn,
                               const char* ts,

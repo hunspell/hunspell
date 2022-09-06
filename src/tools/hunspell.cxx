@@ -578,6 +578,17 @@ const char* basename(const char* s, char c) {
   return p;
 }
 
+char* mystrdup(const char* s) {
+  char* d = NULL;
+  if (s) {
+    int sl = strlen(s) + 1;
+    d = (char*)malloc(sl);
+    if (d)
+      memcpy(d, s, sl);
+  }
+  return d;
+}
+
 #ifdef HAVE_CURSES_H
 char* scanline(const char* message) {
   char input[INPUTLEN];
