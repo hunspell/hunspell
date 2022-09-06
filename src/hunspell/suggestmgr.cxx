@@ -618,7 +618,7 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
       candidate_utf[i] = tmpc;
     }
     // check neighbor characters in keyboard string
-    if (!ckey)
+    if (ckey_utf.empty())
       continue;
     size_t loc = 0;
     while ((loc < ckeyl) && ckey_utf[loc] != tmpc)
