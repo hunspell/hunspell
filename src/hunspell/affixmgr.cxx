@@ -3597,10 +3597,8 @@ const std::string& AffixMgr::get_key_string() {
 }
 
 // return the preferred try string for suggestions
-char* AffixMgr::get_try_string() const {
-  if (trystring.empty())
-    return NULL;
-  return mystrdup(trystring.c_str());
+const std::string& AffixMgr::get_try_string() const {
+  return trystring;
 }
 
 // return the preferred try string for suggestions
