@@ -96,7 +96,7 @@ class SuggestMgr {
   SuggestMgr& operator=(const SuggestMgr&);
 
  private:
-  char* ckey;
+  std::string ckey;
   size_t ckeyl;
   std::vector<w_char> ckey_utf;
 
