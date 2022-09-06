@@ -127,7 +127,7 @@ private:
   AffixMgr* pAMgr;
   std::vector<HashMgr*> m_HMgrs;
   SuggestMgr* pSMgr;
-  char* affixpath;
+  std::string affixpath;
   std::string encoding;
   struct cs_info* csconv;
   int langnum;
@@ -169,11 +169,11 @@ private:
   HunspellImpl& operator=(const HunspellImpl&);
 };
 
-HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key) {
+HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key)
+  : affixpath(affpath) {
   csconv = NULL;
   utf8 = 0;
   complexprefixes = 0;
-  affixpath = mystrdup(affpath);
 
   /* first set up the hash manager */
   m_HMgrs.push_back(new HashMgr(dpath, affpath, key));
@@ -209,15 +209,11 @@ HunspellImpl::~HunspellImpl() {
   delete[] csconv;
 #endif
   csconv = NULL;
-  delete[] affixpath;
-  affixpath = NULL;
 }
 
 // load extra dictionaries
 int HunspellImpl::add_dic(const char* dpath, const char* key) {
-  if (!affixpath)
-    return 1;
-  m_HMgrs.push_back(new HashMgr(dpath, affixpath, key));
+  m_HMgrs.push_back(new HashMgr(dpath, affixpath.c_str(), key));
   return 0;
 }
 
