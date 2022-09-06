@@ -86,11 +86,13 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
     : flag_mode(FLAG_CHAR),
       complexprefixes(0),
       utf8(0),
-      forbiddenword(FORBIDDENWORD)  // forbidden word signing flag
+      forbiddenword(FORBIDDENWORD), // forbidden word signing flag
+      langnum(0),
+      csconv(NULL)
 {
-  langnum = 0;
-  csconv = 0;
   load_config(apath, key);
+  if (!csconv)
+    csconv = get_current_cs(SPELL_ENCODING);
   int ec = load_tables(tpath, key);
   if (ec) {
     /* error condition - what should we do here */
@@ -1010,8 +1012,6 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       break;
   }
 
-  if (csconv == NULL)
-    csconv = get_current_cs(SPELL_ENCODING);
   delete afflst;
   return 0;
 }
