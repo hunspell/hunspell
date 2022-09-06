@@ -1199,7 +1199,9 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
               else
                 reverseword(chunk);
             }
-            alias = mystrdup(chunk.c_str());
+            size_t sl = chunk.size() + 1;
+            alias = new char[sl];
+            memcpy(alias, chunk.c_str(), sl);
             break;
           }
           default:
