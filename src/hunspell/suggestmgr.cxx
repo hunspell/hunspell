@@ -82,7 +82,7 @@ const w_char W_VLINE = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4
 
-SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
+SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr) {
   // register affix manager and check in string of chars to
   // try when building candidate suggestions
   pAMgr = aptr;
@@ -92,7 +92,6 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
   ckeyl = 0;
 
   ctryl = 0;
-  ctry = NULL;
 
   utf8 = 0;
   langnum = 0;
@@ -126,26 +125,24 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
     }
   }
 
-  if (tryme) {
-    ctry = mystrdup(tryme);
-    if (ctry)
-      ctryl = strlen(ctry);
-    if (ctry && utf8) {
-      ctryl = u8_u16(ctry_utf, tryme);
+  ctry = tryme;
+  if (!ctry.empty()) {
+    if (utf8) {
+      ctryl = u8_u16(ctry_utf, ctry);
+    } else {
+      ctryl = ctry.size();
     }
   }
 
   // language with possible dash usage
   // (latin letters or dash in TRY characters)
-  lang_with_dash_usage = (ctry &&
-      ((strchr(ctry, '-') != NULL) || (strchr(ctry, 'a') != NULL)));
+  lang_with_dash_usage = ctry.find('-') != std::string::npos ||
+	                 ctry.find('a') != std::string::npos;
 }
 
 SuggestMgr::~SuggestMgr() {
   pAMgr = NULL;
   ckeyl = 0;
-  delete[] ctry;
-  ctry = NULL;
   ctryl = 0;
   maxSug = 0;
 #ifdef MOZILLA_CLIENT
