@@ -174,7 +174,7 @@ inline int PfxEntry::test_condition(const std::string& s) {
         }
       /* FALLTHROUGH */
       default: {
-        if (s[st] == *p) {
+        if (st < s.size() && s[st] == *p) {
           ++st;
           p = nextchar(p);
           if ((opts & aeUTF8) && (s[st - 1] & 0x80)) {  // multibyte
