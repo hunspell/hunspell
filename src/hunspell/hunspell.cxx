@@ -1236,8 +1236,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
       if (dash_pos == scw.size())
         last = 1;
       std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
-      if (!spell(chunk.c_str())) {
-        std::vector<std::string> nlst = suggest(chunk.c_str());
+      if (chunk != word && !spell(chunk)) {
+        std::vector<std::string> nlst = suggest(chunk);
         if (clock() > timelimit + TIMELIMIT_GLOBAL)
             return slst;
         for (std::vector<std::string>::reverse_iterator j = nlst.rbegin(); j != nlst.rend(); ++j) {
