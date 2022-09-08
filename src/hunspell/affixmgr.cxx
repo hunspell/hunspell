@@ -4820,7 +4820,7 @@ int AffixMgr::redundant_condition(char ft,
                              linenum);
             return 0;
           }
-        } else {
+        } else if (j > 0) {
           in = 0;
           do {
             j--;
