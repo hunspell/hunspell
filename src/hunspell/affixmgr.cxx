@@ -75,6 +75,7 @@
 #include <time.h>
 
 #include <algorithm>
+#include <memory>
 #include <limits>
 #include <string>
 #include <vector>
@@ -3882,6 +3883,7 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
                      af->getlinenum());
     return false;
   }
+  std::unique_ptr<phonetable> new_phone;
   int num = -1;
   int i = 0;
   int np = 0;
@@ -3900,8 +3902,8 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        phone = new phonetable;
-        phone->utf8 = (char)utf8;
+        new_phone.reset(new phonetable);
+        new_phone->utf8 = (char)utf8;
         np++;
         break;
       }
@@ -3924,7 +3926,7 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
       return false;
     mychomp(nl);
     i = 0;
-    const size_t old_size = phone->rules.size();
+    const size_t old_size = new_phone->rules.size();
     iter = nl.begin();
     start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
@@ -3939,12 +3941,12 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
             break;
           }
           case 1: {
-            phone->rules.push_back(std::string(start_piece, iter));
+            new_phone->rules.push_back(std::string(start_piece, iter));
             break;
           }
           case 2: {
-            phone->rules.push_back(std::string(start_piece, iter));
-            mystrrep(phone->rules.back(), "_", "");
+            new_phone->rules.push_back(std::string(start_piece, iter));
+            mystrrep(new_phone->rules.back(), "_", "");
             break;
           }
           default:
@@ -3954,16 +3956,16 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
       }
       start_piece = mystrsep(nl, iter);
     }
-    if (phone->rules.size() != old_size + 2) {
+    if (new_phone->rules.size() != old_size + 2) {
       HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                        af->getlinenum());
-      phone->rules.clear();
       return false;
     }
   }
-  phone->rules.push_back("");
-  phone->rules.push_back("");
-  init_phonet_hash(*phone);
+  new_phone->rules.push_back("");
+  new_phone->rules.push_back("");
+  init_phonet_hash(*new_phone);
+  phone = new_phone.release();
   return true;
 }
 
