@@ -296,7 +296,7 @@ int HashMgr::add_word(const std::string& in_word,
               ++stripword;
               if ((ph.size() > strippatt) && (wordpart.size() > stripword)) {
                 ph.erase(ph.size()-strippatt, strippatt);
-                wordpart.erase(in_word.size()-stripword, stripword);
+                wordpart.erase(wordpart.size()-stripword, stripword);
               }
             }
             // capitalize lowercase pattern for capitalized words to support
