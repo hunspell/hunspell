@@ -781,9 +781,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   // remove IGNORE characters from the string
   clean_ignore(word, w);
 
-  int len = word.size();
-
-  if (!len)
+  if (word.empty())
     return NULL;
 
   // word reversing wrapper for complex prefixes
@@ -793,6 +791,8 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
     else
       reverseword(word);
   }
+
+  int len = word.size();
 
   // look word in hash table
   struct hentry* he = NULL;
