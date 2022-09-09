@@ -96,11 +96,11 @@ class SuggestMgr {
   SuggestMgr& operator=(const SuggestMgr&);
 
  private:
-  char* ckey;
+  std::string ckey;
   size_t ckeyl;
   std::vector<w_char> ckey_utf;
 
-  char* ctry;
+  std::string ctry;
   size_t ctryl;
   std::vector<w_char> ctry_utf;
   bool lang_with_dash_usage;
@@ -116,7 +116,7 @@ class SuggestMgr {
   int complexprefixes;
 
  public:
-  SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr);
+  SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr);
   ~SuggestMgr();
 
   bool suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);

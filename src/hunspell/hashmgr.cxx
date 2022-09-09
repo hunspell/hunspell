@@ -86,11 +86,13 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
     : flag_mode(FLAG_CHAR),
       complexprefixes(0),
       utf8(0),
-      forbiddenword(FORBIDDENWORD)  // forbidden word signing flag
+      forbiddenword(FORBIDDENWORD), // forbidden word signing flag
+      langnum(0),
+      csconv(NULL)
 {
-  langnum = 0;
-  csconv = 0;
   load_config(apath, key);
+  if (!csconv)
+    csconv = get_current_cs(SPELL_ENCODING);
   int ec = load_tables(tpath, key);
   if (ec) {
     /* error condition - what should we do here */
@@ -226,7 +228,8 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   char* hpw = hp->word;
-  strcpy(hpw, word->c_str());
+  memcpy(hpw, word->data(), word->size());
+  hpw[word->size()] = 0;
 
   int i = hash(hpw);
 
@@ -294,7 +297,7 @@ int HashMgr::add_word(const std::string& in_word,
               ++stripword;
               if ((ph.size() > strippatt) && (wordpart.size() > stripword)) {
                 ph.erase(ph.size()-strippatt, strippatt);
-                wordpart.erase(in_word.size()-stripword, stripword);
+                wordpart.erase(wordpart.size()-stripword, stripword);
               }
             }
             // capitalize lowercase pattern for capitalized words to support
@@ -570,11 +573,14 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 
   int tablesize = atoi(ts.c_str());
 
-  int nExtra = 5 + USERWORD;
+  const int nExtra = 5 + USERWORD;
+#if !defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+  const int max_allowed = (std::numeric_limits<int>::max() - 1 - nExtra) / int(sizeof(struct hentry*));
+#else
+  const int max_allowed = (268435456 - 1 - nExtra) / int(sizeof(struct hentry*));
+#endif
 
-  if (tablesize <= 0 ||
-      (tablesize >= (std::numeric_limits<int>::max() - 1 - nExtra) /
-                        int(sizeof(struct hentry*)))) {
+  if (tablesize <= 0 || tablesize >= max_allowed) {
     HUNSPELL_WARNING(
         stderr, "error: line 1: missing or bad word count in the dic file\n");
     delete dict;
@@ -1010,8 +1016,6 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       break;
   }
 
-  if (csconv == NULL)
-    csconv = get_current_cs(SPELL_ENCODING);
   delete afflst;
   return 0;
 }
@@ -1043,8 +1047,8 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        aliasf.reserve(numaliasf);
-        aliasflen.reserve(numaliasf);
+        aliasf.reserve(std::min(numaliasf, 16384));
+        aliasflen.reserve(std::min(numaliasf, 16384));
         np++;
         break;
       }
@@ -1153,7 +1157,7 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        aliasm.reserve(numaliasm);
+        aliasm.reserve(std::min(numaliasm, 16384));
         np++;
         break;
       }
@@ -1199,7 +1203,9 @@ bool HashMgr::parse_aliasm(const std::string& line, FileMgr* af) {
               else
                 reverseword(chunk);
             }
-            alias = mystrdup(chunk.c_str());
+            size_t sl = chunk.size() + 1;
+            alias = new char[sl];
+            memcpy(alias, chunk.c_str(), sl);
             break;
           }
           default:
@@ -1259,7 +1265,7 @@ bool HashMgr::parse_reptable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        reptable.reserve(numrep);
+        reptable.reserve(std::min(numrep, 16384));
         np++;
         break;
       }

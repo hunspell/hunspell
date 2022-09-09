@@ -82,7 +82,7 @@ const w_char W_VLINE = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4
 
-SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
+SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr) {
   // register affix manager and check in string of chars to
   // try when building candidate suggestions
   pAMgr = aptr;
@@ -90,10 +90,8 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
   csconv = NULL;
 
   ckeyl = 0;
-  ckey = NULL;
 
   ctryl = 0;
-  ctry = NULL;
 
   utf8 = 0;
   langnum = 0;
@@ -119,36 +117,38 @@ SuggestMgr::SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr) {
     complexprefixes = pAMgr->get_complexprefixes();
   }
 
-  if (ckey) {
+  if (!ckey.empty()) {
     if (utf8) {
-      ckeyl = u8_u16(ckey_utf, ckey);
+      int len = u8_u16(ckey_utf, ckey);
+      if (len != -1) {
+        ckeyl = len;
+      }
     } else {
-      ckeyl = strlen(ckey);
+      ckeyl = ckey.size();
     }
   }
 
-  if (tryme) {
-    ctry = mystrdup(tryme);
-    if (ctry)
-      ctryl = strlen(ctry);
-    if (ctry && utf8) {
-      ctryl = u8_u16(ctry_utf, tryme);
+  ctry = tryme;
+  if (!ctry.empty()) {
+    if (utf8) {
+      int len = u8_u16(ctry_utf, ctry);
+      if (len != -1) {
+        ctryl = len;
+      }
+    } else {
+      ctryl = ctry.size();
     }
   }
 
   // language with possible dash usage
   // (latin letters or dash in TRY characters)
-  lang_with_dash_usage = (ctry &&
-      ((strchr(ctry, '-') != NULL) || (strchr(ctry, 'a') != NULL)));
+  lang_with_dash_usage = ctry.find('-') != std::string::npos ||
+	                 ctry.find('a') != std::string::npos;
 }
 
 SuggestMgr::~SuggestMgr() {
   pAMgr = NULL;
-  delete[] ckey;
-  ckey = NULL;
   ckeyl = 0;
-  delete[] ctry;
-  ctry = NULL;
   ctryl = 0;
   maxSug = 0;
 #ifdef MOZILLA_CLIENT
@@ -579,19 +579,23 @@ int SuggestMgr::badcharkey(std::vector<std::string>& wlst,
       candidate[i] = tmpc;
     }
     // check neighbor characters in keyboard string
-    if (!ckey)
+    if (ckey.empty())
       continue;
-    char* loc = strchr(ckey, tmpc);
-    while (loc) {
-      if ((loc > ckey) && (*(loc - 1) != '|')) {
-        candidate[i] = *(loc - 1);
+    size_t loc = 0;
+    while ((loc < ckeyl) && ckey[loc] != tmpc)
+      ++loc;
+    while (loc < ckeyl) {
+      if ((loc > 0) && ckey[loc - 1] != '|') {
+        candidate[i] = ckey[loc - 1];
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
-      if ((*(loc + 1) != '|') && (*(loc + 1) != '\0')) {
-        candidate[i] = *(loc + 1);
+      if (((loc + 1) < ckeyl) && (ckey[loc + 1] != '|')) {
+        candidate[i] = ckey[loc + 1];
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
       }
-      loc = strchr(loc + 1, tmpc);
+      do {
+        loc++;
+      } while ((loc < ckeyl) && ckey[loc] != tmpc);
     }
     candidate[i] = tmpc;
   }
@@ -618,7 +622,7 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
       candidate_utf[i] = tmpc;
     }
     // check neighbor characters in keyboard string
-    if (!ckey)
+    if (ckey_utf.empty())
       continue;
     size_t loc = 0;
     while ((loc < ckeyl) && ckey_utf[loc] != tmpc)
@@ -1668,20 +1672,20 @@ int SuggestMgr::checkword(const std::string& word,
           break;
       }
     } else
-      rv = pAMgr->prefix_check(word.c_str(), word.size(),
+      rv = pAMgr->prefix_check(word, 0, word.size(),
                                0);  // only prefix, and prefix + suffix XXX
 
     if (rv) {
       nosuffix = 1;
     } else {
-      rv = pAMgr->suffix_check(word.c_str(), word.size(), 0, NULL,
+      rv = pAMgr->suffix_check(word, 0, word.size(), 0, NULL,
                                FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // only suffix
     }
 
     if (!rv && pAMgr->have_contclass()) {
-      rv = pAMgr->suffix_check_twosfx(word, word.size(), 0, NULL, FLAG_NULL);
+      rv = pAMgr->suffix_check_twosfx(word, 0, word.size(), 0, NULL, FLAG_NULL);
       if (!rv)
-        rv = pAMgr->prefix_check_twosfx(word, word.size(), 0, FLAG_NULL);
+        rv = pAMgr->prefix_check_twosfx(word, 0, word.size(), 0, FLAG_NULL);
     }
 
     // check forbidden words
@@ -1709,8 +1713,8 @@ int SuggestMgr::check_forbidden(const char* word, int len) {
         (TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))
       rv = NULL;
-    if (!(pAMgr->prefix_check(word, len, 1)))
-      rv = pAMgr->suffix_check(word, len, 0, NULL,
+    if (!(pAMgr->prefix_check(word, 0, len, 1)))
+      rv = pAMgr->suffix_check(word, 0, len, 0, NULL,
                                FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
     // check forbidden words
     if ((rv) && (rv->astr) &&
@@ -1759,7 +1763,7 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
     rv = rv->next_homonym;
   }
 
-  std::string st = pAMgr->affix_check_morph(w.c_str(), w.size());
+  std::string st = pAMgr->affix_check_morph(w, 0, w.size());
   if (!st.empty()) {
     result.append(st);
   }

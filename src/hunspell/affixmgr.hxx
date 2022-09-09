@@ -176,21 +176,25 @@ class AffixMgr {
  public:
   AffixMgr(const char* affpath, const std::vector<HashMgr*>& ptr, const char* key = NULL);
   ~AffixMgr();
-  struct hentry* affix_check(const char* word,
+  struct hentry* affix_check(const std::string& word,
+                             int start,
                              int len,
                              const unsigned short needflag = (unsigned short)0,
                              char in_compound = IN_CPD_NOT);
-  struct hentry* prefix_check(const char* word,
+  struct hentry* prefix_check(const std::string& word,
+                              int start,
                               int len,
                               char in_compound,
                               const FLAG needflag = FLAG_NULL);
   inline int isSubset(const char* s1, const char* s2);
   struct hentry* prefix_check_twosfx(const std::string& word,
+                                     int start,
                                      int len,
                                      char in_compound,
                                      const FLAG needflag = FLAG_NULL);
   inline int isRevSubset(const char* s1, const char* end_of_s2, int len);
-  struct hentry* suffix_check(const char* word,
+  struct hentry* suffix_check(const std::string& word,
+                              int start,
                               int len,
                               int sfxopts,
                               PfxEntry* ppfx,
@@ -198,20 +202,24 @@ class AffixMgr {
                               const FLAG needflag = FLAG_NULL,
                               char in_compound = IN_CPD_NOT);
   struct hentry* suffix_check_twosfx(const std::string& word,
+                                     int start,
                                      int len,
                                      int sfxopts,
                                      PfxEntry* ppfx,
                                      const FLAG needflag = FLAG_NULL);
 
-  std::string affix_check_morph(const char* word,
+  std::string affix_check_morph(const std::string& word,
+                                int start,
                                 int len,
                                 const FLAG needflag = FLAG_NULL,
                                 char in_compound = IN_CPD_NOT);
-  std::string prefix_check_morph(const char* word,
+  std::string prefix_check_morph(const std::string& word,
+                                 int start,
                                  int len,
                                  char in_compound,
                                  const FLAG needflag = FLAG_NULL);
-  std::string suffix_check_morph(const char* word,
+  std::string suffix_check_morph(const std::string& word,
+                                 int start,
                                  int len,
                                  int sfxopts,
                                  PfxEntry* ppfx,
@@ -219,11 +227,13 @@ class AffixMgr {
                                  const FLAG needflag = FLAG_NULL,
                                  char in_compound = IN_CPD_NOT);
 
-  std::string prefix_check_twosfx_morph(const char* word,
+  std::string prefix_check_twosfx_morph(const std::string& word,
+                                        int start,
                                         int len,
                                         char in_compound,
                                         const FLAG needflag = FLAG_NULL);
-  std::string suffix_check_twosfx_morph(const char* word,
+  std::string suffix_check_twosfx_morph(const std::string& word,
+                                        int start,
                                         int len,
                                         int sfxopts,
                                         PfxEntry* ppfx,
@@ -298,8 +308,8 @@ class AffixMgr {
   const std::vector<std::string>& get_breaktable() const;
   const std::string& get_encoding();
   int get_langnum() const;
-  char* get_key_string();
-  char* get_try_string() const;
+  const std::string& get_key_string();
+  const std::string& get_try_string() const;
   const std::string& get_wordchars() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const char* get_ignore() const;

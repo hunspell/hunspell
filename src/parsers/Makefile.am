@@ -14,5 +14,5 @@ testparser_SOURCES=firstparser.cxx firstparser.hxx xmlparser.cxx \
 		      textparser.cxx textparser.hxx htmlparser.cxx \
 		      htmlparser.hxx odfparser.hxx odfparser.cxx
 
-# need mystrdup()
+# need mystrrep()
 LDADD = ../hunspell/libhunspell-1.7.la
