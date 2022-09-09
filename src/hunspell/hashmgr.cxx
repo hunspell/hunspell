@@ -728,8 +728,8 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       *result = new unsigned short[len];
       dest = *result;
       const char* src = flags.c_str();
-      for (const char* p = src; *p; p++) {
-        if (*p == ',') {
+      for (size_t p = 0; p < flags.size(); ++p) {
+        if (flags[p] == ',') {
           int i = atoi(src);
           if (i >= DEFAULTFLAGS)
             HUNSPELL_WARNING(
@@ -739,7 +739,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
           if (*dest == 0)
             HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
                              af->getlinenum());
-          src = p + 1;
+          src = flags.c_str() + p + 1;
           dest++;
         }
       }
