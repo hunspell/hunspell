@@ -228,7 +228,8 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   char* hpw = hp->word;
-  strcpy(hpw, word->c_str());
+  memcpy(hpw, word->data(), word->size());
+  hpw[word->size()] = 0;
 
   int i = hash(hpw);
 
