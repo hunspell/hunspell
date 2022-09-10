@@ -172,6 +172,25 @@ AffixMgr::AffixMgr(const char* affpath,
     HUNSPELL_WARNING(stderr, "Failure loading aff file %s\n", affpath);
   }
 
+  /* get encoding for CHECKCOMPOUNDCASE */
+  if (!utf8) {
+    csconv = get_current_cs(get_encoding());
+    for (int i = 0; i <= 255; i++) {
+      if ((csconv[i].cupper != csconv[i].clower) &&
+          (wordchars.find((char)i) == std::string::npos)) {
+        wordchars.push_back((char)i);
+      }
+    }
+  }
+
+  // default BREAK definition
+  if (!parsedbreaktable) {
+    breaktable.push_back("-");
+    breaktable.push_back("^-");
+    breaktable.push_back("-$");
+    parsedbreaktable = true;
+  }
+
   if (cpdmin == -1)
     cpdmin = MINCPDLEN;
 }
@@ -729,25 +748,6 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
   process_pfx_order();
   process_sfx_order();
 
-  /* get encoding for CHECKCOMPOUNDCASE */
-  if (!utf8) {
-    csconv = get_current_cs(get_encoding());
-    for (int i = 0; i <= 255; i++) {
-      if ((csconv[i].cupper != csconv[i].clower) &&
-          (wordchars.find((char)i) == std::string::npos)) {
-        wordchars.push_back((char)i);
-      }
-    }
-
-  }
-
-  // default BREAK definition
-  if (!parsedbreaktable) {
-    breaktable.push_back("-");
-    breaktable.push_back("^-");
-    breaktable.push_back("-$");
-    parsedbreaktable = true;
-  }
   return 0;
 }
 
