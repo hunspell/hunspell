@@ -101,6 +101,7 @@ public:
   bool spell(const std::string& word, std::vector<std::string>& candidate_stack,
              int* info = NULL, std::string* root = NULL);
   std::vector<std::string> suggest(const std::string& word);
+  std::vector<std::string> suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack);
   const std::string& get_wordchars_cpp() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const std::string& get_dict_encoding() const;
@@ -141,7 +142,8 @@ private:
   bool spell_internal(const std::string& word, std::vector<std::string>& candidate_stack,
                       int* info = NULL, std::string* root = NULL);
   std::vector<std::string> suggest_internal(const std::string& word,
-                                            std::vector<std::string>& candidate_stack,
+                                            std::vector<std::string>& spell_candidate_stack,
+                                            std::vector<std::string>& suggest_candidate_stack,
                                             bool& capitalized, size_t& abbreviated, int& captype);
   void cleanword(std::string& dest, const std::string&, int* pcaptype, int* pabbrev);
   size_t cleanword2(std::string& dest,
@@ -885,13 +887,19 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   return he;
 }
 
-std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
+std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack) {
+  // something very broken if suggest ends up calling itself with the same word
+  if (std::find(suggest_candidate_stack.begin(), suggest_candidate_stack.end(), word) != suggest_candidate_stack.end())
+    return std::vector<std::string>();
+
   bool capwords;
   size_t abbv;
   int captype;
   std::vector<std::string> spell_candidate_stack;
-  std::vector<std::string> slst = suggest_internal(word, spell_candidate_stack,
-                                                   capwords, abbv, captype);
+  suggest_candidate_stack.push_back(word);
+  std::vector<std::string> slst = suggest_internal(word, spell_candidate_stack, suggest_candidate_stack,
+		                                   capwords, abbv, captype);
+  suggest_candidate_stack.pop_back();
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
     for (size_t j = 0; j < slst.size(); ++j) {
@@ -978,8 +986,14 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   return slst;
 }
 
+std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
+  std::vector<std::string> suggest_candidate_stack;
+  return suggest(word, suggest_candidate_stack);
+}
+
 std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         std::vector<std::string>& spell_candidate_stack,
+        std::vector<std::string>& suggest_candidate_stack,
         bool& capwords, size_t& abbv, int& captype) {
   captype = NOCAP;
   abbv = 0;
@@ -1250,7 +1264,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         last = 1;
       std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
       if (chunk != word && !spell(chunk, spell_candidate_stack)) {
-        std::vector<std::string> nlst = suggest(chunk);
+        std::vector<std::string> nlst = suggest(chunk, suggest_candidate_stack);
         if (clock() > timelimit + TIMELIMIT_GLOBAL)
             return slst;
         for (std::vector<std::string>::reverse_iterator j = nlst.rbegin(); j != nlst.rend(); ++j) {
