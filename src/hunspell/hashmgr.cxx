@@ -168,6 +168,13 @@ int HashMgr::add_word(const std::string& in_word,
                       const std::string* in_desc,
                       bool onlyupcase,
                       int captype) {
+
+  if (al > std::numeric_limits<short>::max()) {
+    HUNSPELL_WARNING(stderr, "error: affix len %d is over max limit\n", al);
+    free_flag(aff, al);
+    return 1;
+  }
+
   const std::string* word = &in_word;
   const std::string* desc = in_desc;
 
