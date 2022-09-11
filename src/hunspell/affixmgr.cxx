@@ -1645,8 +1645,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
         if (scpd > 0) {
           for (; scpd <= checkcpdtable.size() &&
                  (checkcpdtable[scpd - 1].pattern3.empty() ||
-                  strncmp(word.c_str() + i, checkcpdtable[scpd - 1].pattern3.c_str(),
-                          checkcpdtable[scpd - 1].pattern3.size()) != 0);
+                  word.compare(i, checkcpdtable[scpd - 1].pattern3.size(), checkcpdtable[scpd - 1].pattern3) != 0);
                scpd++)
             ;
 
