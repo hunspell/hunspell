@@ -436,9 +436,11 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
        ((captype == ALLCAP) && (flagslen != 0))) &&
       !((flagslen != 0) && TESTAFF(flags, forbiddenword, flagslen))) {
     unsigned short* flags2 = new unsigned short[flagslen + 1];
-    if (flagslen)
-      memcpy(flags2, flags, flagslen * sizeof(unsigned short));
     flags2[flagslen] = ONLYUPCASEFLAG;
+    if (flagslen) {
+      memcpy(flags2, flags, flagslen * sizeof(unsigned short));
+      std::sort(flags2, flags2 + flagslen + 1);
+    }
     if (utf8) {
       std::string st;
       std::vector<w_char> w;
