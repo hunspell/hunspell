@@ -1893,7 +1893,7 @@ int main(int argc, char** argv) {
       fprintf(stdout, "\n");
       if (strcmp(argv[i], "-vv") != 0) {
         fprintf(stdout, "%s",
-                gettext("\nCopyright (C) 2002-2014 L\303\241szl\303\263 "
+                gettext("\nCopyright (C) 2002-2022 L\303\241szl\303\263 "
                         "N\303\251meth. License: MPL/GPL/LGPL.\n\n"
                         "Based on OpenOffice.org's Myspell library.\n"
                         "Myspell's copyright (C) Kevin Hendricks, 2001-2002, "
