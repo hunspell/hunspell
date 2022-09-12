@@ -1652,7 +1652,7 @@ int SuggestMgr::checkword(const std::string& word,
         struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
         rv = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 1, 0);  // EXT
         if (rv &&
-            (!(rv2 = pAMgr->lookup(word.c_str())) || !rv2->astr ||
+            (!(rv2 = pAMgr->lookup(word.c_str(), word.size())) || !rv2->astr ||
              !(TESTAFF(rv2->astr, pAMgr->get_forbiddenword(), rv2->alen) ||
                TESTAFF(rv2->astr, pAMgr->get_nosuggest(), rv2->alen))))
           return 3;  // XXX obsolote categorisation + only ICONV needs affix
@@ -1661,7 +1661,7 @@ int SuggestMgr::checkword(const std::string& word,
       return 0;
     }
 
-    rv = pAMgr->lookup(word.c_str());
+    rv = pAMgr->lookup(word.c_str(), word.size());
 
     if (rv) {
       if ((rv->astr) &&
@@ -1715,7 +1715,7 @@ int SuggestMgr::checkword(const std::string& word,
 
 int SuggestMgr::check_forbidden(const std::string& word) {
   if (pAMgr) {
-    struct hentry* rv = pAMgr->lookup(word.c_str());
+    struct hentry* rv = pAMgr->lookup(word.c_str(), word.size());
     if (rv && rv->astr &&
         (TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))
@@ -1750,7 +1750,7 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
       reverseword(w);
   }
 
-  rv = pAMgr->lookup(w.c_str());
+  rv = pAMgr->lookup(w.c_str(), w.size());
 
   while (rv) {
     if ((!rv->astr) ||
@@ -1833,7 +1833,7 @@ std::string SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
     p += MORPH_TAG_LEN;
     int plen = fieldlen(p);
     std::string allomorph(p, plen);
-    struct hentry* rv2 = pAMgr->lookup(allomorph.c_str());
+    struct hentry* rv2 = pAMgr->lookup(allomorph.c_str(), allomorph.size());
     while (rv2) {
       //            if (HENTRY_DATA(rv2) && get_sfxcount(HENTRY_DATA(rv2)) <=
       //            sfxcount) {
@@ -1906,7 +1906,7 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
         const char* st = strstr(s, MORPH_STEM);
         if (st) {
           copy_field(tok, st, MORPH_STEM);
-          rv = pAMgr->lookup(tok.c_str());
+          rv = pAMgr->lookup(tok.c_str(), tok.size());
           while (rv) {
             std::string newpat(pl[i]);
             newpat.append(pattern);
