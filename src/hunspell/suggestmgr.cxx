@@ -317,7 +317,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we just hit the wrong key in place of a good char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        badchar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        badchar_utf(slst, word_utf, cpdsuggest);
       else
         badchar(slst, word, cpdsuggest);
     }
@@ -645,14 +645,14 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
 }
 
 // error is wrong char in place of correct one
-int SuggestMgr::badchar(std::vector<std::string>& wlst, const char* word, int cpdsuggest) {
+int SuggestMgr::badchar(std::vector<std::string>& wlst, const std::string& word, int cpdsuggest) {
   std::string candidate(word);
   clock_t timelimit = clock();
   int timer = MINTIMER;
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
   for (size_t j = 0; j < ctryl; ++j) {
-    for (std::string::reverse_iterator aI = candidate.rbegin(), aEnd = candidate.rend(); aI != aEnd; ++aI) {
+    for (auto aI = candidate.rbegin(), aEnd = candidate.rend(); aI != aEnd; ++aI) {
       char tmpc = *aI;
       if (ctry[j] == tmpc)
         continue;
@@ -668,26 +668,25 @@ int SuggestMgr::badchar(std::vector<std::string>& wlst, const char* word, int cp
 
 // error is wrong char in place of correct one
 int SuggestMgr::badchar_utf(std::vector<std::string>& wlst,
-                            const w_char* word,
-                            int wl,
+                            const std::vector<w_char>& word,
                             int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   std::string candidate;
   clock_t timelimit = clock();
   int timer = MINTIMER;
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
   for (size_t j = 0; j < ctryl; ++j) {
-    for (int i = wl - 1; i >= 0; i--) {
-      w_char tmpc = candidate_utf[i];
+    for (auto aI = candidate_utf.rbegin(), aEnd = candidate_utf.rend(); aI != aEnd; ++aI) {
+      w_char tmpc = *aI;
       if (tmpc == ctry_utf[j])
         continue;
-      candidate_utf[i] = ctry_utf[j];
+      *aI = ctry_utf[j];
       u16_u8(candidate, candidate_utf);
       testsug(wlst, candidate, cpdsuggest, &timer, &timelimit);
       if (!timer)
         return wlst.size();
-      candidate_utf[i] = tmpc;
+      *aI = tmpc;
     }
   }
   return wlst.size();
