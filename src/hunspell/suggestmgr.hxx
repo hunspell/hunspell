@@ -137,7 +137,7 @@ class SuggestMgr {
   void capchars(std::vector<std::string>&, const std::string&, int);
   int replchars(std::vector<std::string>&, const std::string&, int);
   int doubletwochars(std::vector<std::string>&, const char*, int);
-  int forgotchar(std::vector<std::string>&, const char*, int);
+  int forgotchar(std::vector<std::string>&, const std::string&, int);
   int swapchar(std::vector<std::string>&, const std::string&, int);
   int longswapchar(std::vector<std::string>&, const std::string&, int);
   int movechar(std::vector<std::string>&, const char*, int);
@@ -148,7 +148,7 @@ class SuggestMgr {
 
   void capchars_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
   int doubletwochars_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int forgotchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
+  int forgotchar_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
   int extrachar_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
   int badcharkey_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
   int badchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
