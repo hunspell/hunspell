@@ -182,14 +182,12 @@ void SuggestMgr::testsug(std::vector<std::string>& wlst,
  * (REP, ph: or a dictionary word pair)
  */
 bool SuggestMgr::suggest(std::vector<std::string>& slst,
-                        const char* w,
+                        const std::string& w,
                         int* onlycompoundsug) {
   int nocompoundtwowords = 0;
   std::vector<w_char> word_utf;
-  int wl = 0;
   size_t nsugorig = slst.size();
   std::string w2;
-  const char* word = w;
   size_t oldSug = 0;
   bool good_suggestion = false;
 
@@ -200,11 +198,12 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       reverseword_utf(w2);
     else
       reverseword(w2);
-    word = w2.c_str();
   }
 
+  const std::string& word = complexprefixes ? w2 : w;
+
   if (utf8) {
-    wl = u8_u16(word_utf, word);
+    int wl = u8_u16(word_utf, word);
     if (wl == -1) {
       return false;
     }

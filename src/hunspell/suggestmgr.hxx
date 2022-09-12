@@ -119,7 +119,7 @@ class SuggestMgr {
   SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr);
   ~SuggestMgr();
 
-  bool suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
+  bool suggest(std::vector<std::string>& slst, const std::string& word, int* onlycmpdsug);
   void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr, int captype);
 
   std::string suggest_morph(const std::string& word);
