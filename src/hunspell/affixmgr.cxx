@@ -1509,7 +1509,7 @@ int AffixMgr::defcpd_check(hentry*** words,
 
 inline int AffixMgr::candidate_check(const std::string& word) {
 
-  struct hentry* rv = lookup(word.c_str());
+  struct hentry* rv = lookup(word.c_str(), word.size());
   if (rv)
     return 1;
 
@@ -1678,7 +1678,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
         // FIRST WORD
 
         affixed = 1;
-        rv = lookup(st.c_str());  // perhaps without prefix
+        rv = lookup(st.c_str(), i);  // perhaps without prefix
 
         // forbid dictionary stems with COMPOUNDFORBIDFLAG in
         // compound words, overriding the effect of COMPOUNDPERMITFLAG
@@ -1875,7 +1875,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 striple = 1;
             }
 
-            rv = lookup(st.c_str() + i);  // perhaps without prefix
+            rv = lookup(st.c_str() + i, st.size() - i);  // perhaps without prefix
 
             // search homonym with compound flag
             while ((rv) &&
@@ -2125,7 +2125,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   }
 
                   if (forbiddenword) {
-                    struct hentry* rv2 = lookup(word.c_str());
+                    struct hentry* rv2 = lookup(word.c_str(), word.size());
                     if (!rv2)
                       rv2 = affix_check(word, 0, len);
                     if (rv2 && rv2->astr &&
@@ -2261,7 +2261,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
       if (partresult)
         presult.append(*partresult);
 
-      rv = lookup(st.c_str());  // perhaps without prefix
+      rv = lookup(st.c_str(), i);  // perhaps without prefix
 
       // forbid dictionary stems with COMPOUNDFORBIDFLAG in
       // compound words, overriding the effect of COMPOUNDPERMITFLAG
@@ -2464,7 +2464,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
         // NEXT WORD(S)
         rv_first = rv;
-        rv = lookup((word.c_str() + i));  // perhaps without prefix
+        rv = lookup(word.c_str() + i, word.size() - i);  // perhaps without prefix
 
         // search homonym with compound flag
         while ((rv) && ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||
@@ -3323,7 +3323,7 @@ std::string AffixMgr::morphgen(const char* ts,
         if (cmp == 0) {
           std::string newword = sptr->add(ts, wl);
           if (!newword.empty()) {
-            hentry* check = pHMgr->lookup(newword.c_str());  // XXX extra dic
+            hentry* check = pHMgr->lookup(newword.c_str(), newword.size());  // XXX extra dic
             if (!check || !check->astr ||
                 !(TESTAFF(check->astr, forbiddenword, check->alen) ||
                   TESTAFF(check->astr, ONLYUPCASEFLAG, check->alen))) {
@@ -3659,10 +3659,10 @@ const std::string& AffixMgr::get_version() const {
 }
 
 // utility method to look up root words in hash table
-struct hentry* AffixMgr::lookup(const char* word) {
+struct hentry* AffixMgr::lookup(const char* word, size_t len) {
   struct hentry* he = NULL;
   for (size_t i = 0; i < alldic.size() && !he; ++i) {
-    he = alldic[i]->lookup(word);
+    he = alldic[i]->lookup(word, len);
   }
   return he;
 }

@@ -149,8 +149,8 @@ HashMgr::~HashMgr() {
 
 // lookup a root word in the hashtable
 
-struct hentry* HashMgr::lookup(const char* word) const {
-  struct hentry* dp = tableptr[hash(word)];
+struct hentry* HashMgr::lookup(const char* word, size_t len) const {
+  struct hentry* dp = tableptr[hash(word, len)];
   if (!dp)
     return NULL;
   for (; dp != NULL; dp = dp->next) {
@@ -238,7 +238,7 @@ int HashMgr::add_word(const std::string& in_word,
   memcpy(hpw, word->data(), word->size());
   hpw[word->size()] = 0;
 
-  int i = hash(hpw);
+  int i = hash(hpw, word->size());
 
   hp->blen = (unsigned char)word->size();
   hp->clen = (unsigned char)wcl;
@@ -480,7 +480,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
 
 // remove word (personal dictionary function for standalone applications)
 int HashMgr::remove(const std::string& word) {
-  struct hentry* dp = lookup(word.c_str());
+  struct hentry* dp = lookup(word.c_str(), word.size());
   while (dp) {
     if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
       unsigned short* flags = new unsigned short[dp->alen + 1];
@@ -499,7 +499,7 @@ int HashMgr::remove(const std::string& word) {
 
 /* remove forbidden flag to add a personal word to the hash */
 int HashMgr::remove_forbidden_flag(const std::string& word) {
-  struct hentry* dp = lookup(word.c_str());
+  struct hentry* dp = lookup(word.c_str(), word.size());
   if (!dp)
     return 1;
   while (dp) {
@@ -526,7 +526,7 @@ int HashMgr::add(const std::string& word) {
 
 int HashMgr::add_with_affix(const std::string& word, const std::string& example) {
   // detect captype and modify word length for UTF-8 encoding
-  struct hentry* dp = lookup(example.c_str());
+  struct hentry* dp = lookup(example.c_str(), example.size());
   remove_forbidden_flag(word);
   if (dp && dp->astr) {
     int captype;
@@ -695,13 +695,14 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 
 // the hash function is a simple load and rotate
 // algorithm borrowed
-int HashMgr::hash(const char* word) const {
+int HashMgr::hash(const char* word, size_t len) const {
   unsigned long hv = 0;
-  for (int i = 0; i < 4 && *word != 0; i++)
-    hv = (hv << 8) | (*word++);
-  while (*word != 0) {
+  int i = 0;
+  while (i < 4 && i < len)
+    hv = (hv << 8) | word[i++];
+  while (i < len) {
     ROTATE(hv, ROTATE_LEN);
-    hv ^= (*word++);
+    hv ^= word[i++];
   }
   return (unsigned long)hv % tableptr.size();
 }
