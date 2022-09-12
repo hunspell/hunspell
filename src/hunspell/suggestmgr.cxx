@@ -277,7 +277,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we just hit the wrong key in place of a good char (case and keyboard)
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        badcharkey_utf(slst, word_utf.data(), wl, cpdsuggest);
+        badcharkey_utf(slst, word_utf, cpdsuggest);
       else
         badcharkey(slst, word, cpdsuggest);
     }
@@ -562,13 +562,13 @@ int SuggestMgr::doubletwochars_utf(std::vector<std::string>& wlst,
 // error is wrong char in place of correct one (case and keyboard related
 // version)
 int SuggestMgr::badcharkey(std::vector<std::string>& wlst,
-                           const char* word,
+                           const std::string& word,
                            int cpdsuggest) {
   std::string candidate(word);
 
   // swap out each char one by one and try uppercase and neighbor
   // keyboard chars in its place to see if that makes a good word
-  for (size_t i = 0; i < candidate.size(); ++i) {
+  for (size_t i = 0, wl = candidate.size(); i < wl; ++i) {
     char tmpc = candidate[i];
     // check with uppercase letters
     candidate[i] = csconv[((unsigned char)tmpc)].cupper;
@@ -603,14 +603,13 @@ int SuggestMgr::badcharkey(std::vector<std::string>& wlst,
 // error is wrong char in place of correct one (case and keyboard related
 // version)
 int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
-                               const w_char* word,
-                               int wl,
+                               const std::vector<w_char>& word,
                                int cpdsuggest) {
   std::string candidate;
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   // swap out each char one by one and try all the tryme
   // chars in its place to see if that makes a good word
-  for (int i = 0; i < wl; i++) {
+  for (size_t i = 0, wl = word.size(); i < wl; ++i) {
     w_char tmpc = candidate_utf[i];
     // check with uppercase letters
     candidate_utf[i] = upper_utf(candidate_utf[i], 1);
