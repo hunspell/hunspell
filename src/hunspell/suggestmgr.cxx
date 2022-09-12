@@ -297,7 +297,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we forgot a char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        forgotchar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        forgotchar_utf(slst, word_utf, cpdsuggest);
       else
         forgotchar(slst, word, cpdsuggest);
     }
@@ -733,7 +733,7 @@ int SuggestMgr::extrachar(std::vector<std::string>& wlst,
 
 // error is missing a letter it needs
 int SuggestMgr::forgotchar(std::vector<std::string>& wlst,
-                           const char* word,
+                           const std::string& word,
                            int cpdsuggest) {
   std::string candidate(word);
   clock_t timelimit = clock();
@@ -756,10 +756,9 @@ int SuggestMgr::forgotchar(std::vector<std::string>& wlst,
 
 // error is missing a letter it needs
 int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
-                               const w_char* word,
-                               int wl,
+                               const std::vector<w_char>& word,
                                int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   clock_t timelimit = clock();
   int timer = MINTIMER;
 
