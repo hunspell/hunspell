@@ -132,7 +132,7 @@ class SuggestMgr {
                int* timer,
                clock_t* timelimit);
   int checkword(const std::string& word, int, int*, clock_t*);
-  int check_forbidden(const char*, int);
+  int check_forbidden(const std::string&);
 
   void capchars(std::vector<std::string>&, const std::string&, int);
   int replchars(std::vector<std::string>&, const std::string&, int);
@@ -144,7 +144,7 @@ class SuggestMgr {
   int extrachar(std::vector<std::string>&, const std::string&, int);
   int badcharkey(std::vector<std::string>&, const std::string&, int);
   int badchar(std::vector<std::string>&, const std::string&, int);
-  bool twowords(std::vector<std::string>&, const char*, int, bool);
+  bool twowords(std::vector<std::string>&, const std::string&, int, bool);
 
   void capchars_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
   int doubletwochars_utf(std::vector<std::string>&, const std::vector<w_char>&, int);
