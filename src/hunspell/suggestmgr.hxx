@@ -156,7 +156,7 @@ class SuggestMgr {
   int longswapchar_utf(std::vector<std::string>&, const w_char*, int, int);
   int movechar_utf(std::vector<std::string>&, const w_char*, int, int);
 
-  int mapchars(std::vector<std::string>&, const char*, int);
+  int mapchars(std::vector<std::string>&, const std::string&, int);
   int map_related(const std::string&,
                   std::string&,
                   size_t,
