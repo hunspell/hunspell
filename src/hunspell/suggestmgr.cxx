@@ -307,7 +307,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we move a char
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        movechar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        movechar_utf(slst, word_utf, cpdsuggest);
       else
         movechar(slst, word, cpdsuggest);
     }
@@ -1013,11 +1013,12 @@ int SuggestMgr::longswapchar_utf(std::vector<std::string>& wlst,
 
 // error is a letter was moved
 int SuggestMgr::movechar(std::vector<std::string>& wlst,
-                         const char* word,
+                         const std::string& word,
                          int cpdsuggest) {
-  std::string candidate(word);
-  if (candidate.size() < 2)
+  if (word.size() < 2)
     return wlst.size();
+
+  std::string candidate(word);
 
   // try moving a char
   for (std::string::iterator p = candidate.begin(); p < candidate.end(); ++p) {
@@ -1027,7 +1028,8 @@ int SuggestMgr::movechar(std::vector<std::string>& wlst,
         continue;  // omit swap char
       testsug(wlst, candidate, cpdsuggest, NULL, NULL);
     }
-    std::copy(word, word + candidate.size(), candidate.begin());
+    auto word_iter = word.begin();
+    std::copy(word_iter, word_iter + candidate.size(), candidate.begin());
   }
 
   for (std::string::reverse_iterator p = candidate.rbegin(), pEnd = candidate.rend() - 1; p != pEnd; ++p) {
@@ -1037,7 +1039,8 @@ int SuggestMgr::movechar(std::vector<std::string>& wlst,
         continue;  // omit swap char
       testsug(wlst, candidate, cpdsuggest, NULL, NULL);
     }
-    std::copy(word, word + candidate.size(), candidate.begin());
+    auto word_iter = word.begin();
+    std::copy(word_iter, word_iter + candidate.size(), candidate.begin());
   }
 
   return wlst.size();
@@ -1045,12 +1048,12 @@ int SuggestMgr::movechar(std::vector<std::string>& wlst,
 
 // error is a letter was moved
 int SuggestMgr::movechar_utf(std::vector<std::string>& wlst,
-                             const w_char* word,
-                             int wl,
+                             const std::vector<w_char>& word,
                              int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
-  if (candidate_utf.size() < 2)
+  if (word.size() < 2)
     return wlst.size();
+
+  std::vector<w_char> candidate_utf(word);
 
   // try moving a char
   for (std::vector<w_char>::iterator p = candidate_utf.begin(); p < candidate_utf.end(); ++p) {
@@ -1062,7 +1065,8 @@ int SuggestMgr::movechar_utf(std::vector<std::string>& wlst,
       u16_u8(candidate, candidate_utf);
       testsug(wlst, candidate, cpdsuggest, NULL, NULL);
     }
-    std::copy(word, word + candidate_utf.size(), candidate_utf.begin());
+    auto word_iter = word.begin();
+    std::copy(word_iter, word_iter + candidate_utf.size(), candidate_utf.begin());
   }
 
   for (std::vector<w_char>::reverse_iterator p = candidate_utf.rbegin(); p < candidate_utf.rend(); ++p) {
@@ -1074,7 +1078,8 @@ int SuggestMgr::movechar_utf(std::vector<std::string>& wlst,
       u16_u8(candidate, candidate_utf);
       testsug(wlst, candidate, cpdsuggest, NULL, NULL);
     }
-    std::copy(word, word + candidate_utf.size(), candidate_utf.begin());
+    auto word_iter = word.begin();
+    std::copy(word_iter, word_iter + candidate_utf.size(), candidate_utf.begin());
   }
 
   return wlst.size();
