@@ -374,14 +374,13 @@ void SuggestMgr::capchars(std::vector<std::string>& wlst,
 
 // suggestions for when chose the wrong char out of a related set
 int SuggestMgr::mapchars(std::vector<std::string>& wlst,
-                         const char* word,
+                         const std::string& word,
                          int cpdsuggest) {
   std::string candidate;
   clock_t timelimit;
   int timer;
 
-  int wl = strlen(word);
-  if (wl < 2 || !pAMgr)
+  if (word.size() < 2 || !pAMgr)
     return wlst.size();
 
   const std::vector<mapentry>& maptable = pAMgr->get_maptable();
