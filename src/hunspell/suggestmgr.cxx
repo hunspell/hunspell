@@ -257,7 +257,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we swap the order of chars by mistake
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        swapchar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        swapchar_utf(slst, word_utf, cpdsuggest);
       else
         swapchar(slst, word, cpdsuggest);
     }
@@ -901,11 +901,12 @@ bool SuggestMgr::twowords(std::vector<std::string>& wlst,
 
 // error is adjacent letter were swapped
 int SuggestMgr::swapchar(std::vector<std::string>& wlst,
-                         const char* word,
+                         const std::string& word,
                          int cpdsuggest) {
-  std::string candidate(word);
-  if (candidate.size() < 2)
+  if (word.size() < 2)
     return wlst.size();
+
+  std::string candidate(word);
 
   // try swapping adjacent chars one by one
   for (size_t i = 0; i < candidate.size() - 1; ++i) {
@@ -936,12 +937,12 @@ int SuggestMgr::swapchar(std::vector<std::string>& wlst,
 
 // error is adjacent letter were swapped
 int SuggestMgr::swapchar_utf(std::vector<std::string>& wlst,
-                             const w_char* word,
-                             int wl,
+                             const std::vector<w_char>& word,
                              int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
-  if (candidate_utf.size() < 2)
+  if (word.size() < 2)
     return wlst.size();
+
+  std::vector<w_char> candidate_utf(word);
 
   std::string candidate;
   // try swapping adjacent chars one by one
