@@ -225,7 +225,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     if (slst.size() < maxSug) {
       size_t i = slst.size();
       if (utf8)
-        capchars_utf(slst, word_utf.data(), wl, cpdsuggest);
+        capchars_utf(slst, word_utf, cpdsuggest);
       else
         capchars(slst, word, cpdsuggest);
       if (slst.size() > i)
@@ -354,10 +354,9 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
 
 // suggestions for an uppercase word (html -> HTML)
 void SuggestMgr::capchars_utf(std::vector<std::string>& wlst,
-                              const w_char* word,
-                              int wl,
+                              const std::vector<w_char>& word,
                               int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   mkallcap_utf(candidate_utf, langnum);
   std::string candidate;
   u16_u8(candidate, candidate_utf);
@@ -366,7 +365,7 @@ void SuggestMgr::capchars_utf(std::vector<std::string>& wlst,
 
 // suggestions for an uppercase word (html -> HTML)
 void SuggestMgr::capchars(std::vector<std::string>& wlst,
-                          const char* word,
+                          const std::string& word,
                           int cpdsuggest) {
   std::string candidate(word);
   mkallcap(candidate, csconv);
