@@ -327,7 +327,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we double two characters
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        doubletwochars_utf(slst, word_utf.data(), wl, cpdsuggest);
+        doubletwochars_utf(slst, word_utf, cpdsuggest);
       else
         doubletwochars(slst, word, cpdsuggest);
     }
@@ -507,18 +507,20 @@ int SuggestMgr::replchars(std::vector<std::string>& wlst,
 // "(.)(.)\1\2\1" or "..(.)(.)\1\2"
 
 int SuggestMgr::doubletwochars(std::vector<std::string>& wlst,
-                               const char* word,
+                               const std::string& word,
                                int cpdsuggest) {
-  int state = 0;
-  int wl = strlen(word);
+  size_t wl = word.size();
   if (wl < 5 || !pAMgr)
     return wlst.size();
-  for (int i = 2; i < wl; i++) {
+
+  int state = 0;
+  for (size_t i = 2; i < wl; ++i) {
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3 || (state == 2 && i >= 4)) {
-        std::string candidate(word, word + i - 1);
-        candidate.insert(candidate.end(), word + i + 1, word + wl);
+        auto word_iter = word.begin();
+        std::string candidate(word_iter, word_iter + i - 1);
+        candidate.insert(candidate.end(), word_iter + i + 1, word.end());
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
         state = 0;
       }
@@ -535,18 +537,19 @@ int SuggestMgr::doubletwochars(std::vector<std::string>& wlst,
 // "(.)(.)\1\2\1" or "..(.)(.)\1\2"
 
 int SuggestMgr::doubletwochars_utf(std::vector<std::string>& wlst,
-                                   const w_char* word,
-                                   int wl,
+                                   const std::vector<w_char>& word,
                                    int cpdsuggest) {
+  size_t wl = word.size();
   int state = 0;
   if (wl < 5 || !pAMgr)
     return wlst.size();
-  for (int i = 2; i < wl; i++) {
+  for (size_t i = 2; i < wl; ++i) {
     if (word[i] == word[i - 2]) {
       state++;
       if (state == 3 || (state == 2 && i >= 4)) {
-        std::vector<w_char> candidate_utf(word, word + i - 1);
-        candidate_utf.insert(candidate_utf.end(), word + i + 1, word + wl);
+        auto word_iter = word.begin();
+        std::vector<w_char> candidate_utf(word_iter, word_iter + i - 1);
+        candidate_utf.insert(candidate_utf.end(), word_iter + i + 1, word.end());
         std::string candidate;
         u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, NULL, NULL);
