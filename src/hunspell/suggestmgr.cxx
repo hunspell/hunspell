@@ -787,22 +787,23 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
  * this function.
  */
 bool SuggestMgr::twowords(std::vector<std::string>& wlst,
-                         const char* word,
+                         const std::string& word,
                          int cpdsuggest,
                          bool good) {
   int c2;
   int forbidden = 0;
   int cwrd;
 
-  int wl = strlen(word);
+  int wl = word.size();
   if (wl < 3)
     return false;
 
   if (langnum == LANG_hu)
-    forbidden = check_forbidden(word, wl);
+    forbidden = check_forbidden(word);
 
   char* candidate = new char[wl + 2];
-  strcpy(candidate + 1, word);
+  memcpy(candidate + 1, word.data(), wl);
+  candidate[wl + 1] = 0;
 
   // split the string into two pieces after every char
   // if both pieces are good words make them a suggestion
@@ -1713,13 +1714,14 @@ int SuggestMgr::checkword(const std::string& word,
   return 0;
 }
 
-int SuggestMgr::check_forbidden(const char* word, int len) {
+int SuggestMgr::check_forbidden(const std::string& word) {
   if (pAMgr) {
-    struct hentry* rv = pAMgr->lookup(word);
+    struct hentry* rv = pAMgr->lookup(word.c_str());
     if (rv && rv->astr &&
         (TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))
       rv = NULL;
+    size_t len = word.size();
     if (!(pAMgr->prefix_check(word, 0, len, 1)))
       rv = pAMgr->suffix_check(word, 0, len, 0, NULL,
                                FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
