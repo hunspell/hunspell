@@ -267,7 +267,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we swap the order of non adjacent chars by mistake
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        longswapchar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        longswapchar_utf(slst, word_utf, cpdsuggest);
       else
         longswapchar(slst, word, cpdsuggest);
     }
@@ -976,7 +976,7 @@ int SuggestMgr::swapchar_utf(std::vector<std::string>& wlst,
 
 // error is not adjacent letter were swapped
 int SuggestMgr::longswapchar(std::vector<std::string>& wlst,
-                             const char* word,
+                             const std::string& word,
                              int cpdsuggest) {
   std::string candidate(word);
   // try swapping not adjacent chars one by one
@@ -995,10 +995,9 @@ int SuggestMgr::longswapchar(std::vector<std::string>& wlst,
 
 // error is adjacent letter were swapped
 int SuggestMgr::longswapchar_utf(std::vector<std::string>& wlst,
-                                 const w_char* word,
-                                 int wl,
+                                 const std::vector<w_char>& word,
                                  int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   // try swapping not adjacent chars
   for (std::vector<w_char>::iterator p = candidate_utf.begin(); p < candidate_utf.end(); ++p) {
     for (std::vector<w_char>::iterator q = candidate_utf.begin(); q < candidate_utf.end(); ++q) {
