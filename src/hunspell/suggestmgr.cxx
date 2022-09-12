@@ -287,7 +287,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // did we add a char that should not be there
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       if (utf8)
-        extrachar_utf(slst, word_utf.data(), wl, cpdsuggest);
+        extrachar_utf(slst, word_utf, cpdsuggest);
       else
         extrachar(slst, word, cpdsuggest);
     }
@@ -695,10 +695,9 @@ int SuggestMgr::badchar_utf(std::vector<std::string>& wlst,
 
 // error is word has an extra letter it does not need
 int SuggestMgr::extrachar_utf(std::vector<std::string>& wlst,
-                              const w_char* word,
-                              int wl,
+                              const std::vector<w_char>& word,
                               int cpdsuggest) {
-  std::vector<w_char> candidate_utf(word, word + wl);
+  std::vector<w_char> candidate_utf(word);
   if (candidate_utf.size() < 2)
     return wlst.size();
   // try omitting one char of word at a time
@@ -716,7 +715,7 @@ int SuggestMgr::extrachar_utf(std::vector<std::string>& wlst,
 
 // error is word has an extra letter it does not need
 int SuggestMgr::extrachar(std::vector<std::string>& wlst,
-                          const char* word,
+                          const std::string& word,
                           int cpdsuggest) {
   std::string candidate(word);
   if (candidate.size() < 2)
