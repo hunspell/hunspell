@@ -191,6 +191,14 @@ AffixMgr::AffixMgr(const char* affpath,
     parsedbreaktable = true;
   }
 
+#if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+  // not entirely sure this is invalid, so only for fuzzing for now
+  if (iconvtable && !iconvtable->check_against_breaktable(breaktable)) {
+      delete iconvtable;
+      iconvtable = nullptr;
+  }
+#endif
+
   if (cpdmin == -1)
     cpdmin = MINCPDLEN;
 }
@@ -3870,6 +3878,7 @@ bool AffixMgr::parse_convtable(const std::string& line,
                        af->getlinenum());
       return false;
     }
+
     (*rl)->add(pattern, pattern2);
   }
   return true;
