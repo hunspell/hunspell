@@ -2122,7 +2122,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   return NULL;
 
                 // check first part
-                if (strncmp(rv->word, word.c_str() + i, rv->blen) == 0) {
+                if (word.compare(i, rv->blen, rv->word, rv->blen) == 0) {
                   char r = st[i + rv->blen];
                   st[i + rv->blen] = '\0';
 
