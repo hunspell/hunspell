@@ -1677,6 +1677,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           cmax = len - cpdmin + 1;
         }
 
+	if (i > st.size())
+	    return NULL;
+
         ch = st[i];
         st[i] = '\0';
 
