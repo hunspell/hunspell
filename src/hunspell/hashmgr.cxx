@@ -135,13 +135,6 @@ HashMgr::~HashMgr() {
     delete[] aliasm[j];
   aliasm.clear();
 
-#ifndef OPENOFFICEORG
-#ifndef MOZILLA_CLIENT
-  if (utf8)
-    free_utf_tbl();
-#endif
-#endif
-
 #ifdef MOZILLA_CLIENT
   delete[] csconv;
 #endif
@@ -985,11 +978,6 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       }
       if (enc == "UTF-8") {
         utf8 = 1;
-#ifndef OPENOFFICEORG
-#ifndef MOZILLA_CLIENT
-        initialize_utf_tbl();
-#endif
-#endif
       } else
         csconv = get_current_cs(enc);
     }
