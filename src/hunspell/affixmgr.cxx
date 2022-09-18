@@ -1282,7 +1282,7 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
 }
 
 // Is word a non-compound with a REP substitution (see checkcompoundrep)?
-int AffixMgr::cpdrep_check(const char* word, int wl) {
+int AffixMgr::cpdrep_check(const std::string& word, int wl) {
 
   if ((wl < 2) || get_reptable().empty())
     return 0;
@@ -1290,12 +1290,12 @@ int AffixMgr::cpdrep_check(const char* word, int wl) {
   for (size_t i = 0; i < get_reptable().size(); ++i) {
     // use only available mid patterns
     if (!get_reptable()[i].outstrings[0].empty()) {
-      const char* r = word;
+      const char* r = word.c_str();
       const size_t lenp = get_reptable()[i].pattern.size();
       // search every occurence of the pattern in the word
       while ((r = strstr(r, get_reptable()[i].pattern.c_str())) != NULL) {
-        std::string candidate(word);
-        candidate.replace(r - word, lenp, get_reptable()[i].outstrings[0]);
+        std::string candidate(word.c_str());
+        candidate.replace(r - word.c_str(), lenp, get_reptable()[i].outstrings[0]);
         if (candidate_check(candidate))
           return 1;
         ++r;  // search for the next letter
@@ -1961,7 +1961,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2, rv->alen))) {
               // forbid compound word, if it is a non-compound word with typical
               // fault
-              if ((checkcompoundrep && cpdrep_check(word.c_str(), len)) ||
+              if ((checkcompoundrep && cpdrep_check(word, len)) ||
                       cpdwordpair_check(word.c_str(), len))
                 return NULL;
               return rv_first;
@@ -2088,7 +2088,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 ((!checkcompounddup || (rv != rv_first)))) {
               // forbid compound word, if it is a non-compound word with typical
               // fault
-              if ((checkcompoundrep && cpdrep_check(word.c_str(), len)) ||
+              if ((checkcompoundrep && cpdrep_check(word, len)) ||
                       cpdwordpair_check(word.c_str(), len))
                 return NULL;
               return rv_first;
@@ -2121,7 +2121,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
               if (checkcompoundrep || forbiddenword) {
 
-                if (checkcompoundrep && cpdrep_check(word.c_str(), len))
+                if (checkcompoundrep && cpdrep_check(word, len))
                   return NULL;
 
                 // check first part
@@ -2129,7 +2129,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   char r = st[i + rv->blen];
                   st[i + rv->blen] = '\0';
 
-                  if ((checkcompoundrep && cpdrep_check(st.c_str(), i + rv->blen)) ||
+                  if ((checkcompoundrep && cpdrep_check(st, i + rv->blen)) ||
                       cpdwordpair_check(st.c_str(), i + rv->blen)) {
                     st[ + i + rv->blen] = r;
                     continue;
