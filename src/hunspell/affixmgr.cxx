@@ -1443,7 +1443,8 @@ int AffixMgr::defcpd_check(hentry*** words,
           btinfo[bt].btpp = pp;
           btinfo[bt].btwp = wp;
           while (wp <= wend) {
-            if (!(*words)[wp]->alen ||
+            if (!(*words)[wp] ||
+                !(*words)[wp]->alen ||
                 !TESTAFF((*words)[wp]->astr, defcpdtable[i][pp - 2],
                          (*words)[wp]->alen)) {
               ok2 = 0;
