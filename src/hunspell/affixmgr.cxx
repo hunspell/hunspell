@@ -1353,7 +1353,7 @@ int AffixMgr::cpdpat_check(const char* word,
 int AffixMgr::cpdcase_check(const char* word, int pos) {
   if (utf8) {
     const char* p;
-    for (p = word + pos - 1; (*p & 0xc0) == 0x80; p--)
+    for (p = word + pos - 1; p > word && (*p & 0xc0) == 0x80; p--)
       ;
     std::string pair(p);
     std::vector<w_char> pair_u;
