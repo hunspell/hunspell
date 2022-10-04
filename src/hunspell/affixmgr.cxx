@@ -2302,11 +2302,11 @@ int AffixMgr::compound_check_morph(const std::string& word,
       if (rv) {
         presult.push_back(MSEP_FLD);
         presult.append(MORPH_PART);
-        presult.append(st);
+        presult.append(st, 0, i);
         if (!HENTRY_FIND(rv, MORPH_STEM)) {
           presult.push_back(MSEP_FLD);
           presult.append(MORPH_STEM);
-          presult.append(st);
+          presult.append(st, 0, i);
         }
         if (HENTRY_DATA(rv)) {
           presult.push_back(MSEP_FLD);
@@ -2370,7 +2370,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           if (!p.empty()) {
             presult.push_back(MSEP_FLD);
             presult.append(MORPH_PART);
-            presult.append(st);
+            presult.append(st, 0, i);
             line_uniq_app(p, MSEP_REC);
             presult.append(p);
           }
