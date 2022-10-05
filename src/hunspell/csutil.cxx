@@ -75,6 +75,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <sstream>
+#if __cplusplus >= 202002L
+#include <bit>
+#endif
 
 #include "csutil.hxx"
 #include "atypes.hxx"
@@ -487,23 +490,51 @@ unsigned char ccase(const struct cs_info* csconv, int nIndex) {
 }
 
 w_char upper_utf(w_char u, int langnum) {
-  unsigned short idx = (u.h << 8) + u.l;
-  unsigned short upridx = unicodetoupper(idx, langnum);
-  if (idx != upridx) {
-    u.h = (unsigned char)(upridx >> 8);
-    u.l = (unsigned char)(upridx & 0x00FF);
-  }
+	
+#if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
+
+//with these optimizations, msvc can optimize this function to one jmp instruction
+//but g++ remains in five instructions
+//maybe use inline asm for g++?
+
+#if __cplusplus >= 202002L
+  return std::bit_cast<w_char>(unicodetoupper((unsigned short)u, langnum));
+#else
+  const auto us = unicodetoupper((unsigned short)u, langnum);
+  memcpy(&u, &us, sizeof(unsigned short));
   return u;
+#endif
+
+#else
+  const auto us = unicodetoupper((unsigned short)u, langnum);
+  u.h = (unsigned char)(us >> 8);
+  u.l = (unsigned char)(us & 0xff);
+  return u;
+#endif
 }
 
 w_char lower_utf(w_char u, int langnum) {
-  unsigned short idx = (u.h << 8) + u.l;
-  unsigned short lwridx = unicodetolower(idx, langnum);
-  if (idx != lwridx) {
-    u.h = (unsigned char)(lwridx >> 8);
-    u.l = (unsigned char)(lwridx & 0x00FF);
-  }
+	
+#if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
+
+//with these optimizations, msvc can optimize this function to one jmp instruction
+//but g++ remains in five instructions
+//maybe use inline asm for g++?
+
+#if __cplusplus >= 202002L
+  return std::bit_cast<w_char>(unicodetolower((unsigned short)u, langnum));
+#else
+  const auto us = unicodetolower((unsigned short)u, langnum);
+  memcpy(&u, &us, sizeof(unsigned short));
   return u;
+#endif
+
+#else
+  const auto us = unicodetolower((unsigned short)u, langnum);
+  u.h = (unsigned char)(us >> 8);
+  u.l = (unsigned char)(us & 0xff);
+  return u;
+#endif
 }
 
 // convert std::string to all caps
@@ -522,27 +553,16 @@ std::string& mkallsmall(std::string& s, const struct cs_info* csconv) {
   return s;
 }
 
-std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u,
-                                          int langnum) {
+std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int langnum) {
   for (size_t i = 0; i < u.size(); ++i) {
-    unsigned short idx = (u[i].h << 8) + u[i].l;
-    unsigned short lwridx = unicodetolower(idx, langnum);
-    if (idx != lwridx) {
-      u[i].h = (unsigned char)(lwridx >> 8);
-      u[i].l = (unsigned char)(lwridx & 0x00FF);
-    }
+	u[i] = lower_utf(u[i], langnum);
   }
   return u;
 }
 
 std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
   for (size_t i = 0; i < u.size(); i++) {
-    unsigned short idx = (u[i].h << 8) + u[i].l;
-    unsigned short upridx = unicodetoupper(idx, langnum);
-    if (idx != upridx) {
-      u[i].h = (unsigned char)(upridx >> 8);
-      u[i].l = (unsigned char)(upridx & 0x00FF);
-    }
+	u[i] = upper_utf(u[i], langnum);
   }
   return u;
 }
@@ -556,12 +576,7 @@ std::string& mkinitcap(std::string& s, const struct cs_info* csconv) {
 
 std::vector<w_char>& mkinitcap_utf(std::vector<w_char>& u, int langnum) {
   if (!u.empty()) {
-    unsigned short idx = (u[0].h << 8) + u[0].l;
-    unsigned short upridx = unicodetoupper(idx, langnum);
-    if (idx != upridx) {
-      u[0].h = (unsigned char)(upridx >> 8);
-      u[0].l = (unsigned char)(upridx & 0x00FF);
-    }
+	u[0] = upper_utf(u[0], langnum);
   }
   return u;
 }
@@ -575,12 +590,7 @@ std::string& mkinitsmall(std::string& s, const struct cs_info* csconv) {
 
 std::vector<w_char>& mkinitsmall_utf(std::vector<w_char>& u, int langnum) {
   if (!u.empty()) {
-    unsigned short idx = (u[0].h << 8) + u[0].l;
-    unsigned short lwridx = unicodetolower(idx, langnum);
-    if (idx != lwridx) {
-      u[0].h = (unsigned char)(lwridx >> 8);
-      u[0].l = (unsigned char)(lwridx & 0x00FF);
-    }
+	u[0] = lower_utf(u[0], langnum);
   }
   return u;
 }
@@ -2488,7 +2498,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   std::vector<w_char>::const_iterator it = word.begin();
   std::vector<w_char>::const_iterator it_end = word.end();
   while (it != it_end) {
-    unsigned short idx = (it->h << 8) + it->l;
+    unsigned short idx = (unsigned short)(*it);
     unsigned short lwridx = unicodetolower(idx, langnum);
     if (idx != lwridx)
       ncap++;
@@ -2497,7 +2507,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
     ++it;
   }
   if (ncap) {
-    unsigned short idx = (word[0].h << 8) + word[0].l;
+    unsigned short idx = (unsigned short)(word[0]);
     firstcap = (idx != unicodetolower(idx, langnum));
   }
 
