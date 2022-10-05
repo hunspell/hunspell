@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-29 23:50+0000\n"
+"PO-Revision-Date: 2022-10-06 13:22+0000\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/hunspell/"
 "translations/sl/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.14.1-dev\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -195,11 +195,11 @@ msgstr "Zamenjaj z: "
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "m"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "v"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
@@ -215,7 +215,7 @@ msgstr ""
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "k"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
@@ -234,7 +234,7 @@ msgstr ""
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "i"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -245,103 +245,105 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Ali ste prepričani, da želite zavreči opravljene spremembe? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "d"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Začasne datoteke ni mogoče ustvariti"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Izhodne datoteke ni mogoče odpreti"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Uporaba: hunspell  [MOŽNOST]... [DATOTEKA]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Preveri črkovanje vsake DATOTEKE. Brez DATOTEKE preveri standardnivhod.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr ""
+msgstr "  -1\t\tpreveri samo prvo polje v vrstici (ločilo = tabulator)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tcevovodni vmesnik Ispella\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  --check-url\tpreveri URL-je, e-poštne naslove in poti map\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tpreveri tipografski opuščaj Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tuporabi slovarje d (d2 itn.)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tpokaži razpoložljive slovarje\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tnatisni samo prave besede ali vrstice\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tprikaži to pomoč in zapri program\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tzapis vhodne datoteke HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tvhodno kodiranje\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tizpiši nepravilno črkovane besede\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tizpiši vrstice z nepravilno črkovanimi besedami\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tanaliziraj besede vhodnega besedila\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tzapis vhodne datoteke nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tzapis vhodne datoteke OpenDocument (ODF ali enostavni ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p slov\tdoloči slovar slov po meri\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\topozori na morebitne napake (redke besede)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P geslo\tnastavite geslo za šifrirane slovarje\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
@@ -353,25 +355,29 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tzapis vhodne datoteke TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tizpiši številko različice\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tizpiši številko združljive različice Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
+"  -w\t\tizpiši napačno črkovane besede (= vrstice) iz ene besede/vrstice "
+"vnosa.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tzapis vhodne datoteke XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -395,7 +401,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Poročila o hroščih: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -420,6 +426,8 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"POT ISKANJA:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
