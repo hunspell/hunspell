@@ -1457,25 +1457,25 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       if (utf8) {
         u8_u16(w_gl, gl);
         //w_gl is lowercase already at this point
-        re = ngram(2, w_word, w_gl, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+        re = ngram(2, w_word, w_gl, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         if (low) {
           w_f = w_word;
           // lowering dictionary word
           mkallsmall_utf(w_f, langnum);
-          re += ngram(2, w_gl, w_f, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+          re += ngram(2, w_gl, w_f, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         } else {
-          re += ngram(2, w_gl, w_word, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+          re += ngram(2, w_gl, w_word, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         }
       } else {
         //gl is lowercase already at this point
-        re = ngram(2, word, gl, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+        re = ngram(2, word, gl, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         if (low) {
           f = word;
           // lowering dictionary word
           mkallsmall(f, csconv);
-          re += ngram(2, gl, f, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+          re += ngram(2, gl, f, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         } else {
-          re += ngram(2, gl, word, NGRAM_ANY_MISMATCH + NGRAM_WEIGHTED);
+          re += ngram(2, gl, word, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         }
       }
 
@@ -1963,9 +1963,7 @@ int SuggestMgr::ngram(int n,
       int k = 0;
       for (int l = 0; l <= (l2 - j); l++) {
         for (k = 0; k < j; k++) {
-          const w_char& c1 = su1[i + k];
-          const w_char& c2 = su2[l + k];
-          if ((c1.l != c2.l) || (c1.h != c2.h))
+          if (su1[i + k] != su2[l + k])
             break;
         }
         if (k == j) {
@@ -2047,13 +2045,12 @@ int SuggestMgr::leftcommonsubstring(
     if (l1 && l2 && su1[l1 - 1] == su2[l2 - 1])
       return 1;
   } else {
-    unsigned short idx = su2.empty() ? 0 : (su2[0].h << 8) + su2[0].l;
-    unsigned short otheridx = su1.empty() ? 0 : (su1[0].h << 8) + su1[0].l;
+    unsigned short idx = su2.empty() ? 0 : (unsigned short)(su2[0]);
+    unsigned short otheridx = su1.empty() ? 0 : (unsigned short)(su1[0]);
     if (otheridx != idx && (otheridx != unicodetolower(idx, langnum)))
       return 0;
     int i;
-    for (i = 1; (i < l1) && (i < l2) && (su1[i].l == su2[i].l) &&
-                (su1[i].h == su2[i].h);
+    for (i = 1; (i < l1) && (i < l2) && (su1[i] == su2[i]);
          i++)
       ;
     return i;

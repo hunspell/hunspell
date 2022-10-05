@@ -1358,8 +1358,8 @@ int AffixMgr::cpdcase_check(const char* word, int pos) {
     std::string pair(p);
     std::vector<w_char> pair_u;
     u8_u16(pair_u, pair);
-    unsigned short a = pair_u.size() > 1 ? ((pair_u[1].h << 8) + pair_u[1].l) : 0;
-    unsigned short b = !pair_u.empty() ? ((pair_u[0].h << 8) + pair_u[0].l) : 0;
+    unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0;
+    unsigned short b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
     if (((unicodetoupper(a, langnum) == a) ||
          (unicodetoupper(b, langnum) == b)) &&
         (a != '-') && (b != '-'))
