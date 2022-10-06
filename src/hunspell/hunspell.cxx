@@ -1931,10 +1931,11 @@ std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_wo
       remove_ignored_chars(w2, ignoredchars);
     }
     word = w2.c_str();
-  } else
+    len = (int)w2.size();
+  } else {
     word = root_word.c_str();
-
-  len = strlen(word);
+    len = (int)root_word.size();
+  }
 
   if (!len)
     return slst;
