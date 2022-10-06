@@ -709,14 +709,14 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   switch (flag_mode) {
     case FLAG_LONG: {  // two-character flags (1x2yZz -> 1x 2y Zz)
       len = flags.size();
-      if (len % 2 == 1)
+      if ((len & 1) == 1)
         HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n",
                          af->getlinenum());
-      len /= 2;
+      len >>= 1;
       *result = new unsigned short[len];
       for (int i = 0; i < len; i++) {
-        unsigned short flag = ((unsigned short)((unsigned char)flags[i * 2]) << 8) +
-                              (unsigned char)flags[i * 2 + 1];
+        unsigned short flag = ((unsigned short)((unsigned char)flags[i << 1]) << 8) |
+                              ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
 
         if (flag >= DEFAULTFLAGS) {
           HUNSPELL_WARNING(stderr,
