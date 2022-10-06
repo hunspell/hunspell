@@ -338,7 +338,7 @@ void HunspellImpl::cleanword(std::string& dest,
     std::vector<w_char> t;
     u8_u16(t, src);
     for (size_t i = 0; i < t.size(); ++i) {
-      unsigned short idx = (t[i].h << 8) + t[i].l;
+      unsigned short idx = (unsigned short)t[i];
       unsigned short low = unicodetolower(idx, langnum);
       if (idx != low)
         ncap++;
@@ -347,7 +347,7 @@ void HunspellImpl::cleanword(std::string& dest,
     }
     u16_u8(dest, t);
     if (ncap) {
-      unsigned short idx = (t[0].h << 8) + t[0].l;
+      unsigned short idx = (unsigned short)t[0];
       firstcap = (idx != unicodetolower(idx, langnum));
     }
   }
