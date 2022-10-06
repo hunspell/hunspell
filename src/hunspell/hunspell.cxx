@@ -261,14 +261,17 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   clean_ignore(w2, src);
 
   const char* q = w2.c_str();
+  int nl = (int)w2.size();
 
   // first skip over any leading blanks
-  while (*q == ' ')
+  while (*q == ' ') {
     ++q;
-
+    nl--;
+  }
+	
   // now strip off any trailing periods (recording their presence)
   *pabbrev = 0;
-  int nl = strlen(q);
+  
   while ((nl > 0) && (*(q + nl - 1) == '.')) {
     nl--;
     (*pabbrev)++;
@@ -297,15 +300,17 @@ void HunspellImpl::cleanword(std::string& dest,
                         int* pabbrev) {
   dest.clear();
   const unsigned char* q = (const unsigned char*)src.c_str();
-  int firstcap = 0;
+  int firstcap = 0, nl = (int)src.size();
 
   // first skip over any leading blanks
-  while (*q == ' ')
+  while (*q == ' ') {
     ++q;
-
+    nl--;
+  }
+  
   // now strip off any trailing periods (recording their presence)
   *pabbrev = 0;
-  int nl = strlen((const char*)q);
+  
   while ((nl > 0) && (*(q + nl - 1) == '.')) {
     nl--;
     (*pabbrev)++;
