@@ -61,7 +61,7 @@ struct __attribute__((packed)) w_char {
 #if __cplusplus >= 202002L
     return std::bit_cast<unsigned short>(*this);
 #else
-  	unsigned short u;
+    unsigned short u;
     memcpy(&u, this, sizeof(unsigned short));
     return u;
 #endif
