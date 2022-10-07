@@ -2231,6 +2231,10 @@ int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
   return reinterpret_cast<HunspellImpl*>(pHunspell)->suggest(slst, word);
 }
 
+int Hunspell_suffix_suggest(Hunhandle* pHunspell, char*** slst, const char* root_word) {
+  return reinterpret_cast<HunspellImpl*>(pHunspell)->suffix_suggest(slst, root_word);
+}
+
 int Hunspell_analyze(Hunhandle* pHunspell, char*** slst, const char* word) {
   return reinterpret_cast<HunspellImpl*>(pHunspell)->analyze(slst, word);
 }
