@@ -70,10 +70,10 @@
 
 #include <algorithm>
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
 #include <sstream>
 #if __cplusplus >= 202002L
 #include <bit>
@@ -127,8 +127,7 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
   dest.reserve(src.size());
-  std::vector<w_char>::const_iterator u2 = src.begin();
-  std::vector<w_char>::const_iterator u2_max = src.end();
+  auto u2 = src.begin(), u2_max = src.end();
   while (u2 < u2_max) {
     signed char u8;
     if (u2->h) {  // > 0xFF
@@ -166,9 +165,8 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
   // faster to oversize initially, assign to elements and resize to what's used
   // than to reserve and push_back
   dest.resize(only_convert_first_letter ? 1 : src.size());
-  std::vector<w_char>::iterator u16 = dest.begin();
-  std::string::const_iterator u8 = src.begin();
-  std::string::const_iterator u8_max = src.end();
+  auto u16 = dest.begin();
+  auto u8 = src.begin(), u8_max = src.end();
 
   while (u8 < u8_max) {
     w_char u2;
@@ -270,7 +268,7 @@ class is_any_of {
  public:
   explicit is_any_of(const std::string& in) : chars(in) {}
 
-  bool operator()(char c) { return chars.find(c) != std::string::npos; }
+  bool operator()(char c) const { return chars.find(c) != std::string::npos; }
 
  private:
   std::string chars;
@@ -279,16 +277,16 @@ class is_any_of {
 
 std::string::const_iterator mystrsep(const std::string &str,
                                      std::string::const_iterator& start) {
-  std::string::const_iterator end = str.end();
+  auto end = str.end();
 
   is_any_of op(" \t");
   // don't use isspace() here, the string can be in some random charset
   // that's way different than the locale's
-  std::string::const_iterator sp = start;
+  auto sp = start;
   while (sp != end && op(*sp))
       ++sp;
 
-  std::string::const_iterator dp = sp;
+  auto dp = sp;
   while (dp != end && !op(*dp))
       ++dp;
 
@@ -383,9 +381,9 @@ void line_uniq_app(std::string& text, char breakchar) {
   }
 
   text.assign(" ( ");
-  for (size_t i = 0; i < lines.size(); ++i) {
-      text.append(lines[i]);
-      text.append(" | ");
+  for (auto& line : lines) {
+    text.append(line);
+    text.append(" | ");
   }
   text[text.size() - 2] = ')';  // " ) "
 }
@@ -421,9 +419,8 @@ bool copy_field(std::string& dest,
   dest.clear();
   std::string beg(morph.substr(pos + MORPH_TAG_LEN, std::string::npos));
 
-  for (size_t i = 0; i < beg.size(); ++i) {
-    const char c(beg[i]);
-    if (c == ' ' || c == '\t' || c == '\n')
+  for (const char c : beg) {
+	if (c == ' ' || c == '\t' || c == '\n')
       break;
     dest.push_back(c);
   }
@@ -614,30 +611,30 @@ w_char lower_utf(w_char u, int langnum) {
 
 // convert std::string to all caps
 std::string& mkallcap(std::string& s, const struct cs_info* csconv) {
-  for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI) {
-    *aI = cupper(csconv, static_cast<unsigned char>(*aI));
+  for (char& aI : s) {
+    aI = cupper(csconv, static_cast<unsigned char>(aI));
   }
   return s;
 }
 
 // convert std::string to all little
 std::string& mkallsmall(std::string& s, const struct cs_info* csconv) {
-  for (std::string::iterator aI = s.begin(), aEnd = s.end(); aI != aEnd; ++aI) {
-    *aI = clower(csconv, static_cast<unsigned char>(*aI));
+  for (char& aI : s) {
+    aI = clower(csconv, static_cast<unsigned char>(aI));
   }
   return s;
 }
 
 std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int langnum) {
-  for (size_t i = 0; i < u.size(); ++i) {
-	u[i] = lower_utf(u[i], langnum);
+  for (auto& i : u) {
+    i = lower_utf(i, langnum);
   }
   return u;
 }
 
 std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
-  for (size_t i = 0; i < u.size(); i++) {
-	u[i] = upper_utf(u[i], langnum);
+  for (auto& i : u) {
+    i = upper_utf(i, langnum);
   }
   return u;
 }
@@ -2331,10 +2328,9 @@ struct cs_info* get_current_cs(const std::string& es) {
   toAsciiLowerAndRemoveNonAlphanumeric(es.c_str(), normalized_encoding);
 
   struct cs_info* ccs = NULL;
-  int n = sizeof(encds) / sizeof(encds[0]);
-  for (int i = 0; i < n; i++) {
-    if (strcmp(normalized_encoding, encds[i].enc_name) == 0) {
-      ccs = encds[i].cs_table;
+  for (const auto& encd : encds) {
+    if (strcmp(normalized_encoding, encd.enc_name) == 0) {
+      ccs = encd.cs_table;
       break;
     }
   }
@@ -2480,10 +2476,9 @@ static struct lang_map lang2enc[] =
      {"ru", LANG_ru},    {"uk", LANG_uk}};
 
 int get_lang_num(const std::string& lang) {
-  int n = sizeof(lang2enc) / sizeof(lang2enc[0]);
-  for (int i = 0; i < n; i++) {
-    if (strcmp(lang.c_str(), lang2enc[i].lang) == 0) {
-      return lang2enc[i].num;
+  for (const auto& i : lang2enc) {
+    if (strcmp(lang.c_str(), i.lang) == 0) {
+      return i.num;
     }
   }
   return LANG_xx;
@@ -2539,15 +2534,15 @@ int get_captype(const std::string& word, cs_info* csconv) {
   size_t firstcap = 0;
   if (csconv == NULL)
     return NOCAP;
-  for (std::string::const_iterator q = word.begin(); q != word.end(); ++q) {
-    unsigned char nIndex = static_cast<unsigned char>(*q);
+  for (auto q = word.begin(); q != word.end(); ++q) {
+    const auto nIndex = static_cast<unsigned char>(*q);
     if (ccase(csconv, nIndex))
       ncap++;
     if (cupper(csconv, nIndex) == clower(csconv, nIndex))
       nneutral++;
   }
   if (ncap) {
-    unsigned char nIndex = static_cast<unsigned char>(word[0]);
+    const auto nIndex = static_cast<unsigned char>(word[0]);
     firstcap = csconv[nIndex].ccase;
   }
 
@@ -2570,11 +2565,10 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   size_t nneutral = 0;
   size_t firstcap = 0;
 
-  std::vector<w_char>::const_iterator it = word.begin();
-  std::vector<w_char>::const_iterator it_end = word.end();
+  auto it = word.begin(), it_end = word.end();
   while (it != it_end) {
-    unsigned short idx = (unsigned short)(*it);
-    unsigned short lwridx = unicodetolower(idx, langnum);
+    const auto idx = (unsigned short)*it;
+    const auto lwridx = unicodetolower(idx, langnum);
     if (idx != lwridx)
       ncap++;
     if (unicodetoupper(idx, langnum) == lwridx)
@@ -2582,7 +2576,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
     ++it;
   }
   if (ncap) {
-    unsigned short idx = (unsigned short)(word[0]);
+    const auto idx = (unsigned short)word[0];
     firstcap = (idx != unicodetolower(idx, langnum));
   }
 
@@ -2606,13 +2600,10 @@ size_t remove_ignored_chars_utf(std::string& word,
   std::vector<w_char> w2;
   u8_u16(w, word);
 
-  for (size_t i = 0; i < w.size(); ++i) {
-    if (!std::binary_search(ignored_chars.begin(),
-                            ignored_chars.end(),
-                            w[i])) {
-      w2.push_back(w[i]);
-    }
-  }
+  std::copy_if(w.begin(), w.end(), std::back_inserter(w2), 
+  [&ignored_chars](w_char wc) {
+    return !std::binary_search(ignored_chars.begin(), ignored_chars.end(), wc);
+  });
 
   u16_u8(word, w2);
   return w2.size();
@@ -2634,8 +2625,7 @@ bool parse_string(const std::string& line, std::string& out, int ln) {
   }
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {

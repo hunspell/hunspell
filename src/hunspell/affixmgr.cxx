@@ -68,11 +68,11 @@
  * SUCH DAMAGE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <time.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
+#include <ctime>
 
 #include <algorithm>
 #include <memory>
@@ -164,9 +164,7 @@ AffixMgr::AffixMgr(const char* affpath,
     sFlag[i] = NULL;
   }
 
-  for (int j = 0; j < CONTSIZE; j++) {
-    contclasses[j] = 0;
-  }
+  memset(contclasses, 0, CONTSIZE * sizeof(char));
 
   if (parse_file(affpath, key)) {
     HUNSPELL_WARNING(stderr, "Failure loading aff file %s\n", affpath);
@@ -185,9 +183,9 @@ AffixMgr::AffixMgr(const char* affpath,
 
   // default BREAK definition
   if (!parsedbreaktable) {
-    breaktable.push_back("-");
-    breaktable.push_back("^-");
-    breaktable.push_back("-$");
+    breaktable.emplace_back("-");
+    breaktable.emplace_back("^-");
+    breaktable.emplace_back("-$");
     parsedbreaktable = true;
   }
 
@@ -764,7 +762,7 @@ int AffixMgr::build_pfxtree(PfxEntry* pfxptr) {
 
   // get the right starting points
   const char* key = ep->getKey();
-  const unsigned char flg = (unsigned char)(ep->getFlag() & 0x00FF);
+  const auto flg = (unsigned char)(ep->getFlag() & 0x00FF);
 
   // first index by flag which must exist
   ptr = pFlag[flg];
@@ -828,7 +826,7 @@ int AffixMgr::build_sfxtree(SfxEntry* sfxptr) {
 
   /* get the right starting point */
   const char* key = ep->getKey();
-  const unsigned char flg = (unsigned char)(ep->getFlag() & 0x00FF);
+  const auto flg = (unsigned char)(ep->getFlag() & 0x00FF);
 
   // first index by flag which must exist
   ptr = sFlag[flg];
@@ -1028,8 +1026,7 @@ std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
 int AffixMgr::condlen(const std::string& s) {
   int l = 0;
   bool group = false;
-  std::string::const_iterator st = s.begin();
-  std::string::const_iterator end = s.end();
+  auto st = s.begin(), end = s.end();
   while (st != end) {
     if (*st == '[') {
       group = true;
@@ -1283,15 +1280,15 @@ int AffixMgr::cpdrep_check(const std::string& in_word, int wl) {
 
   std::string word(in_word, 0, wl);
 
-  for (size_t i = 0; i < get_reptable().size(); ++i) {
+  for (const auto& i : get_reptable()) {
     // use only available mid patterns
-    if (!get_reptable()[i].outstrings[0].empty()) {
+    if (!i.outstrings[0].empty()) {
       size_t r = 0;
-      const size_t lenp = get_reptable()[i].pattern.size();
+      const size_t lenp = i.pattern.size();
       // search every occurence of the pattern in the word
-      while (word.find(get_reptable()[i].pattern, r) != std::string::npos) {
+      while (word.find(i.pattern, r) != std::string::npos) {
         std::string candidate(word);
-        candidate.replace(r, lenp, get_reptable()[i].outstrings[0]);
+        candidate.replace(r, lenp, i.outstrings[0]);
         if (candidate_check(candidate))
           return 1;
         ++r;  // search for the next letter
@@ -1327,21 +1324,21 @@ int AffixMgr::cpdpat_check(const char* word,
                            hentry* r1,
                            hentry* r2,
                            const char /*affixed*/) {
-  for (size_t i = 0; i < checkcpdtable.size(); ++i) {
+  for (auto& i : checkcpdtable) {
     size_t len;
-    if (isSubset(checkcpdtable[i].pattern2.c_str(), word + pos) &&
-        (!r1 || !checkcpdtable[i].cond ||
-         (r1->astr && TESTAFF(r1->astr, checkcpdtable[i].cond, r1->alen))) &&
-        (!r2 || !checkcpdtable[i].cond2 ||
-         (r2->astr && TESTAFF(r2->astr, checkcpdtable[i].cond2, r2->alen))) &&
+    if (isSubset(i.pattern2.c_str(), word + pos) &&
+        (!r1 || !i.cond ||
+         (r1->astr && TESTAFF(r1->astr, i.cond, r1->alen))) &&
+        (!r2 || !i.cond2 ||
+         (r2->astr && TESTAFF(r2->astr, i.cond2, r2->alen))) &&
         // zero length pattern => only TESTAFF
         // zero pattern (0/flag) => unmodified stem (zero affixes allowed)
-        (checkcpdtable[i].pattern.empty() ||
-         ((checkcpdtable[i].pattern[0] == '0' && r1->blen <= pos &&
+        (i.pattern.empty() ||
+         ((i.pattern[0] == '0' && r1->blen <= pos &&
            strncmp(word + pos - r1->blen, r1->word, r1->blen) == 0) ||
-          (checkcpdtable[i].pattern[0] != '0' &&
-           ((len = checkcpdtable[i].pattern.size()) != 0) && len <= pos &&
-           strncmp(word + pos - len, checkcpdtable[i].pattern.c_str(), len) == 0)))) {
+          (i.pattern[0] != '0' &&
+           ((len = i.pattern.size()) != 0) && len <= pos &&
+           strncmp(word + pos - len, i.pattern.c_str(), len) == 0)))) {
       return 1;
     }
   }
@@ -1358,15 +1355,14 @@ int AffixMgr::cpdcase_check(const char* word, int pos) {
     std::string pair(p);
     std::vector<w_char> pair_u;
     u8_u16(pair_u, pair);
-    unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0;
-    unsigned short b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
+    unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0,
+                   b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
     if (((unicodetoupper(a, langnum) == a) ||
          (unicodetoupper(b, langnum) == b)) &&
         (a != '-') && (b != '-'))
       return 1;
   } else {
-    unsigned char a = *(word + pos - 1);
-    unsigned char b = *(word + pos);
+    const unsigned char a = *(word + pos - 1), b = *(word + pos);
     if ((csconv[a].ccase || csconv[b].ccase) && (a != '-') && (b != '-'))
       return 1;
   }
@@ -1410,10 +1406,10 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
   int ok = 0;
-  for (size_t i = 0; i < defcpdtable.size(); ++i) {
-    for (size_t j = 0; j < defcpdtable[i].size(); ++j) {
-      if (defcpdtable[i][j] != '*' && defcpdtable[i][j] != '?' &&
-          TESTAFF(rv->astr, defcpdtable[i][j], rv->alen)) {
+  for (auto& i : defcpdtable) {
+    for (auto& j : i) {
+      if (j != '*' && j != '?' &&
+          TESTAFF(rv->astr, j, rv->alen)) {
         ok = 1;
         break;
       }
@@ -1426,18 +1422,17 @@ int AffixMgr::defcpd_check(hentry*** words,
     return 0;
   }
 
-  for (size_t i = 0; i < defcpdtable.size(); ++i) {
+  for (auto& i : defcpdtable) {
     size_t pp = 0;  // pattern position
     signed short wp = 0;  // "words" position
-    int ok2;
+    int ok2 = 1;
     ok = 1;
-    ok2 = 1;
     do {
-      while ((pp < defcpdtable[i].size()) && (wp <= wnum)) {
-        if (((pp + 1) < defcpdtable[i].size()) &&
-            ((defcpdtable[i][pp + 1] == '*') ||
-             (defcpdtable[i][pp + 1] == '?'))) {
-          int wend = (defcpdtable[i][pp + 1] == '?') ? wp : wnum;
+      while ((pp < i.size()) && (wp <= wnum)) {
+        if (((pp + 1) < i.size()) &&
+            ((i[pp + 1] == '*') ||
+             (i[pp + 1] == '?'))) {
+          int wend = (i[pp + 1] == '?') ? wp : wnum;
           ok2 = 1;
           pp += 2;
           btinfo[bt].btpp = pp;
@@ -1445,7 +1440,7 @@ int AffixMgr::defcpd_check(hentry*** words,
           while (wp <= wend) {
             if (!(*words)[wp] ||
                 !(*words)[wp]->alen ||
-                !TESTAFF((*words)[wp]->astr, defcpdtable[i][pp - 2],
+                !TESTAFF((*words)[wp]->astr, i[pp - 2],
                          (*words)[wp]->alen)) {
               ok2 = 0;
               break;
@@ -1464,24 +1459,24 @@ int AffixMgr::defcpd_check(hentry*** words,
         } else {
           ok2 = 1;
           if (!(*words)[wp] || !(*words)[wp]->alen ||
-              !TESTAFF((*words)[wp]->astr, defcpdtable[i][pp],
+              !TESTAFF((*words)[wp]->astr, i[pp],
                        (*words)[wp]->alen)) {
             ok = 0;
             break;
           }
           pp++;
           wp++;
-          if ((defcpdtable[i].size() == pp) && !(wp > wnum))
+          if ((i.size() == pp) && !(wp > wnum))
             ok = 0;
         }
       }
       if (ok && ok2) {
         size_t r = pp;
-        while ((defcpdtable[i].size() > r) && ((r + 1) < defcpdtable[i].size()) &&
-               ((defcpdtable[i][r + 1] == '*') ||
-                (defcpdtable[i][r + 1] == '?')))
+        while ((i.size() > r) && ((r + 1) < i.size()) &&
+               ((i[r + 1] == '*') ||
+                (i[r + 1] == '?')))
           r += 2;
-        if (defcpdtable[i].size() <= r)
+        if (i.size() <= r)
           return 1;
       }
       // backtrack
@@ -1494,16 +1489,16 @@ int AffixMgr::defcpd_check(hentry*** words,
         } while ((btinfo[bt - 1].btnum < 0) && --bt);
     } while (bt);
 
-    if (ok && ok2 && (!all || (defcpdtable[i].size() <= pp)))
+    if (ok && ok2 && (!all || (i.size() <= pp)))
       return 1;
 
     // check zero ending
-    while (ok && ok2 && (defcpdtable[i].size() > pp) &&
-           ((pp + 1) < defcpdtable[i].size()) &&
-           ((defcpdtable[i][pp + 1] == '*') ||
-            (defcpdtable[i][pp + 1] == '?')))
+    while (ok && ok2 && (i.size() > pp) &&
+           ((pp + 1) < i.size()) &&
+           ((i[pp + 1] == '*') ||
+            (i[pp + 1] == '?')))
       pp += 2;
-    if (ok && ok2 && (defcpdtable[i].size() <= pp))
+    if (ok && ok2 && (i.size() <= pp))
       return 1;
   }
   (*words)[wnum] = NULL;
@@ -1535,22 +1530,17 @@ short AffixMgr::get_syllable(const std::string& word) {
   short num = 0;
 
   if (!utf8) {
-    for (size_t i = 0; i < word.size(); ++i) {
-      if (std::binary_search(cpdvowels.begin(), cpdvowels.end(),
-                             word[i])) {
-        ++num;
-      }
-    }
+    num = (short)std::count_if(word.begin(), word.end(), 
+          [&](char c) {
+            return std::binary_search(cpdvowels.begin(), cpdvowels.end(), c);
+          });
   } else if (!cpdvowels_utf16.empty()) {
     std::vector<w_char> w;
     u8_u16(w, word);
-    for (size_t i = 0; i < w.size(); ++i) {
-      if (std::binary_search(cpdvowels_utf16.begin(),
-                             cpdvowels_utf16.end(),
-                             w[i])) {
-        ++num;
-      }
-    }
+    num = (short)std::count_if(w.begin(), w.end(),
+          [&](w_char wc) {
+            return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
+          });
   }
 
   return num;
@@ -1586,22 +1576,12 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                         char is_sug = 0,
                                         int* info = NULL) {
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
-  struct hentry* rv = NULL;
-  struct hentry* rv_first;
+  hentry *rv = NULL, *rv_first;
   std::string st;
-  char ch = '\0';
-  int cmin;
-  int cmax;
-  int striple = 0;
-  size_t scpd = 0;
-  int soldi = 0;
-  int oldcmin = 0;
-  int oldcmax = 0;
-  int oldlen = 0;
-  int checkedstriple = 0;
-  char affixed = 0;
+  char ch = '\0', affixed;
+  int cmin, cmax, striple = 0, soldi = 0, oldcmin = 0, oldcmax = 0, oldlen = 0, checkedstriple = 0;
   hentry** oldwords = words;
-  size_t len = word.size();
+  size_t scpd, len = word.size();
 
   int checked_prefix;
 
@@ -2200,20 +2180,10 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                    std::string& result,
                                    const std::string* partresult) {
   short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
-  int ok = 0;
-
-  struct hentry* rv = NULL;
-  struct hentry* rv_first;
-  std::string st;
-  char ch;
-
-  int checked_prefix;
-  std::string presult;
-
-  int cmin;
-  int cmax;
-
-  char affixed = 0;
+  hentry* rv = NULL, *rv_first;
+  std::string st, presult;
+  char ch, affixed = 0;
+  int checked_prefix, cmin, cmax, ok = 0;
   hentry** oldwords = words;
   size_t len = word.size();
 
@@ -2938,7 +2908,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
 
   // now handle the general case
   if (len == 0)
-    return std::string();  // FULLSTRIP
+    return { };  // FULLSTRIP
   unsigned char sp = word[start + len - 1];
   SfxEntry* sptr = sStart[sp];
 
@@ -3054,7 +3024,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
 
   // now handle the general case
   if (len == 0)
-    return std::string();  // FULLSTRIP
+    return { };  // FULLSTRIP
   unsigned char sp = word[start + len - 1];
   SfxEntry* sptr = sStart[sp];
 
@@ -3203,8 +3173,7 @@ std::string AffixMgr::affix_check_morph(const std::string& word,
 // return 1, if inputs may equal with a secondary suffix
 // otherwise return -1
 static int morphcmp(const char* s, const char* t) {
-  int se = 0;
-  int te = 0;
+  int se = 0, te = 0;
   const char* sl;
   const char* tl;
   const char* olds;
@@ -3289,11 +3258,11 @@ std::string AffixMgr::morphgen(const char* ts,
                          int level) {
   // handle suffixes
   if (!morph)
-    return std::string();
+    return {};
 
   // check substandard flag
   if (TESTAFF(ap, substandard, al))
-    return std::string();
+    return {};
 
   if (morphcmp(morph, targetmorph) == 0)
     return ts;
@@ -3311,7 +3280,7 @@ std::string AffixMgr::morphgen(const char* ts,
   }
 
   for (int i = 0; i < al; i++) {
-    const unsigned char c = (unsigned char)(ap[i] & 0x00FF);
+    const auto c = (unsigned char)(ap[i] & 0x00FF);
     SfxEntry* sptr = sFlag[c];
     while (sptr) {
       if (sptr->getFlag() == ap[i] && sptr->getMorph() &&
@@ -3358,7 +3327,7 @@ std::string AffixMgr::morphgen(const char* ts,
       sptr = sptr->getFlgNxt();
     }
   }
-  return std::string();
+  return { };
 }
 
 namespace {
@@ -3403,7 +3372,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
 
   // handle suffixes
   for (int i = 0; i < al; i++) {
-    const unsigned char c = (unsigned char)(ap[i] & 0x00FF);
+    const auto c = (unsigned char)(ap[i] & 0x00FF);
     SfxEntry* sptr = sFlag[c];
     while (sptr) {
       if ((sptr->getFlag() == ap[i]) &&
@@ -3449,7 +3418,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
   for (int j = 1; j < n; j++)
     if (wlst[j].allow) {
       for (int k = 0; k < al; k++) {
-        const unsigned char c = (unsigned char)(ap[k] & 0x00FF);
+        const auto c = (unsigned char)(ap[k] & 0x00FF);
         PfxEntry* cptr = pFlag[c];
         while (cptr) {
           if ((cptr->getFlag() == ap[k]) && cptr->allowCross() &&
@@ -3474,7 +3443,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
 
   // now handle pure prefixes
   for (int m = 0; m < al; m++) {
-    const unsigned char c = (unsigned char)(ap[m] & 0x00FF);
+    const auto c = (unsigned char)(ap[m] & 0x00FF);
     PfxEntry* ptr = pFlag[c];
     while (ptr) {
       if ((ptr->getFlag() == ap[m]) &&
@@ -3747,8 +3716,7 @@ bool AffixMgr::parse_num(const std::string& line, int* out, FileMgr* af) {
 bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -3801,8 +3769,7 @@ bool AffixMgr::parse_convtable(const std::string& line,
   int i = 0;
   int np = 0;
   int numrl = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -3895,8 +3862,7 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
   int num = -1;
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -3949,11 +3915,11 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
             break;
           }
           case 1: {
-            new_phone->rules.push_back(std::string(start_piece, iter));
+            new_phone->rules.emplace_back(start_piece, iter);
             break;
           }
           case 2: {
-            new_phone->rules.push_back(std::string(start_piece, iter));
+            new_phone->rules.emplace_back(start_piece, iter);
             mystrrep(new_phone->rules.back(), "_", "");
             break;
           }
@@ -3970,8 +3936,8 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
       return false;
     }
   }
-  new_phone->rules.push_back("");
-  new_phone->rules.push_back("");
+  new_phone->rules.emplace_back("");
+  new_phone->rules.emplace_back("");
   init_phonet_hash(*new_phone);
   phone = new_phone.release();
   return true;
@@ -3988,8 +3954,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
   int numcheckcpd = -1;
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -4026,7 +3991,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
       return false;
     mychomp(nl);
     i = 0;
-    checkcpdtable.push_back(patentry());
+    checkcpdtable.emplace_back();
     iter = nl.begin();
     start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
@@ -4085,8 +4050,7 @@ bool AffixMgr::parse_defcpdtable(const std::string& line, FileMgr* af) {
   int numdefcpd = -1;
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -4123,7 +4087,7 @@ bool AffixMgr::parse_defcpdtable(const std::string& line, FileMgr* af) {
       return false;
     mychomp(nl);
     i = 0;
-    defcpdtable.push_back(flagentry());
+    defcpdtable.emplace_back();
     iter = nl.begin();
     start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
@@ -4139,11 +4103,10 @@ bool AffixMgr::parse_defcpdtable(const std::string& line, FileMgr* af) {
         }
         case 1: {  // handle parenthesized flags
           if (std::find(start_piece, iter, '(') != iter) {
-            for (std::string::const_iterator k = start_piece; k != iter; ++k) {
-              std::string::const_iterator chb = k;
-              std::string::const_iterator che = k + 1;
+            for (auto k = start_piece; k != iter; ++k) {
+              auto chb = k, che = k + 1;
               if (*k == '(') {
-                std::string::const_iterator parpos = std::find(k, iter, ')');
+	            auto parpos = std::find(k, iter, ')');
                 if (parpos != iter) {
                   chb = k + 1;
                   che = parpos;
@@ -4188,8 +4151,7 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
   int nummap = -1;
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -4226,7 +4188,7 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
       return false;
     mychomp(nl);
     i = 0;
-    maptable.push_back(mapentry());
+    maptable.emplace_back();
     iter = nl.begin();
     start_piece = mystrsep(nl, iter);
     while (start_piece != nl.end()) {
@@ -4241,11 +4203,10 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
           break;
         }
         case 1: {
-          for (std::string::const_iterator k = start_piece; k != iter; ++k) {
-            std::string::const_iterator chb = k;
-            std::string::const_iterator che = k + 1;
+          for (auto k = start_piece; k != iter; ++k) {
+            auto chb = k, che = k + 1;
             if (*k == '(') {
-              std::string::const_iterator parpos = std::find(k, iter, ')');
+              auto parpos = std::find(k, iter, ')');
               if (parpos != iter) {
                 chb = k + 1;
                 che = parpos;
@@ -4265,7 +4226,7 @@ bool AffixMgr::parse_maptable(const std::string& line, FileMgr* af) {
                               af->getlinenum());
             }
 
-            maptable.back().push_back(std::string(chb, che));
+            maptable.back().emplace_back(chb, che);
           }
           break;
         }
@@ -4295,8 +4256,7 @@ bool AffixMgr::parse_breaktable(const std::string& line, FileMgr* af) {
   int numbreak = -1;
   int i = 0;
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       case 0: {
@@ -4349,7 +4309,7 @@ bool AffixMgr::parse_breaktable(const std::string& line, FileMgr* af) {
           break;
         }
         case 1: {
-          breaktable.push_back(std::string(start_piece, iter));
+          breaktable.emplace_back(start_piece, iter);
           break;
         }
         default:
@@ -4374,7 +4334,7 @@ void AffixMgr::reverse_condition(std::string& piece) {
       return;
 
   int neg = 0;
-  for (std::string::reverse_iterator k = piece.rbegin(); k != piece.rend(); ++k) {
+  for (auto k = piece.rbegin(); k != piece.rend(); ++k) {
     switch (*k) {
       case '[': {
         if (neg)
@@ -4447,8 +4407,8 @@ public:
   }
 
   ~entries_container() {
-    for (size_t i = 0; i < entries.size(); ++i) {
-        delete entries[i];
+    for (auto& entry : entries) {
+      delete entry;
     }
   }
 
@@ -4477,8 +4437,7 @@ bool AffixMgr::parse_affix(const std::string& line,
   // split affix header line into pieces
 
   int np = 0;
-  std::string::const_iterator iter = line.begin();
-  std::string::const_iterator start_piece = mystrsep(line, iter);
+  auto iter = line.begin(), start_piece = mystrsep(line, iter);
   while (start_piece != line.end()) {
     switch (i) {
       // piece 1 - is type of affix
@@ -4750,13 +4709,12 @@ bool AffixMgr::parse_affix(const std::string& line,
 
   // now create SfxEntry or PfxEntry objects and use links to
   // build an ordered (sorted by affix string) list
-  std::vector<AffEntry*>::iterator start = affentries.begin();
-  std::vector<AffEntry*>::iterator end = affentries.end();
-  for (std::vector<AffEntry*>::iterator affentry = start; affentry != end; ++affentry) {
+  auto start = affentries.begin(), end = affentries.end();
+  for (auto affentry = start; affentry != end; ++affentry) {
     if (at == 'P') {
-      build_pfxtree(static_cast<PfxEntry*>(*affentry));
+      build_pfxtree(dynamic_cast<PfxEntry*>(*affentry));
     } else {
-      build_sfxtree(static_cast<SfxEntry*>(*affentry));
+      build_sfxtree(dynamic_cast<SfxEntry*>(*affentry));
     }
   }
 
@@ -4770,10 +4728,7 @@ int AffixMgr::redundant_condition(char ft,
                                   const std::string& strip,
                                   const std::string& cond,
                                   int linenum) {
-  int stripl = strip.size(), condl = cond.size();
-  int i, j;
-  int neg;
-  int in;
+  int stripl = strip.size(), condl = cond.size(), i, j, neg, in;
   if (ft == 'P') {  // prefix
     if (strip.compare(0, condl, cond) == 0)
       return 1;
@@ -4863,8 +4818,7 @@ std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
                                const std::string& root_word) {
   std::vector<std::string> slst;
   short unsigned* start_ptr = suff;
-  for (int j = 0; j < SETSIZE; j++) {
-    SfxEntry* ptr = sStart[j];
+  for (auto ptr : sStart) {
     while (ptr) {
       suff = start_ptr;
       for (int i = 0; i < len; i++) {
