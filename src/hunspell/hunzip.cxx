@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 #include "hunzip.hxx"
 #include "csutil.hxx"
@@ -67,8 +67,7 @@ Hunzip::Hunzip(const char* file, const char* key)
 
 int Hunzip::getcode(const char* key) {
   unsigned char c[2];
-  int i, j, n;
-  int allocatedbit = BASEBITREC;
+  int i, j, n, allocatedbit = BASEBITREC;
   const char* enc = key;
 
   if (filename.empty())

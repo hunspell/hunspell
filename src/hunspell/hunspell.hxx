@@ -100,10 +100,6 @@ class HunspellImpl;
 
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
  private:
-  Hunspell(const Hunspell&);
-  Hunspell& operator=(const Hunspell&);
-
- private:
   HunspellImpl* m_Impl;
 
  public:
@@ -116,6 +112,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * with system-dependent character encoding instead of _wfopen()).
    */
   Hunspell(const char* affpath, const char* dpath, const char* key = NULL);
+  Hunspell(const Hunspell&) = delete;
+  Hunspell& operator=(const Hunspell&) = delete;
   ~Hunspell();
 
   /* load extra dictionaries (only dic files) */
