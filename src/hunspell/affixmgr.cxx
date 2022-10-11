@@ -2031,8 +2031,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             // than 1, the prefix+word counts as two words.
 
             if (langnum == LANG_hu) {
-              // calculate syllable number of the word
-              numsyllable += get_syllable(word.substr(i));
+              if (i < word.size()) {
+                // calculate syllable number of the word
+                numsyllable += get_syllable(word.substr(i));
+              }
 
               // - affix syllable num.
               // XXX only second suffix (inflections, not derivations)
