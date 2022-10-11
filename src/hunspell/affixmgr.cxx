@@ -2032,7 +2032,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
             if (langnum == LANG_hu) {
               // calculate syllable number of the word
-              numsyllable += get_syllable(word.c_str() + i);
+              numsyllable += get_syllable(word.substr(i));
 
               // - affix syllable num.
               // XXX only second suffix (inflections, not derivations)
