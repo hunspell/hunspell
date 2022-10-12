@@ -893,9 +893,12 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 }
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack) {
-  // something very broken if suggest ends up calling itself with the same word
-  if (std::find(suggest_candidate_stack.begin(), suggest_candidate_stack.end(), word) != suggest_candidate_stack.end())
+
+  if (suggest_candidate_stack.size() > 2048 || // apply a fairly arbitrary depth limit
+      // something very broken if suggest ends up calling itself with the same word
+      std::find(suggest_candidate_stack.begin(), suggest_candidate_stack.end(), word) != suggest_candidate_stack.end()) {
     return std::vector<std::string>();
+  }
 
   bool capwords;
   size_t abbv;
