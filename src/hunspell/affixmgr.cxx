@@ -1630,6 +1630,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
         if (scpd > 0) {
           for (; scpd <= checkcpdtable.size() &&
                  (checkcpdtable[scpd - 1].pattern3.empty() ||
+                  i > word.size() ||
                   word.compare(i, checkcpdtable[scpd - 1].pattern3.size(), checkcpdtable[scpd - 1].pattern3) != 0);
                scpd++)
             ;
@@ -2010,8 +2011,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             // than 1, the prefix+word counts as two words.
 
             if (langnum == LANG_hu) {
-              // calculate syllable number of the word
-              numsyllable += get_syllable(word.c_str() + i);
+              if (i < word.size()) {
+                // calculate syllable number of the word
+                numsyllable += get_syllable(word.substr(i));
+              }
 
               // - affix syllable num.
               // XXX only second suffix (inflections, not derivations)

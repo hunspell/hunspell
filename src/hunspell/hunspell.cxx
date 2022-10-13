@@ -862,7 +862,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       }
       // try check compound word
     } else if (pAMgr->get_compound()) {
-      struct hentry* rwords[100];  // buffer for COMPOUND pattern checking
+      struct hentry* rwords[100] = {};  // buffer for COMPOUND pattern checking
       he = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
       // LANG_hu section: `moving rule' with last dash
       if ((!he) && (langnum == LANG_hu) && (word[len - 1] == '-')) {
@@ -890,9 +890,12 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 }
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack) {
-  // something very broken if suggest ends up calling itself with the same word
-  if (std::find(suggest_candidate_stack.begin(), suggest_candidate_stack.end(), word) != suggest_candidate_stack.end())
+
+  if (suggest_candidate_stack.size() > 2048 || // apply a fairly arbitrary depth limit
+      // something very broken if suggest ends up calling itself with the same word
+      std::find(suggest_candidate_stack.begin(), suggest_candidate_stack.end(), word) != suggest_candidate_stack.end()) {
     return { };
+  }
 
   bool capwords;
   size_t abbv;

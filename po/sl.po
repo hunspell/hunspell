@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-10-06 13:22+0000\n"
+"PO-Revision-Date: 2022-10-11 10:39+0000\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/hunspell/"
 "translations/sl/>\n"
@@ -208,7 +208,7 @@ msgstr "Osebnega slovarja ni mogoče posodobiti."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -223,11 +223,11 @@ msgstr "Nova beseda (koren): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Vzorčna beseda (podobna beseda slovarja): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Vzorčna beseda mora biti v slovarju. Pritisnite poljubno tipko!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -241,7 +241,7 @@ msgstr "i"
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "h"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
@@ -347,11 +347,11 @@ msgstr "  -P geslo\tnastavite geslo za šifrirane slovarje\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\tizlušči koren besed vhodnega besedila\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tbesedam vhodnega besedila dodaj pripone\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
@@ -398,6 +398,25 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Primer: hunspell -d sl_SI datoteka.txt    # interaktivno črkovanje\n"
+"         hunspell -i utf-8 datoteka.txt    # preveri datoteko s kodiranjem "
+"UTF-8\n"
+"         hunspell -l *.odt             # izpiši napačno črkovane besede "
+"datotek ODF\n"
+"\n"
+"         # Hitri popravek dokumentov ODF z ustvarjanjem osebnega slovačka\n"
+"\n"
+"         # 1 Naredite okrajšan seznam iz napačno črkoavnih in neznanih besed:"
+"\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >besede\n"
+"\n"
+"         # 2 Izbrišite napačno črkovane besede datoteke v urejevalniku "
+"besedil.\n"
+"         # 3 Uporabite ta osebni slova za popravek izbrisanih besed:\n"
+"\n"
+"         hunspell -p besede *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
@@ -412,6 +431,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Avtorska pravica (C) 2002-2014 László Németh. Dovoljenje: MPL/GPL/LGPL.\n"
+"\n"
+"Temelji na knjižnici Myspell OpenOffice.org.\n"
+"Avtorska pravica Myspell (C) Kevin Hendricks, 2001-2002, dovoljenje: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -452,7 +477,7 @@ msgstr "napaka - %s presega omejitev slovarja.\n"
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "Datotek pripon ali slovarja za slovar \"%s\" ni mogoče odpreti.\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
