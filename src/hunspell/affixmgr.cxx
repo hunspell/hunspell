@@ -1581,7 +1581,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   char ch = '\0', affixed;
   int cmin, cmax, striple = 0, soldi = 0, oldcmin = 0, oldcmax = 0, oldlen = 0, checkedstriple = 0;
   hentry** oldwords = words;
-  size_t scpd, len = word.size();
+  size_t scpd = 0, len = word.size();
 
   int checked_prefix;
 
