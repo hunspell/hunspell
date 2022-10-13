@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-10-11 10:39+0000\n"
+"PO-Revision-Date: 2022-10-13 20:35+0000\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/hunspell/"
 "translations/sl/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -263,7 +263,7 @@ msgstr "Izhodne datoteke ni mogoče odpreti"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr "Uporaba: hunspell  [MOŽNOST]... [DATOTEKA]...\n"
+msgstr "Uporaba: hunspell [MOŽNOST]... [DATOTEKA]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
@@ -444,6 +444,10 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"To je prosto programje; pogoje kopiranja si oglejte v izvorni kodi.  Je "
+"BREZ\n"
+"garancije; niti za PRIMERNOST ZA PRODAJO ali PRIMERNOST ZA DOLOČEN NAMEN\n"
+"v zakonsko dovoljeni meri.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
