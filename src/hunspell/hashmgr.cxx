@@ -905,9 +905,7 @@ std::string HashMgr::encode_flag(unsigned short f) const {
     ch.push_back((unsigned char)(f >> 8));
     ch.push_back((unsigned char)(f - ((f >> 8) << 8)));
   } else if (flag_mode == FLAG_NUM) {
-    std::ostringstream stream;
-    stream << f;
-    ch = stream.str();
+    ch = std::to_string(f); 
   } else if (flag_mode == FLAG_UNI) {
 
 #if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
