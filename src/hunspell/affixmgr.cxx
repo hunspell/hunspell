@@ -1931,7 +1931,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (
                     // test CHECKCOMPOUNDPATTERN
                     checkcpdtable.empty() || scpd != 0 ||
-                    !cpdpat_check(word, i, rv_first, rv, 0)) &&
+                    (i < word.size() && !cpdpat_check(word, i, rv_first, rv, 0))) &&
                 ((!checkcompounddup || (rv != rv_first)))
                 // test CHECKCOMPOUNDPATTERN conditions
                 &&
