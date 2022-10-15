@@ -294,7 +294,6 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   int io_utf8 = 0;
   const char* denc = pMS->get_dict_encoding().c_str();
 #ifdef HAVE_ICONV
-  initialize_utf_tbl();  // also need for 8-bit tokenization
   if (io_enc) {
     if ((strcmp(io_enc, "UTF-8") == 0) || (strcmp(io_enc, "utf-8") == 0) ||
         (strcmp(io_enc, "UTF8") == 0) || (strcmp(io_enc, "utf8") == 0)) {
@@ -1931,7 +1930,7 @@ int main(int argc, char** argv) {
       fprintf(stdout, "\n");
       if (strcmp(argv[i], "-vv") != 0) {
         fprintf(stdout, "%s",
-                gettext("\nCopyright (C) 2002-2014 L\303\241szl\303\263 "
+                gettext("\nCopyright (C) 2002-2022 L\303\241szl\303\263 "
                         "N\303\251meth. License: MPL/GPL/LGPL.\n\n"
                         "Based on OpenOffice.org's Myspell library.\n"
                         "Myspell's copyright (C) Kevin Hendricks, 2001-2002, "
@@ -2259,9 +2258,6 @@ int main(int argc, char** argv) {
     free(aff);
   if (dic)
     free(dic);
-#ifdef HAVE_ICONV
-  free_utf_tbl();
-#endif
   for (int i = 0; i < dmax; i++)
     delete pMS[i];
   return 0;

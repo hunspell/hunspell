@@ -71,7 +71,7 @@
 #ifndef AFFIXMGR_HXX_
 #define AFFIXMGR_HXX_
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <string>
 #include <vector>
@@ -258,8 +258,8 @@ class AffixMgr {
                       const char*);
 
   short get_syllable(const std::string& word);
-  int cpdrep_check(const char* word, int len);
-  int cpdwordpair_check(const char * word, int len);
+  int cpdrep_check(const std::string& word, int len);
+  int cpdwordpair_check(const std::string& word, int len);
   int cpdpat_check(const char* word,
                    int len,
                    hentry* r1,
@@ -299,7 +299,7 @@ class AffixMgr {
                        int len,
                        const std::string& root_word);
 
-  struct hentry* lookup(const char* word);
+  struct hentry* lookup(const char* word, size_t len);
   const std::vector<replentry>& get_reptable() const;
   RepList* get_iconvtable() const;
   RepList* get_oconvtable() const;

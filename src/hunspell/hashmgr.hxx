@@ -71,7 +71,7 @@
 #ifndef HASHMGR_HXX_
 #define HASHMGR_HXX_
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 
@@ -111,8 +111,8 @@ class HashMgr {
   HashMgr(const char* tpath, const char* apath, const char* key = NULL);
   ~HashMgr();
 
-  struct hentry* lookup(const char*) const;
-  int hash(const char*) const;
+  struct hentry* lookup(const char* word, size_t len) const;
+  int hash(const char* word, size_t len) const;
   struct hentry* walk_hashtable(int& col, struct hentry* hp) const;
 
   int add(const std::string& word);

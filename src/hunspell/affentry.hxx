@@ -79,10 +79,6 @@
 
 class PfxEntry : public AffEntry {
  private:
-  PfxEntry(const PfxEntry&);
-  PfxEntry& operator=(const PfxEntry&);
-
- private:
   AffixMgr* pmyMgr;
 
   PfxEntry* next;
@@ -92,6 +88,8 @@ class PfxEntry : public AffEntry {
 
  public:
   explicit PfxEntry(AffixMgr* pmgr);
+  PfxEntry(const PfxEntry&) = delete;
+  PfxEntry& operator=(const PfxEntry&) = delete;
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
   struct hentry* checkword(const std::string& word,
@@ -122,12 +120,12 @@ class PfxEntry : public AffEntry {
   const char* getKey() { return appnd.c_str(); }
   std::string add(const char* word, size_t len);
 
-  inline short getKeyLen() { return appnd.size(); }
+  inline int getKeyLen() { return appnd.size(); }
 
   inline const char* getMorph() { return morphcode; }
 
   inline const unsigned short* getCont() { return contclass; }
-  inline short getContLen() { return contclasslen; }
+  inline unsigned short getContLen() { return contclasslen; }
 
   inline PfxEntry* getNext() { return next; }
   inline PfxEntry* getNextNE() { return nextne; }
@@ -203,10 +201,10 @@ class SfxEntry : public AffEntry {
   inline const char* getMorph() { return morphcode; }
 
   inline const unsigned short* getCont() { return contclass; }
-  inline short getContLen() { return contclasslen; }
+  inline unsigned short getContLen() { return contclasslen; }
   inline const char* getAffix() { return appnd.c_str(); }
 
-  inline short getKeyLen() { return appnd.size(); }
+  inline int getKeyLen() { return appnd.size(); }
 
   inline SfxEntry* getNext() { return next; }
   inline SfxEntry* getNextNE() { return nextne; }

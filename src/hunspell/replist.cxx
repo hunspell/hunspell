@@ -81,8 +81,8 @@ RepList::RepList(int n) {
 }
 
 RepList::~RepList() {
-  for (size_t i = 0, pos = dat.size(); i < pos; ++i) {
-    delete dat[i];
+  for (auto& i : dat) {
+    delete i;
   }
 }
 
@@ -163,7 +163,7 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
 bool RepList::conv(const std::string& in_word, std::string& dest) {
   dest.clear();
 
-  size_t wordlen = in_word.size();
+  const size_t wordlen = in_word.size();
   const char* word = in_word.c_str();
 
   bool change = false;
@@ -192,3 +192,16 @@ bool RepList::conv(const std::string& in_word, std::string& dest) {
   return change;
 }
 
+bool RepList::check_against_breaktable(const std::vector<std::string>& breaktable) const {
+  for (const auto i : dat) {
+    for (auto& outstring : i->outstrings) {
+      for (const auto& str : breaktable) {
+        if (outstring.find(str) != std::string::npos) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}

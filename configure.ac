@@ -22,6 +22,8 @@ AC_PROG_CC
 LT_INIT
 AC_PROG_AWK
 
+AX_CXX_COMPILE_STDCXX_11([noext], [optional])
+
 # Checks for libraries.
 AM_ICONV
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
