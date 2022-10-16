@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:09+0000\n"
+"PO-Revision-Date: 2022-10-17 00:04+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/hunspell/"
 "translations/hr/>\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -102,7 +102,7 @@ msgid ""
 msgstr ""
 "Kad god se pronađe riječ koja nije u rječniku, ispisuje se u\n"
 "prvom retku ekrana. Ako rječnik sadrži slične riječi, one se\n"
-"navode s brojem. Moguće je zamijeniti cijelu riječ ili\n"
+"navode s brojem. Moguće je zamijeniti riječ ili\n"
 "odabrati jednu od predloženih riječi.\n"
 
 #: src/tools/hunspell.cxx:1271
@@ -117,7 +117,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "Z\tZamijeni pogrešno napisanu riječ u potpunosti.\n"
+msgstr "Z\tZamijeni pogrešno napisanu riječ.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
