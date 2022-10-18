@@ -4531,7 +4531,7 @@ bool AffixMgr::parse_affix(const std::string& line,
         case 0: {
           np++;
           if (ent != 0)
-            entry = affentries.add_entry((char)(aeXPRODUCT + aeUTF8 + aeALIASF + aeALIASM));
+            entry = affentries.add_entry((char)(aeXPRODUCT | aeUTF8 | aeALIASF | aeALIASM));
           break;
         }
 
