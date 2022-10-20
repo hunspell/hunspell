@@ -2118,7 +2118,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
                   if (forbiddenword) {
                     struct hentry* rv2 = lookup(word.c_str(), word.size());
-                    if (!rv2)
+                    if (!rv2 && len <= word.size())
                       rv2 = affix_check(word, 0, len);
                     if (rv2 && rv2->astr &&
                         TESTAFF(rv2->astr, forbiddenword, rv2->alen) &&
