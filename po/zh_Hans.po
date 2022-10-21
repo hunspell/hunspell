@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
 "PO-Revision-Date: 2022-10-22 12:06+0000\n"
-"Last-Translator: richiewen <richiewen8@qq.com>\n"
+"Last-Translator: Eric <hamburger1024@mailbox.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "hunspell/translations/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -35,21 +35,19 @@ msgid "error - iconv_open: UTF-8 -> %s\n"
 msgstr "错误 - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
-#, fuzzy
 msgid "Can't create tmp dir"
 msgstr "无法创建 tmp 目录"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
-#, fuzzy
 msgid "Can't open inputfile"
 msgstr "无法打开输入文件"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
-#, c-format, fuzzy
+#, c-format
 msgid "Can't open %s.\n"
 msgstr "无法打开 %s。\n"
 
