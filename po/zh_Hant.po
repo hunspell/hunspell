@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:54+0000\n"
-"Last-Translator: Hugel <qihu@nfschina.com>\n"
+"PO-Revision-Date: 2022-11-02 08:35+0000\n"
+"Last-Translator: ifurther <i.further.5.4@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "hunspell/translations/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #: src/tools/hunspell.cxx:260 src/tools/hunspell.cxx:376
@@ -39,7 +39,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 #: src/tools/hunspell.cxx:666 src/tools/hunspell.cxx:1575
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "無法建立暫存資料夾"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
@@ -47,7 +47,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:689 src/tools/hunspell.cxx:1558
 #: src/tools/hunspell.cxx:1588 src/tools/hunspell.cxx:1601
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "無法開啟輸入的檔案"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
@@ -56,14 +56,14 @@ msgstr ""
 #: src/tools/hunspell.cxx:2153 src/tools/hunspell.cxx:2170
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "無法開啟 %s\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464 src/tools/hunspell.cxx:759
 #: src/tools/hunspell.cxx:1345 src/tools/hunspell.cxx:1457
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "錯誤 - 缺少HOME的變數\n"
 
 #: src/tools/hunspell.cxx:853 src/tools/hunspell.cxx:844
 #, c-format
@@ -84,6 +84,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\t檔案: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
