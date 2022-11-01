@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-10-13 20:35+0000\n"
+"PO-Revision-Date: 2022-11-02 08:35+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://hosted.weblate.org/projects/hunspell/"
 "translations/ka/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -140,6 +140,8 @@ msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S\tფუძისა და მოდელი სიტყვის კითხვა და მათი პირად ლექსიკონში შენახვა. \n"
+"\tფუძე მისაღებია მოდელი სიტყვის აფიქსებითაც მისაღებია.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
@@ -399,6 +401,25 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"მაგალითი: hunspell -d en_US file.txt    # მართლწერის ინტერაქტიური შემოწმება\n"
+"         hunspell -i utf-8 file.txt    # UTF-8 კოდირებული ფაილის შემოწმება\n"
+"         hunspell -l *.odt             # მართლწერის შეცდომების მქონე "
+"სიტყვების შემოწმება ODF ფაილებში\n"
+"\n"
+"         # სწრაფად ჩაასწორეთ თქვენი ODF დოკუმენტები თქვენი პირადი ლექსიკონის "
+"შექმნის საშუალებით\n"
+"\n"
+"         # 1 მართლწერის შეცდომების ან უცნობი სიტყვების შემცირებული სიის "
+"შექმნა:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 ფაილში მართლწერის შეცდომების მქონე სიტყვების წაშლა.\n"
+"         # 3 წაშლილი სიტყვების ჩასასწორებლად მითითებული პირადი ლექსიკონის "
+"გამოყენება:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
@@ -426,6 +447,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
+"to the extent permitted by law.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -459,7 +483,7 @@ msgstr "შეცდომა - %s ლექსიკონის ლიმი�
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "აფიქსის ან ლექსიკონის ფაილის, სახელად \"%s\", გახსნის შეცდომა.\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
