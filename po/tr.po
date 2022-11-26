@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:09+0000\n"
-"Last-Translator: Deleted User <noreply+16368@weblate.org>\n"
+"PO-Revision-Date: 2022-11-26 09:48+0000\n"
+"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/hunspell/"
 "translations/tr/>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -99,10 +99,10 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"Sözlükte olmayan bir kelime bulunduğunda, ekranın\n"
-"ilk satırına yazdırılır.  Sözlük benzer kelimeler içeriyorsa,\n"
-"her birinin yanında bir numara bulunur.  Kelimeyi tamamen\n"
-"değiştirme veya önerilen kelimelerden birini seçme\n"
+"Sözlükte olmayan bir sözcük bulunduğunda, ekranın\n"
+"ilk satırına yazdırılır.  Sözlük benzer sözcükler içeriyorsa,\n"
+"her birinin yanında bir numara bulunur.  Sözcüğü tamamen\n"
+"değiştirme veya önerilen sözcüklerden birini seçme\n"
 "seçeneğine sahipsiniz.\n"
 
 #: src/tools/hunspell.cxx:1271
@@ -117,19 +117,19 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "R\tYanlış yazılan kelimeyi tamamen değiştir.\n"
+msgstr "R\tYanlış yazılan sözcüğü tamamen değiştir.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr "Space\tKelimeyi sadece bu kez kabul et.\n"
+msgstr "Space\tSözcüğü yalnızca bu kez kabul et.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr "A\tBu oturumun geri kalanı için kelimeyi kabul et.\n"
+msgstr "A\tBu oturumun geri kalanı için sözcüğü kabul et.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "I\tKelimeyi kabul et, ve özel sözlüğe ekle.\n"
+msgstr "I\tSözcüğü kabul et ve özel sözlüğe ekle.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
@@ -140,12 +140,12 @@ msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"S\tBir kök ve model kelime iste ve bunları özel sözlükte sakla.\n"
-"\tKök, model kelimenin ekleriyle de kabul edilecektir.\n"
+"S\tBir kök ve model sözcük iste ve bunları özel sözlükte sakla.\n"
+"\tKök, model sözcüğün ekleriyle de kabul edilecektir.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tÖnerilen kelimelerden biriyle değiştir.\n"
+msgstr "0-n\tÖnerilen sözcüklerden biriyle değiştir.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -217,15 +217,15 @@ msgstr "ö"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr "Yeni kelime (kök): "
+msgstr "Yeni sözcük (kök): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr "Model kelime (benzer bir sözlük kelimesi): "
+msgstr "Model sözcük (benzer bir sözlük sözcüğü): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr "Model kelime sözlükte bulunmalıdır. Herhangi bir tuşa basın!"
+msgstr "Model sözcük sözlükte bulunmalıdır. Herhangi bir tuşa basın!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -273,7 +273,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr "  -1\t\tsatırlarda sadece ilk alanı denetle (ayırıcı = tab)\n"
+msgstr "  -1\t\tsatırlarda yalnızca ilk alanı denetle (ayırıcı = tab)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
@@ -298,7 +298,7 @@ msgstr "  -D\t\tkullanılabilir sözlükleri göster\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr "  -G\t\tsadece doğru kelimeleri veya satırları yazdır\n"
+msgstr "  -G\t\tyalnızca doğru sözcükleri veya satırları yazdır\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
@@ -314,15 +314,15 @@ msgstr "  -i kod\tgiriş kodlaması\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr "  -l\t\tyanlış yazılmış kelimeleri yazdır\n"
+msgstr "  -l\t\tyanlış yazılmış sözcükleri yazdır\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr "  -L\t\tyanlış yazılmış kelimelerin olduğu satırları yazdır\n"
+msgstr "  -L\t\tyanlış yazılmış sözcüklerin olduğu satırları yazdır\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr "  -m \t\tgiriş metninin kelimelerini analiz et\n"
+msgstr "  -m \t\tgiriş metninin sözcüklerini analiz et\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
@@ -338,7 +338,7 @@ msgstr "  -p szlk\tözel sözlük olarak szlk'ü ayarla\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr "  -r\t\tolası hatalar (nadir kelimeler) hakkında uyar\n"
+msgstr "  -r\t\tolası hatalar (nadir sözcükler) hakkında uyar\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
@@ -346,11 +346,11 @@ msgstr "  -P parola\tşifrelenmiş sözlükler için parolayı belirle\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr "  -s \t\tgiriş metnindeki kelimelerin kökünü al\n"
+msgstr "  -s \t\tgiriş metnindeki sözcüklerin kökünü al\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr "  -S \t\tgiriş metnindeki kelimelere son ek ekle\n"
+msgstr "  -S \t\tgiriş metnindeki sözcüklere son ek ekle\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
@@ -367,7 +367,7 @@ msgstr "  -vv\t\tIspell uyumlu sürüm numarasını yazdır\n"
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
-"  -w\t\tbir kelime/satır girişten yanlış yazılmış kelimeleri (= satırları) "
+"  -w\t\tbir sözcük/satır girişten yanlış yazılmış sözcükleri (= satırları) "
 "yazdır.\n"
 
 #: src/tools/hunspell.cxx:1858
@@ -401,22 +401,22 @@ msgstr ""
 "         hunspell -i utf-8 dosya.txt    # UTF-8 ile kodlanmış dosyayı "
 "denetle\n"
 "         hunspell -l *.odt             # ODF dosyalarındaki yanlış yazılmış "
-"kelimeleri denetle\n"
+"sözcükleri denetle\n"
 "\n"
 "         # ODF belgelerinin kişisel sözlük oluşturma ile hızlıca "
 "düzeltilmesi\n"
 "\n"
-"         # 1 Yanlış yazılmış ve bilinmeyen kelimelerden azaltılmış bir liste "
+"         # 1 Yanlış yazılmış ve bilinmeyen sözcüklerden azaltılmış bir liste "
 "yapın:\n"
 "\n"
-"         hunspell -l *.odt | sort | uniq >kelimeler\n"
+"         hunspell -l *.odt | sort | uniq >sözcükler\n"
 "\n"
-"         # 2 Dosyadaki yanlış yazılmış kelimeleri bir metin düzenleyicisiyle "
+"         # 2 Dosyadaki yanlış yazılmış sözcükleri bir metin düzenleyicisiyle "
 "silin.\n"
-"         # 3 Silinen kelimeleri düzeltmek için bu kişisel sözlüğü "
-"kullanın.:\n"
+"         # 3 Silinen sözcükleri düzeltmek için bu kişisel sözlüğü kullanın.:"
 "\n"
-"         hunspell -p kelimeler *.odt\n"
+"\n"
+"         hunspell -p sözcükler *.odt\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1877
