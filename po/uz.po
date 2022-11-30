@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-11-30 08:38+0000\n"
+"PO-Revision-Date: 2022-12-01 12:48+0000\n"
 "Last-Translator: Akmal Xushvaqov <uzbadmin@gmail.com>\n"
 "Language-Team: Uzbek <https://hosted.weblate.org/projects/hunspell/"
 "translations/uz/>\n"
@@ -178,7 +178,6 @@ msgstr ""
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
-#, fuzzy
 msgid "r"
 msgstr "r"
 
@@ -193,12 +192,10 @@ msgstr "Almashtirish: "
 #. used
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
-#, fuzzy
 msgid "u"
 msgstr "u"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
-#, fuzzy
 msgid "i"
 msgstr "i"
 
@@ -208,7 +205,6 @@ msgid "Cannot update personal dictionary."
 msgstr "Shaxsiy lugʻat yangilanmadi."
 
 #: src/tools/hunspell.cxx:1376
-#, fuzzy
 msgid "a"
 msgstr "a"
 
@@ -216,7 +212,6 @@ msgstr "a"
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
-#, fuzzy
 msgid "s"
 msgstr "s"
 
@@ -236,7 +231,6 @@ msgstr "Model soʻz lugʻatda boʻlishi kerak. Istalgan tugmani bosing!"
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
-#, fuzzy
 msgid "x"
 msgstr "x"
 
@@ -244,7 +238,6 @@ msgstr "x"
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
-#, fuzzy
 msgid "q"
 msgstr "q"
 
@@ -255,7 +248,6 @@ msgstr "Oʻzgarishlarni rad qilishni xohlaysizmi? "
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
-#, fuzzy
 msgid "y"
 msgstr "y"
 
@@ -407,10 +399,29 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Namuna: hunspell -d uz_UZ fayl.txt    # interaktiv tekshirish\n"
+"         hunspell -i utf-8 fayl.txt    # UTF-8 shifrdagi faylni tekshirish\n"
+"         hunspell -l *.odt             # ODF fayldagi xato soʻzlarni "
+"koʻrsatish\n"
+"\n"
+"         # Foydalanuvchi lugʻatini yaratish orqali ODF fayllarini tez "
+"tuzatish\n"
+"\n"
+"         # 1 Nomaʼlum soʻzlar va notoʻgʻri yozilgan soʻzlar roʻyxatini "
+"tuzing:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >soʻz\n"
+"\n"
+"         # 2 Matn muharririda fayldan notoʻgʻri yozilgan soʻzlarni oʻchiring."
+"\n"
+"         # 3 Xatolarni tuzatish uchun ushbu lugʻatdan foydalaning:\n"
+"\n"
+"         hunspell -p soʻz *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Nosozlik hisobotlari: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -421,6 +432,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright (C) 2002-2014 László Németh. Litsenziya: MPL/GPL/LGPL.\n"
+"\n"
+"OpenOffice.org Myspell kutubxonasi asosida.\n"
+"Myspell: copyright (C) Kevin Hendricks, 2001-2002, Litsenziya: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -428,6 +445,10 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Bu bepul dasturiy taʼminot; nusxa koʻchirish shartlari uning manba kodlarida "
+"koʻrsatilgan.\n"
+"Litsenziya hech qanday kafolat bermaydi; xususan, qonun doirasida\n"
+"muayyan maqsadni bajarish yoki yaroqlilik kafolatlari boʻyicha.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -435,10 +456,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"QIDIRUV YOʻLI:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "MAVJUD LUGʻATLAR (-d uchun yoʻl kerak emas):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -447,17 +470,20 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"YUKLANGAN LUGʻAT:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "xato - %s lugʻat cheklovidan oshib ketdi.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "\"%s\" uchun lugʻat yoki qoʻshimchalar fayli ochilmadi.\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell Ncurses interaktiv interfeysisiz tuzilgan.\n"
