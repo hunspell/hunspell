@@ -2084,7 +2084,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                   numsyllable, maxwordnum, wnum + 1, words, rwords, 0,
                                   is_sug, info);
 
-              if (rv && !checkcpdtable.empty() &&
+              if (rv && !checkcpdtable.empty() && i < word.size() &&
                   ((scpd == 0 &&
                     cpdpat_check(word, i, rv_first, rv, affixed)) ||
                    (scpd != 0 &&
