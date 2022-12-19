@@ -1826,7 +1826,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (((i > 1) && (word[i - 1] == word[i - 2])) ||
                  ((word[i - 1] == word[i + 1]))  // may be word[i+1] == '\0'
                  )) ||
-               (checkcompoundcase && scpd == 0 && !words &&
+               (checkcompoundcase && scpd == 0 && !words && i < word.size() &&
                 cpdcase_check(word, i))))
             // LANG_hu section: spec. Hungarian rule
             || ((!rv) && (langnum == LANG_hu) && hu_mov_rule &&
