@@ -1286,7 +1286,7 @@ int AffixMgr::cpdrep_check(const std::string& in_word, int wl) {
       size_t r = 0;
       const size_t lenp = i.pattern.size();
       // search every occurence of the pattern in the word
-      while (word.find(i.pattern, r) != std::string::npos) {
+      while ((r = word.find(i.pattern, r)) != std::string::npos) {
         std::string candidate(word);
         candidate.replace(r, lenp, i.outstrings[0]);
         if (candidate_check(candidate))
