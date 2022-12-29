@@ -396,7 +396,6 @@ checkcompoundrep.wrong \
 checkcompoundrep2.aff \
 checkcompoundrep2.dic \
 checkcompoundrep2.good \
-checkcompoundrep2.wrong \
 checkcompoundtriple.aff \
 checkcompoundtriple.dic \
 checkcompoundtriple.good \
