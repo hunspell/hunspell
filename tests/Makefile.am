@@ -76,6 +76,7 @@ checkcompounddup.dic \
 checkcompoundtriple.dic \
 simplifiedtriple.dic \
 checkcompoundrep.dic \
+checkcompoundrep2.dic \
 checkcompoundcase2.dic \
 checkcompoundcaseutf.dic \
 checkcompoundpattern.dic \
@@ -391,6 +392,10 @@ checkcompoundrep.aff \
 checkcompoundrep.dic \
 checkcompoundrep.good \
 checkcompoundrep.wrong \
+checkcompoundrep2.aff \
+checkcompoundrep2.dic \
+checkcompoundrep2.good \
+checkcompoundrep2.wrong \
 checkcompoundtriple.aff \
 checkcompoundtriple.dic \
 checkcompoundtriple.good \
