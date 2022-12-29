@@ -863,7 +863,31 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       // try check compound word
     } else if (pAMgr->get_compound()) {
       struct hentry* rwords[100] = {};  // buffer for COMPOUND pattern checking
-      he = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
+
+      // first allow only 2 words in the compound
+      int setinfo = SPELL_COMPOUND_2;
+      if (info)
+        setinfo |= *info;
+      he = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, &setinfo);
+      if (info)
+        *info = setinfo & ~SPELL_COMPOUND_2;
+      // if not 2-word compoud word, try with 3 or more words
+      // (only if original info didn't forbid it)
+      if (!he && info && !(*info & SPELL_COMPOUND_2)) {
+        *info &= ~SPELL_COMPOUND_2;
+        he = pAMgr->compound_check(word, 0, 0, 100, 0, NULL, (hentry**)&rwords, 0, 0, info);
+        // accept the compound with 3 or more words only if it is
+        // - not a dictionary word with a typo and
+        // - not two words written separately,
+        // - or if it's an arbitrary number accepted by compound rules (e.g. 999%)
+        if (he && !isdigit(word[0]))
+        {
+          std::vector<std::string> slst;
+          if (pSMgr->suggest(slst, word, NULL, /*test_simplesug=*/true))
+            he = NULL;
+        }
+      }
+
       // LANG_hu section: `moving rule' with last dash
       if ((!he) && (langnum == LANG_hu) && (word[len - 1] == '-')) {
         std::string dup(word, 0, len - 1);

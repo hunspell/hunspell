@@ -137,7 +137,8 @@ nepali.dic \
 hu.dic \
 warn.dic \
 timelimit.dic \
-ignoresug.dic
+ignoresug.dic \
+limit-multiple-compounding.dic
 
 clean-local:
 	-rm -rf testSubDir
@@ -658,5 +659,9 @@ ignoresug.aff \
 ignoresug.dic \
 ignoresug.good \
 ignoresug.morph \
+limit-multiple-compounding.aff \
+limit-multiple-compounding.dic \
+limit-multiple-compounding.good \
+limit-multiple-compounding.wrong \
 \
 utf8_nonbmp.test
