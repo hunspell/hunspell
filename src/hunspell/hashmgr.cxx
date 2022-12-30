@@ -851,7 +851,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       result.resize(origsize + len);
       memcpy(result.data() + origsize, w.data(), len * sizeof(short));
 #else
-      result.reserve(origsize + len);	
+      result.reserve(origsize + len);
       for (const w_char wc : w) result.push_back((unsigned short)wc);
 #endif
       break;
@@ -871,7 +871,8 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
   int i;
   switch (flag_mode) {
     case FLAG_LONG:
-      s = ((unsigned short)((unsigned char)f[0]) << 8) | ((unsigned short)((unsigned char)f[1]));
+      if (f.size() >= 2)
+        s = ((unsigned short)((unsigned char)f[0]) << 8) | ((unsigned short)((unsigned char)f[1]));
       break;
     case FLAG_NUM:
       i = atoi(f.c_str());
@@ -890,7 +891,8 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       break;
     }
     default:
-      s = (unsigned char)f[0];
+      if (!f.empty())
+        s = (unsigned char)f[0];
   }
   if (s == 0)
     HUNSPELL_WARNING(stderr, "error: 0 is wrong flag id\n");
