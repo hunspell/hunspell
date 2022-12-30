@@ -2465,7 +2465,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word, i);
+          result.append(word, i, word.size());
           if (complexprefixes && HENTRY_DATA(rv))
             result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
@@ -2522,7 +2522,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word, i);
+          result.append(word, i, word.size());
 
           if (HENTRY_DATA(rv)) {
             if (complexprefixes)
@@ -2573,7 +2573,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
             if (!m.empty()) {
               result.push_back(MSEP_FLD);
               result.append(MORPH_PART);
-              result.append(word, i);
+              result.append(word, i, word.size());
               line_uniq_app(m, MSEP_REC);
               result.append(m);
             }
@@ -2665,7 +2665,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
-            result.append(word, i);
+            result.append(word, i, word.size());
             line_uniq_app(m, MSEP_REC);
             result.push_back(MSEP_FLD);
             result.append(m);
