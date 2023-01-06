@@ -209,7 +209,7 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   // limit of hp->blen
-  if (word->size() > std::numeric_limits<unsigned char>::max()) {
+  if (word->size() > std::numeric_limits<unsigned short>::max()) {
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
@@ -235,8 +235,8 @@ int HashMgr::add_word(const std::string& in_word,
 
   int i = hash(hpw, word->size());
 
-  hp->blen = (unsigned char)word->size();
-  hp->clen = (unsigned char)wcl;
+  hp->blen = (unsigned short)word->size();
+  hp->clen = (unsigned short)wcl;
   hp->alen = (short)al;
   hp->astr = aff;
   hp->next = NULL;
