@@ -149,7 +149,7 @@ class HashMgr {
                                   int captype);
   bool parse_aliasm(const std::string& line, FileMgr* af);
   bool parse_reptable(const std::string& line, FileMgr* af);
-  int remove_forbidden_flag(const std::string& word);
+  void remove_forbidden_flag(const std::string& word);
   void free_table();
   void free_flag(unsigned short* astr, short alen);
 };
