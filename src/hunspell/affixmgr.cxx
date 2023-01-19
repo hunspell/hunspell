@@ -1821,7 +1821,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  scpd == 0 || checkcpdtable[scpd - 1].cond == FLAG_NULL ||
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond, rv->alen)) &&
              !((checkcompoundtriple && scpd == 0 &&
-                !words &&  // test triple letters
+                !words && i < word.size() && // test triple letters
                 (word[i - 1] == word[i]) &&
                 (((i > 1) && (word[i - 1] == word[i - 2])) ||
                  ((word[i - 1] == word[i + 1]))  // may be word[i+1] == '\0'
