@@ -1554,8 +1554,8 @@ void AffixMgr::setcminmax(size_t* cmin, size_t* cmax, const char* word, size_t l
       for ((*cmin)++; *cmin < len && (word[*cmin] & 0xc0) == 0x80; (*cmin)++)
         ;
     }
-    for (*cmax = len, i = 0; (i < (cpdmin - 1)) && *cmax >= 0; i++) {
-      for ((*cmax)--; *cmax >= 0 && (word[*cmax] & 0xc0) == 0x80; (*cmax)--)
+    for (*cmax = len, i = 0; (i < (cpdmin - 1)) && *cmax > 0; i++) {
+      for ((*cmax)--; *cmax > 0 && (word[*cmax] & 0xc0) == 0x80; (*cmax)--)
         ;
     }
   } else {
