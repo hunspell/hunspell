@@ -1244,6 +1244,7 @@ int dialog(TextParser* parser,
           firstletter = c;
           break;
         }
+      // fallthrough
       case '2':
       case '3':
       case '4':
