@@ -517,6 +517,16 @@ int HashMgr::add(const std::string& word) {
   return 0;
 }
 
+int HashMgr::add_with_flags(const std::string& word, const std::string& flags, const std::string& desc) {
+  remove_forbidden_flag(word);
+  int captype;
+  unsigned short *df;
+  int al = decode_flags(&df, flags, NULL);
+  int wcl = get_clen_and_captype(word, &captype);
+  add_word(word, wcl, df, al, &desc, false, captype);
+  return add_hidden_capitalized_word(word, wcl, df, al, &desc, captype);
+}
+
 int HashMgr::add_with_affix(const std::string& word, const std::string& example) {
   // detect captype and modify word length for UTF-8 encoding
   struct hentry* dp = lookup(example.c_str(), example.size());
