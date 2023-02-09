@@ -1320,7 +1320,7 @@ int AffixMgr::cpdwordpair_check(const std::string& word, int wl) {
 
 // forbid compoundings when there are special patterns at word bound
 int AffixMgr::cpdpat_check(const std::string& word,
-                           int pos,
+                           size_t pos,
                            hentry* r1,
                            hentry* r2,
                            const char /*affixed*/) {
@@ -1547,7 +1547,7 @@ short AffixMgr::get_syllable(const std::string& word) {
   return num;
 }
 
-void AffixMgr::setcminmax(int* cmin, int* cmax, const char* word, int len) {
+void AffixMgr::setcminmax(size_t* cmin, size_t* cmax, const char* word, size_t len) {
   if (utf8) {
     int i;
     for (*cmin = 0, i = 0; (i < cpdmin) && *cmin < len; i++) {
@@ -1580,7 +1580,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   hentry *rv = NULL, *rv_first;
   std::string st;
   char ch = '\0', affixed;
-  int cmin, cmax, striple = 0, soldi = 0, oldcmin = 0, oldcmax = 0, oldlen = 0, checkedstriple = 0;
+  size_t cmin, cmax;
+  int striple = 0, soldi = 0, oldcmin = 0, oldcmax = 0, oldlen = 0, checkedstriple = 0;
   hentry** oldwords = words;
   size_t scpd = 0, len = word.size();
 
@@ -1605,7 +1606,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   st.assign(word);
 
-  for (int i = cmin; i < cmax; ++i) {
+  for (size_t i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
@@ -1821,7 +1822,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  scpd == 0 || checkcpdtable[scpd - 1].cond == FLAG_NULL ||
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond, rv->alen)) &&
              !((checkcompoundtriple && scpd == 0 &&
-                !words &&  // test triple letters
+                !words && i < word.size() && // test triple letters
                 (word[i - 1] == word[i]) &&
                 (((i > 1) && (word[i - 1] == word[i - 2])) ||
                  ((word[i - 1] == word[i + 1]))  // may be word[i+1] == '\0'
@@ -2191,7 +2192,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
   hentry* rv = NULL, *rv_first;
   std::string st, presult;
   char ch, affixed = 0;
-  int checked_prefix, cmin, cmax, ok = 0;
+  int checked_prefix, ok = 0;
+  size_t cmin, cmax;
   hentry** oldwords = words;
   size_t len = word.size();
 
@@ -2214,7 +2216,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
   st.assign(word);
 
-  for (int i = cmin; i < cmax; ++i) {
+  for (size_t i = cmin; i < cmax; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; (st[i] & 0xc0) == 0x80; i++)
@@ -2465,7 +2467,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word, i);
+          result.append(word, i, word.size());
           if (complexprefixes && HENTRY_DATA(rv))
             result.append(HENTRY_DATA2(rv));
           if (!HENTRY_FIND(rv, MORPH_STEM)) {
@@ -2522,7 +2524,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           result.append(presult);
           result.push_back(MSEP_FLD);
           result.append(MORPH_PART);
-          result.append(word, i);
+          result.append(word, i, word.size());
 
           if (HENTRY_DATA(rv)) {
             if (complexprefixes)
@@ -2573,7 +2575,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
             if (!m.empty()) {
               result.push_back(MSEP_FLD);
               result.append(MORPH_PART);
-              result.append(word, i);
+              result.append(word, i, word.size());
               line_uniq_app(m, MSEP_REC);
               result.append(m);
             }
@@ -2665,7 +2667,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
           if (!m.empty()) {
             result.push_back(MSEP_FLD);
             result.append(MORPH_PART);
-            result.append(word, i);
+            result.append(word, i, word.size());
             line_uniq_app(m, MSEP_REC);
             result.push_back(MSEP_FLD);
             result.append(m);

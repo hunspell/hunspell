@@ -2,8 +2,8 @@
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,7,1,0
-PRODUCTVERSION 1,7,1,0
+FILEVERSION 1,7,2,0
+PRODUCTVERSION 1,7,2,0
 FILEFLAGSMASK 0x17L
 FILEFLAGS 0
 FILEOS VOS_NT_WINDOWS32
@@ -21,12 +21,12 @@ BEGIN
             VALUE "Comments", "Hunspell (http://hunspell.github.io/) by László Németh"
             VALUE "CompanyName", "http://hunspell.github.io/"
             VALUE "FileDescription", "libhunspell"
-            VALUE "FileVersion", "1.7.1"
+            VALUE "FileVersion", "1.7.2"
             VALUE "InternalName", "libhunspell"
             VALUE "LegalCopyright", "Copyright (c) 2007-2022"
             VALUE "OriginalFilename", "libhunspell.dll"
             VALUE "ProductName", "Hunspell Dynamic Link Library"
-            VALUE "ProductVersion", "1.7.1"
+            VALUE "ProductVersion", "1.7.2"
 		END
 	END
 END

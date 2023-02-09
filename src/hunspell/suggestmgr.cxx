@@ -448,7 +448,7 @@ int SuggestMgr::map_related(const std::string& word,
     return wlst.size();
   }
 
-  if (depth > 16384) {
+  if (depth > 0x3F00) {
     *timer = 0;
     return wlst.size();
   }
