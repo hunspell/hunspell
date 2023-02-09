@@ -209,7 +209,7 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   // limit of hp->blen
-  if (word->size() > std::numeric_limits<unsigned char>::max()) {
+  if (word->size() > std::numeric_limits<unsigned short>::max()) {
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
@@ -235,8 +235,8 @@ int HashMgr::add_word(const std::string& in_word,
 
   int i = hash(hpw, word->size());
 
-  hp->blen = (unsigned char)word->size();
-  hp->clen = (unsigned char)wcl;
+  hp->blen = (unsigned short)word->size();
+  hp->clen = (unsigned short)wcl;
   hp->alen = (short)al;
   hp->astr = aff;
   hp->next = NULL;
@@ -851,7 +851,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       result.resize(origsize + len);
       memcpy(result.data() + origsize, w.data(), len * sizeof(short));
 #else
-      result.reserve(origsize + len);	
+      result.reserve(origsize + len);
       for (const w_char wc : w) result.push_back((unsigned short)wc);
 #endif
       break;
@@ -871,7 +871,8 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
   int i;
   switch (flag_mode) {
     case FLAG_LONG:
-      s = ((unsigned short)((unsigned char)f[0]) << 8) | ((unsigned short)((unsigned char)f[1]));
+      if (f.size() >= 2)
+        s = ((unsigned short)((unsigned char)f[0]) << 8) | ((unsigned short)((unsigned char)f[1]));
       break;
     case FLAG_NUM:
       i = atoi(f.c_str());
@@ -890,7 +891,8 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       break;
     }
     default:
-      s = (unsigned char)f[0];
+      if (!f.empty())
+        s = (unsigned char)f[0];
   }
   if (s == 0)
     HUNSPELL_WARNING(stderr, "error: 0 is wrong flag id\n");
