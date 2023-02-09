@@ -365,7 +365,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // we always suggest them, in despite of nosplitsugs, and
     // drop compound word and other suggestions)
     if (!cpdsuggest || (!nosplitsugs && slst.size() < oldSug + maxcpdsugs)) {
-      good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion, info);
+      good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion);
     }
     if (clock() > timelimit + TIMELIMIT_SUGGESTION)
       return good_suggestion;
@@ -821,7 +821,7 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
 bool SuggestMgr::twowords(std::vector<std::string>& wlst,
                          const std::string& word,
                          int cpdsuggest,
-                         bool good, int& info) {
+                         bool good) {
   int c2, forbidden = 0, cwrd, wl = word.size();
   if (wl < 3)
     return false;

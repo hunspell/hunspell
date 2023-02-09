@@ -689,7 +689,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
 // algorithm borrowed
 int HashMgr::hash(const char* word, size_t len) const {
   unsigned long hv = 0;
-  int i = 0;
+  size_t i = 0;
   while (i < 4 && i < len)
     hv = (hv << 8) | word[i++];
   while (i < len) {
