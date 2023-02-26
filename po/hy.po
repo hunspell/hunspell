@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:09+0000\n"
-"Last-Translator: Davit Mayilyan <davit.mayilyan@protonmail.ch>\n"
+"PO-Revision-Date: 2023-02-27 20:35+0000\n"
+"Last-Translator: Narek Haytyan <narek@haytyan.com>\n"
 "Language-Team: Armenian <https://hosted.weblate.org/projects/hunspell/"
 "translations/hy/>\n"
 "Language: hy\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "սխալ - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "սխալ - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "սխալ - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Ժամանակավոր պանակի ստեղծման սխալ"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Ֆայլը բացելու սխալ"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
@@ -55,7 +55,7 @@ msgstr "Չկարողացա բացել %s\n"
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "սխալ - HOME փոփոխականը բացակայում է\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
@@ -64,11 +64,11 @@ msgstr "Տող %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "ԱՐԳԵԼՎԱԾ Է"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Ուղղագրական սխա՞լ"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -76,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tՖայլ: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -85,6 +87,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[ԲԱՑԱՏ] Փ)ոխել Ը)նդունել Ն)երառել փոՔ)րատ. Ա)րմատ Դ)ադարեցնել Ե)լք կամ ? "
+"օգնության համար\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -94,6 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Ամեն անգամ, երբ հանդիպում է բառ, որը չկա բառարանում,\n"
+"այն գրվում է էկրանի առաջին տողում: Եթե բառարանը\n"
+"պարունակում է նմանօրինակ բառեր, դրանք թվարկվում են`\n"
+"կողքին թվերով: Դուք ունեք բառն ամբողջությամբ փոխարինելու\n"
+"կամ առաջարկված տարբերակներից որևէ մեկն ընտրելու հնարավորություն:\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -107,67 +117,76 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "Փ\tՓոխարինել սխալ բառն ամբողջությամբ:\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Բացատ\tԸնդունել բառը միայն այս անգամ:\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "Ը\tԸնդունել բառը մինչ սեանսի ավարտը:\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "Ն\tԸնդունել բառն ու այն ներառել անձնական բառարանում:\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
+"Ք\tԸնդունել բառն ու ներառել դրա փոքրատառերով տարբերակը անձնական բառարանում:\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"Ա\tՀարցնել բառի արմատն ու օրինակը և դրանք ներառել անձնական բառարանում:\n"
+"\tԱրմատը կընդունվի նաև օրինակ բառի կցորդներով:\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tՓոխարինել առաջարկված բառերից որևէ մեկով:\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"Ե\tԳրանցել ֆայլի մնացած մասը, անտեսելով ուղղագրական սխալները, ու անցնել "
+"հաջորդ ֆայլին:\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
+"Դ\tԱնմիջապես դադարեցնել: Պահանջում է հաստատում: Ֆայլը թողնում է առանց "
+"փոփոխության:\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tԴադարեցնել ծրագիրը: Վերսկսել fg հրահանգով:\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tՑուցադրել այս օգնության տեքստը:\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Շարունակելու համար սեղմեք բացատ -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "փ"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Փոխարինել. "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -177,27 +196,27 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "ք"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "ն"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Չստացվեց թարմացնել անձնական բառարանը:"
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "ը"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "ա"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
