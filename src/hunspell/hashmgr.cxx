@@ -106,7 +106,7 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-void HashMgr::free_flag(unsigned short* astr, short alen) {
+void HashMgr::free_flag(unsigned short* astr, int alen) {
   if (astr && (aliasf.empty() || TESTAFF(astr, ONLYUPCASEFLAG, alen)))
     delete[] astr;
 }
