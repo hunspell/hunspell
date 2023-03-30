@@ -1973,7 +1973,7 @@ int SuggestMgr::ngram(int n,
                       const std::vector<w_char>& su1,
                       const std::vector<w_char>& su2,
                       int opt) {
-  int nscore = 0, ns, test = 0, l1 = su1.size(), l2 = su2.size();
+  int nscore = 0, ns, l1 = su1.size(), l2 = su2.size();
 
   if (l2 == 0)
     return 0;
@@ -1993,7 +1993,6 @@ int SuggestMgr::ngram(int n,
       }
       if (k != j && opt & NGRAM_WEIGHTED) {
         ns--;
-        test++;
         if (i == 0 || i == l1 - j)
           ns--;  // side weight
       }
@@ -2017,7 +2016,7 @@ int SuggestMgr::ngram(int n,
                       const std::string& s1,
                       const std::string& s2,
                       int opt) {
-  int nscore = 0, ns, l1, l2 = s2.size(), test = 0;
+  int nscore = 0, ns, l1, l2 = s2.size();
   
   if (l2 == 0)
     return 0;
@@ -2030,7 +2029,6 @@ int SuggestMgr::ngram(int n,
         ns++;
       } else if (opt & NGRAM_WEIGHTED) {
         ns--;
-        test++;
         if (i == 0 || i == l1 - j)
           ns--;  // side weight
       }
