@@ -1110,6 +1110,35 @@ int SuggestMgr::movechar_utf(std::vector<std::string>& wlst,
   return wlst.size();
 }
 
+namespace
+{
+  class ngsuggest_guard
+  {
+    bool m_nonbmp;
+    cs_info* m_origconv;
+    int* m_utf8;
+    cs_info** m_csconv;
+
+    public:
+
+    ngsuggest_guard(bool nonbmp, cs_info* origconv, int* utf8, cs_info** csconv)
+      : m_nonbmp(nonbmp)
+      , m_origconv(origconv)
+      , m_utf8(utf8)
+      , m_csconv(csconv)
+    {
+    }
+
+    ~ngsuggest_guard()
+    {
+      if (m_nonbmp) {
+        *m_csconv = m_origconv;
+        *m_utf8 = 1;
+      }
+    }
+  };
+}
+
 // generate a set of suggestions for very poorly spelled words
 void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
                           const char* w,
@@ -1164,6 +1193,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     nonbmp = 1;
     low = 0;
   }
+  ngsuggest_guard restore_state(nonbmp, origconv, &utf8, &csconv);
 
   struct hentry* hp = NULL;
   int col = -1;
@@ -1638,11 +1668,6 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         }
       }
     }
-
-  if (nonbmp) {
-    csconv = origconv;
-    utf8 = 1;
-  }
 }
 
 // see if a candidate suggestion is spelled correctly
