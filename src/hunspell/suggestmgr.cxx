@@ -1158,6 +1158,8 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     rootsphon[i] = NULL;
     scoresphon[i] = -100 * i;
   }
+  bool has_roots = false;
+  bool has_rootsphon = false;
   lp = MAX_ROOTS - 1;
   lpphon = MAX_ROOTS - 1;
   int low = NGRAM_LOWERING;
@@ -1324,6 +1326,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       if (sc > scores[lp]) {
         scores[lp] = sc;
         roots[lp] = hp;
+        has_roots = true;
         lval = sc;
         for (int j = 0; j < MAX_ROOTS; j++)
           if (scores[j] < lval) {
@@ -1335,6 +1338,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       if (scphon > scoresphon[lpphon]) {
         scoresphon[lpphon] = scphon;
         rootsphon[lpphon] = HENTRY_WORD(hp);
+        has_rootsphon = true;
         lval = scphon;
         for (int j = 0; j < MAX_ROOTS; j++)
           if (scoresphon[j] < lval) {
@@ -1343,6 +1347,12 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
           }
       }
     }
+  }
+
+  if (!has_roots && !has_rootsphon) {
+    // with no roots there will be no guesses and no point running
+    // ngram
+    return;
   }
 
   // find minimum threshold for a passable suggestion
