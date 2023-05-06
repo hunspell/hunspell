@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-05-06 21:01+0000\n"
+"PO-Revision-Date: 2023-05-06 22:28+0000\n"
 "Last-Translator: M Hatam <mh.hatami@gmail.com>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/hunspell/"
 "translations/fa/>\n"
@@ -88,7 +88,7 @@ msgid ""
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[فاصله] ت)غییر ق)بول د)رج ک)وچک ر)یشه ت)رک خ)روج یا ؟ برای راهنمایی\n"
+"[فاصله] ج)ایگزین ق)بول د)رج ک)وچک ر)یشه ت)رک خ)روج یا ؟ برای راهنمایی\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -116,7 +116,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "ت\tکلمه غلط را کلاً تغییر بده.\n"
+msgstr "ج\tکلمه غلط کلاً جایگزین شود.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
@@ -144,41 +144,45 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tبا یکی از کلمات پیشنهادی جایگزین شود.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"خ\tمابقی این پرونده نوشته شود، اغلاط چشم‌پوشی شوند، و پرونده بعدی را شروع کن."
+"\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "ت\tترک فوری. تأییدیه درخواست شود. پرونده تغییر هیچ تغییری نکند.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tبرنامه تعلیق شود. راه‌اندازی مجدد با دستور fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "؟\tنمایش این صفحه راهنما.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- برای ادامه روی فاصله بزنید -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "ج"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "جایگزین شود با: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -188,75 +192,75 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "ک"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "د"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "قاموس خصوصی نمی‌تواند بروزرسانی شود."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "ق"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "ر"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "کلمه جدید (ریشه): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "کلمه الگو (مانند کلمه داخل قاموس): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "کلمه الگو باید در قاموس وجود داشته باشد. هر کلیدی را فشار دهید!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "خ"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "ت"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "آیا برای از بین بردن تمام تغییراتت مطمئن هستی؟ "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "ب"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "پرونده موقت نمی‌تواند ساخته شود"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "پرونده خروجی نمی‌تواند باز شود"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "طریقه استفاده: ‭hunspell [OPTION]... [FILE]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
