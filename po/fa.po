@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-05-06 22:28+0000\n"
+"PO-Revision-Date: 2023-05-08 00:52+0000\n"
 "Last-Translator: M Hatam <mh.hatami@gmail.com>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/hunspell/"
 "translations/fa/>\n"
@@ -267,108 +267,112 @@ msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"املای هر پرونده بررسی شود. بدون پرونده، ورودی عادی بررسی گردد.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr ""
+msgstr "  1-\t\tفقط اولین ستون از سطور بررسی شوند (حائل = جدولی)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  a-\t\tواسط زنجیره Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  ‪--check-url\tبررسی نشانی‌های شبکه‌جهانی، رایانامه، و مسیر پوشه‌ها\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  ‎--check-apostrophe‪\tبررسی نویسه‌نگاشتی آپاستروف برحسب یونیکد\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  ‎-d d[,d2,...]\tاز قاموس‌های d (d2 غیره) استفاده شود\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  ‎-D\t\tنمایش قاموس‌های موجود\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  ‎-G\t\tفقط کلمات یا سطور صحیح چاپ شوند\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  ‎-h, --help‎\tنمایش این راهنما و خروج\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  ‎-H\t\tقالب پرونده ورودی متن زنگامی (اچ‌تی‌ام‌ال)\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  ‎-i enc\tرمزگذاری (اِینکُدِینگِ) ورودی\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  ‪-l\t\tچاپ کلمات غلط\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  ‎-L\t\tچاپ سطور دارای کلمات غلط\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  ‎-m \t\tکلمات متن ورودی تحلیل شوند\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  ‎-n\t\tقالب پرونده ورودی nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  ‎-O\t\tقالب پرونده ورودی OpenDocument (ODF or Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  ‎-p dict\tتنظیم قاموس شخصی\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  ‎-r\t\tهشدار غلط محتمل (کلمات نادر)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  ‎-P password\tافزودن گذرواژه برای قاموس‌های رمزگذاری‌شده\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  ‎-s \t\tریشه کلمات متن ورودی بیاب\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  ‎-S \t\tکلمات دارای پسوند در متن ورودی\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  ‎-t\t\tقالب پرونده ورودی TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  ‎-v, --version\tچاپ شماره نسخه\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  ‎-vv\t\tچاپ شماره نسخه سازگار آی‌اِسپل (Ispell)\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
-msgstr ""
+msgstr "  ‎-w\t\tچاپ کلمات (= سطور) غلط از یک کلمه/سطر ورودی.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  ‎-X\t\tقالب پرونده ایکس‌ام‌ال (XML)\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -389,10 +393,25 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"مثال:‎ hunspell -d en_US file.txt    # املای تعاملی\n"
+"         hunspell -i utf-8 file.txt    # بررسی پرونده UTF-8\n"
+"         hunspell -l *.odt             # چاپ کلمات غلط پرونده‌هایODF\n"
+"\n"
+"         # اصلاح سریع اسناد ODF از طریق ساخت قاموس شخصی\n"
+"\n"
+"         # ١ یک فهرست مختصر از کلمات غلط و ناشناخته بسازید:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # ٢ کلمات غلط داخل پرونده را بوسیله یک برنامه ویراستاری حذف کنید.\n"
+"         # ٣ از این قاموس خصوصی برای اصلاح کلمات حذف شده استفاده کنید:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "گزارش اشکالات: ‎http://hunspell.github.io\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -403,6 +422,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"حق تألیف ١٣٨٢-١٣٩٢ لازلو نيميث (László Németh). پروانه: MPL/GPL/LGPL.\n"
+"\n"
+"مبنی بر کتابخانه مای‌اسپل (Myspell) موسسه OpenOffice.org.\n"
+"حق تألیف مای‌اسپل كيفن هندريكس (Kevin Hendricks)، ۱۳۷۹ -١٣٨٠، پروانه: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -410,6 +435,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"این یک برنامه مجانی است؛ برای شرایط نسخه‌برداری به متن برنامه نظر کنید. \n"
+"هیچ ضمانت، نه حتی برای استفاده تجاری یا مناسب بودن برای یک هدف \n"
+"مشخص تا حدودی که قانون اجازه میدهد وجود ندارد.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -417,10 +445,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"مسیر جستجو:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "قاموس‌های در دسترس (برای گزینه ‎-d مسیر اجباری نیست):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -429,17 +459,21 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"قاموس بارگذاری‌شده:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "خطاء- ‎%s تجاوز از محدودیت قاموس.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"برای قاموس نامبرده، پرونده‌ها یا اضافات آن نمی‌توانند باز شوند \"‎%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "هانسپل بدون واسط کاربر «ان‌کرسز» ترجمه (کامپایل) شده است.\n"
