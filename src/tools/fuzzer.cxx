@@ -66,6 +66,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
 extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
 {
+    if (size > 262144)
+        return -1;
     std::string word(data, size);
     for (auto& dict : dictionaries)
     {
