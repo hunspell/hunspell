@@ -242,8 +242,11 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     if ((slst.size() < maxSug) && (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       size_t i = slst.size();
       replchars(slst, word, cpdsuggest, info);
-      if (slst.size() > i)
+      if (slst.size() > i) {
         good_suggestion = true;
+        if (info & SPELL_BEST_SUG)
+          return true;
+      }
     }
     if (clock() > timelimit + TIMELIMIT_SUGGESTION)
       return good_suggestion;
@@ -365,7 +368,10 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
     // we always suggest them, in despite of nosplitsugs, and
     // drop compound word and other suggestions)
     if (!cpdsuggest || (!nosplitsugs && slst.size() < oldSug + maxcpdsugs)) {
-      good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion);
+      good_suggestion = twowords(slst, word, cpdsuggest, good_suggestion, info);
+
+      if (info & SPELL_BEST_SUG)
+        return true;
     }
     if (clock() > timelimit + TIMELIMIT_SUGGESTION)
       return good_suggestion;
@@ -506,15 +512,23 @@ int SuggestMgr::replchars(std::vector<std::string>& wlst,
       candidate.assign(word, 0, r);
       candidate.append(entry.outstrings[type]);
       candidate.append(word, r + entry.pattern.size(), std::string::npos);
-      testsug(wlst, candidate, cpdsuggest, NULL, NULL, info);
-      // check REP suggestions with space
       size_t sp = candidate.find(' ');
+      size_t oldns = wlst.size();
+      testsug(wlst, candidate, cpdsuggest, NULL, NULL, info);
+      if (oldns < wlst.size()) {
+        int patlen = entry.pattern.size();
+        int replen = entry.outstrings[type].size();
+        // REP suggestions are the best, don't search other type of suggestions
+        info |= SPELL_BEST_SUG;
+      }
+
+      // check REP suggestions with space
       if (sp != std::string::npos) {
         size_t prev = 0;
         while (sp != std::string::npos) {
           std::string prev_chunk = candidate.substr(prev, sp - prev);
           if (checkword(prev_chunk, 0, NULL, NULL)) {
-            size_t oldns = wlst.size();
+            oldns = wlst.size();
             std::string post_chunk = candidate.substr(sp + 1);
             testsug(wlst, post_chunk, cpdsuggest, NULL, NULL, info);
             if (oldns < wlst.size()) {
@@ -821,7 +835,7 @@ int SuggestMgr::forgotchar_utf(std::vector<std::string>& wlst,
 bool SuggestMgr::twowords(std::vector<std::string>& wlst,
                          const std::string& word,
                          int cpdsuggest,
-                         bool good) {
+                         bool good, int& info) {
   int c2, forbidden = 0, cwrd, wl = word.size();
   if (wl < 3)
     return false;
@@ -854,11 +868,15 @@ bool SuggestMgr::twowords(std::vector<std::string>& wlst,
     // alot -> a lot, alto, slot...
     *p = ' ';
     if (!cpdsuggest && checkword(candidate, cpdsuggest, NULL, NULL)) {
+      // best solution
+      info |= SPELL_BEST_SUG;
+
       // remove not word pair suggestions
       if (!good) {
         good = true;
         wlst.clear();
       }
+
       wlst.insert(wlst.begin(), candidate);
     }
 
@@ -867,6 +885,9 @@ bool SuggestMgr::twowords(std::vector<std::string>& wlst,
       *p = '-';
 
       if (!cpdsuggest && checkword(candidate, cpdsuggest, NULL, NULL)) {
+        // best solution
+        info |= SPELL_BEST_SUG;
+
         // remove not word pair suggestions
         if (!good) {
           good = true;
