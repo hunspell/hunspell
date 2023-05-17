@@ -516,8 +516,6 @@ int SuggestMgr::replchars(std::vector<std::string>& wlst,
       size_t oldns = wlst.size();
       testsug(wlst, candidate, cpdsuggest, NULL, NULL, info);
       if (oldns < wlst.size()) {
-        int patlen = entry.pattern.size();
-        int replen = entry.outstrings[type].size();
         // REP suggestions are the best, don't search other type of suggestions
         info |= SPELL_BEST_SUG;
       }
