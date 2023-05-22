@@ -75,12 +75,14 @@
 #include <ctime>
 
 #include "suggestmgr.hxx"
+#include "hunspell.hxx"
 #include "htypes.hxx"
 #include "csutil.hxx"
 
 const w_char W_VLINE = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4
+#define MAXWORDUTF8LEN (MAXWORDLEN * 3)
 
 SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr) {
   // register affix manager and check in string of chars to
@@ -1215,6 +1217,11 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     low = 0;
   }
   ngsuggest_guard restore_state(nonbmp, origconv, &utf8, &csconv);
+  int max_word_len = (utf8) ? MAXWORDUTF8LEN : MAXWORDLEN;
+  // ofz#59067 a replist entry can generate a very long word, abandon
+  // ngram if that odd-edge case arises
+  if (n > max_word_len * 4)
+      return;
 
   struct hentry* hp = NULL;
   int col = -1;
