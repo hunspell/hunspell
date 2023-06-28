@@ -770,7 +770,7 @@ int AffixMgr::build_pfxtree(PfxEntry* pfxptr) {
   pFlag[flg] = ep;
 
   // handle the special case of null affix string
-  if (strlen(key) == 0) {
+  if (*key == '\0') {
     // always inset them at head of list at element 0
     ptr = pStart[0];
     ep->setNext(ptr);
@@ -836,7 +836,7 @@ int AffixMgr::build_sfxtree(SfxEntry* sfxptr) {
   // next index by affix string
 
   // handle the special case of null affix string
-  if (strlen(key) == 0) {
+  if (*key == '\0') {
     // always inset them at head of list at element 0
     ptr = sStart[0];
     ep->setNext(ptr);
