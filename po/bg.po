@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-06-30 20:13+0000\n"
+"PO-Revision-Date: 2023-07-02 05:52+0000\n"
 "Last-Translator: 109247019824 <stoyan@gmx.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/hunspell/"
 "translations/bg/>\n"
@@ -96,11 +96,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"При намиране на дума, която не е включена в речника.\n"
+"При намиране на дума, която не е включена в речника\n"
 "тя се изписва на първия ред на екрана.  Ако речникът\n"
-"съдържа подобни думи, те се изписват с номер до\n"
-"всяка от тях.  Имате възможност да замените\n"
-"думата изцяло или да изберете една от предложените.\n"
+"съдържа подобни думи, до всяка от тях се добавя число.\n"
+"Имате възможност да замените думата изцяло или да\n"
+"изберете една от предложените.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -118,7 +118,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Интервал\tЕднократно приемане на думата.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tЗаменяне с една от предложените думи.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -165,7 +165,7 @@ msgid ""
 "-- Type space to continue -- \n"
 msgstr ""
 "\n"
-"-- Натиснете интервал, за да продължите -- \n"
+"-- За да продължите натиснете Интервал -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -176,7 +176,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Заменяне с/ъс: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -195,7 +195,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr "Грешка при обновяване личния речник."
+msgstr "Грешка при обновяване на личния речник."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -242,7 +242,7 @@ msgstr "Сигурни ли сте, че желаете да се откажет
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "д"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
@@ -392,7 +392,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Съобщаване на дефекти: https://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -435,12 +435,12 @@ msgstr ""
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "грешка - %s надхвърля ограничението за речници.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "Файлът на речника или на афиксите на „%s“ не може да бъде отворен.\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
