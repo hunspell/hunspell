@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-07-03 14:33+0000\n"
+"PO-Revision-Date: 2023-07-04 07:14+0000\n"
 "Last-Translator: Pierre Wani Alan Morvan <per.morvan.bzh29@gmail.com>\n"
 "Language-Team: Breton <https://hosted.weblate.org/projects/hunspell/"
 "translations/br/>\n"
@@ -110,22 +110,25 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"An urzhiadoù a zo :\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tRamplasiñ ar ger skrivet fall en e bezh.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Space\tAsantiñ ar ger ar wech-mañ hepken.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAsantiñ ar ger evit peurrest an dalc'h-mañ.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tAsantiñ ar ger, ha kas anezhañ d'ar geriadur personel.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
@@ -169,11 +172,11 @@ msgstr ""
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Erlec'hiañ gant : "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -183,35 +186,35 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "b"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "e"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "N'heller ket hizivaat ar geriadur personel."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "g"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Ger nevez (gwrizienn) : "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Ger patrom (ur ger heñvel er geriadur) "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
@@ -222,36 +225,36 @@ msgstr ""
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "s"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "k"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Ha sur oc'h da gaout c'hoant da zilezel an holl cheñchamantoù-se ? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "N'heller ket krouiñ ur restr padennek"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "N'heller ket digeriñ ur restr ezvont"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Implij : hunspell [DIBARZHIOÙ]... [RESTR]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
