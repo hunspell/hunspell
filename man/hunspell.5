@@ -428,6 +428,11 @@ flags. (Use these flags on different entries for words).
 .IP "COMPOUNDMIN num"
 Minimum length of words used for compounding.
 Default value is 3 letters.
+
+.IP "MAXCPDSUGS num"
+Max Compound Suggestions. Use 0 to disable suggesting from compounds.
+Default value is unlimited.
+
 .IP "COMPOUNDFLAG flag"
 Words signed with COMPOUNDFLAG may be in compound words (except when
 word shorter than COMPOUNDMIN). Affixes with COMPOUNDFLAG also permits
@@ -573,6 +578,11 @@ example in the tests directory of the Hunspell distribution.
 .IP "ICONV number_of_ICONV_definitions"
 .IP "ICONV pattern pattern2"
 Define input conversion table.
+Use underscore '_' to represent the last character of the string.
+For e.g. if you need to change <200D> to <FFF0> only if it appears at the end of the word, then ...
+
+ICONV <200D>_ <FFF0>
+
 Note: useful to convert one type of quote to another one, or change ligature.
 .IP "OCONV number_of_OCONV_definitions"
 .IP "OCONV pattern pattern2"
