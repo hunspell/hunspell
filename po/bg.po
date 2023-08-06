@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-07-02 05:52+0000\n"
+"PO-Revision-Date: 2023-08-07 12:05+0000\n"
 "Last-Translator: 109247019824 <stoyan@gmx.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/hunspell/"
 "translations/bg/>\n"
@@ -87,6 +87,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[ИНТЕРВАЛ] З)аменяне П)риемане Д)обавяне Р)егистър О)снова К)рай И)зход или "
+"? за помощ\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -114,7 +117,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "З\tЗаменя изцяло сгрешената дума.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
@@ -122,21 +125,23 @@ msgstr "Интервал\tЕднократно приемане на думат�
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "П\tПриема думата до края на сесията.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "Д\tПриема думата и я добавя в личния речник.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "Р Приема думата и добавя версия с малки букви в личния речник.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"О\tПита за основа и образец на дума и ги запазва в личния речник.\n"
+"\tОсновата ще бъде приета с афиксите на образеца на думата.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
@@ -145,15 +150,17 @@ msgstr "0-n\tЗаменяне с една от предложените думи
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
-msgstr ""
+msgstr "К\tИзлиза незабавно. Изисква потвърждение. Оставя файла непроменен.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
+"И\tЗаписва останалата част от файла, пренебрегва правописните грешки, отваря "
+"следващия файл.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z Спира изпълнението на програмата. Рестартира с командата fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
@@ -172,7 +179,7 @@ msgstr ""
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "з"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
@@ -186,11 +193,11 @@ msgstr "Заменяне с/ъс: "
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "р"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "д"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
@@ -199,14 +206,14 @@ msgstr "Грешка при обновяване на личния речник.
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "п"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "о"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
@@ -225,14 +232,14 @@ msgstr "Думата обрсзец трябва да присъства в ре
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "и"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "к"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
@@ -272,7 +279,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tпоточен интерфейс на Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
@@ -318,57 +325,59 @@ msgstr "  -L\t\tотпечатване на редовете с грешно и�
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tанализира думите от входния текст\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tвходен файл на nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tвходен файл на OpenDocument (ODF или Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p реч\tзадава потребителски РЕЧник\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tпредупреждава евентуални грешки (редки думи)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P password\tзадава парола за шифроване на речниците\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\tпривежда думите от входния текст в основна форма\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tдобавяне на наставки към думите от входния текст\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tвходен файл на TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tизвежда версията\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tизвежда версията, съвместима с Ispel\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
-msgstr ""
+msgstr "  -w\t\tизвежда думите с грешки (вход - една дума на ред).\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tвходен файл на XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -389,6 +398,26 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Пример: hunspell -d en_US file.txt    # интерактивна проверка на правописа\n"
+"        hunspell -i utf-8 file.txt    # проверка на файл с кодиране на "
+"знаците UTF-8\n"
+"        hunspell -l *.odt             # извеждане на грешно написани думи "
+"във файлове на ODF\n"
+"\n"
+"        # Бърза поправка на документи на ODF чрез създаване на личен речник\n"
+"\n"
+"        # 1. Създаване на намален списък от грешно написани и непознати думи:"
+"\n"
+"\n"
+"        hunspell -l *.odt | sort | uniq > words\n"
+"\n"
+"        # 2. Изтриване на грешно написаните думи от файла с помощта на "
+"текстов редактор.\n"
+"        # 3. Използване на този личен речник, за да оправите изтритите думи:"
+"\n"
+"\n"
+"        hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
@@ -403,6 +432,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Авторско право (C) 2002-2014 Ласло Немет. Лиценз: MPL/GPL/LGPL.\n"
+"\n"
+"Основано на библиотеката Myspell на OpenOffice.org.\n"
+"Авторско право на Myspell (C) Кевин Хендрикс, 2001-2002. Лиценз: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -410,6 +445,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Това е безплатен софтуер; вижте източника за условията за копиране.\n"
+"Няма гаранция; дори за търговска използваемост или пригодност за\n"
+"конкретна цел, в рамките на разрешеното от закона.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -422,7 +460,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "ДОСТЪПНИ РЕЧНИЦИ (за -d пътят не е задължителен):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -431,6 +469,9 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"ЗАРЕДЕН РЕЧНИК:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
