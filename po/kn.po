@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-08-18 14:55+0000\n"
+"Last-Translator: ಮಯೂರ ವರ್ಮ <mayura.verma@gmail.com>\n"
+"Language-Team: Kannada <https://hosted.weblate.org/projects/hunspell/"
+"translations/kn/>\n"
 "Language: kn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.0-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -57,15 +60,15 @@ msgstr ""
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "ಸಾಲು %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "ನಿಷೇಧಿಸಲಾಗಿದೆ!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "ಕಾಗುಣಿತ ತಪ್ಪಾ?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -98,6 +101,9 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"ಕಮಂಡ್‌ಗಳು:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
@@ -109,11 +115,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tಉಳಿದ ಸೆಷನ್‌ನಲ್ಲಿ ಈ ಪದವನ್ನು ಅಂಗೀಕರಿಸು.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tಈ ಪದವನ್ನು ಅಂಗೀಕರಿ, ಹಾಗು ನಿಮ್ಮ ಖಾಸಗಿ ನಿಘಂಟಿನಲ್ಲಿ ಸೇರಿಸಿ.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
@@ -127,7 +133,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tಸೂಚಿಸಿದ ಪದಗಳಲ್ಲಿ ಒಂದನ್ನು ಬದಲಾಯಿಸು.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
@@ -144,13 +150,15 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tಈ ಸಹಾಯ ಪರದೆಯನ್ನು ತೋರಿಸು.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- ಮುಂದುವರೆಯಲು ಖಾಲಿ ಜಾಗವನ್ನು (ಅಂತರವನ್ನು) ಟೈಪ್ ಮಾಡಿ -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -161,7 +169,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "ಇದರಿಂದ ಬದಲಿಸು: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -180,7 +188,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "ಖಾಸಗಿ ನಿಘಂಟನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -221,7 +229,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ್ನು ತಿರಸ್ಕರಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -269,15 +277,15 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tಲಭ್ಯವಿರುವ ನಿಘಂಟುಗಳನ್ನು ತೋರಿಸು\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tಸರಿಯಾದ ಪದಗಳು ಅಥವಾ ಸಾಲುಗಳನ್ನು ಮಾತ್ರ ಮುದ್ರಿಸು\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tಈ ಸಹಾಯವನ್ನು ಪ್ರದರ್ಶಿಸು ಮತ್ತು ನಿರ್ಗಮಿಸು\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
