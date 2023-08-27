@@ -4024,6 +4024,7 @@ bool AffixMgr::parse_checkcpdtable(const std::string& line, FileMgr* af) {
           if (nl.compare(start_piece - nl.begin(), 20, "CHECKCOMPOUNDPATTERN", 20) != 0) {
             HUNSPELL_WARNING(stderr, "error: line %d: table is corrupt\n",
                              af->getlinenum());
+            checkcpdtable.clear();
             return false;
           }
           break;
