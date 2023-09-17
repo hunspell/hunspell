@@ -10,11 +10,13 @@ case $1 in
 -s) fx=1; shift;;
 -p) fx=2; shift;;
 esac
+stems=( $( grep -E "^$3(/|$)" $2 ) )
+[ ${#stems[@]} -eq 0 ] && return
 test -h /tmp/wordforms.aff && rm /tmp/wordforms.aff
 ln -s "$PWD/$1" /tmp/wordforms.aff
-# prepared dic only with the query word
-echo 1 >/tmp/wordforms.dic
-grep "^$3/" $2 >>/tmp/wordforms.dic
+# prepared dic only with the stems found
+echo "${#stems[@]}" >/tmp/wordforms.dic
+printf "%s\n" "${stems[@]}" >>/tmp/wordforms.dic
 echo $3 | awk -v "fx=$fx" '
 fx!=2 && FILENAME!="-" && /^SFX/ && NF > 4{split($4,a,"/");clen=($3=="0") ? 0 : length($3);sfx[a[1],clen]=a[1];sfxc[a[1],clen]=clen;next}
 fx!=1 && FILENAME!="-" && /^PFX/ && NF > 4{split($4,a,"/");clen=($3=="0") ? 0 : length($3);pfx[a[1],clen]=a[1];pfxc[a[1],clen]=clen;next}
