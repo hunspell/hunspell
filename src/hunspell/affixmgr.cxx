@@ -1603,7 +1603,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
       timelimit_exceeded = false;
   }
   else if (std::chrono::duration_cast<std::chrono::milliseconds>(clock_now - clock_time_start).count()
-            > TIMELIMIT * CLOCKS_PER_SEC * 1000)
+            > static_cast<double>(TIMELIMIT) * CLOCKS_PER_SEC * 1000)
       timelimit_exceeded = true;
 
   setcminmax(&cmin, &cmax, word.c_str(), len);
@@ -2232,7 +2232,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
       timelimit_exceeded = false;
   }
   else if (std::chrono::duration_cast<std::chrono::milliseconds>(clock_now - clock_time_start).count()
-            > TIMELIMIT * CLOCKS_PER_SEC * 1000)
+            > static_cast<double>(TIMELIMIT) * CLOCKS_PER_SEC * 1000)
       timelimit_exceeded = true;
 
   setcminmax(&cmin, &cmax, word.c_str(), len);
