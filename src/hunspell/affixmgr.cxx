@@ -75,6 +75,7 @@
 #include <ctime>
 
 #include <algorithm>
+#include <chrono>
 #include <memory>
 #include <limits>
 #include <string>
@@ -1590,17 +1591,20 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   // add a time limit to handle possible
   // combinatorical explosion of the overlapping words
 
-  HUNSPELL_THREAD_LOCAL clock_t timelimit;
+  HUNSPELL_THREAD_LOCAL std::chrono::steady_clock::time_point clock_time_start;
+  HUNSPELL_THREAD_LOCAL bool timelimit_exceeded;
+
+  // get the current time
+  std::chrono::steady_clock::time_point clock_now = std::chrono::steady_clock::now();
 
   if (wordnum == 0) {
-      // get the start time, seeing as we're reusing this set to 0
-      // to flag timeout, use clock() + 1 to avoid start clock()
-      // of 0 as being a timeout
-      timelimit = clock() + 1;
+      // set the start time
+      clock_time_start = clock_now;
+      timelimit_exceeded = false;
   }
-  else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
-      timelimit = 0;
-  }
+  else if (std::chrono::duration_cast<std::chrono::milliseconds>(clock_now - clock_time_start).count()
+            > TIMELIMIT * CLOCKS_PER_SEC * 1000)
+      timelimit_exceeded = true;
 
   setcminmax(&cmin, &cmax, word.c_str(), len);
 
@@ -1626,7 +1630,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
       do {  // simplified checkcompoundpattern loop
 
-        if (timelimit == 0)
+        if (timelimit_exceeded)
           return 0;
 
         if (scpd > 0) {
@@ -2216,17 +2220,20 @@ int AffixMgr::compound_check_morph(const std::string& word,
   // add a time limit to handle possible
   // combinatorical explosion of the overlapping words
 
-  HUNSPELL_THREAD_LOCAL clock_t timelimit;
+  HUNSPELL_THREAD_LOCAL std::chrono::steady_clock::time_point clock_time_start;
+  HUNSPELL_THREAD_LOCAL bool timelimit_exceeded;
+
+  // get the current time
+  std::chrono::steady_clock::time_point clock_now = std::chrono::steady_clock::now();
 
   if (wordnum == 0) {
-      // get the start time, seeing as we're reusing this set to 0
-      // to flag timeout, use clock() + 1 to avoid start clock()
-      // of 0 as being a timeout
-      timelimit = clock() + 1;
+      // set the start time
+      clock_time_start = clock_now;
+      timelimit_exceeded = false;
   }
-  else if (timelimit != 0 && (clock() > timelimit + TIMELIMIT)) {
-      timelimit = 0;
-  }
+  else if (std::chrono::duration_cast<std::chrono::milliseconds>(clock_now - clock_time_start).count()
+            > TIMELIMIT * CLOCKS_PER_SEC * 1000)
+      timelimit_exceeded = true;
 
   setcminmax(&cmin, &cmax, word.c_str(), len);
 
@@ -2246,7 +2253,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
     do {  // onlycpdrule loop
 
-      if (timelimit == 0)
+      if (timelimit_exceeded)
         return 0;
 
       oldnumsyllable = numsyllable;
