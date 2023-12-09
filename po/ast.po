@@ -8,64 +8,67 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-12-10 04:02+0000\n"
+"Last-Translator: Xesús González Rato <esbardu@softastur.org>\n"
+"Language-Team: Asturian <https://hosted.weblate.org/projects/hunspell/"
+"translations/ast/>\n"
 "Language: ast\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.3-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "error - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "error - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "error - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Nun se pue crear el direutoriu temporal"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Nun se pue abrir el ficheru d'entrada"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Nun se pue abrir %s.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "error - falta la variable HOME\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Llinia %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "¡PROHIBÍO!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "¿Fallu ortográficu?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -73,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tFicheru: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -82,6 +87,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[ESPACIU] T)rocar A)ceutar I)nxertar M)inúscules R)aíz C)olar (Z)arrar o ? "
+"pa l'ayuda\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -91,6 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Cuando s'atopa una pallabra que nun ta nel diccionariu\n"
+"impréntase na primer llinia de la pantalla.  Si'l diccionariu\n"
+"contién dalguna pallabra asemeyada, llístase con un númberu\n"
+"al llau.  Tienes la posibilidá de trocar la pallabra por completo\n"
+"o d'escoyer una de les pallabres suxeríes.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -98,70 +111,80 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Les órdenes son:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "T\tTroca la pallabra mal escrita por completo.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Espaciu\tAceuta la pallabra solo esta vegada.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAceuta la pallabra pa lo que queda de sesión.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tAceuta la pallabra y ponla nel to diccionariu priváu.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "M\tAceuta y amiesta una versión en minúscules al diccionariu priváu.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"R\tPide una raíz y una pallabra modelu, y guárdalo too nel diccionariu "
+"priváu.\n"
+"\tLa raíz tamién va aceutase colos afixo de la pallabra modelu.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tTroca por una de les pallabres suxeríes.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"Z\tGraba'l restu d'esti ficheru inorando los fallos ortográficos, y da "
+"entamu al ficheru viniente.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "C\tCola nel intre. Pide confirmación. Dexa'l ficheru ensin camudar.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tSuspende'l programa. Reanicia cola orde fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tAmuesa esta pantalla d'ayuda.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Escribi un espaciu pa siguir -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "t"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Trocar por: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -171,183 +194,195 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "m"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Nun se pue anovar el diccionariu personal."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Pallabra nueva (raíz): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Pallabra modelu (una pallabra de diccionariu asemeyada): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "La pallabra modelu ha esistir nel diccionariu. ¡Calca una tecla!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "z"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "c"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "¿Tas seguru que quies escartar los cambeos? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Nun se pue crear el ficheru temporal"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Nun se pue abrir el ficheru de salida"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Usu: hunspell [OPCIÓN]... [FICHERU]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Comprueba la ortografía de cada FICHERU. De nun haber FICHERU, revisa la "
+"entrada estándar.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1\t\tcomprueba namás el campu primeru de les llinies (dellimitador = "
+"tabulador)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tInterfaz de la canalización d'Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
+"  --check-url\tcomprueba les URL, les señes de corréu electrónicu y los "
+"caminos de los direutorios\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tcomprueba l'apóstrofu tipográficu Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tusa los diccionarios d (d2 etc.)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tamuesa los diccionarios disponibles\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\timprenta namás les pallabres o les llinies correutes\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tamuesa esta ayuda y cola\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tformatu de ficheru d'entrada HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tcodificación de la entrada\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\timprenta les pallabres mal escrites\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\timprenta llinies con pallabres mal escrites\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tanaliza les pallabres del testu d'entrada\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tformatu de ficheru d'entrada nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
 msgstr ""
+"  -O\t\tformatu de ficheru d'entrada OpenDocument (ODF normal o planu)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p dict\tafita'l dict como diccionariu personalizáu\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\talvierte de los fallos posibles (pallabres rares)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P password\tafita una contraseña pa los diccionarios encriptaos\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\tseparta les raíces de les pallabres nel testu d'entrada\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tsufixa les pallabres del testu d'entrada\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tformatu de ficheru d'entrada TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\timprenta'l númberu de versión\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\timprenta'l númberu de versión compatible d'Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
+"  -w\t\timprenta les pallabres mal escrites (=llinies) d'una entrada de "
+"pallabra/llinia.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tformatu de ficheru d'entrada XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -368,10 +403,31 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Exemplu: hunspell -d ficheru ast_ES.txt    # correición interactiva\n"
+"         hunspell -i ficheru utf-8.txt    # comprueba'l ficheru con "
+"codificación UTF-8\n"
+"         hunspell -l *.odt             # imprenta les pallabres mal escrites "
+"de ficheros ODF\n"
+"\n"
+"         # Correición rápida de los documentos ODF per aciu de la creación "
+"d'un diccionariu personal\n"
+"\n"
+"         # 1 Fai un llistáu curtiu de les pallabres mal escrites y "
+"desconocíes:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 Desanicia les pallabres mal escrites del ficheru per aciu d'un "
+"editor de testos.\n"
+"         # 3 Usa esti diccionariu personal pa iguar les pallabres "
+"desaniciaes:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Informes de fallos: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -382,6 +438,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright (C) 2002-2014 László Németh. Llicencia: MPL/GPL/LGPL.\n"
+"\n"
+"Basáu na biblioteca Myspell d'OpenOffice.org.\n"
+"Copyright de Myspell (C) Kevin Hendricks, 2001-2002, Llicencia: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -389,6 +451,10 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Esti ye un software llibre; consulta'l códigu fonte pa les condiciones de "
+"copia.\n"
+"NUN hai garantía dala; nin siquier de COMERCIALIDÁ nin d'ADECUACIÓN PA UN\n"
+"OXETIVU CONCRETU, na midida que permitan les lleis.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -396,10 +462,13 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"CAMÍN DE BUSCA:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
 msgstr ""
+"DICCIONARIOS DISPONIBLES (el camín nun ye obligatoriu cola opción -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -408,17 +477,22 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"DICCIONARIU CARGÁU:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "error - %s perpasa'l llímite del diccionariu.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"Nun se puen abrir los ficheros d'afixos o de diccionariu pal diccionariu "
+"denomáu «%s».\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell compilóse ensin la interfaz d'usuariu de Ncurses.\n"
