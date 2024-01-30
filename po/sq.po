@@ -8,64 +8,67 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-01-31 16:17+0000\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
+"Language-Team: Albanian <https://hosted.weblate.org/projects/hunspell/"
+"translations/sq/>\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "gabim - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "gabim - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "gabim - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "S’krijohet dot drejtori tmp"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "S’hapet dot kartelë që jepet"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "S’hapet dot %s.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "gabim - mungon ndryshore HOME\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Rreshti %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "E NDALUAR!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Gabim drejtshkrimi?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -73,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tKartelë: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -91,6 +96,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Kurdo që gjendet një fjalë që s’është te fjalori shtypet\n"
+"te rreshti i parë i ekranit.  Nëse fjalori përmban çfarëdo\n"
+"fjale të ngjashme, ato radhiten me një numër në krah të\n"
+"secilës.  Keni mundësi të zëvendësoni fjalën tërësisht\n"
+"ose të zgjidhni një nga fjalët e sugjeruara.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -98,26 +108,29 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Urdhrat janë:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tZëvendëso plotësisht fjalën e shkruar gabim.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Tasti Space\tPranoje fjalën vetëm këtë herë.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tPranoje fjalën për pjesën e mbetur të këtij sesioni.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tPranoje fjalën dhe vendoseni në fjalorin tuaj privat.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tPranoje dhe shto version me të vogla te fjalor privat.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
@@ -127,41 +140,45 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tZëvendësoje me një nga fjalët e sugjeruara.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tShkruaj pjesën e mbetur të kësaj kartele, duke shpërfillur gabime shkrimi "
+"dhe fillo kartelën pasuese.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "Q\tDil menjëherë. Pyetet për ripohim. E lë kartelën të pandryshuar.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tPezulloni programin. Riniseni me urdhrin fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tShfaq këtë skenë ndihme.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Shtypni tastin Space që të vazhdohet -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Zëvendësoje me: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -171,16 +188,16 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "P"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "S’përditësohet dot fjalor personal."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -195,7 +212,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Fjalë e re (stem): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
@@ -203,14 +220,14 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Fjala model duhet të gjendet te fjalori. Shtypni çfarëdo tasti!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -221,7 +238,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Jeni i sigurt se doni të hidhni tej ndryshimet tuaja? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -231,21 +248,23 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "S’krijohet dot kartelë e përkohshme"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "S’hapet dot kartelë përfundim"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Përdorimi: hunspell [MUNDËSI] … [KARTELË] …\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Kontrollo drejtshkrimin e çdo KARTELE. Pa KARTELË, kontrollo ç’jepet.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
@@ -257,67 +276,67 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  --check-url\tkontrollo URL-ra, adresa email dhe shtigje drejtorish\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tkontrollo apostrofin tipografik Unikod\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tpërdor fjalorë d (d2, etj.)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tshfaq fjalorë të gatshëm\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tshtyp vetëm fjalë, ose rreshta të saktë\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tshfaq këtë ndihmë dhe dil\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tFormat HTML për kartelën që jepet\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tkodim i çka jepet\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tshtyp fjalët e shkruara gabim\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tshtyp rreshta me fjalë të shkruara gabim\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tanalizo fjalët e tekstit që jepet\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tFormat nroff/troff kartele që jepet\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tFormat OpenDocument (ODF ose Flat ODF) kartele që jepet\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p dict\tcaktoni fjalor dict vetjak\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tsinjalizo për gabime potenciale (fjalë të rralla)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P fjalëkalim\tcaktoni fjalëkalim për fjalorë të fshehtëzuar\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
@@ -329,11 +348,11 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tFormat TeX/LaTeX për kartelën që jepet\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tshtyp numër versioni\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
@@ -348,6 +367,8 @@ msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tFormat XML kartele që jepet\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -368,10 +389,30 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Shembull: hunspell -d en_US kartelë.txt    # kontroll me ndërveprim\n"
+"         hunspell -i utf-8 kartelë.txt    # kontrolloni kartelë të koduar si "
+"UTF-8\n"
+"         hunspell -l *.odt             # shtyp fjalë të keqshkruara "
+"kartelash ODF\n"
+"\n"
+"         # Ndreqje e shpejtë dokumentesh ODF, përmes krijimi fjalori "
+"personal\n"
+"\n"
+"         # 1 Krijo një listë të reduktuar fjalësh të keqshkruara dhe të "
+"panjohura:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >fjalë\n"
+"\n"
+"         # 2 Fshini fjalët e keqshkruara te kartela që nga një përpunues "
+"tekstesh.\n"
+"         # 3 Përdoreni këtë fjalor personal për të ndrequr fjalët e fshira:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Njoftime të metash: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -382,6 +423,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Të drejta kopjimi (C) 2002-2014 László Németh. Licencë: MPL/GPL/LGPL.\n"
+"\n"
+"Bazuar në bibliotekën Myspell të OpenOffice.org-ut.\n"
+"Të drejta kopjimi Myspell-i (C) Kevin Hendricks, 2001-2002, Licencë: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -389,6 +436,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Ky është software i lirë; për kushte kopjimi shihni burimin.  NUK ka\n"
+"garanci; madje as mbi Të QENËT I TREGTUESHËM apo I PËRSHTATSHËM\n"
+"PËR NJË QËLLIM TË VEÇANTË, deri atje ku lejohet nga ligji.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -396,10 +446,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"SHTEG KËRKIMESH:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "FJALORË TË GATSHËM (shtegu s’është i detyrueshëm për mundësinë -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -408,11 +460,14 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"FJALOR I NGARKUAR:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "gabim - %s tejkalon kufi fjalori.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
@@ -421,4 +476,4 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell-i është përpiluar pa ndërfaqe përdoruesi Ncurses.\n"
