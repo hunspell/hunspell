@@ -8,64 +8,67 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-02-21 08:20+0000\n"
+"Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
+"Language-Team: Friulian <https://hosted.weblate.org/projects/hunspell/"
+"translations/fur/>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "erôr - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "erôr - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "erôr - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "Impussibil creâ la cartele temporanie"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "Impussibil vierzi il file di input"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "Impussibil vierzi %s.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "erôr - e mancje la variabile HOME\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Rie %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "PROIBÎT!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Erôr ortografic?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -73,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tFile: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -82,6 +87,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[SPAZI] S)ostituìs A)cete I)nserìs M)inusculis L)idrîs S)iere J)es o ? pal "
+"jutori\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -91,6 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Ogni volte che e ven cjatade une peraule che no je tal dizionari\n"
+"cheste e ven stampade su la prime rie dal schermi.  Se il dizionari\n"
+"al conten peraulis similis, chês a vegnin listadis cun dongje un\n"
+"numar.  Tu varâs la pussibilitât di sostituî la peraule dal dut\n"
+"opûr sielzi une di chês sugjeridis.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -98,70 +111,81 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"I comants a son:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tSostituìs la peraule sbaliade.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Spazi\tAcete la peraule dome par cheste volte.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAcete la peraule pal rest di cheste session.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tAcete la peraule e inserissile tal dizionari privât.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tAcete la peraule e inserissile in minuscul tal dizionari privât.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S\tDomande une lidrîs e une peraule-model e lis archivie tal dizionari "
+"privât.\n"
+"\tLa lidrîs e vignarà acetade ancje cui afìs de peraule-model.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tSostituìs cuntune des peraulis sugjeridis.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tScrîf il rest di chest file, ignorant i erôrs di ortografie e scomence "
+"cul file sucessîf.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
+"Q\tSiere daurman. Al domande conferme. Al lasse il file cence modifichis.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tSospint il program. Par ripiâlu, dopre il comant fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tMostre chest jutori.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Frache spazi par continuâ -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Sostituìs cun: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -171,183 +195,193 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "m"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Impussibil inzornâ il dizionari personâl."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "l"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Gnove peraule (lidrîs): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Peraule model (une peraule simile dal dizionari): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "La peraule model e scugne stâ tal dizionari. Frache un tast!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "j"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Scartâ pardabon lis modifichis? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Impussibil creâ il file temporani"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Impussibil vierzi il file di jessude"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Ûs: hunspell [OPZION]... [FILE]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Controle la ortografie di ogni FILE. Cence FILE, controle il standard input."
+"\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1\t\tcontrole nome il prin cjamp tes riis (delimitadôr = tabuladôr)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tinterface di cumbinazion (pipe) di Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
+"  --check-url\tcontrole i URLs, lis direzions e-mail e i percors des "
+"cartelis\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tcontrole l'apostrof tipografic di Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tdopre i dizionaris d (d2 e v.i.)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tmostre i dizionaris disponibii\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tstampe dome lis riis o lis peraulis justis\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tvisualize chest jutori e jes\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tformât dal file di input in HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i cod\tcodifiche dal input\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tstampe lis peraulis sbaliadis\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tstampe lis riis cu lis peraulis sbaliadis\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tanalize lis peraulis dal test in jentrade\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tformât nroff/troff dal file in jentrade\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -n\t\tformât OpenDocument (ODF o Flat ODF) dal file in jentrade\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p diz\tstabilìs diz come dizionari personalizât\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tvise di erôrs potenziâi (peraulis raris)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P password\tstabilìs la password pai dizionaris cifrâts\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\trecupere la lidrîs des peraulis dal test in jentrade\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tsufisse lis peraulis dal test in jentrade\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tformât TeX/LaTeX dal file in jentrade\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tstampe il numar de version\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tstampe il numar de version compatibile di Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
+"  -w\t\tstampe lis peraulis sbaliadis (= riis) di une peraule o rie in "
+"jentrade.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -H\t\tformât XML dal file in jentrade\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -368,10 +402,29 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Esempli: hunspell -d en_US file.txt    # control ortografic interatîf\n"
+"         hunspell -i utf-8 file.txt    # controle file codificât in UTF-8\n"
+"         hunspell -l *.odt             # stampe peraulis cun erôrs "
+"ortografics dai files ODF\n"
+"\n"
+"         # Corezion svelte dai documents ODF midiant la creazion di "
+"dizionaris personâi\n"
+"\n"
+"         # 1 Cree une liste ridote di peraulis sbaliadis e no cognossudis:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 Elimine peraulis cun erôrs ortografics dal file cuntun editôr "
+"di test.\n"
+"         # 3 Dopre chest dizionari privât par corezi lis peraulis eliminadis:"
+"\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Segnalazion di erôrs software: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -382,6 +435,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright © 2002-2014 László Németh. Licence: MPL/GPL/LGPL.\n"
+"\n"
+"Basât su la librarie Myspell di OpenOffice.org.\n"
+"Copyright di Myspell © Kevin Hendricks, 2001-2002, Licence: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -389,6 +448,11 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Chest al è software libar; consulte i sorzints pes cundizions di copie. No "
+"je NISSUNE\n"
+"garanzie, nancje chê di COMERCIABILITÂT o IDONEITÂT A UNE FINALITÂT "
+"PARTICOLÂR,\n"
+"nei limits consintûts de leç.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -396,10 +460,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"PERCORS DI RICERCJE:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "DIZIONARIS DISPONIBII (il percors nol è obligatori pe opzion -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -408,17 +474,22 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"DIZIONARI CJARIÂT:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "erôr - %s al supere il limit massim dal dizionari.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"Impussibil vierzi i files di afìs o di dizionari pal dizionari clamât \"%s\"."
+"\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell al è stât compilât cence il supuart pe interfaccia Ncurses.\n"
