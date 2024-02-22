@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:09+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-02-22 07:54+0000\n"
+"Last-Translator: Fenic Rognaldsen <coolskeleton400@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "hunspell/translations/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -58,9 +58,9 @@ msgid "error - missing HOME variable\n"
 msgstr "feil - manglende HOME-variabel\n"
 
 #: src/tools/hunspell.cxx:853
-#, fuzzy, c-format
+#, c-format
 msgid "Line %d: %s -> "
-msgstr "Linje %d: %s → "
+msgstr "Linje %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
@@ -132,9 +132,8 @@ msgid "I\tAccept the word, and put it in your private dictionary.\n"
 msgstr "I\tGodta ordet, og innlem det i din egen ordbok.\n"
 
 #: src/tools/hunspell.cxx:1279
-#, fuzzy
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr "F\tGodta og legg til versjon med små bokstaver til i privat ordbok.\n"
+msgstr "U\tGodta og legg til versjon med små bokstaver til i privat ordbok.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
@@ -261,7 +260,6 @@ msgid "Can't open outputfile"
 msgstr "Kan ikke åpne utdatafil"
 
 #: src/tools/hunspell.cxx:1816
-#, fuzzy
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
 msgstr "Bruk: hunspell [VALG]… [FIL]…\n"
 
@@ -274,14 +272,12 @@ msgstr ""
 "\n"
 
 #: src/tools/hunspell.cxx:1819
-#, fuzzy
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr "  -1\t\tkun sjekk første felt i linjer (avskiller = tabulator)\n"
+msgstr "  -1\t\tsjekk kun første felt i linjer (avskiller = tabulator)\n"
 
 #: src/tools/hunspell.cxx:1821
-#, fuzzy
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr "  -a\t\tIspells rør-grensesnitt\n"
+msgstr "  -a\t\tIspells rørgrensesnitt\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
@@ -336,7 +332,6 @@ msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
 msgstr "  -O\t\tOpenDocument (ODF eller Flat ODF)-inndatafilformat\n"
 
 #: src/tools/hunspell.cxx:1844
-#, fuzzy
 msgid "  -p dict\tset dict custom dictionary\n"
 msgstr "  -p dict\tsett egendefinert dict-ordbok\n"
 
@@ -353,9 +348,8 @@ msgid "  -s \t\tstem the words of the input text\n"
 msgstr "  -s \t\tgrunnordene i inndatateksten\n"
 
 #: src/tools/hunspell.cxx:1851
-#, fuzzy
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr "  -S \t\tendelsesord i inndatateksten\n"
+msgstr "  -S \t\tsuffiksord i inndatateksten\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
@@ -424,7 +418,6 @@ msgid "Bug reports: http://hunspell.github.io/\n"
 msgstr "Feilrapporter: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (C) 2002-2014 László Németh. License: MPL/GPL/LGPL.\n"
@@ -437,7 +430,7 @@ msgstr ""
 "Kopirett © 2002-2014 László Németh. Lisens: MPL/GPL/LGPL.\n"
 "\n"
 "Basert på OpenOffice.org sitt Myspell-bibliotek.\n"
-"Myspell-kopirett © Kevin Hendricks, 2001-2002, Lisens: BSD.\n"
+"Myspells kopirett © Kevin Hendricks, 2001-2002, Lisens: BSD.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1890
