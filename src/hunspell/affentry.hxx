@@ -122,7 +122,8 @@ class PfxEntry : public AffEntry {
 
   inline int getKeyLen() { return appnd.size(); }
 
-  inline const char* getMorph() { return morphcode; }
+  // inline const char* getMorph() { return morphcode; }
+  inline const char* getMorph() { return appnd.c_str(); }
 
   inline const unsigned short* getCont() { return contclass; }
   inline unsigned short getContLen() { return contclasslen; }
@@ -198,7 +199,8 @@ class SfxEntry : public AffEntry {
   const char* getKey() { return rappnd.c_str(); }
   std::string add(const char* word, size_t len);
 
-  inline const char* getMorph() { return morphcode; }
+  // inline const char* getMorph() { return morphcode; }
+  inline const char* getMorph() { return appnd.c_str(); }
 
   inline const unsigned short* getCont() { return contclass; }
   inline unsigned short getContLen() { return contclasslen; }
