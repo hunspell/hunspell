@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2024-03-30 07:02+0000\n"
-"Last-Translator: Desky Natalio <desukyu@gmail.com>\n"
+"PO-Revision-Date: 2024-05-27 10:09+0000\n"
+"Last-Translator: Fikri Muhammad Abdillah <f12345ff67@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/hunspell/"
 "translations/id/>\n"
 "Language: id\n"
@@ -17,26 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "kesalahan - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "kesalahan - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "kesalahan - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr "Tidal bisa membuat dir tmp"
+msgstr "Tidak bisa membuat dir tmp"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
@@ -55,20 +55,20 @@ msgstr "Tidak bisa membuka %s\n"
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "kesalahan - variabel HOME hilang\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Baris %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "DILARANG!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Kesalahan Ejaan?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -76,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tBerkas: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -94,6 +96,12 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Setiap kali sebuah kata ditemukan yang tidak ada di dalam kamus\n"
+"kata tersebut akan dicetak pada baris pertama layar. ­­Jika kamus\n"
+"mengandung kata-kata yang mirip, kata-kata tersebut akan\n"
+"didaftarkan dengan nomor di samping masing-masing kata. ­­Anda\n"
+"memiliki opsi untuk mengganti kata tersebut sepenuhnya, atau\n"
+"memilih salah satu dari kata-kata yang disarankan.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -101,6 +109,9 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Perintahnya adalah:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
