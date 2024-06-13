@@ -10,11 +10,13 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
 
-# the following 4 lines are used for pkg-check's .pc.in file
+# the following 6 lines are used for pkg-check's .pc.in file
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
+AS_IF([test "x$enable_static" = xyes], [PC_CFLAGS=-DHUNSPELL_STATIC])
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
+AC_SUBST(PC_CFLAGS)
 
 # Checks for programs.
 AC_PROG_CXX
