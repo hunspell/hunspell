@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2024-05-27 10:09+0000\n"
-"Last-Translator: Fikri Muhammad Abdillah <f12345ff67@gmail.com>\n"
+"PO-Revision-Date: 2024-07-12 08:41+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/hunspell/"
 "translations/id/>\n"
 "Language: id\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -403,6 +403,11 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Ini adalah perangkat lunak bebas; lihat sumber untuk ketentuan penyalinan.  "
+"TIDAK ADA jaminan; \n"
+"bahkan untuk KELAYAKAN DIPERDAGANGKAN atau KESESUAIAN UNTUK TUJUAN TERTENTU, "
+"\n"
+"sejauh yang diizinkan oleh hukum.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -410,10 +415,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"CARI LOKASI:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "KAMUS YANG TERSEDIA (lokasi tidak wajib untuk opsi -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -422,17 +429,21 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"KAMUS YANG DIMASUKKAN: \n"
+"%s \n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "error - %s melebihi batas kamus.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"Tidak dapat membuka file imbuhan atau kamus untuk kamus bernama \"%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell telah dikompilasi tanpa antarmuka pengguna Ncurses.\n"
