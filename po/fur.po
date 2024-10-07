@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2024-02-21 08:20+0000\n"
+"PO-Revision-Date: 2024-10-07 16:16+0000\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <https://hosted.weblate.org/projects/hunspell/"
 "translations/fur/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -492,4 +492,4 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr "Hunspell al è stât compilât cence il supuart pe interfaccia Ncurses.\n"
+msgstr "Hunspell al è stât compilât cence il supuart pe interface Ncurses.\n"
