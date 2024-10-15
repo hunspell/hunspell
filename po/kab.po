@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2024-03-07 11:20+0000\n"
+"PO-Revision-Date: 2024-10-15 09:32+0000\n"
 "Last-Translator: ButterflyOfFire <boffire@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Kabyle <https://hosted.weblate.org/projects/hunspell/"
 "translations/kab/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -36,7 +36,7 @@ msgstr "tuccḍa - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr "ur izmir ara ad yernu tmp dir"
+msgstr "Ur izmir ara ad d-yesnulfu tmp dir"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
@@ -88,7 +88,8 @@ msgid ""
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[TALLUNT] S)emselsi Q)bel G)er A)meẓyan aẓa(R) E)ǧǧ F)feɣ neɣ ? i tallelt\n"
+"[TALLUNT] Semselsi(R) Qbel(A) Ger(I) Ameẓyan(U) Aẓar(S) Eǧǧ(Q) Ffeɣ(X) neɣ ? "
+"i tallelt\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -116,7 +117,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "S\tSemselsi meṛṛa awal ur nuri ara akken iwata.\n"
+msgstr "R\tSemselsi meṛṛa awal ur nuri ara akken iwata.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
@@ -144,7 +145,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tSelselsi s yiwen seg wawalen i d-yettwasuren.\n"
+msgstr "0-n\tSemselsi s yiwen seg wawalen i d-yettwasuren.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
