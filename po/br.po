@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-07-05 08:57+0000\n"
-"Last-Translator: Pierre Wani Alan Morvan <per.morvan.bzh29@gmail.com>\n"
+"PO-Revision-Date: 2024-11-04 10:00+0000\n"
+"Last-Translator: Fulup Jakez <fulup.jakez@gmail.com>\n"
 "Language-Team: Breton <https://hosted.weblate.org/projects/hunspell/"
 "translations/br/>\n"
 "Language: br\n"
@@ -21,7 +21,7 @@ msgstr ""
 "&& n % 100 != 92) ? 1 : ((((n % 10 == 3 || n % 10 == 4) || n % 10 == 9) && ("
 "n % 100 < 10 || n % 100 > 19) && (n % 100 < 70 || n % 100 > 79) && (n % 100 "
 "< 90 || n % 100 > 99)) ? 2 : ((n != 0 && n % 1000000 == 0) ? 3 : 4)));\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -103,10 +103,10 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"Pa n'emañ ket ur ger kavet er geriadur\n"
+"Pa ne vez ket kavet ur ger er geriadur\n"
 "e vez diskouezet war linenn gentañ ar skramm.  Ha ma vez\n"
-"endalc'het n'eus forzh peseurt ger heñvel er geriadur, listennet\n"
-"e vezont gant un niver dirazo.  Bez ho peus ar choaz da ramplasiñ ar ger\n"
+"kavet gerioù damheñvel er geriadur int rollet\n"
+"gant un niver dirazo.  Gallout a rit erlerc'hiañ ar ger\n"
 "en e bezh, pe dibab unan eus ar gerioù kinniget.\n"
 
 #: src/tools/hunspell.cxx:1271
@@ -116,7 +116,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"An urzhiadoù a zo :\n"
+"Setu an urzhiadoù :\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1272
@@ -133,35 +133,37 @@ msgstr "A\tAsantiñ ar ger evit peurrest an dalc'h-mañ.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "I\tAsantiñ ar ger, ha kas anezhañ d'ar geriadur personel.\n"
+msgstr "I\tAsantiñ ar ger, hag ouzhpennañ anezhañ d'ho keriadur personel.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
-"B\tAsantiñ hag ouzhpennañ ur stumm e lizherennoù bihan er geriadur prevez.\n"
+"B\tAsantiñ hag ouzhpennañ ur stumm e lizherennoù bihan d'ho keriadur prevez."
+"\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"G\tGoulenn ur wrizienn hag ur model ha mirit anezho er geriadur prevez.\n"
-"\tAsantet e vo ivez ar wrizienn gant kengerioù ar ger modal.\n"
+"G\tGoulenn ur wrizienn hag ur ger skouer ha mirit anezho er geriadur prevez."
+"\n"
+"\tAsantet e vo ivez ar wrizienn gant adgerioù ar ger skouer.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tRamplasiñ gant ur ger kinniget.\n"
+msgstr "0-n\tRamplasiñ gant unan eus ar gerioù kinniget.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
-"S\tSkrivañ peurrest ar restr, en ur chom hep ober van ouzh ar fazioù "
-"reizhskrivañ, ha kregiñ gant ar restr a zeu.\n"
+"S\tSkrivañ peurrest ar restr, hep teurel pled ouzh ar fazioù reizhskrivañ, "
+"ha kregiñ gant ar restr war-lerc'h.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr "K\tKuitaat raktal. Goulenn kadarnaat. Ar restr a chomo digemm.\n"
+msgstr "K\tKuitaat raktal. Goulenn ma vo kadarnaet. Ar restr a chomo digemm.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
@@ -226,13 +228,11 @@ msgstr "Ger nevez (gwrizienn) : "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr "Ger patrom (ur ger heñvel er geriadur) "
+msgstr "Ger skouer (ur ger damheñvel er geriadur) "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
-"Ar ger skouer a rank bezañ er geriadur. Pouezit war n'eus forzh peseurt "
-"stokell !"
+msgstr "Ar ger skouer a rank bezañ er geriadur. Pouezit war ur stokell bennak !"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -250,7 +250,7 @@ msgstr "k"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Ha sur oc'h da gaout c'hoant da zilezel an holl cheñchamantoù-se ? "
+msgstr "Ha sur oc'h e fell deoc'h dilezel ho cheñchamantoù ? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
@@ -280,15 +280,16 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr "  -1\t\tgwiriañ maezienn gentañ pep linenn (skejer = taolennata)\n"
+msgstr ""
+"  -1\t\tgwiriañ hepken maezienn gentañ pep linenn (skejer = taolennata)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr "  -a\t\tetrefas kombinañ Ispell\n"
+msgstr "  -a\t\tetrefas kenstrollañ Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr "  --check-url\tgwiriañ URLioù, ar posteloù hag ar c'havlec'hioù\n"
+msgstr "  --check-url\tgwiriañ URLoù, ar posteloù hag ar c'havlec'hioù\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
@@ -296,7 +297,7 @@ msgstr "  --check-apostrophe\tgwiriañ ar skraboù tipografek en Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr "  -d d[,d2,...]\tober gant ar geriadurioù d (d2 hag all hag all)\n"
+msgstr "  -d d[,d2,...]\tober gant ar geriadurioù d (d2 hag all)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
@@ -304,7 +305,7 @@ msgstr "  -D\t\tdiskouez ar geriadurioù hegerz\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr "  -G\t\tdiskouez ar gerioù pe al linennoù reizh\n"
+msgstr "  -G\t\tdiskouez hepken ar gerioù pe al linennoù reizh\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
@@ -340,15 +341,15 @@ msgstr "  -O\t\tstumm restr enmont OpenDocument (ODF pe Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr "  -p dict\ttermeniñ dict evel geriadur personnelaet\n"
+msgstr "  -p dict\tober eus dict ma geriadur personelaet\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr "  -r\t\tkemenn fazioù posupl (gerioù ral)\n"
+msgstr "  -r\t\tkemenn e c'hall bezañ ur fazi bennak (gerioù ral)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr "  -P password\ttermeniñ ur ger-tremen evit ar geriadurioù enkriptet\n"
+msgstr "  -P password\ttermeniñ ur ger-tremen evit ar geriadurioù sifret\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
@@ -364,16 +365,16 @@ msgstr "  -t\t\tstumm restr enmont TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr "  -v, --version\tdiskouez niver ar stumm\n"
+msgstr "  -v, --version\tdiskouez niverenn ar stumm\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr "  -vv\t\tdiskouez niver stumm Ispell kenglotaus\n"
+msgstr "  -vv\t\tdiskouez niverenn stumm kenglotus Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
-"  -w\t\tdiskouez gerioù skrivet fall (= linenoù) adalek ur ger/ul linenn "
+"  -w\t\tdiskouez gerioù skrivet fall (= linennoù) adalek ur ger/ul linenn "
 "enmont.\n"
 
 #: src/tools/hunspell.cxx:1858
@@ -403,21 +404,21 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
-"Skouer : hunspell -d en_US file.txt    # gwiriañ ar reizhskrivañ "
+"Skouer : hunspell -d en_US file.txt    # gwiriañ ar reizhskrivañ "
 "etreoberiant\n"
 "         hunspell -i utf-8 file.txt    # gwiriañ ur restr enkodet en UTF-8\n"
 "         hunspell -l *.odt             # diskouez gerioù ur restr ODF\n"
 "\n"
-"         # Reizhañ buan restradoù ODF dre grouiñ geriadurioù personnel\n"
+"         # Reizhañ buan restradoù ODF dre grouiñ geriadurioù personel\n"
 "\n"
-"         # 1 Krouiñ ul listennad bihan a c'herioù skrivet fall ha dizanv :\n"
+"         # 1 Krouiñ ul listennad vihan a c'herioù skrivet fall ha dianv :\n"
 "\n"
 "         hunspell -l *.odt | sort | uniq >words\n"
 "\n"
 "         # 2 Dilemel an holl c'herioù skrivet fall en ur restr gant un aozer "
 "testennoù.\n"
 "         # 3 Ober gant ar geriadur-mañ evit gellout difaziañ ar gerioù "
-"dilamet :\n"
+"dilamet :\n"
 "\n"
 "         hunspell -p words *.odt\n"
 "\n"
@@ -448,10 +449,10 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
-"Ur meziant frank eo hennezh ; sellit ouzh ar mammennoù evit ar gwirioù "
-"eilañ.  N'eus TAMM\n"
-"GWARANT EBET ; na MARC'HADUSTED pe KLOTAENN EBET D'UR PAL RESIS,\n"
-"er muzulioù aotreet gant al lezenn.\n"
+"Ur meziant frank eo hemañ ; sellit ouzh ar mammennoù evit ar gwirioù eilañ.  "
+"N'eus TAMM\n"
+"GWARANT EBET ; na KENWERZHUSTED pe KLOTAENN EBET GANT UR PAL RESIS,\n"
+"e kement ha m'eo aotreet gant al lezenn.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -464,7 +465,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr "GERIADURIOÙ HEGERZ (n'eo ket ret an hent evit an dibarzh -d) :\n"
+msgstr "GERIADURIOÙ HEGERZ (hent diret evit an dibarzh -d) :\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -480,14 +481,14 @@ msgstr ""
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr "fazi - %s az a dreist da vevennoù ar geriadur.\n"
+msgstr "fazi - %s a ya dreist da vevennoù ar geriadur.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
-"N'heller ket digeriñ ar restroù kengerioù pe ar restroù geriadurioù anvet \"%"
-"s\".\n"
+"N'heller ket digeriñ ar restroù adgerioù pe geriadur evit ar geriadur anvet "
+"\"%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
