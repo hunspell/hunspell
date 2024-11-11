@@ -8,64 +8,67 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-11-12 10:00+0000\n"
+"Last-Translator: Gaëtan Abeloos <gaetan.abeloos@proton.me>\n"
+"Language-Team: Walloon <https://hosted.weblate.org/projects/hunspell/"
+"translations/wa/>\n"
 "Language: wa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr ""
+msgstr "aroke - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr ""
+msgstr "aroke - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "aroke - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "I n' fwait nén a askepyî tmp dir"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "I n' fwait nén a drovi inputfile"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "I n' fwait nén a drovi %s.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "aroke - variåve HOME nén la\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Roye %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "DISFINDOU !"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Fåte d' ortografeye ?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -73,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tFitchî: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -82,6 +87,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[ESPÅCE] R)iplaecî A)ccepter S)titchî P)tite lete rae(C)ene c(W)iter re(X)he "
+"ou ? po l' aidance\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -91,6 +99,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Cwand on mot est trové mins n' est nén dvins l' motî\n"
+"il est mostré sol prumîre roye del waitroûle. Si l' motî\n"
+"comprind des rshonnants mots, i sont djivés avou\n"
+"on limero å droet. Vos ploz rcandjî li mot totafwaitmint,\n"
+"ou tchoezi onk des acdinés mots.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -98,45 +111,54 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Les cmandes sont :\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tRiplaecî l' mot må ortografyî.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Espåce\tAccepter l' mot po ç' côp la seulmint.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tAccepter l' mot pol restant d' cisse session\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "S\tAccepter l' mot, et l' stitchî dvins vosse prôpe motî.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
+"P\tAccepter et stitchî ene modêye avou des ptites letes a vosse prôpe motî.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"C\tDmander ene raecene et on mot modele et les wårder dvins vosse prôpe motî."
+"\n"
+"\tLi raecene serè acceptêye avou les aficses do mot modele ossu.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tRiplaecî avou onk des acdinés mots.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tSicrire li restant do fitchî, tot passant houte les fåtes, et ataker li "
+"fitchî ki vént.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "C\tCwiter sol côp. Dmande èn acertinaedje. Leye li fitchî nén candjî.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
