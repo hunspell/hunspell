@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-08-25 15:08+0000\n"
-"Last-Translator: Deleted User <noreply+23377@weblate.org>\n"
+"PO-Revision-Date: 2024-12-24 14:13+0000\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "hunspell/translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -180,7 +180,7 @@ msgstr ""
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr "s"
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
@@ -214,7 +214,7 @@ msgstr "a"
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr "r"
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
@@ -240,7 +240,7 @@ msgstr "t"
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr "s"
+msgstr "q"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
