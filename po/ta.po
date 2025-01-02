@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2022-10-24 15:13+0000\n"
-"Last-Translator: K.B.Dharun Krishna <kbdharunkrishna@gmail.com>\n"
+"PO-Revision-Date: 2025-01-03 03:14+0000\n"
+"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/hunspell/"
 "translations/ta/>\n"
 "Language: ta\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -32,43 +32,43 @@ msgstr "பிழை - iconv: %s -> %s\n"
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr ""
+msgstr "பிழை -ICONV_OPEN: UTF -8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr ""
+msgstr "TMP அடைவு ஐ உருவாக்க முடியாது"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr ""
+msgstr "InputFile ஐ திறக்க முடியாது"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr ""
+msgstr "%s திறக்க முடியாது.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "பிழை - வீட்டு மாறி இல்லை\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "வரி %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "தடைசெய்யப்பட்டது!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "எழுத்துப்பிழை தவறு?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -76,6 +76,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s கோப்பு: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -85,6 +87,8 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+". உதவிக்கு\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -94,6 +98,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"அகராதியில் இல்லாத ஒரு சொல் கண்டுபிடிக்கப்பட்ட போதெல்லாம்\n"
+" இது திரையின் முதல் வரியில் அச்சிடப்பட்டுள்ளது. அகராதி என்றால்\n"
+" இதேபோன்ற சொற்கள் ஏதேனும் உள்ளன, அவை ஒரு எண்ணுடன் பட்டியலிடப்பட்டுள்ளன\n"
+" ஒவ்வொன்றிற்கும் அடுத்து. வார்த்தையை மாற்ற உங்களுக்கு விருப்பம் உள்ளது\n"
+" முழுமையாக, அல்லது பரிந்துரைக்கப்பட்ட சொற்களில் ஒன்றைத் தேர்ந்தெடுப்பது.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -101,70 +110,82 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"கட்டளைகள்:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "ஆர் தவறாக எழுதப்பட்ட வார்த்தையை முழுமையாக மாற்றவும்.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "விண்வெளி இந்த நேரத்தில் மட்டுமே வார்த்தையை ஏற்றுக்கொள்ளுங்கள்.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "இந்த அமர்வின் மீதமுள்ள வார்த்தையை ஏற்றுக்கொள்ளுங்கள்.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
 msgstr ""
+"நான் வார்த்தையை ஏற்றுக்கொள்கிறேன், அதை உங்கள் தனிப்பட்ட அகராதியில் வைக்கிறேன்.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "தனியார் அகராதியில் சிறிய பதிப்பை ஏற்றுக்கொண்டு சேர்க்கவும்.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"எச் ஒரு தண்டு மற்றும் ஒரு மாதிரி வார்த்தையைக் கேட்டு அவற்றை தனியார் அகராதியில் "
+"சேமிக்கவும்.\n"
+" மாதிரி வார்த்தையின் இணைப்புகளுடன் தண்டு ஏற்றுக்கொள்ளப்படும்.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-N பரிந்துரைக்கப்பட்ட சொற்களில் ஒன்றைக் கொண்டு மாற்றவும்.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"ஃச் இந்த கோப்பின் மீதமுள்ளவற்றை எழுதி, எழுத்துப்பிழைகளை புறக்கணித்து, அடுத்த கோப்பைத் "
+"தொடங்கவும்.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
+"Q உடனடியாக வெளியேறுங்கள். உறுதிப்படுத்தல் கேட்கிறது. இலைகள் கோப்பு மாறாமல்.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z இடைநீக்கம் திட்டம். FG கட்டளையுடன் மறுதொடக்கம் செய்யுங்கள்.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "? இந்த உதவித் திரையைக் காட்டு.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-தொடர இடத்தைத் தட்டச்சு செய்க- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "இதனுடன் மாற்றவும்: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -174,183 +195,193 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "உ"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "தனிப்பட்ட அகராதியைப் புதுப்பிக்க முடியாது."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "கள்"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "புதிய சொல் (தண்டு): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "மாதிரி சொல் (ஒத்த அகராதி சொல்): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "மாதிரி சொல் அகராதியில் இருக்க வேண்டும். எந்த விசையையும் அழுத்தவும்!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "ஃச்"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "கே"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "உங்கள் மாற்றங்களை தூக்கி எறிய விரும்புகிறீர்களா? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "ஒய்"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "டெம்பைலை உருவாக்க முடியாது"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "வெளியீட்டு கோப்பைத் திறக்க முடியாது"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "பயன்பாடு: அன்ச்பெல் [விருப்பம்] ... [கோப்பு] ...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"ஒவ்வொரு கோப்பின் எழுத்துப்பிழை சரிபார்க்கவும். கோப்பு இல்லாமல், நிலையான உள்ளீட்டை "
+"சரிபார்க்கவும்.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1 வரிகளில் முதல் புலத்தை மட்டுமே சரிபார்க்கவும் (டிலிமிட்டர் = டேபுலேட்டர்)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -ஒ இச்பெல்லின் குழாய் இடைமுகம்\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
+"  -CHECK-URL காசோலை முகவரி கள், மின்னஞ்சல் முகவரிகள் மற்றும் அடைவு பாதைகள்\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
 msgstr ""
+"  -சேக்-அபோச்ட்ரோஃப் யூனிகோட் அச்சுக்கலை அப்போச்ட்ரோபியை சரிபார்க்கவும்\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d டி [, d2, ...] டி (d2 போன்றவை) அகராதிகளைப் பயன்படுத்துங்கள்\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  கிடைக்கக்கூடிய அகராதிகளைக் காட்டு\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G அச்சு சரியான சொற்கள் அல்லது வரிகளை மட்டும் அச்சிடவும்\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, -உதவி இந்த உதவியைக் காண்பி வெளியேறவும்\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H உஉகுமொ உள்ளீட்டு கோப்பு வடிவம்\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc உள்ளீட்டு குறியாக்கம்\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -எல் அச்சு தவறாக எழுதப்பட்ட சொற்கள்\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -எல் தவறாக எழுதப்பட்ட சொற்களுடன் கோடுகள்\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  உள்ளீட்டு உரையின் சொற்களை பகுப்பாய்வு செய்யுங்கள்\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n nroff/டிராஃப் உள்ளீட்டு கோப்பு வடிவம்\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O opendocument (ODF அல்லது பிளாட் ODF) உள்ளீட்டு கோப்பு வடிவம்\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p டிக்ட் செட் டிக்ட் தனிப்பயன் அகராதி\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  சாத்தியமான தவறுகளை எச்சரிக்கவும் (அரிய சொற்கள்)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
 msgstr ""
+"  -P கடவுச்சொல் மறைகுறியாக்கப்பட்ட அகராதிகளுக்கு கடவுச்சொல்லை அமைக்கவும்\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -S உள்ளீட்டு உரையின் சொற்களைத் தடுக்கவும்\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  உள்ளீட்டு உரையின் பின்னொட்டு சொற்கள்\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -T டெக்ச்/லேடெக்ச் உள்ளீட்டு கோப்பு வடிவம்\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, -பதிப்பு அச்சு பதிப்பு எண்\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -VV அச்சு ISPELL இணக்கமான பதிப்பு எண்\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
+"  -w ஒரு சொல்/வரி உள்ளீட்டிலிருந்து தவறாக எழுதப்பட்ட சொற்கள் (= கோடுகள்).\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X நீகுமொ உள்ளீட்டு கோப்பு வடிவம்\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -371,10 +402,26 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"எடுத்துக்காட்டு: அன்ச்பெல் -டி en_us file.txt # ஊடாடும் எழுத்துப்பிழை\n"
+" அன்ச்பெல் -i UTF-8 File.TXT # UTF-8 குறியிடப்பட்ட கோப்பை சரிபார்க்கவும்\n"
+" அன்ச்பெல் -எல் *.odt # அச்சு ODF கோப்புகளின் தவறாக எழுதப்பட்ட சொற்களை அச்சிடவும்\n"
+"\n"
+" தனிப்பட்ட அகராதி உருவாக்கத்தால் ODF ஆவணங்களை விரைவாக சரிசெய்தல்\n"
+"\n"
+" # 1 தவறாக எழுதப்பட்ட மற்றும் அறியப்படாத சொற்களிலிருந்து குறைக்கப்பட்ட பட்டியலை "
+"உருவாக்கவும்:\n"
+"\n"
+" அன்ச்பெல் -எல் *.odt | வரிசைப்படுத்துதல் | UNIQ> சொற்கள்\n"
+"\n"
+" # 2 உரை எடிட்டரால் கோப்பின் தவறாக எழுதப்பட்ட சொற்களை நீக்கு.\n"
+" # 3 நீக்கப்பட்ட சொற்களை சரிசெய்ய இந்த தனிப்பட்ட அகராதியைப் பயன்படுத்தவும்:\n"
+"\n"
+" அன்ச்பெல் -p சொற்கள் *.ஓடி\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "பிழை அறிக்கைகள்: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -385,6 +432,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"பதிப்புரிமை (இ) 2002-2014 லாச்லே நெமெத். உரிமம்: MPL/GPL/LGPL.\n"
+"\n"
+" OpenOffice.org இன் மைச்பெல் நூலகத்தை அடிப்படையாகக் கொண்டது.\n"
+" மைச்பெல்லின் பதிப்புரிமை (சி) கெவின் என்ட்ரிக்ச், 2001-2002, உரிமம்: பி.எச்.டி.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -392,6 +445,9 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"இது இலவச மென்பொருள்; நிலைமைகளை நகலெடுப்பதற்கான மூலத்தைக் காண்க. இல்லை\n"
+" உத்தரவாதம்; ஒரு குறிப்பிட்ட நோக்கத்திற்காக வணிகத்தன்மை அல்லது உடற்தகுதிக்கு கூட இல்லை,\n"
+" சட்டத்தால் அனுமதிக்கப்பட்ட அளவிற்கு.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -399,10 +455,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"தேடல் பாதை:\n"
+" %s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "கிடைக்கக்கூடிய அகராதிகள் (-D விருப்பத்திற்கு பாதை கட்டாயமில்லை):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -411,17 +469,21 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"ஏற்றப்பட்ட அகராதி:\n"
+" %s\n"
+" %s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "பிழை - %s அகராதி வரம்பை மீறுகின்றன.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"\"%s\" என்ற அகராதிக்கான இணைப்பு அல்லது அகராதி கோப்புகளைத் திறக்க முடியாது.\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "NCURSES பயனர் இடைமுகம் இல்லாமல் அன்ச்பெல் தொகுக்கப்பட்டுள்ளது.\n"
