@@ -4,7 +4,7 @@ SUBDIRS = suggestiontest
 
 TEST_EXTENSIONS = .dic
 AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/tools/hunspell; \
-                       export ANALYZE=$(top_builddir)/src/tools/analyze; \
+                       export ANALYZE=$(top_builddir)/src/tools/hunspell-analyze; \
                        export LIBTOOL=$(top_builddir)/libtool;
 DIC_LOG_COMPILER = $(top_srcdir)/tests/test.sh
 
