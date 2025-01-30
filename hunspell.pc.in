@@ -7,4 +7,4 @@ Name: hunspell
 Description: Hunspell spellchecking library
 Version: @VERSION@
 Libs: -L${libdir} -lhunspell-@HUNSPELL_VERSION_MAJOR@.@HUNSPELL_VERSION_MINOR@
-Cflags: -I${includedir}/hunspell
+Cflags: -I${includedir}/hunspell @PC_CFLAGS@
