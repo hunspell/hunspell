@@ -55,11 +55,11 @@ int main(int, char** argv) {
     if (!argv[i]) {
       fprintf(
           stderr,
-          "chmorph - change affixes by morphological analysis and generation\n"
-          "correct syntax is:\nchmorph affix_file "
+          "hunspell-chmorph - change affixes by morphological analysis and generation\n"
+          "correct syntax is:\nhunspell-chmorph affix_file "
           "dictionary_file file_to_convert STRING1 STRING2\n"
           "STRINGS may be arbitrary parts of the morphological descriptions\n"
-          "example: chmorph hu.aff hu.dic hu.txt SG_2 SG_3 "
+          "example: hunspell-chmorph hu.aff hu.dic hu.txt SG_2 SG_3 "
           " (convert informal Hungarian second person texts to formal third "
           "person texts)\n");
       exit(1);
