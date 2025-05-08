@@ -1827,7 +1827,7 @@ int main(int argc, char** argv) {
     else if (strcmp(argv[i], "-P") == 0)
       argstate = 4;
     else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
-      fprintf(stderr, "%s", gettext("Usage: hunspell [OPTION]... [FILE]...\n"));
+      fprintf(stderr, "%s", gettext("Usage: hunspell [OPTION]… [FILE]…\n"));
       fprintf(stderr, "%s", gettext("Check spelling of each FILE. Without FILE, "
                               "check standard input.\n\n"));
       fprintf(stderr, "%s", gettext("  -1\t\tcheck only first field in lines "
@@ -1840,7 +1840,7 @@ int main(int argc, char** argv) {
           gettext(
               "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"));
       fprintf(stderr, "%s",
-              gettext("  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"));
+              gettext("  -d d[,d2,…]\tuse d (d2 etc.) dictionaries\n"));
       fprintf(stderr, "%s", gettext("  -D\t\tshow available dictionaries\n"));
       fprintf(stderr, "%s", gettext("  -G\t\tprint only correct words or lines\n"));
       fprintf(stderr, "%s", gettext("  -h, --help\tdisplay this help and exit\n"));
