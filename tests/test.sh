@@ -66,15 +66,16 @@ shopt -s expand_aliases
 [[ "$HUNSPELL" = "" ]] && HUNSPELL="$(dirname $0)"/../src/tools/hunspell
 [[ "$ANALYZE" = "" ]] && ANALYZE="$(dirname $0)"/../src/tools/analyze
 [[ "$LIBTOOL" = "" ]] && LIBTOOL="$(dirname $0)"/../libtool
-alias hunspell='"$LIBTOOL" --mode=execute "$HUNSPELL"'
-alias analyze='"$LIBTOOL" --mode=execute "$ANALYZE"'
+libtool=($LIBTOOL)
+alias hunspell='"${libtool[@]}" --mode=execute "$HUNSPELL"'
+alias analyze='"${libtool[@]}" --mode=execute "$ANALYZE"'
 
 if [[ "$VALGRIND" != "" ]]; then
 	mkdir $TEMPDIR 2> /dev/null || :
 	rm -f $TEMPDIR/test.pid* || :
 	mkdir $TEMPDIR/badlogs 2> /dev/null || :
-	alias hunspell='"$LIBTOOL" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$HUNSPELL"'
-	alias analyze='"$LIBTOOL" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$ANALYZE"'
+	alias hunspell='"${libtool[@]}" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$HUNSPELL"'
+	alias analyze='"${libtool[@]}" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$ANALYZE"'
 fi
 
 CR=$(printf "\r")
