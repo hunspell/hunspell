@@ -112,7 +112,7 @@ public:
   int add_with_affix(const std::string& word, const std::string& example);
   int remove(const std::string& word);
   const std::string& get_version_cpp() const;
-  struct cs_info* get_csconv();
+  const struct cs_info* get_csconv() const;
 
   int spell(const char* word, int* info = NULL, char** root = NULL);
   int suggest(char*** slst, const char* word);
@@ -134,7 +134,7 @@ private:
   SuggestMgr* pSMgr;
   std::string affixpath;
   std::string encoding;
-  struct cs_info* csconv;
+  const struct cs_info* csconv;
   int langnum;
   int utf8;
   int complexprefixes;
@@ -1505,7 +1505,7 @@ const std::string& HunspellImpl::get_version_cpp() const {
   return pAMgr->get_version();
 }
 
-struct cs_info* HunspellImpl::get_csconv() {
+const struct cs_info* HunspellImpl::get_csconv() const {
   return csconv;
 }
 
@@ -2186,7 +2186,7 @@ const std::string& Hunspell::get_version_cpp() const {
   return m_Impl->get_version_cpp();
 }
 
-struct cs_info* Hunspell::get_csconv() {
+const struct cs_info* Hunspell::get_csconv() const {
   return m_Impl->get_csconv();
 }
 
