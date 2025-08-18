@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2025-08-16 13:02+0000\n"
-"Last-Translator: Ajyw <ajywraue@gmail.com>\n"
+"PO-Revision-Date: 2025-08-19 12:20+0000\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/hunspell/"
 "translations/id/>\n"
 "Language: id\n"
@@ -42,7 +42,7 @@ msgstr "Tidak bisa membuat dir tmp"
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr "Tidak bisa membuka file input"
+msgstr "Tidak bisa membuka berkas masukan"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
@@ -68,7 +68,7 @@ msgstr "DILARANG!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr "Kesalahan Ejaan?"
+msgstr "Kesalahan ejaan?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -83,14 +83,13 @@ msgstr ""
 #. in your translation and translate the standalone letter accordingly later
 #.
 #: src/tools/hunspell.cxx:1196
+#, fuzzy
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"PENERJEMAH: huruf kapital adalah jalan pintas, tandai satu huruf dengan cara "
-"yang sama dalam terjemahan Anda dan terjemahkan huruf yang berdiri sendiri "
-"sesuai dengan itu nanti\n"
+"[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -157,7 +156,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr "Q\tSegera keluar. Meminta konfirmasi. Tidak mengubah berkas.\n"
+msgstr "Q\tSeketika keluar. Meminta konfirmasi. Tidak mengubah berkas.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
@@ -165,13 +164,15 @@ msgstr "^Z\tHentikan sementara program. Mulai ulang dengan perintah fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tTampilkan layar bantuan ini.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Ketik spasi untuk melanjutkan -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -182,7 +183,7 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Ganti dengan: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -201,7 +202,7 @@ msgstr ""
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Tidak dapat memperbarui kamus pribadi."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -216,15 +217,15 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Kata baru (stem): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Kata model (kata kamus serupa): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Kata model harus dalam kamus. Tekan tombol apa pun!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -242,13 +243,13 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Anda yakin ingin membuang perubahan Anda? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
