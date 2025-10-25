@@ -56,7 +56,7 @@ struct __attribute__((packed)) w_char {
 
   operator unsigned short() const
   {
-#if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
+#if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
     //use little-endian optimized version
 #if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
     return std::bit_cast<unsigned short>(*this);
