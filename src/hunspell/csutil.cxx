@@ -290,11 +290,11 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
                   U = U - 0x10000;
                   u_int16_t H = 0xd800 + (u_int16_t) (U >> 10);
                   u_int16_t L = 0xdc00 + (u_int16_t) (U & 0x3FF);
-                  u2.h = (static_cast<unsigned char>((H & 0xff00) >> 16));
+                  u2.h = (static_cast<unsigned char>((H & 0xff00) >> 8));
                   u2.l = (static_cast<unsigned char>(H & 0x00ff));
                   *u16++ = u2;
                   // HI surrogate stored
-                  u2.h = (static_cast<unsigned char>((L & 0xff00) >> 16));
+                  u2.h = (static_cast<unsigned char>((L & 0xff00) >> 8));
                   u2.l = (static_cast<unsigned char>(L & 0x00ff));
                 } else {
                   HUNSPELL_WARNING(stderr,
