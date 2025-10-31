@@ -131,8 +131,45 @@ std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   auto u2 = src.begin(), u2_max = src.end();
   while (u2 < u2_max) {
     signed char u8;
-    if (u2->h) {  // > 0xFF
-      // XXX 4-byte haven't implemented yet.
+    if (((u2->h) >= 0xd8) && ((u2->h) < 0xdc)){
+        u_int32_t U; //Unicode utf-32 point
+        u_int16_t H; //Hi surrogate
+        u_int16_t L; //Lo surrogate
+        //prepare hight surrogate
+        H = (static_cast<u_int16_t>(u2->h));
+        H = (H << 8) | (static_cast<u_int16_t>(u2->l));
+        H = H - 0xd800;
+        ++u2;
+        if (((u2->h) >= 0xdc) && ((u2->h) <= 0xdf)){
+          //prepare low surrogate
+          L = (static_cast<u_int16_t>(u2->h));
+          L = (L << 8 ) | (static_cast<u_int16_t>(u2->l))
+          L = L - 0xdc00;
+          U = 0x10000 + (static_cast<u_int32_t>(H << 10)) | (static_cast<u_int32_t>L); 
+          u8 = (static_cast<signed char>(0xF0 | ((U >> 18) & 0x07)));
+          dest.push_back(u8);
+          u8 = (static_cast<signed char>(0x80 | ((U >> 12) & 0x3F)));
+          dest.push_back(u8);
+          u8 = (static_cast<signed char>(0x80 | ((U >>  6) & 0x3F)));
+          dest.push_back(u8);
+          u8 = (static_cast<signed char>(0x80 | ( U & 0x3F )));
+          dest.push_back(u8);
+        } else {
+          HUNSPELL_WARNING(stderr,
+                        "UTF-16 encoding error. Missing low surrogate\n"
+                      );
+          break;
+        }
+        ++u2;
+        continue;
+      } 
+    if (((u2->h) >= 0xdc) && ((u2->h) <= 0xdf)) {
+        HUNSPELL_WARNING(stderr,
+                        "UTF-16 encoding error. Unexcepted low surrogate.\n"
+                      );
+        break;
+      }
+    if (u2->h) {
       if (u2->h >= 0x08) {  // >= 0x800 (3-byte UTF-8 character)
         u8 = 0xe0 + (u2->h >> 4);
         dest.push_back(u8);
@@ -206,7 +243,7 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
         } else {
           HUNSPELL_WARNING(stderr,
                            "UTF-8 encoding error. Missing continuation byte in "
-                           "%ld. character position:\n%s\n",
+                           "in %ld. character position:\n%s\n",
                            static_cast<long>(std::distance(src.begin(), u8)),
                            src.c_str());
           u2.h = 0xff;
@@ -242,7 +279,62 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
         break;
       }
       default: {  // 4 or more byte UTF-8 codes
-        assert(((*u8) & 0xf0) == 0xf0 && "can only be 0xf0");
+        if ((*u8 >= 0xf0) && (*u8 <= 0xf7)){
+          // 4-byte UTF-8 codes
+          u_int32_t  U;//Unicode point
+          u_int16_t H;//utf16 hi surrogate 
+          u_int16_t L;//utf16 lo surrogate
+          U =  (static_cast<u_int32_t>(*u8) & 0x7) << 18;
+          ++u8;
+            if ((*u8 & 0xc0) == 0x80){
+              U = U | (*u8 & 0x3f) << 12 ;
+              ++u8;
+              if ((*u8 & 0xc0) == 0x80){
+                U = U | (static_cast<u_int32_t>(*u8) & 0x3f) << 6;
+                ++u8;
+                if ((*u8 & 0xc0) == 0x80){
+                  U = U | (static_cast<u_int32_t>(*u8) & 0x3f);
+                  ++u8;
+                  U = U - 0x10000;
+                  H = 0xd800 + (static_cast<u_int16_t>(U >> 10));
+                  L = 0xdc00 + (static_cast<u_int16_t>(U & 0x3FF);
+                  u2.h = (static_cast<unsigned char>((H & 0xff00) >> 8));
+                  u2.l = (static_cast<unsigned char>(H & 0x00ff));
+                  *u16++ = u2;
+                  // HI surrogate stored
+                  u2.h = (static_cast<unsigned char>((L & 0xff00) >> 8));
+                  u2.l = (static_cast<unsigned char>(L & 0x00ff));
+                } else {
+                  HUNSPELL_WARNING(stderr,
+                           "UTF-8 encoding error. Missing continuation byte in "
+                           "%ld. character position:\n%s\n",
+                           static_cast<long>(std::distance(src.begin(), u8)),
+                           src.c_str());
+                  u2.h = 0xff;
+                  u2.l = 0xfd;
+                  break;
+              }
+            } else {
+              HUNSPELL_WARNING(stderr,
+                           "UTF-8 encoding error. Missing continuation byte in "
+                           "%ld. character position:\n%s\n",
+                           static_cast<long>(std::distance(src.begin(), u8)),
+                           src.c_str());
+              u2.h = 0xff;
+              u2.l = 0xfd;
+              break;  
+            }
+        } else {
+          HUNSPELL_WARNING(stderr,
+                           "UTF-8 encoding error. Missing continuation byte in "
+                           "%ld. character position:\n%s\n",
+                           static_cast<long>(std::distance(src.begin(), u8)),
+                           src.c_str());
+              u2.h = 0xff;
+              u2.l = 0xfd;
+              break;
+        }
+    } else {
         HUNSPELL_WARNING(stderr,
                          "This UTF-8 encoding can't convert to UTF-16:\n%s\n",
                          src.c_str());
@@ -251,14 +343,14 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
         *u16++ = u2;
         dest.resize(u16 - dest.begin());
         return -1;
-      }
     }
+  }
+}
     *u16++ = u2;
     if (only_convert_first_letter)
         break;
     ++u8;
   }
-
   int size = u16 - dest.begin();
   dest.resize(size);
   return size;
