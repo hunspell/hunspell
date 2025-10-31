@@ -50,10 +50,12 @@ using namespace std;
 #define UTF8_APOS "\xe2\x80\x99"
 #define APOSTROPHE "'"
 
-static struct {
+struct pattern {
   const char* pat[2];
   int arg;
-} PATTERN[] = {{{"\\(", "\\)"}, 0},
+};
+
+static struct pattern DEFAULT_PATTERN[] = {{{"\\(", "\\)"}, 0},
                {{"$$", "$$"}, 0},
                {{"$", "$"}, 0},
                {{"\\begin{math}", "\\end{math}"}, 0},
@@ -137,7 +139,10 @@ static struct {
                {{"\\vglue", NULL}, 1},
                {{"\'\'", NULL}, 1}};
 
-#define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
+static int DEFAULT_PATTERN_LEN = sizeof(DEFAULT_PATTERN) / sizeof(DEFAULT_PATTERN[0]);
+
+static struct pattern* PATTERN = &DEFAULT_PATTERN[0];
+static int PATTERN_LEN = DEFAULT_PATTERN_LEN;
 
 LaTeXParser::LaTeXParser(const char* wordchars)
     : TextParser(wordchars)
