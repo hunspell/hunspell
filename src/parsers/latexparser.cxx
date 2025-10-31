@@ -144,17 +144,29 @@ static int DEFAULT_PATTERN_LEN = sizeof(DEFAULT_PATTERN) / sizeof(DEFAULT_PATTER
 static struct pattern* PATTERN = &DEFAULT_PATTERN[0];
 static int PATTERN_LEN = DEFAULT_PATTERN_LEN;
 
-LaTeXParser::LaTeXParser(const char* wordchars)
+LaTeXParser::LaTeXParser(const char* wordchars, FILE *const texfilter)
     : TextParser(wordchars)
     , pattern_num(0), depth(0), arg(0), opt(0) {
+  init_patterns(texfilter);
 }
 
-LaTeXParser::LaTeXParser(const w_char* wordchars, int len)
+LaTeXParser::LaTeXParser(const w_char* wordchars, int len, FILE *const texfilter)
     : TextParser(wordchars, len)
     , pattern_num(0), depth(0), arg(0), opt(0) {
+  init_patterns(texfilter);
 }
 
-LaTeXParser::~LaTeXParser() {}
+LaTeXParser::~LaTeXParser() {
+  if (PATTERN != &DEFAULT_PATTERN[0]) {
+    for (struct pattern* p=PATTERN; p < PATTERN + PATTERN_LEN; p++) {
+      free((char*) p->pat[0]);
+      free((char*) p->pat[1]);
+    }
+    free(PATTERN);
+    PATTERN = &DEFAULT_PATTERN[0];
+    PATTERN_LEN = DEFAULT_PATTERN_LEN;
+  }
+}
 
 void LaTeXParser::init_patterns(FILE *const texfilter) {
   if (texfilter) {
