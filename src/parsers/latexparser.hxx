@@ -59,6 +59,7 @@ class LaTeXParser : public TextParser {
   virtual bool next_token(std::string&);
 
  private:
+  static void init_patterns(FILE *const texfilter);
   int look_pattern(int col);
 };
 

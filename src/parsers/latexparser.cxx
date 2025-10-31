@@ -156,6 +156,44 @@ LaTeXParser::LaTeXParser(const w_char* wordchars, int len)
 
 LaTeXParser::~LaTeXParser() {}
 
+void LaTeXParser::init_patterns(FILE *const texfilter) {
+  if (texfilter) {
+    char start[1000];
+    char end[1000];
+    int arg;
+    int max_pattern_len = 100;
+
+    PATTERN = (struct pattern*) malloc(max_pattern_len * sizeof(PATTERN[0]));
+    PATTERN_LEN = 0;
+
+    while(fscanf(texfilter, "%s %s %d", start, end, &arg) != EOF) {
+      if (PATTERN_LEN >= max_pattern_len) {
+        struct pattern* PATTERN_old = PATTERN;
+
+        max_pattern_len += 100;
+
+        PATTERN = (struct pattern*) malloc(max_pattern_len * sizeof(PATTERN[0]));
+        memcpy(PATTERN, PATTERN_old, PATTERN_LEN * sizeof(PATTERN[0]));
+        free(PATTERN_old);
+      }
+
+      int len = strlen(start) + 1;
+      const char* start_cpy = (const char *) malloc(len);
+      memcpy((char*) start_cpy, start, len);
+
+      const char* end_cpy = NULL;
+      if (strcmp(end, "\\") != 0) {
+        len = strlen(end) + 1;
+        end_cpy = (const char *) malloc(len);
+        memcpy((char*) end_cpy, end, len);
+      }
+
+      PATTERN[PATTERN_LEN] = {start_cpy, end_cpy, arg};
+      PATTERN_LEN++;
+    }
+  }
+}
+
 int LaTeXParser::look_pattern(int col) {
   for (unsigned int i = 0; i < PATTERN_LEN; i++) {
     const char* j = line[actual].c_str() + head;
