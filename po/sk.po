@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2025-11-04 13:51+0000\n"
+"PO-Revision-Date: 2025-11-06 16:53+0000\n"
 "Last-Translator: Pavol Liška <palo.liska@gmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/hunspell/"
 "translations/sk/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -164,24 +164,26 @@ msgstr "^Z\tPozastaví program. Reštart s príkazom fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tZobraziť túto nápovedu.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Pokračujte stlačením medzerníka -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
 msgid "r"
-msgstr ""
+msgstr "n"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Nahradiť (čím): "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -191,183 +193,192 @@ msgstr ""
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
 msgid "u"
-msgstr ""
+msgstr "m"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Nepodarilo sa aktualizovať osobný slovník."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr ""
+msgstr "k"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Nové slovo (koreň): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Modelové slovo (podobné slovo v slovníku): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Modelové slovo musí byť v slovníku. Stlač ľubovoľný kláves!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr ""
+msgstr "o"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr ""
+msgstr "u"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Ste si istý, že chcete zahodiť vaše zmeny? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr ""
+msgstr "a"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Nepodarilo sa vytvoriť dočasný súbor"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Nepodarilo sa otvoriť výstupný súbor"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Použitie: hunspell [VOĽBA]... [SÚBOR]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Skontrolovať preklepy v každom súbore z FILE. Ak nie je FILE zadaný, "
+"skontroluj štandardný vstup.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
-msgstr ""
+msgstr "  -1\t\tskontroluj iba prvé poľe v riadkoch (oddeľovač = tabulátor)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\trozhranie rúry (pipe) pre Ispell's\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
+"  --check-url\tskontroluj URL adresy, e-mailové adresy a umiestnenia v "
+"priečinkoch\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tskontroluj správne Unicode apostrofy\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tpouži d (d2 atď.) priečinky\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\tukáž dostupné priečinky\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tvypíš iba správne slová alebo riadky\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\tzobraz túto pomoc a ukonči program\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tformát vstupného súboru HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tvstupné kódovanie\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tvypíš skomolené slová\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tvypíš riadky so skomolenými slovami\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tanalyzuj slova zo vstupného textu\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tformát vstupného súboru nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tformát vstupného súboru OpenDocument (ODF or Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p dict\tnastaviť vlastný slovník\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tvarovať pri pravdepodobných chybách (zriedkavé slová)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P password\tnastaviť heslo pre šifrovaný slovník\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\tkorene slov vstupného textu\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\tprípony slov vstupného textu\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\tformát vstupného súboru TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tvypíš číslo verzie\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tvypíš kompatibilné číslo verzie Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
+"  -w\t\tvypíš skomolené slová (= riadky) zo vstupu, kde je 1 slovo na riadok "
+".\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\tformát vstupného súboru XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -388,10 +399,27 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Príklad: hunspell -d en_US file.txt    # interaktívna kontrola\n"
+"         hunspell -i utf-8 file.txt    # skontroluje súbor v UFT-8 znakovej "
+"sade\n"
+"         hunspell -l *.odt             # vypíše skomolené slová z ODF "
+"súborov\n"
+"\n"
+"         # Rýchla oprava ODF súborov vytvorením osobného slovníka\n"
+"\n"
+"         # 1 Vytvorí zhustené zoznam skomolených a neznámych slov:\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 Vymaže skomolené slová v súbore.\n"
+"         # 3 Použije vzniknutý osobný slovník pre opravu vymazaných slov:\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Hlásenie chýb: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -402,6 +430,12 @@ msgid ""
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
 "\n"
 msgstr ""
+"\n"
+"Copyright (C) 2002-2014 László Németh. Licencia: MPL/GPL/LGPL.\n"
+"\n"
+"Založené na OpenOffice.org's Myspell library.\n"
+"Myspell copyright (C) Kevin Hendricks, 2001-2002, Licencia: BSD.\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1890
 msgid ""
@@ -409,6 +443,10 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
+"Toto je slobodný softvér; pozri zdrojový kód pre podmienky použitia.  NIEJE "
+"poskytnutá  \n"
+"žiadna záruka; ani záruka OBCHODOVATEĽNOSTI alebo VHODNOSTI NA URČITÚ ÚČEL,\n"
+"v rozsahu ktorý dovoľuje zákon.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -416,10 +454,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"PREHĽADÁVANÉ MIESTO:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "DOSTUPNÉ SLOVNÍKY (miesto nie je povinné pri voľbe -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -428,17 +468,22 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"NAČÍTANÝ SLOVNÍK:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "chyba - %s prekročený limit slovníka.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
+"Nie je možné otvoriť súbory so súbory s príponami alebo slovníkmi pre "
+"slovník menom \"%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell bol skompilovaný bez užívateľského rozhrania Ncurses.\n"
