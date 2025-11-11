@@ -74,7 +74,7 @@
 #include <cctype>
 #include <limits>
 #include <sstream>
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
 #include <bit>
 #endif
 
@@ -929,7 +929,7 @@ std::string HashMgr::encode_flag(unsigned short f) const {
 
 #if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
     auto wc = std::bit_cast<w_char>(f);
 #else
     w_char wc;

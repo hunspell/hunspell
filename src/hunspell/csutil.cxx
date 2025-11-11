@@ -76,7 +76,7 @@
 #include <cctype>
 #include <iterator>
 #include <sstream>
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
 #include <bit>
 #endif
 
@@ -570,7 +570,7 @@ w_char upper_utf(w_char u, int langnum) {
 //but g++ remains in five instructions
 //maybe use inline asm for g++?
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
   return std::bit_cast<w_char>(unicodetoupper((unsigned short)u, langnum));
 #else
   const auto us = unicodetoupper((unsigned short)u, langnum);
@@ -594,7 +594,7 @@ w_char lower_utf(w_char u, int langnum) {
 //but g++ remains in five instructions
 //maybe use inline asm for g++?
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
   return std::bit_cast<w_char>(unicodetolower((unsigned short)u, langnum));
 #else
   const auto us = unicodetolower((unsigned short)u, langnum);
