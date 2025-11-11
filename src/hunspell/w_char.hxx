@@ -40,7 +40,7 @@
 
 #include <string>
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
 #include <bit>
 #else
 #include <cstring>
@@ -58,7 +58,7 @@ struct __attribute__((packed)) w_char {
   {
 #if defined(__i386__) || defined(_M_IX86) || defined(_M_X64)
     //use little-endian optimized version
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
     return std::bit_cast<unsigned short>(*this);
 #else
     unsigned short u;
