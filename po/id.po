@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2025-12-30 10:00+0000\n"
+"PO-Revision-Date: 2025-12-31 17:01+0000\n"
 "Last-Translator: Ruang Din <ruangdin@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/hunspell/"
 "translations/id/>\n"
@@ -83,13 +83,13 @@ msgstr ""
 #. in your translation and translate the standalone letter accordingly later
 #.
 #: src/tools/hunspell.cxx:1196
-#, fuzzy
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
+"[SPACE] R)balas A)terima I)sisipkan U)lepaskan S)tem Q)berhenti (X)keluar "
+"atau ? untuk bantuan\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -261,7 +261,7 @@ msgstr "Tidak dapat membuka hasil dokumen"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Penggunaan: hunspell [OPSI]... [BERKAS]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
