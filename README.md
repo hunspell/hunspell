@@ -126,6 +126,7 @@ Then run:
     autoreconf -vfi
     ./configure
     make
+    sudo make install
 
 # Compiling on Windows
 
