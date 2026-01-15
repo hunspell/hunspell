@@ -52,13 +52,14 @@ class LaTeXParser : public TextParser {
   int opt;          // optional argument attrib.
 
  public:
-  explicit LaTeXParser(const char* wc);
-  LaTeXParser(const w_char* wordchars, int len);
+  explicit LaTeXParser(const char* wc, FILE *const texfilter);
+  LaTeXParser(const w_char* wordchars, int len, FILE *const texfilter);
   virtual ~LaTeXParser();
 
   virtual bool next_token(std::string&);
 
  private:
+  static void init_patterns(FILE *const texfilter);
   int look_pattern(int col);
 };
 

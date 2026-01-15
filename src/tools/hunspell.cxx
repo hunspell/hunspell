@@ -197,6 +197,7 @@ std::vector<w_char> new_wordchars_utf16;
 int wordchars_utf16_len;
 char* dicname = NULL;
 char* privdicname = NULL;
+char* texfiltername = NULL;
 const char* currentfilename = NULL;
 
 int modified;  // modified file sign
@@ -290,6 +291,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   TextParser* p = NULL;
   int io_utf8 = 0;
   const char* denc = pMS->get_dict_encoding().c_str();
+  FILE* texfilter = NULL;
 #ifdef HAVE_ICONV
   if (io_enc) {
     if ((strcmp(io_enc, "UTF-8") == 0) || (strcmp(io_enc, "utf-8") == 0) ||
@@ -404,10 +406,16 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   io_enc = denc;
 #endif
 
+  if (texfiltername) {
+    texfilter = fopen(texfiltername, "r");
+    if (texfilter == NULL)
+      perror("Can't open TeX filter file");
+  }
+
   if (io_utf8) {
     switch (format) {
       case FMT_LATEX:
-        p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len);
+        p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len, texfilter);
         break;
       case FMT_HTML:
         p = new HTMLParser(wordchars_utf16, wordchars_utf16_len);
@@ -427,7 +435,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
   } else {
     switch (format) {
       case FMT_LATEX:
-        p = new LaTeXParser(wordchars.c_str());
+        p = new LaTeXParser(wordchars.c_str(), texfilter);
         break;
       case FMT_HTML:
         p = new HTMLParser(wordchars.c_str());
@@ -477,9 +485,9 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       }
     } else if ((strcmp(extension, "tex") == 0)) {
       if (io_utf8) {
-        p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len);
+        p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len, texfilter);
       } else {
-        p = new LaTeXParser(wordchars.c_str());
+        p = new LaTeXParser(wordchars.c_str(), texfilter);
       }
     }
   }
@@ -491,6 +499,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     }
   }
   p->set_url_checking(checkurl);
+  if (texfilter) fclose(texfilter);
   return p;
 }
 
@@ -1818,6 +1827,11 @@ int main(int argc, char** argv) {
     } else if (argstate == 4) {
       key = argv[i];
       argstate = 0;
+    } else if (argstate == 5) {
+      if (texfiltername)
+        free(texfiltername);
+      texfiltername = mystrdup(argv[i]);
+      argstate = 0;
     } else if (strcmp(argv[i], "-d") == 0)
       argstate = 1;
     else if (strcmp(argv[i], "-p") == 0)
@@ -1864,6 +1878,7 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s", gettext("  -s \t\tstem the words of the input text\n"));
       fprintf(stderr, "%s", gettext("  -S \t\tsuffix words of the input text\n"));
       fprintf(stderr, "%s", gettext("  -t\t\tTeX/LaTeX input file format\n"));
+      fprintf(stderr, "%s", gettext("  -T filter\tTeX/LaTeX input file format with custom filter file\n"));
       fprintf(stderr, "%s", gettext("  -v, --version\tprint version number\n"));
       fprintf(stderr, "%s",
               gettext("  -vv\t\tprint Ispell compatible version number\n"));
@@ -1932,6 +1947,9 @@ int main(int argc, char** argv) {
         filter_mode = SUFFIX;
     } else if ((strcmp(argv[i], "-t") == 0)) {
       format = FMT_LATEX;
+    } else if ((strcmp(argv[i], "-T") == 0)) {
+      format = FMT_LATEX;
+      argstate = 5;
     } else if ((strcmp(argv[i], "-n") == 0)) {
       format = FMT_MAN;
     } else if ((strcmp(argv[i], "-H") == 0)) {
@@ -2220,6 +2238,8 @@ int main(int argc, char** argv) {
     free(dicname);
   if (privdicname)
     free(privdicname);
+  if (texfiltername)
+    free(texfiltername);
   if (path)
     free(path);
   if (aff)
