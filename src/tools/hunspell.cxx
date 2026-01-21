@@ -69,16 +69,22 @@
 #define DEFAULTDICNAME "default"
 
 #ifdef WIN32
+#include <windows.h>
 
 #define LIBDIR "C:\\Hunspell\\"
-#define USEROOODIR { "Application Data\\OpenOffice.org 2\\user\\wordbook" }
+#define USEROOODIR {                                    \
+  "Application Data\\OpenOffice.org 2\\user\\wordbook", \
+  "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
+}
 #define OOODIR                                                 \
   "C:\\Program files\\OpenOffice.org 2.4\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.2\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\"
-#define HOME "%USERPROFILE%\\"
+  "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\;" \
+  "C:\\Program Files\\LibreOffice\\share\\extensions;"         \
+  "C:\\Program Files (x86)\\LibreOffice\\share\\extensions;"
+#define HOME getenv("USERPROFILE")
 #define DICBASENAME "hunspell_"
 #define LOGFILE "C:\\Hunspell\\log"
 #define DIRSEPCH '\\'
@@ -1726,12 +1732,12 @@ char* exist2(char* dir, int len, const char* name, const char* ext) {
   return NULL;
 }
 
-#if !defined(WIN32) || defined(__MINGW32__)
 int listdicpath(char* dir, int len) {
   std::string buf;
   const char* sep = (len == 0) ? "" : DIRSEP;
   buf.assign(dir, len);
   buf.append(sep);
+#if !defined(WIN32) || defined(__MINGW32__)
   DIR* d = opendir(buf.c_str());
   if (!d)
     return 0;
@@ -1747,9 +1753,43 @@ int listdicpath(char* dir, int len) {
     }
   }
   closedir(d);
+#else  // _WIN32  || __MINGW32__
+    WIN32_FIND_DATA de;
+    HANDLE handle = FindFirstFile((buf + "*").c_str(), &de);
+    char lpath[MAX_PATH];
+    if (handle != INVALID_HANDLE_VALUE) {
+      do {
+        char *name = de.cFileName;
+        // ignore directories, hidden files
+        if ((de.dwFileAttributes  & FILE_ATTRIBUTE_HIDDEN) == FILE_ATTRIBUTE_HIDDEN) continue;
+        if (((de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) &&
+          (strncmp(".", name, 1) != 0) && (strncmp("..", name, 2) != 0)) {
+            sprintf(lpath, "%s\\%s", buf.c_str(), name);
+            listdicpath(lpath, strlen(lpath));
+        }
+        if (name[0] == '.') continue;
+        len = strlen(name);
+        if (((len > 4 && strcmp(name + len - 4, ".dic") == 0) ||
+             (len > 7 && strcmp(name + len - 7, ".dic.hz") == 0))
+            /* ignore hyph_ dictionaries */
+            && (strncmp(name, "hyph_", 5) != 0)) {
+          char* s = mystrdup(name);
+          s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
+          fprintf(stderr, "%s%s\n", buf.c_str(), s);
+        }
+      } while (FindNextFile(handle, &de));
+      if (GetLastError() != ERROR_NO_MORE_FILES) {
+        fprintf(stderr, "FindNextFile died for some reason; path = \"%s\"\n", buf.c_str());
+        abort();
+      }
+      if (FindClose(handle) == FALSE) {
+        fprintf(stderr, "FindClose failed\n");
+        abort();
+      }
+    }
+#endif  // _WIN32  || __MINGW32__
   return 1;
 }
-#endif
 
 // search existing path for file "name + ext"
 char* search(char* begin, char* name, const char* ext) {
@@ -1761,9 +1801,7 @@ char* search(char* begin, char* name, const char* ext) {
     if (name) {
       res = exist2(begin, int(end - begin), name, ext);
     } else {
-#if !defined(WIN32) || defined(__MINGW32__)
       listdicpath(begin, end - begin);
-#endif
     }
     if ((*end == '\0') || res)
       return res;
@@ -2067,9 +2105,7 @@ int main(int argc, char** argv) {
       const char * userooodir[] = USEROOODIR;
       for(size_t i = 0; i < sizeof(userooodir)/sizeof(userooodir[0]); ++i) {
         path_std_str += HOME;
-#ifndef _WIN32
         path_std_str += DIRSEP;
-#endif
         path_std_str.append(userooodir[i]).append(PATHSEP);
       }
       path_std_str.append(OOODIR);
