@@ -501,7 +501,7 @@ void log(char* message) {
     fprintf(f, "%s\n", message);
     fclose(f);
   } else {
-    fprintf(stderr, "Logfile...");
+    fprintf(stderr, "Logfile…");
   }
 }
 #endif
@@ -695,7 +695,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
       else
         fprintf(stderr, gettext("Can't open %s.\n"), filename);
       if (system((std::string("rmdir ") + odftmpdir).c_str()) != 0) {
-        perror("temp dir delete failed");
+        perror("temp dir deletion failed");
       }
       exit(1);
     }
@@ -705,7 +705,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     if (fileid == NULL) {
       perror(gettext("Can't open inputfile"));
       if (system((std::string("rmdir ") + odftmpdir).c_str()) != 0) {
-        perror("temp dir delete failed");
+        perror("temp dir deletion failed");
       }
       exit(1);
     }
@@ -1032,12 +1032,12 @@ nextline:
     std::ostringstream sbuf;
     sbuf << odftmpdir << "/content.xml";
     if (remove(sbuf.str().c_str()) != 0) {
-      perror("temp file delete failed");
+      perror("temp file deletion failed");
     }
     sbuf.str("");
     sbuf << "rmdir " << odftmpdir;
     if (system(sbuf.str().c_str()) != 0) {
-      perror("temp dir delete failed");
+      perror("temp dir deletion failed");
     }
   }
 
@@ -1517,7 +1517,7 @@ int dialog(TextParser* parser,
         if (c == (gettext("q"))[0]) {
           if (modified) {
             printw(
-                gettext("Are you sure you want to throw away your changes? "));
+                gettext("Are you sure you want to throw away your changes?"));
             /* TRANSLATORS: translate this letter according to the shortcut
              * letter y)es */
             if (getch() == (gettext("y"))[0]) {
@@ -1648,12 +1648,12 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
           fclose(tempfile);  // automatically deleted when closed
           if (bZippedOdf) {
             if (remove(filename) != 0) {
-              perror("temp file delete failed");
+              perror("temp file deletion failed");
             }
             std::ostringstream sbuf;
             sbuf << "rmdir " << odftmpdir;
             if (system(sbuf.str().c_str()) != 0) {
-              perror("temp dir delete failed");
+              perror("temp dir deletion failed");
             }
             free(filename);
           }
@@ -1693,12 +1693,12 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
 
   if (bZippedOdf) {
     if (remove(filename) != 0) {
-      perror("temp file delete failed");
+      perror("temp file deletion failed");
     }
     std::ostringstream sbuf;
     sbuf << "rmdir " << odftmpdir;
     if (system(sbuf.str().c_str()) != 0) {
-      perror("temp dir delete failed");
+      perror("temp dir deletion failed");
     }
     free(filename);
   }
@@ -1827,7 +1827,7 @@ int main(int argc, char** argv) {
     else if (strcmp(argv[i], "-P") == 0)
       argstate = 4;
     else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
-      fprintf(stderr, "%s", gettext("Usage: hunspell [OPTION]... [FILE]...\n"));
+      fprintf(stderr, "%s", gettext("Usage: hunspell [OPTION]… [FILE]…\n"));
       fprintf(stderr, "%s", gettext("Check spelling of each FILE. Without FILE, "
                               "check standard input.\n\n"));
       fprintf(stderr, "%s", gettext("  -1\t\tcheck only first field in lines "
@@ -1840,7 +1840,7 @@ int main(int argc, char** argv) {
           gettext(
               "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"));
       fprintf(stderr, "%s",
-              gettext("  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"));
+              gettext("  -d d[,d2,…]\tuse d (d2 etc.) dictionaries\n"));
       fprintf(stderr, "%s", gettext("  -D\t\tshow available dictionaries\n"));
       fprintf(stderr, "%s", gettext("  -G\t\tprint only correct words or lines\n"));
       fprintf(stderr, "%s", gettext("  -h, --help\tdisplay this help and exit\n"));
