@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2025-10-30 15:33+0000\n"
-"Last-Translator: Nguyễn Thành Đạt <thanhdat8d1@gmail.com>\n"
+"PO-Revision-Date: 2026-02-23 17:09+0000\n"
+"Last-Translator: Trần Phúc Lộc <loctp99@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/hunspell/"
 "translations/vi/>\n"
 "Language: vi\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -102,8 +102,8 @@ msgstr ""
 "Bất cứ khi nào tìm thấy một từ không có trong từ điển \n"
 "nó được in trên dòng đầu tiên của màn hình. Nếu từ điển \n"
 "chứa bất kỳ từ nào tương tự, chúng được liệt kê bằng một số \n"
-"bên cạnh mỗi người. Bạn có tùy chọn thay thế từ \n"
-"hoàn toàn hoặc chọn một trong các từ gợi ý.\n"
+"bên cạnh mỗi từ. Bạn có lựa chọn thay thế từ \n"
+"hoàn toàn, hoặc chọn một trong các từ được gợi ý.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -117,67 +117,73 @@ msgstr ""
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "Thay thế hoàn toàn từ sai chính tả\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Dấu cách\tChỉ chấp nhận từ trong lần này.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tChấp nhận từ cho toàn bộ phiên họat động.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tChấp nhận từ, và đưa từ đó vào tư điển riêng tư.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tChấp nhận và thêm bản viết thường vào từ điển riêng tư.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
+"S\tYêu cần thân từ và một từ tương đồng và lưu vào trong từ điển riêng tư.\n"
+"\tThân từ cũng sẽ được chấp nhận với phụ tố của từ tương đồng.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr ""
+msgstr "0-n\tThay bằng một trong những từ được gợi ý.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
+"X\tGhi phần còn lại của tệp này, phớt lờ lỗi chính tả, và bắt đầu tệp mới.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
-msgstr ""
+msgstr "Q\tThoát tức thì. Yêu cầu xác nhận. Không thay đổi tệp.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr ""
+msgstr "^Z\tTạm ngừng chương trình. Khởi động lại bằng lệnh fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr ""
+msgstr "?\tHiển thị màn hình trợ giúp này.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
 msgstr ""
+"\n"
+"-- Nhấn khoảng trắng để tiếp tục -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
 #: src/tools/hunspell.cxx:1306
+#, fuzzy
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr ""
+msgstr "Thay bằng: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -186,184 +192,197 @@ msgstr ""
 #. used
 #. previously in the  translation of "U)ncap" and I)nsert before
 #: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
+#, fuzzy
 msgid "u"
-msgstr ""
+msgstr "u"
 
 #: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
+#, fuzzy
 msgid "i"
-msgstr ""
+msgstr "i"
 
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr ""
+msgstr "Không thể cập nhật từ điển cá nhân."
 
 #: src/tools/hunspell.cxx:1376
+#, fuzzy
 msgid "a"
-msgstr ""
+msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
+#, fuzzy
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr ""
+msgstr "Từ mới (thân từ): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr ""
+msgstr "Từ tương đồng (từ tương tự trong từ điển): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr ""
+msgstr "Từ tương đồng phải có trong từ điển. Nhấn phím bất kì!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
+#, fuzzy
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
+#, fuzzy
 msgid "q"
-msgstr ""
+msgstr "q"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr ""
+msgstr "Bạn có chắc việc bỏ đi những thay đổi này? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
+#, fuzzy
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr ""
+msgstr "Không thể tạo tempfile"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr ""
+msgstr "Không thể mở outputfile"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr ""
+msgstr "Cách sử dụng: hunspell [LỰA CHỌN]... [TỆP]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
+"Kiểm tra chính tả của mỗi TỆP. Khi không có tệp, kiểm tra \"nguồn vào "
+"chuẩn\".\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
+"  -1\t\tchỉ kiểm tra trường đầu tiên của dòng (dấu phân cách = kí tự tab)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr ""
+msgstr "  -a\t\tgiao diện của pipe Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
-msgstr ""
+msgstr "  --check-url\tkiểm tra URLs, địa chỉ e-mail và đường dẫn\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
+msgstr "  --check-apostrophe\tkiểm tra dấu viết lược trong Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr ""
+msgstr "  -d d[,d2,...]\tsử dụng từ điển d (d2,...)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr ""
+msgstr "  -D\t\thiển những từ điển có tồn tại\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr ""
+msgstr "  -G\t\tchỉ hiển những chữ hoặc dòng đúng\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr ""
+msgstr "  -h, --help\thiển thị trợ giúp và thoát\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr ""
+msgstr "  -H\t\tđầu vào tệp định dạng HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr ""
+msgstr "  -i enc\tnhập mã hóa kí tự\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr ""
+msgstr "  -l\t\tin những từ sai chính tả\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr ""
+msgstr "  -L\t\tin những dòng có từ sai chính tả\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr ""
+msgstr "  -m \t\tphân tích các từ trong tệp đầu vào\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr ""
+msgstr "  -n\t\tđầu vào định dạng tệp nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr ""
+msgstr "  -O\t\tđầu vào định dạng tệp OpenDocument (ODF or Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr ""
+msgstr "  -p dict\tcài đặt từ điển tự chọn\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr ""
+msgstr "  -r\t\tcảnh báo từ có nguy cơ sai(từ hiếm)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
+msgstr "  -P password\tcài mật khẩu cho từ điển được mã hóa\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr ""
+msgstr "  -s \t\ttừ thân của những từ trong văn bản đầu vào\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr ""
+msgstr "  -S \t\ttừ hậu tố của đoạn văn đầu vào\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr ""
+msgstr "  -t\t\ttệp đầu vào định dạng TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr ""
+msgstr "  -v, --version\tin mã số phiên bản\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr ""
+msgstr "  -vv\t\tin mã phiên bản tương hợp của Ispell\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
-msgstr ""
+msgstr "  -w\t\tin những từ sau chính tả (= dòng) từ một dòng/ từ đầu vào.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
+"  -X\t\ttệp đầu vào định dạng XML\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1862
 msgid ""
@@ -384,10 +403,27 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
+"Ví dụ: hunspell -d en_US file.txt    # interactive spelling\n"
+"         hunspell -i utf-8 file.txt    # kiểm tra tệp mã hóa kí tự UTF-8\n"
+"         hunspell -l *.odt             # in những từ sai chính tả trong tệp "
+"ODF\n"
+"\n"
+"         # Sửa nhanh văn bản ODF bằng từ điển cá nhân\n"
+"\n"
+"         # 1 Tạo một danh sách các từ sai chính tả hoặc từ không thể xác "
+"định\n"
+"\n"
+"         hunspell -l *.odt | sort | uniq >words\n"
+"\n"
+"         # 2 Xóa các từ sai chính tả của tệp bằng trình chỉnh sửa văn bản\n"
+"         # 3 Sử dụng từ điển cá nhân để sửa các từ bị xóa\n"
+"\n"
+"         hunspell -p words *.odt\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr ""
+msgstr "Báo lỗi: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -412,10 +448,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
+"TÌM KIẾM ĐƯỜNG DẪN:\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
+msgstr "TỪ ĐIỂN SẴN CÓ(không bắt buộc đường dẫn cho lựa chọn -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -424,17 +462,20 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
+"TỪ ĐIỂN ĐÃ ĐƯỢC NẠP:\n"
+"%s\n"
+"%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr ""
+msgstr "lỗi - %s vượt quá giới hạn từ điển.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
-msgstr ""
+msgstr "Không thể mở tiền hậu tố hay file từ điển cho từ điển với tên \"%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr ""
+msgstr "Hunspell đã được biên dịch không với giao diện người dùng Ncurses.\n"
