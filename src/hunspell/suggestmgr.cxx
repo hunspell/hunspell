@@ -478,6 +478,10 @@ int SuggestMgr::map_related(const std::string& word,
                            cpdsuggest, maptable, timer, timelimit, depth + 1, info);
           if (!(*timer))
             return wlst.size();
+          if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS) {
+            *timer = 0;
+            return wlst.size();
+          }
         }
       }
     }
