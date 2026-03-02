@@ -225,9 +225,6 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
   int info = 0;
   for (int cpdsuggest = 0; cpdsuggest < 3 && nocompoundtwowords == 0; cpdsuggest++) {
 
-    // initialize both in non-compound and compound cycles
-    clock_t timelimit = clock();
-
     // limit compound suggestion
     if (cpdsuggest > 0)
       oldSug = slst.size();
@@ -253,7 +250,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
           return true;
       }
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -263,7 +260,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
         (!cpdsuggest || (slst.size() < oldSug + maxcpdsugs))) {
       mapchars(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -279,7 +276,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         swapchar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -291,7 +288,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         longswapchar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -303,7 +300,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         badcharkey(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -315,7 +312,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         extrachar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -327,7 +324,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         forgotchar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -339,7 +336,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         movechar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -351,7 +348,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         badchar(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -363,7 +360,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       else
         doubletwochars(slst, word, cpdsuggest, info);
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
     if (test_simplesug && slst.size())
       return true;
@@ -378,7 +375,7 @@ bool SuggestMgr::suggest(std::vector<std::string>& slst,
       if (info & SPELL_BEST_SUG)
         return true;
     }
-    if (clock() > timelimit + TIMELIMIT_SUGGESTION)
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
       return good_suggestion;
 
     // testing returns after the first loop
