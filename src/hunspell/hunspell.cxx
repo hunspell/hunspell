@@ -103,7 +103,7 @@ public:
   bool spell(const std::string& word, std::vector<std::string>& candidate_stack,
              int* info = NULL, std::string* root = NULL);
   std::vector<std::string> suggest(const std::string& word);
-  std::vector<std::string> suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack);
+  std::vector<std::string> suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack, std::chrono::steady_clock::time_point suggest_start);
   const std::string& get_wordchars_cpp() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
   const std::string& get_dict_encoding() const;
@@ -147,7 +147,8 @@ private:
   std::vector<std::string> suggest_internal(const std::string& word,
                                             std::vector<std::string>& spell_candidate_stack,
                                             std::vector<std::string>& suggest_candidate_stack,
-                                            bool& capitalized, size_t& abbreviated, int& captype);
+                                            bool& capitalized, size_t& abbreviated, int& captype,
+                                            std::chrono::steady_clock::time_point suggest_start);
   void cleanword(std::string& dest, const std::string&, int* pcaptype, int* pabbrev);
   size_t cleanword2(std::string& dest,
                     std::vector<w_char>& dest_u,
@@ -953,7 +954,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 #define MAX_CANDIDATE_STACK_DEPTH 2048
 #endif
 
-std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack) {
+std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vector<std::string>& suggest_candidate_stack, std::chrono::steady_clock::time_point suggest_start) {
 
   if (suggest_candidate_stack.size() > MAX_CANDIDATE_STACK_DEPTH || // apply a fairly arbitrary depth limit
       // something very broken if suggest ends up calling itself with the same word
@@ -961,13 +962,16 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vec
     return { };
   }
 
+  if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
+    return { };
+
   bool capwords;
   size_t abbv;
   int captype;
   std::vector<std::string> spell_candidate_stack;
   suggest_candidate_stack.push_back(word);
   std::vector<std::string> slst = suggest_internal(word, spell_candidate_stack, suggest_candidate_stack,
-		                                   capwords, abbv, captype);
+		                                   capwords, abbv, captype, suggest_start);
   suggest_candidate_stack.pop_back();
   // word reversing wrapper for complex prefixes
   if (complexprefixes) {
@@ -1057,13 +1061,15 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vec
 
 std::vector<std::string> HunspellImpl::suggest(const std::string& word) {
   std::vector<std::string> suggest_candidate_stack;
-  return suggest(word, suggest_candidate_stack);
+  auto suggest_start = std::chrono::steady_clock::now();
+  return suggest(word, suggest_candidate_stack, suggest_start);
 }
 
 std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         std::vector<std::string>& spell_candidate_stack,
         std::vector<std::string>& suggest_candidate_stack,
-        bool& capwords, size_t& abbv, int& captype) {
+        bool& capwords, size_t& abbv, int& captype,
+        std::chrono::steady_clock::time_point suggest_start) {
   captype = NOCAP;
   abbv = 0;
   capwords = false;
@@ -1112,10 +1118,6 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
 
   bool good = false;
 
-  clock_t timelimit;
-  // initialize in every suggestion call
-  timelimit = clock();
-
   // check capitalized form for FORCEUCASE
   if (pAMgr && captype == NOCAP && pAMgr->get_forceucase()) {
     int info = SPELL_ORIGCAP;
@@ -1130,13 +1132,13 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
   switch (captype) {
     case NOCAP: {
       good |= pSMgr->suggest(slst, scw, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       if (abbv) {
         std::string wspace(scw);
         wspace.push_back('.');
         good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
       }
       break;
@@ -1145,12 +1147,12 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     case INITCAP: {
       capwords = true;
       good |= pSMgr->suggest(slst, scw, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       std::string wspace(scw);
       mkallsmall2(wspace, sunicw);
       good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       break;
     }
@@ -1159,7 +1161,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
       /* FALLTHROUGH */
     case HUHCAP: {
       good |= pSMgr->suggest(slst, scw, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       // something.The -> something. The
       size_t dot_pos = scw.find('.');
@@ -1187,7 +1189,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         wspace = scw;
         mkinitsmall2(wspace, sunicw);
         good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
       }
       wspace = scw;
@@ -1196,14 +1198,14 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         insert_sug(slst, wspace);
       size_t prevns = slst.size();
       good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       if (captype == HUHINITCAP) {
         mkinitcap2(wspace, sunicw);
         if (spell(wspace, spell_candidate_stack))
           insert_sug(slst, wspace);
         good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
       }
       // aNew -> "a New" (instead of "a new")
@@ -1232,13 +1234,13 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
       std::string wspace(scw);
       mkallsmall2(wspace, sunicw);
       good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       if (pAMgr && pAMgr->get_keepcase() && spell(wspace, spell_candidate_stack))
         insert_sug(slst, wspace);
       mkinitcap2(wspace, sunicw);
       good |= pSMgr->suggest(slst, wspace, &onlycmpdsug);
-      if (clock() > timelimit + TIMELIMIT_GLOBAL)
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
           return slst;
       for (auto& j : slst) {
         mkallcap(j);
@@ -1276,7 +1278,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     switch (captype) {
       case NOCAP: {
         pSMgr->ngsuggest(slst, scw.c_str(), m_HMgrs, NOCAP);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
         break;
       }
@@ -1288,7 +1290,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
         pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, HUHCAP);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
         break;
       }
@@ -1297,7 +1299,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         std::string wspace(scw);
         mkallsmall2(wspace, sunicw);
         pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, INITCAP);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
         break;
       }
@@ -1306,7 +1308,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         mkallsmall2(wspace, sunicw);
         size_t oldns = slst.size();
         pSMgr->ngsuggest(slst, wspace.c_str(), m_HMgrs, ALLCAP);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
         for (size_t j = oldns; j < slst.size(); ++j) {
           mkallcap(slst[j]);
@@ -1338,8 +1340,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         last = 1;
       std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
       if (chunk != word && !spell(chunk, spell_candidate_stack)) {
-        std::vector<std::string> nlst = suggest(chunk, suggest_candidate_stack);
-        if (clock() > timelimit + TIMELIMIT_GLOBAL)
+        std::vector<std::string> nlst = suggest(chunk, suggest_candidate_stack, suggest_start);
+        if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
         for (auto j = nlst.rbegin(); j != nlst.rend(); ++j) {
           std::string wspace = scw.substr(0, prev_pos);

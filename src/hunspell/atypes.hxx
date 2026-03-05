@@ -105,6 +105,7 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define TIMELIMIT_GLOBAL (CLOCKS_PER_SEC / 4)
 #define TIMELIMIT_SUGGESTION (CLOCKS_PER_SEC / 10)
 #define TIMELIMIT (CLOCKS_PER_SEC / 20)
+#define TIMELIMIT_GLOBAL_MS std::chrono::milliseconds(TIMELIMIT_GLOBAL * 1000 / CLOCKS_PER_SEC)
 #define TIMELIMIT_SUGGESTION_MS std::chrono::milliseconds(TIMELIMIT_SUGGESTION * 1000 / CLOCKS_PER_SEC)
 #define TIMELIMIT_MS std::chrono::milliseconds(TIMELIMIT * 1000 / CLOCKS_PER_SEC)
 #define MINTIMER 100
