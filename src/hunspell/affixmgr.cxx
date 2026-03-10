@@ -1629,8 +1629,11 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
       do {  // simplified checkcompoundpattern loop
 
-        if (timelimit_exceeded)
+        if (timelimit_exceeded ||
+            std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+          timelimit_exceeded = true;
           return 0;
+        }
 
         if (scpd > 0) {
           for (; scpd <= checkcpdtable.size() &&
