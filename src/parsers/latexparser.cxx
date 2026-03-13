@@ -50,10 +50,12 @@ using namespace std;
 #define UTF8_APOS "\xe2\x80\x99"
 #define APOSTROPHE "'"
 
-static struct {
+struct pattern {
   const char* pat[2];
   int arg;
-} PATTERN[] = {{{"\\(", "\\)"}, 0},
+};
+
+static struct pattern DEFAULT_PATTERN[] = {{{"\\(", "\\)"}, 0},
                {{"$$", "$$"}, 0},
                {{"$", "$"}, 0},
                {{"\\begin{math}", "\\end{math}"}, 0},
@@ -137,19 +139,72 @@ static struct {
                {{"\\vglue", NULL}, 1},
                {{"\'\'", NULL}, 1}};
 
-#define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
+static int DEFAULT_PATTERN_LEN = sizeof(DEFAULT_PATTERN) / sizeof(DEFAULT_PATTERN[0]);
 
-LaTeXParser::LaTeXParser(const char* wordchars)
+static struct pattern* PATTERN = &DEFAULT_PATTERN[0];
+static int PATTERN_LEN = DEFAULT_PATTERN_LEN;
+
+LaTeXParser::LaTeXParser(const char* wordchars, FILE *const texfilter)
     : TextParser(wordchars)
     , pattern_num(0), depth(0), arg(0), opt(0) {
+  init_patterns(texfilter);
 }
 
-LaTeXParser::LaTeXParser(const w_char* wordchars, int len)
+LaTeXParser::LaTeXParser(const w_char* wordchars, int len, FILE *const texfilter)
     : TextParser(wordchars, len)
     , pattern_num(0), depth(0), arg(0), opt(0) {
+  init_patterns(texfilter);
 }
 
-LaTeXParser::~LaTeXParser() {}
+LaTeXParser::~LaTeXParser() {
+  if (PATTERN != &DEFAULT_PATTERN[0]) {
+    for (struct pattern* p=PATTERN; p < PATTERN + PATTERN_LEN; p++) {
+      free((char*) p->pat[0]);
+      free((char*) p->pat[1]);
+    }
+    free(PATTERN);
+    PATTERN = &DEFAULT_PATTERN[0];
+    PATTERN_LEN = DEFAULT_PATTERN_LEN;
+  }
+}
+
+void LaTeXParser::init_patterns(FILE *const texfilter) {
+  if (texfilter) {
+    char start[1000];
+    char end[1000];
+    int arg;
+    int max_pattern_len = 100;
+
+    PATTERN = (struct pattern*) malloc(max_pattern_len * sizeof(PATTERN[0]));
+    PATTERN_LEN = 0;
+
+    while(fscanf(texfilter, "%s %s %d", start, end, &arg) != EOF) {
+      if (PATTERN_LEN >= max_pattern_len) {
+        struct pattern* PATTERN_old = PATTERN;
+
+        max_pattern_len += 100;
+
+        PATTERN = (struct pattern*) malloc(max_pattern_len * sizeof(PATTERN[0]));
+        memcpy(PATTERN, PATTERN_old, PATTERN_LEN * sizeof(PATTERN[0]));
+        free(PATTERN_old);
+      }
+
+      int len = strlen(start) + 1;
+      const char* start_cpy = (const char *) malloc(len);
+      memcpy((char*) start_cpy, start, len);
+
+      const char* end_cpy = NULL;
+      if (strcmp(end, "\\") != 0) {
+        len = strlen(end) + 1;
+        end_cpy = (const char *) malloc(len);
+        memcpy((char*) end_cpy, end, len);
+      }
+
+      PATTERN[PATTERN_LEN] = {start_cpy, end_cpy, arg};
+      PATTERN_LEN++;
+    }
+  }
+}
 
 int LaTeXParser::look_pattern(int col) {
   for (unsigned int i = 0; i < PATTERN_LEN; i++) {
