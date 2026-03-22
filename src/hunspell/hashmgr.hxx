@@ -139,7 +139,8 @@ class HashMgr {
                int al,
                const std::string* desc,
                bool onlyupcase,
-               int captype);
+               int captype,
+               bool own_aff);
   int load_config(const char* affpath, const char* key);
   bool parse_aliasf(const std::string& line, FileMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
@@ -152,7 +153,7 @@ class HashMgr {
   bool parse_reptable(const std::string& line, FileMgr* af);
   void remove_forbidden_flag(const std::string& word);
   void free_table();
-  void free_flag(unsigned short* astr, int alen);
+  void free_flag(unsigned short* astr);
 };
 
 #endif

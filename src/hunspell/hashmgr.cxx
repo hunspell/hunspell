@@ -106,9 +106,8 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-void HashMgr::free_flag(unsigned short* astr, int alen) {
-  if (astr && (aliasf.empty() || TESTAFF(astr, ONLYUPCASEFLAG, alen)))
-    delete[] astr;
+void HashMgr::free_flag(unsigned short* astr) {
+  delete[] astr;
 }
 
 void HashMgr::free_table() {
@@ -118,7 +117,8 @@ void HashMgr::free_table() {
     hentry* nt = NULL;
     while (ptr) {
       nt = ptr->next;
-      free_flag(ptr->astr, ptr->alen);
+      if (ptr->var & H_OPT_OWNFLAGS)
+        free_flag(ptr->astr);
       free(ptr);
       ptr = nt;
     }
@@ -162,11 +162,12 @@ int HashMgr::add_word(const std::string& in_word,
                       int al,
                       const std::string* in_desc,
                       bool onlyupcase,
-                      int captype) {
+                      int captype,
+                      bool own_aff) {
 
   if (al > std::numeric_limits<short>::max()) {
     HUNSPELL_WARNING(stderr, "error: affix len %d is over max limit\n", al);
-    free_flag(aff, al);
+    free_flag(aff);
     return 1;
   }
 
@@ -213,7 +214,7 @@ int HashMgr::add_word(const std::string& in_word,
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
-    free_flag(aff, al);
+    free_flag(aff);
     return 1;
   }
 
@@ -225,7 +226,7 @@ int HashMgr::add_word(const std::string& in_word,
   if (!hp) {
     delete desc_copy;
     delete word_copy;
-    free_flag(aff, al);
+    free_flag(aff);
     return 1;
   }
 
@@ -242,6 +243,8 @@ int HashMgr::add_word(const std::string& in_word,
   hp->next = NULL;
   hp->next_homonym = NULL;
   hp->var = (captype == INITCAP) ? H_OPT_INITCAP : 0;
+  if (own_aff)
+    hp->var |= H_OPT_OWNFLAGS;
 
   // store the description string or its pointer
   if (desc) {
@@ -442,12 +445,12 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
       mkallsmall_utf(w, langnum);
       mkinitcap_utf(w, langnum);
       u16_u8(st, w);
-      return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP);
+      return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP, true);
     } else {
       std::string new_word(word);
       mkallsmall(new_word, csconv);
       mkinitcap(new_word, csconv);
-      int ret = add_word(new_word, wcl, flags2, flagslen + 1, dp, true, INITCAP);
+      int ret = add_word(new_word, wcl, flags2, flagslen + 1, dp, true, INITCAP, true);
       return ret;
     }
   }
@@ -481,9 +484,11 @@ int HashMgr::remove(const std::string& word) {
       for (int i = 0; i < dp->alen; i++)
         flags[i] = dp->astr[i];
       flags[dp->alen] = forbiddenword;
-      delete[] dp->astr;
+      if (dp->var & H_OPT_OWNFLAGS)
+        free_flag(dp->astr);
       dp->astr = flags;
       dp->alen++;
+      dp->var |= H_OPT_OWNFLAGS;
       std::sort(flags, flags + dp->alen);
     }
     dp = dp->next_homonym;
@@ -509,7 +514,7 @@ int HashMgr::add(const std::string& word) {
   int captype, al = 0;
   unsigned short* flags = NULL;
   int wcl = get_clen_and_captype(word, &captype);
-  add_word(word, wcl, flags, al, NULL, false, captype);
+  add_word(word, wcl, flags, al, NULL, false, captype, true);
   return add_hidden_capitalized_word(word, wcl, flags, al, NULL,
                                      captype);
 }
@@ -520,7 +525,7 @@ int HashMgr::add_with_flags(const std::string& word, const std::string& flags, c
   unsigned short *df;
   int al = decode_flags(&df, flags, NULL);
   int wcl = get_clen_and_captype(word, &captype);
-  add_word(word, wcl, df, al, &desc, false, captype);
+  add_word(word, wcl, df, al, &desc, false, captype, true);
   return add_hidden_capitalized_word(word, wcl, df, al, &desc, captype);
 }
 
@@ -533,7 +538,7 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
     int wcl = get_clen_and_captype(word, &captype);
     auto flags = new unsigned short[dp->alen];
     memcpy(flags, dp->astr, dp->alen * sizeof(unsigned short));
-    add_word(word, wcl, flags, dp->alen, NULL, false, captype);
+    add_word(word, wcl, flags, dp->alen, NULL, false, captype, true);
     return add_hidden_capitalized_word(word, wcl, flags,
                                        dp->alen, NULL, captype);
   }
@@ -679,7 +684,8 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     int wcl = get_clen_and_captype(ts, &captype, workbuf);
     const std::string *dp_str = dp.empty() ? NULL : &dp;
     // add the word and its index plus its capitalized form optionally
-    if (add_word(ts, wcl, flags, al, dp_str, false, captype) ||
+    bool own = aliasf.empty() || !al;
+    if (add_word(ts, wcl, flags, al, dp_str, false, captype, own) ||
         add_hidden_capitalized_word(ts, wcl, flags, al, dp_str, captype)) {
       delete dict;
       return 5;
