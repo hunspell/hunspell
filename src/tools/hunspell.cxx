@@ -867,16 +867,21 @@ nextline:
                   pMS[d]->suggest(chenc(parser->get_word(token), io_enc, dic_enc[d]));
               if (!wlst.empty()) {
                 std::string best_io = chenc(wlst[0], dic_enc[d], io_enc);
+                std::string orig_token(token);
                 parser->change_token(best_io.c_str());
+                // consume the replacement token to avoid re-checking it,
+                // which can cause an infinite loop if the suggestion is
+                // also misspelled
+                parser->next_token(token);
                 if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
-                          lineno, token.c_str(), best_io.c_str());
+                          lineno, orig_token.c_str(), best_io.c_str());
                 } else if (filter_mode == AUTO2) {
-                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, token.c_str(),
+                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, orig_token.c_str(),
                           best_io.c_str(), buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
-                          chenc(token, io_enc, ui_enc).c_str());
+                          chenc(orig_token, io_enc, ui_enc).c_str());
                   fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 }
               }

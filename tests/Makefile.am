@@ -149,7 +149,8 @@ iconv_break_overflow.dic \
 gh1032.test \
 gh1086.test \
 gh1018.test \
-gh1044.test
+gh1044.test \
+gh646.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -692,4 +693,8 @@ gh1044.aff \
 gh1044.dic \
 gh1044.words \
 gh1044.test \
+gh646.aff \
+gh646.dic \
+gh646.txt \
+gh646.test \
 utf8_nonbmp.test
