@@ -2261,6 +2261,9 @@ int AffixMgr::compound_check_morph(const std::string& word,
       oldwordnum = wordnum;
       checked_prefix = 0;
 
+      if (i >= st.size())
+        return 0;
+
       ch = st[i];
       st[i] = '\0';
       sfx = NULL;
