@@ -146,7 +146,8 @@ timelimit.dic \
 ignoresug.dic \
 limit-multiple-compounding.dic \
 iconv_break_overflow.dic \
-gh1032.test
+gh1032.test \
+gh1086.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -678,5 +679,9 @@ gh1032.cxx \
 gh1032.aff \
 gh1032.dic \
 gh1032.test \
+gh1086.aff \
+gh1086.dic \
+gh1086.txt \
+gh1086.test \
 \
 utf8_nonbmp.test

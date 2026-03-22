@@ -230,6 +230,7 @@ int TextParser::change_token(const char* word) {
     line[actual].append(word);
     line[actual].append(remainder);
     head = token;
+    check_urls();
     return 1;
   }
   return 0;
