@@ -531,14 +531,10 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
   if (dp && dp->astr) {
     int captype;
     int wcl = get_clen_and_captype(word, &captype);
-    if (!aliasf.empty()) {
-      add_word(word, wcl, dp->astr, dp->alen, NULL, false, captype);
-    } else {
-      auto flags = new unsigned short[dp->alen];
-      memcpy(flags, dp->astr, dp->alen * sizeof(unsigned short));
-      add_word(word, wcl, flags, dp->alen, NULL, false, captype);
-    }
-    return add_hidden_capitalized_word(word, wcl, dp->astr,
+    auto flags = new unsigned short[dp->alen];
+    memcpy(flags, dp->astr, dp->alen * sizeof(unsigned short));
+    add_word(word, wcl, flags, dp->alen, NULL, false, captype);
+    return add_hidden_capitalized_word(word, wcl, flags,
                                        dp->alen, NULL, captype);
   }
   return 1;
