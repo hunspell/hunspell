@@ -93,5 +93,8 @@ hunspell-*.tar.gz
 /conftest.err
 /conftest.er1
 
+# test binaries
+/tests/gh1032
+
 #MSVC
 /msvc/Hunspell.VC.VC.opendb

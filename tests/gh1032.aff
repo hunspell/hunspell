@@ -1,0 +1,5 @@
+SET UTF-8
+AF 1
+AF A
+SFX A Y 1
+SFX A 0 s .

@@ -2,6 +2,12 @@
 
 SUBDIRS = suggestiontest
 
+AM_CPPFLAGS = -I$(top_srcdir)/src/hunspell
+
+check_PROGRAMS = gh1032
+gh1032_SOURCES = gh1032.cxx
+gh1032_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
+
 TEST_EXTENSIONS = .dic
 AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/tools/hunspell; \
                        export ANALYZE=$(top_builddir)/src/tools/analyze; \
@@ -139,7 +145,8 @@ warn.dic \
 timelimit.dic \
 ignoresug.dic \
 limit-multiple-compounding.dic \
-iconv_break_overflow.dic
+iconv_break_overflow.dic \
+gh1032.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -667,5 +674,9 @@ limit-multiple-compounding.wrong \
 iconv_break_overflow.aff \
 iconv_break_overflow.dic \
 iconv_break_overflow.wrong \
+gh1032.cxx \
+gh1032.aff \
+gh1032.dic \
+gh1032.test \
 \
 utf8_nonbmp.test
