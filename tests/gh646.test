@@ -1,0 +1,12 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+out=$(timeout 10 $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh646" -u3 "$DIR/gh646.txt" 2>&1)
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: gh646 hung or crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: gh646"
+exit 0
