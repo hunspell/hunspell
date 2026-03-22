@@ -146,11 +146,13 @@ timelimit.dic \
 ignoresug.dic \
 limit-multiple-compounding.dic \
 iconv_break_overflow.dic \
+gh1076.dic \
 gh1032.test \
 gh1086.test \
 gh1018.test \
 gh1044.test \
-gh646.test
+gh646.test \
+ofz51432.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -697,4 +699,11 @@ gh646.aff \
 gh646.dic \
 gh646.txt \
 gh646.test \
+gh1076.aff \
+gh1076.dic \
+gh1076.good \
+gh1076.wrong \
+ofz51432.aff \
+ofz51432.dic \
+ofz51432.test \
 utf8_nonbmp.test

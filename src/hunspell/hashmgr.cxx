@@ -736,13 +736,6 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
         unsigned short flag = ((unsigned short)((unsigned char)flags[i << 1]) << 8) |
                               ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
 
-        if (flag >= DEFAULTFLAGS && af != NULL) {
-          HUNSPELL_WARNING(stderr,
-                           "error: line %d: flag id %d is too large (max: %d)\n",
-                           af->getlinenum(), flag, DEFAULTFLAGS - 1);
-          flag = 0;
-        }
-
         (*result)[i] = flag;
       }
       break;
@@ -756,10 +749,10 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       for (size_t p = 0; p < flags.size(); ++p) {
         if (flags[p] == ',') {
           int i = atoi(src);
-          if ((i >= DEFAULTFLAGS || i < 0) && af != NULL) {
+          if ((i > std::numeric_limits<unsigned short>::max() || i < 0) && af != NULL) {
             HUNSPELL_WARNING(
-                stderr, "error: line %d: flag id %d is too large (max: %d)\n",
-                af->getlinenum(), i, DEFAULTFLAGS - 1);
+                stderr, "error: line %d: flag id %d is out of range\n",
+                af->getlinenum(), i);
              i = 0;
 	  }
           *dest = (unsigned short)i;
@@ -771,10 +764,10 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
         }
       }
       int i = atoi(src);
-      if (i >= DEFAULTFLAGS || i < 0) {
+      if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
         HUNSPELL_WARNING(stderr,
-                         "error: line %d: flag id %d is too large (max: %d)\n",
-                         af->getlinenum(), i, DEFAULTFLAGS - 1);
+                         "error: line %d: flag id %d is out of range\n",
+                         af->getlinenum(), i);
         i = 0;
       }
       *dest = (unsigned short)i;
@@ -836,10 +829,10 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       for (const char* p = src; *p; p++) {
         if (*p == ',') {
           int i = atoi(src);
-          if (i >= DEFAULTFLAGS) {
+          if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
             HUNSPELL_WARNING(
-                stderr, "error: line %d: flag id %d is too large (max: %d)\n",
-                af->getlinenum(), i, DEFAULTFLAGS - 1);
+                stderr, "error: line %d: flag id %d is out of range\n",
+                af->getlinenum(), i);
             i = 0;
 	  }
           result.push_back((unsigned short)i);
@@ -850,10 +843,10 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
         }
       }
       int i = atoi(src);
-      if (i >= DEFAULTFLAGS) {
+      if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
         HUNSPELL_WARNING(stderr,
-                         "error: line %d: flag id %d is too large (max: %d)\n",
-                         af->getlinenum(), i, DEFAULTFLAGS - 1);
+                         "error: line %d: flag id %d is out of range\n",
+                         af->getlinenum(), i);
         i = 0;
       }
       result.push_back((unsigned short)i);
@@ -895,9 +888,8 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       break;
     case FLAG_NUM:
       i = atoi(f.c_str());
-      if (i >= DEFAULTFLAGS) {
-        HUNSPELL_WARNING(stderr, "error: flag id %d is too large (max: %d)\n",
-                         i, DEFAULTFLAGS - 1);
+      if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
+        HUNSPELL_WARNING(stderr, "error: flag id %d is out of range\n", i);
         i = 0;
       }
       s = (unsigned short)i;
