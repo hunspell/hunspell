@@ -1,0 +1,7 @@
+syslog:x:104:111::/home/syslog:/usr/sbin/nologin
+_apt:x:105:65534::/nonexistent:/usr/sbin/nologin
+uuidd:x:106:112::/run/uuidd:/usr/sbin/nologin
+tcpdump:x:107:113::/nonexistent:/usr/sbin/nologin
+user:x:1000:1000:,,,:/home/user:/bin/bash
+usbmux:x:108:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+

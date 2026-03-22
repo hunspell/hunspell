@@ -148,7 +148,8 @@ limit-multiple-compounding.dic \
 iconv_break_overflow.dic \
 gh1032.test \
 gh1086.test \
-gh1018.test
+gh1018.test \
+gh1044.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -687,5 +688,8 @@ gh1086.test \
 gh1018.aff \
 gh1018.dic \
 gh1018.test \
-\
+gh1044.aff \
+gh1044.dic \
+gh1044.words \
+gh1044.test \
 utf8_nonbmp.test

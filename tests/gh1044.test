@@ -1,0 +1,12 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+ANALYZE="${ANALYZE:-$DIR/../src/tools/analyze}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+out=$($LIBTOOL --mode=execute "$ANALYZE" "$DIR/gh1044.aff" "$DIR/gh1044.dic" "$DIR/gh1044.words" 2>&1)
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: gh1044 crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: gh1044"
+exit 0
