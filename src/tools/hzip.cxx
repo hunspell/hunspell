@@ -355,7 +355,7 @@ int hzip(const char* filename, char* key) {
     return fail("hzip: cannot create temporary file\n", NULL);
   }
 
-  FILE *tempfile = fdopen(tempfileno, "rw");
+  FILE *tempfile = fdopen(tempfileno, "w+");
   if (!tempfile) {
     close(tempfileno);
     unlink(tmpfiletemplate);
