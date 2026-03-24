@@ -153,7 +153,7 @@ class HashMgr {
   bool parse_reptable(const std::string& line, FileMgr* af);
   void remove_forbidden_flag(const std::string& word);
   void free_table();
-  void free_flag(unsigned short* astr);
+  void release_flags(unsigned short* astr, bool owned);
 };
 
 #endif

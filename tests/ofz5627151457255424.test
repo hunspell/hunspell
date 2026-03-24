@@ -1,0 +1,12 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+out=$(echo "  " | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/ofz5627151457255424" -a 2>&1)
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: ofz5627151457255424 crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: ofz5627151457255424"
+exit 0

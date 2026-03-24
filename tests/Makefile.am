@@ -152,7 +152,8 @@ gh1086.test \
 gh1018.test \
 gh1044.test \
 gh646.test \
-ofz51432.test
+ofz51432.test \
+ofz5627151457255424.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -706,4 +707,7 @@ gh1076.wrong \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \
+ofz5627151457255424.aff \
+ofz5627151457255424.dic \
+ofz5627151457255424.test \
 utf8_nonbmp.test

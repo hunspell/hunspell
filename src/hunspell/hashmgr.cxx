@@ -106,8 +106,9 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-void HashMgr::free_flag(unsigned short* astr) {
-  delete[] astr;
+void HashMgr::release_flags(unsigned short* astr, bool owned) {
+  if (owned)
+    delete[] astr;
 }
 
 void HashMgr::free_table() {
@@ -117,8 +118,7 @@ void HashMgr::free_table() {
     hentry* nt = NULL;
     while (ptr) {
       nt = ptr->next;
-      if (ptr->var & H_OPT_OWNFLAGS)
-        free_flag(ptr->astr);
+      release_flags(ptr->astr, ptr->var & H_OPT_OWNFLAGS);
       free(ptr);
       ptr = nt;
     }
@@ -167,7 +167,7 @@ int HashMgr::add_word(const std::string& in_word,
 
   if (al > std::numeric_limits<short>::max()) {
     HUNSPELL_WARNING(stderr, "error: affix len %d is over max limit\n", al);
-    free_flag(aff);
+    release_flags(aff, own_aff);
     return 1;
   }
 
@@ -214,7 +214,7 @@ int HashMgr::add_word(const std::string& in_word,
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
-    free_flag(aff);
+    release_flags(aff, own_aff);
     return 1;
   }
 
@@ -226,7 +226,7 @@ int HashMgr::add_word(const std::string& in_word,
   if (!hp) {
     delete desc_copy;
     delete word_copy;
-    free_flag(aff);
+    release_flags(aff, own_aff);
     return 1;
   }
 
@@ -370,9 +370,11 @@ int HashMgr::add_word(const std::string& in_word,
       // remove hidden onlyupcase homonym
       if (!onlyupcase) {
         if ((dp->astr) && TESTAFF(dp->astr, ONLYUPCASEFLAG, dp->alen)) {
-          delete[] dp->astr;
+          release_flags(dp->astr, dp->var & H_OPT_OWNFLAGS);
           dp->astr = hp->astr;
           dp->alen = hp->alen;
+          dp->var &= ~H_OPT_OWNFLAGS;
+          dp->var |= (hp->var & H_OPT_OWNFLAGS);
           free(hp);
           delete desc_copy;
           delete word_copy;
@@ -390,9 +392,11 @@ int HashMgr::add_word(const std::string& in_word,
     // remove hidden onlyupcase homonym
     if (!onlyupcase) {
       if ((dp->astr) && TESTAFF(dp->astr, ONLYUPCASEFLAG, dp->alen)) {
-        delete[] dp->astr;
+        release_flags(dp->astr, dp->var & H_OPT_OWNFLAGS);
         dp->astr = hp->astr;
         dp->alen = hp->alen;
+        dp->var &= ~H_OPT_OWNFLAGS;
+        dp->var |= (hp->var & H_OPT_OWNFLAGS);
         free(hp);
         delete desc_copy;
         delete word_copy;
@@ -408,7 +412,7 @@ int HashMgr::add_word(const std::string& in_word,
     dp->next = hp;
   } else {
     // remove hidden onlyupcase homonym
-    delete[] hp->astr;
+    release_flags(hp->astr, hp->var & H_OPT_OWNFLAGS);
     free(hp);
   }
 
@@ -484,8 +488,7 @@ int HashMgr::remove(const std::string& word) {
       for (int i = 0; i < dp->alen; i++)
         flags[i] = dp->astr[i];
       flags[dp->alen] = forbiddenword;
-      if (dp->var & H_OPT_OWNFLAGS)
-        free_flag(dp->astr);
+      release_flags(dp->astr, dp->var & H_OPT_OWNFLAGS);
       dp->astr = flags;
       dp->alen++;
       dp->var |= H_OPT_OWNFLAGS;
@@ -684,7 +687,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     int wcl = get_clen_and_captype(ts, &captype, workbuf);
     const std::string *dp_str = dp.empty() ? NULL : &dp;
     // add the word and its index plus its capitalized form optionally
-    bool own = aliasf.empty() || !al;
+    bool own = aliasf.empty();
     if (add_word(ts, wcl, flags, al, dp_str, false, captype, own) ||
         add_hidden_capitalized_word(ts, wcl, flags, al, dp_str, captype)) {
       delete dict;
