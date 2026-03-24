@@ -517,7 +517,8 @@ int HashMgr::add(const std::string& word) {
   int captype, al = 0;
   unsigned short* flags = NULL;
   int wcl = get_clen_and_captype(word, &captype);
-  add_word(word, wcl, flags, al, NULL, false, captype, true);
+  if (add_word(word, wcl, flags, al, NULL, false, captype, true))
+    return 1;
   return add_hidden_capitalized_word(word, wcl, flags, al, NULL,
                                      captype);
 }
@@ -528,7 +529,8 @@ int HashMgr::add_with_flags(const std::string& word, const std::string& flags, c
   unsigned short *df;
   int al = decode_flags(&df, flags, NULL);
   int wcl = get_clen_and_captype(word, &captype);
-  add_word(word, wcl, df, al, &desc, false, captype, true);
+  if (add_word(word, wcl, df, al, &desc, false, captype, true))
+    return 1;
   return add_hidden_capitalized_word(word, wcl, df, al, &desc, captype);
 }
 
@@ -541,7 +543,8 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
     int wcl = get_clen_and_captype(word, &captype);
     auto flags = new unsigned short[dp->alen];
     memcpy(flags, dp->astr, dp->alen * sizeof(unsigned short));
-    add_word(word, wcl, flags, dp->alen, NULL, false, captype, true);
+    if (add_word(word, wcl, flags, dp->alen, NULL, false, captype, true))
+      return 1;
     return add_hidden_capitalized_word(word, wcl, flags,
                                        dp->alen, NULL, captype);
   }
