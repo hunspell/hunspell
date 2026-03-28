@@ -1,0 +1,12 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+out=$(echo "lag" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh1095" -a 2>&1)
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: gh1095 crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: gh1095"
+exit 0
