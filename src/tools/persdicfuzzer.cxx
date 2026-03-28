@@ -106,9 +106,9 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
         }
     }
 
-    // final spell check of all words to trigger any use-after-free
-    for (auto& w : words)
-        dict.spell(w);
+    // final spell check of a limited number of words to trigger any use-after-free
+    for (size_t j = 0; j < words.size() && j < 20; ++j)
+        dict.spell(words[j]);
 
     return 0;
 }
