@@ -68,6 +68,7 @@
  * SUCH DAMAGE.
  */
 
+#include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
@@ -468,7 +469,7 @@ std::string SfxEntry::add(const char* word, size_t len) {
   std::string result;
   /* make sure all conditions match */
   if ((len > strip.size() || (len == 0 && pmyMgr->get_fullstrip())) &&
-      (len >= numconds) && test_condition(word + len, word) &&
+      (len >= numconds) && test_condition(word, len) &&
       (strip.empty() ||
        (len >= strip.size() && strcmp(word + len - strip.size(), strip.c_str()) == 0))) {
     result.assign(word, len);
@@ -493,14 +494,14 @@ inline char* SfxEntry::nextchar(char* p) {
   return NULL;
 }
 
-inline int SfxEntry::test_condition(const char* st, const char* beg) {
-  const char* pos = NULL;  // group with pos input position
+inline int SfxEntry::test_condition(const char* word, size_t len) {
+  ptrdiff_t spos = -1;     // group with saved input position (-1 = not in group)
   bool neg = false;        // complementer
   bool ingroup = false;    // character in the group
   if (numconds == 0)
     return 1;
   char* p = c.conds;
-  st--;
+  ptrdiff_t st = static_cast<ptrdiff_t>(len) - 1;
   int i = 1;
   while (1) {
     switch (*p) {
@@ -508,7 +509,7 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
         return 1;
       case '[':
         p = nextchar(p);
-        pos = st;
+        spos = st;
         break;
       case '^':
         p = nextchar(p);
@@ -520,34 +521,34 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
         i++;
         // skip the next character
         if (!ingroup) {
-          for (; (opts & aeUTF8) && (st >= beg) && (*st & 0xc0) == 0x80; st--)
+          for (; (opts & aeUTF8) && (st >= 0) && (word[st] & 0xc0) == 0x80; st--)
             ;
           st--;
         }
-        pos = NULL;
+        spos = -1;
         neg = false;
         ingroup = false;
         p = nextchar(p);
-        if (st < beg && p)
+        if (st < 0 && p)
           return 0;  // word <= condition
         break;
       case '.':
-        if (!pos) {
+        if (spos < 0) {
           // dots are not metacharacters in groups: [.]
           p = nextchar(p);
           // skip the next character
-          for (st--; (opts & aeUTF8) && (st >= beg) && (*st & 0xc0) == 0x80;
+          for (st--; (opts & aeUTF8) && (st >= 0) && (word[st] & 0xc0) == 0x80;
                st--)
             ;
-          if (st < beg) {  // word <= condition
+          if (st < 0) {  // word <= condition
             if (p)
               return 0;
             else
               return 1;
           }
-          if ((opts & aeUTF8) && (*st & 0x80)) {  // head of the UTF-8 character
+          if ((opts & aeUTF8) && (word[st] & 0x80)) {  // head of the UTF-8 character
             st--;
-            if (st < beg) {  // word <= condition
+            if (st < 0) {  // word <= condition
               if (p)
                 return 0;
               else
@@ -558,15 +559,15 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
         }
       /* FALLTHROUGH */
       default: {
-        if (*st == *p) {
+        if (st >= 0 && word[st] == *p) {
           p = nextchar(p);
-          if ((opts & aeUTF8) && (*st & 0x80)) {
+          if ((opts & aeUTF8) && (word[st] & 0x80)) {
             st--;
-            while (p && (st >= beg)) {
-              if (*p != *st) {
-                if (!pos)
+            while (p && (st >= 0)) {
+              if (*p != word[st]) {
+                if (spos < 0)
                   return 0;
-                st = pos;
+                st = spos;
                 break;
               }
               // first byte of the UTF-8 multibyte character
@@ -575,7 +576,7 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
               p = nextchar(p);
               st--;
             }
-            if (pos && st != pos) {
+            if (spos >= 0 && st != spos) {
               if (neg)
                 return 0;
               else if (i == numconds)
@@ -587,7 +588,7 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
             }
             if (p && *p != ']')
               p = nextchar(p);
-          } else if (pos) {
+          } else if (spos >= 0) {
             if (neg)
               return 0;
             else if (i == numconds)
@@ -595,16 +596,15 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
             ingroup = true;
             while (p && *p != ']' && ((p = nextchar(p)) != NULL)) {
             }
-            //			if (p && *p != ']') p = nextchar(p);
             st--;
           }
-          if (!pos) {
+          if (spos < 0) {
             i++;
             st--;
           }
-          if (st < beg && p && *p != ']')
+          if (st < 0 && p && *p != ']')
             return 0;      // word <= condition
-        } else if (pos) {  // group
+        } else if (spos >= 0) {  // group
           p = nextchar(p);
         } else
           return 0;
@@ -654,7 +654,6 @@ struct hentry* SfxEntry::checkword(const std::string& word,
     }
 
     const char* tmpword = tmpstring.c_str();
-    const char* endword = tmpword + tmpstring.size();
 
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
@@ -664,7 +663,7 @@ struct hentry* SfxEntry::checkword(const std::string& word,
     // if all conditions are met then check if resulting
     // root word in the dictionary
 
-    if (test_condition(endword, tmpword)) {
+    if (test_condition(tmpword, tmpstring.size())) {
 #ifdef SZOSZABLYA_POSSIBLE_ROOTS
       fprintf(stdout, "%s %s %c\n", word.c_str() + start, tmpword, aflag);
 #endif
@@ -730,9 +729,6 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
     tmpword.append(strip);
     tmpl += strip.size();
 
-    const char* beg = tmpword.c_str();
-    const char* end = beg + tmpl;
-
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
     // this file for more info on exactly what is being
@@ -740,7 +736,7 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition(end, beg)) {
+    if (test_condition(tmpword.c_str(), tmpl)) {
       struct hentry* he;  // hash entry pointer
       if (ppfx) {
         // handle conditional suffix
@@ -796,9 +792,6 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
     tmpword.append(strip);
     tmpl += strip.size();
 
-    const char* beg = tmpword.c_str();
-    const char* end = beg + tmpl;
-
     // now make sure all of the conditions on characters
     // are met.  Please see the appendix at the end of
     // this file for more info on exactly what is being
@@ -806,7 +799,7 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
 
     // if all conditions are met then recall suffix_check
 
-    if (test_condition(end, beg)) {
+    if (test_condition(tmpword.c_str(), tmpl)) {
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen)) {

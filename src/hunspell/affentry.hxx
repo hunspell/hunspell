@@ -222,7 +222,7 @@ class SfxEntry : public AffEntry {
   void initReverseWord();
 
   inline char* nextchar(char* p);
-  inline int test_condition(const char* st, const char* begin);
+  inline int test_condition(const char* word, size_t len);
 };
 
 #endif
