@@ -54,8 +54,9 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
         size_t end = pos;
         while (end < size && data[end] != '\0')
             ++end;
-        if (end > pos)
-            replacements.emplace_back(data + pos, end - pos);
+        size_t len = end - pos;
+        if (len > 0 && len <= MAXLNLEN)
+            replacements.emplace_back(data + pos, len);
         pos = end + 1;  // skip null terminator
     }
 
