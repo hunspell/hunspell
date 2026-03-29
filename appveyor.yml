@@ -1,9 +1,14 @@
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       MSYSTEM: MINGW64
+
+install:
+  - cmd: C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syuu"
+  - cmd: C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syuu"
+  - cmd: C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S --needed autoconf automake libtool make gcc gettext-devel"
 
 build_script:
   - cmd: C:\msys64\usr\bin\bash -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi && CXXFLAGS='-Wall -Wextra -Werror' ./configure && make && make check"
-  - sh: cd $APPVEYOR_BUILD_FOLDER; autoreconf -vfi && CXXFLAGS='-Wall -Wextra -Werror' ./configure && make && make check
+  - sh: export PATH="$(brew --prefix gettext)/bin:$PATH" && cd $APPVEYOR_BUILD_FOLDER && autoreconf -vfi && CXXFLAGS='-Wall -Wextra -Werror' ./configure && make && make check
