@@ -87,7 +87,8 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
             ++repidx;
             // change_token resets head to token start, so consume the
             // replacement to avoid re-replacing it in an infinite loop
-            parser.next_token(token);
+            if (!parser.next_token(token))
+                break;
         }
     }
 
