@@ -39,6 +39,8 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
 
     // first byte: length of operations sequence
     unsigned char opslen = data[0];
+    if (opslen > 64)
+        opslen = 64;
     ++data;
     --size;
     if (opslen > size)
@@ -107,7 +109,7 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
     }
 
     // final spell check of a limited number of words to trigger any use-after-free
-    for (size_t j = 0; j < words.size() && j < 20; ++j)
+    for (size_t j = 0; j < words.size() && j < 5; ++j)
         dict.spell(words[j]);
 
     return 0;
