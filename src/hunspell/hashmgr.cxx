@@ -616,6 +616,11 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   int nLineCount(0);
   while (dict->getline(ts)) {
     ++nLineCount;
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+    // limit words loaded to avoid O(n^2) hash chain walk timeout
+    if (nLineCount >= tablesize)
+      break;
+#endif
     mychomp(ts);
     // split each line into word and morphological description
     size_t dp_pos = 0;
