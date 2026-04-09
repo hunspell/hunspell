@@ -7,8 +7,11 @@ if [ -z "${OUT}" ] || [ -z "${SRC}" ] || [ -z "${WORK}" ]; then
     exit 1
 fi
 
-autoreconf -vfi
-./configure --disable-shared --enable-static
+# The oss-fuzz base image (Ubuntu Focal) has gettext 0.19, but
+# configure.ac requires 0.20. Fuzzers don't need NLS, so skip
+# autopoint and disable NLS entirely.
+AUTOPOINT=true autoreconf -vfi
+./configure --disable-shared --enable-static --disable-nls
 make clean
 make -j$(nproc)
 $CXX $CXXFLAGS -o $OUT/fuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/fuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
