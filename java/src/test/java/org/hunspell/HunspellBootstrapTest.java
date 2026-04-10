@@ -76,6 +76,37 @@ class HunspellBootstrapTest {
         }
     }
 
+    @Test
+    void dictionaryParsingSupportsEscapedSlashEntries() throws IOException {
+        Path dictionary = writeDictionary("3", "1\\/2", "http:\\/\\/", "\\/usr\\/share\\/myspell\\/");
+
+        try (Hunspell hunspell = Hunspell.builder().dictionary(dictionary).build()) {
+            assertTrue(hunspell.spell("1/2"));
+            assertTrue(hunspell.spell("http://"));
+            assertTrue(hunspell.spell("/usr/share/myspell/"));
+        }
+    }
+
+    @Test
+    void dictionaryParsingIgnoresFlagsAndMorphologicalFields() throws IOException {
+        Path dictionary = writeDictionary("1", "created/U\tst:created");
+
+        try (Hunspell hunspell = Hunspell.builder().dictionary(dictionary).build()) {
+            assertTrue(hunspell.spell("created"));
+            assertFalse(hunspell.spell("created/U"));
+        }
+    }
+
+    @Test
+    void dictionaryParsingIgnoresCommentLines() throws IOException {
+        Path dictionary = writeDictionary("3", "# comment", "hello", "# another");
+
+        try (Hunspell hunspell = Hunspell.builder().dictionary(dictionary).build()) {
+            assertTrue(hunspell.spell("hello"));
+            assertFalse(hunspell.spell("# comment"));
+        }
+    }
+
     private static Path writeDictionary(String... lines) throws IOException {
         Path file = Files.createTempFile("hunspell-java", ".dic");
         Files.write(file, String.join(System.lineSeparator(), lines).concat(System.lineSeparator()).getBytes());

@@ -30,6 +30,17 @@ class HunspellToolTest {
         assertEquals("hello\nworld\n", output);
     }
 
+    @Test
+    void goodModeResolvesDictionaryWithoutDicExtension() throws IOException {
+        Path tempDir = Files.createTempDirectory("hunspell-cli");
+        Path dictionaryBase = tempDir.resolve("slash");
+        Files.writeString(dictionaryBase.resolveSibling("slash.dic"), "2\n1\\/2\nhttp:\\/\\/\n");
+
+        String output = runTool(new String[] {"-d", dictionaryBase.toString(), "-G"}, "1/2\nhttp://\nhttps://\n");
+
+        assertEquals("1/2\nhttp://\n", output);
+    }
+
     private static String runTool(String[] args, String input) throws IOException {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();

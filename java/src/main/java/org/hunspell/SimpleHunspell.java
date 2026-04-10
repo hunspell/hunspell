@@ -151,12 +151,37 @@ final class SimpleHunspell implements Hunspell {
             }
             for (int i = start; i < lines.size(); i++) {
                 String line = lines.get(i).strip();
-                if (!line.isEmpty()) {
-                    words.add(line.split("/", 2)[0]);
+                if (!line.isEmpty() && !line.startsWith("#")) {
+                    String stem = parseStem(line);
+                    if (!stem.isEmpty()) {
+                        words.add(stem);
+                    }
                 }
             }
         } catch (IOException ex) {
             throw new HunspellIoException("Unable to read dictionary: " + dicPath, ex);
         }
+    }
+
+    private static String parseStem(String line) {
+        StringBuilder stem = new StringBuilder();
+        boolean escaped = false;
+        for (int i = 0; i < line.length(); i++) {
+            char current = line.charAt(i);
+            if (escaped) {
+                stem.append(current);
+                escaped = false;
+                continue;
+            }
+            if (current == '\\') {
+                escaped = true;
+                continue;
+            }
+            if (current == '/' || Character.isWhitespace(current)) {
+                break;
+            }
+            stem.append(current);
+        }
+        return stem.toString();
     }
 }
