@@ -33,7 +33,9 @@ final class SimpleHunspell implements Hunspell {
     @Override
     public List<String> suggest(String word) {
         List<String> ranked = new ArrayList<>(words);
-        ranked.sort(Comparator.comparingInt(candidate -> distance(word, candidate)));
+        ranked.sort(Comparator
+            .comparingInt((String candidate) -> distance(word, candidate))
+            .thenComparing(Comparator.naturalOrder()));
         if (ranked.size() > maxSuggestions) {
             ranked = ranked.subList(0, maxSuggestions);
         }
@@ -42,7 +44,7 @@ final class SimpleHunspell implements Hunspell {
 
     @Override
     public List<String> suffixSuggest(String rootWord) {
-        List<String> matches = words.stream().filter(w -> w.endsWith(rootWord)).sorted().toList();
+        List<String> matches = words.stream().filter(w -> w.startsWith(rootWord)).sorted().toList();
         return Collections.unmodifiableList(matches);
     }
 
