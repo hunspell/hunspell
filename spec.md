@@ -320,6 +320,26 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 - Establishes the manager-class architecture target named in `plan.md` and unlocks parity for
   the `affixes`, `flag`, `flaglong`, `flagnum`, `flagutf8`, and `base_utf` ported subsets.
 
+### Milestone G — Phase 1 closure: IGNORE, NEEDAFFIX, FORBIDDENWORD, BREAK (current session)
+**Implemented**
+- `IGNORE` directive: characters are removed from stored stems, affix strip/append, and
+  spell-time input so the lookup pipeline operates in the same "ignore-stripped" space as
+  C++ `AffixMgr::remove_ignored_chars`. `HashManager.load` now accepts a normalizer applied
+  per stem.
+- `NEEDAFFIX` flag: direct stem matches flagged NEEDAFFIX are skipped so the lookup falls
+  through to affix derivation, while affix-derived forms satisfy the requirement.
+- `FORBIDDENWORD` flag: the lookup path is refactored around a tri-state `LookupResult` so
+  a forbidden surface form short-circuits case-variant and affix-derivation fallbacks,
+  while non-forbidden homonyms still accept the word.
+- `BREAK` directive: `HunspellImpl::spell_break` is mirrored as a bounded-depth recursive
+  split with `^`/`$` anchored patterns, enabling hyphen/en-dash recursive acceptance while
+  delegating each split half back through the full spell pipeline.
+
+**Contribution**
+- Closes Phase 1 of `plan.md` by shipping parity for the four remaining directives that
+  the Phase 1 corpora exercise, taking the Java port from 10 to 14 ported `.good/.wrong`
+  subsets with no regressions.
+
 ### Current parity snapshot
 - Original C++ target corpus: **140 tests**.
 - Ported/passing Java fixture coverage (meaningful subsets or full-file assertions where implemented):
@@ -333,5 +353,9 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
   - `flagnum.dic`
   - `flagutf8.dic`
   - `base_utf.dic`
+  - `ignore.dic`
+  - `needaffix.dic`
+  - `forbiddenword.dic`
+  - `break.dic`
 
 ---

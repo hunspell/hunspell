@@ -41,6 +41,18 @@ class HunspellPortedCorpusTest {
     private static final Path FLAGUTF8_AFF = Path.of("..", "tests", "flagutf8.aff").normalize();
     private static final Path FLAGUTF8_DIC = Path.of("..", "tests", "flagutf8.dic").normalize();
     private static final Path FLAGUTF8_GOOD = Path.of("..", "tests", "flagutf8.good").normalize();
+    private static final Path IGNORE_AFF = Path.of("..", "tests", "ignore.aff").normalize();
+    private static final Path IGNORE_DIC = Path.of("..", "tests", "ignore.dic").normalize();
+    private static final Path IGNORE_GOOD = Path.of("..", "tests", "ignore.good").normalize();
+    private static final Path NEEDAFFIX_AFF = Path.of("..", "tests", "needaffix.aff").normalize();
+    private static final Path NEEDAFFIX_DIC = Path.of("..", "tests", "needaffix.dic").normalize();
+    private static final Path FORBIDDENWORD_AFF = Path.of("..", "tests", "forbiddenword.aff").normalize();
+    private static final Path FORBIDDENWORD_DIC = Path.of("..", "tests", "forbiddenword.dic").normalize();
+    private static final Path FORBIDDENWORD_GOOD = Path.of("..", "tests", "forbiddenword.good").normalize();
+    private static final Path FORBIDDENWORD_WRONG = Path.of("..", "tests", "forbiddenword.wrong").normalize();
+    private static final Path BREAK_AFF = Path.of("..", "tests", "break.aff").normalize();
+    private static final Path BREAK_DIC = Path.of("..", "tests", "break.dic").normalize();
+    private static final Path BREAK_WRONG = Path.of("..", "tests", "break.wrong").normalize();
 
     @Test
     void conditionGood_ofosuf1_isAccepted() {
@@ -302,6 +314,96 @@ class HunspellPortedCorpusTest {
             assertFalse(hunspell.spell("tomorow"));
             assertFalse(hunspell.spell("Nasa"));
         }
+    }
+
+    @Test
+    void ignoreCorpusGood_allWordsAccepted() {
+        assertAllAccepted(IGNORE_AFF, IGNORE_DIC, IGNORE_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void ignoreGood_strippedVowelsMatchStemAndAffix() {
+        try (Hunspell hunspell = Hunspell.builder().affix(IGNORE_AFF).dictionary(IGNORE_DIC).build()) {
+            // IGNORE aeiou strips vowels from both stored stems and lookup input,
+            // and `re` prefix works in that stripped space (so "reexpression" and "rxprssn"
+            // round-trip to the same stem).
+            assertTrue(hunspell.spell("example"));
+            assertTrue(hunspell.spell("expression"));
+            assertTrue(hunspell.spell("xmpl"));
+            assertTrue(hunspell.spell("xprssn"));
+            assertTrue(hunspell.spell("reexpression"));
+            assertTrue(hunspell.spell("rxprssn"));
+        }
+    }
+
+    @Test
+    void needAffixGood_bareStemRejectedButAffixedAccepted() {
+        // `foo/YXA` carries the NEEDAFFIX flag so `foo` on its own must be rejected,
+        // while the affixed derivation `foos` (via SFX A) still rounds back to the stem.
+        try (Hunspell hunspell = Hunspell.builder().affix(NEEDAFFIX_AFF).dictionary(NEEDAFFIX_DIC).build()) {
+            assertFalse(hunspell.spell("foo"));
+            assertTrue(hunspell.spell("foos"));
+            assertTrue(hunspell.spell("bar"));
+        }
+    }
+
+    @Test
+    void forbiddenWordCorpusGood_allWordsAccepted() {
+        assertAllAccepted(FORBIDDENWORD_AFF, FORBIDDENWORD_DIC, FORBIDDENWORD_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void forbiddenWordCorpusWrong_allForbiddenFormsRejected() {
+        assertAllRejected(FORBIDDENWORD_AFF, FORBIDDENWORD_DIC, FORBIDDENWORD_WRONG, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void forbiddenWordGood_homonymWithoutForbiddenFlagStillAccepted() {
+        // `foo/S` and `foo/YX` are homonyms; because one homonym lacks the FORBIDDENWORD
+        // flag, `foo` must be accepted. This mirrors C++ Hunspell's next_homonym walk.
+        try (Hunspell hunspell = Hunspell.builder().affix(FORBIDDENWORD_AFF).dictionary(FORBIDDENWORD_DIC).build()) {
+            assertTrue(hunspell.spell("foo"));
+            assertTrue(hunspell.spell("bar"));
+            assertTrue(hunspell.spell("kg"));
+            assertTrue(hunspell.spell("cm"));
+        }
+    }
+
+    @Test
+    void forbiddenWordWrong_forbiddenSurfaceFormBlocksCaseFallback() {
+        // `Kg/X` and `KG/X` are FORBIDDENWORD-flagged, so neither case-variant may fall
+        // back to the clean `kg` entry. Likewise for `Cm/X` vs. `cm`.
+        try (Hunspell hunspell = Hunspell.builder().affix(FORBIDDENWORD_AFF).dictionary(FORBIDDENWORD_DIC).build()) {
+            assertFalse(hunspell.spell("bars"));
+            assertFalse(hunspell.spell("foos"));
+            assertFalse(hunspell.spell("Kg"));
+            assertFalse(hunspell.spell("KG"));
+            assertFalse(hunspell.spell("Cm"));
+        }
+    }
+
+    @Test
+    void breakGood_recursiveDashSplittingAccepted() {
+        // BREAK `-` and `–` (n-dash) split the input recursively and each piece must be
+        // independently spellable; mirrors HunspellImpl::spell_break.
+        try (Hunspell hunspell = Hunspell.builder().affix(BREAK_AFF).dictionary(BREAK_DIC).build()) {
+            assertTrue(hunspell.spell("foo"));
+            assertTrue(hunspell.spell("bar"));
+            assertTrue(hunspell.spell("fox-bax"));
+            assertTrue(hunspell.spell("foo-bar"));
+            assertTrue(hunspell.spell("foo\u2013bar"));
+            assertTrue(hunspell.spell("bar-baz"));
+            assertTrue(hunspell.spell("baz-foo"));
+            assertTrue(hunspell.spell("foo-bar-foo-bar"));
+            assertTrue(hunspell.spell("foo-bar\u2013foo-bar"));
+            assertTrue(hunspell.spell("e-mail"));
+            assertTrue(hunspell.spell("e-mail-foo"));
+        }
+    }
+
+    @Test
+    void breakCorpusWrong_allForbiddenFormsRejected() {
+        assertAllRejected(BREAK_AFF, BREAK_DIC, BREAK_WRONG, StandardCharsets.UTF_8);
     }
 
     private static void assertConditionAccepted(String word) {

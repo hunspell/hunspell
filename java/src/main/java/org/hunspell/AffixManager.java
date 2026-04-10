@@ -34,6 +34,11 @@ final class AffixManager {
     private String encoding = "UTF-8";
     private Charset charset = StandardCharsets.ISO_8859_1;
     private String wordChars = "";
+    private String ignoreChars = "";
+    private int forbiddenWordFlag = -1;
+    private int needAffixFlag = -1;
+    private final List<String> breakTable = new ArrayList<>();
+    private boolean breakTableExplicit;
     private final Map<Integer, List<AffixRule>> prefixes = new HashMap<>();
     private final Map<Integer, List<AffixRule>> suffixes = new HashMap<>();
     private final List<AffixRule> allPrefixes = new ArrayList<>();
@@ -55,6 +60,43 @@ final class AffixManager {
 
     String wordChars() {
         return wordChars;
+    }
+
+    String ignoreChars() {
+        return ignoreChars;
+    }
+
+    int forbiddenWordFlag() {
+        return forbiddenWordFlag;
+    }
+
+    int needAffixFlag() {
+        return needAffixFlag;
+    }
+
+    List<String> breakTable() {
+        if (!breakTableExplicit && breakTable.isEmpty()) {
+            // Hunspell's default BREAK table when none is declared: `-`, `^-`, `-$`.
+            return List.of("-", "^-", "-$");
+        }
+        return Collections.unmodifiableList(breakTable);
+    }
+
+    /** Strip IGNORE characters from a word, matching {@code AffixMgr::remove_ignored_chars}. */
+    String normalizeWord(String word) {
+        if (ignoreChars.isEmpty() || word == null || word.isEmpty()) {
+            return word;
+        }
+        StringBuilder sb = new StringBuilder(word.length());
+        for (int i = 0; i < word.length(); ) {
+            int cp = word.codePointAt(i);
+            int count = Character.charCount(cp);
+            if (ignoreChars.indexOf(cp) < 0) {
+                sb.appendCodePoint(cp);
+            }
+            i += count;
+        }
+        return sb.toString();
     }
 
     void load(Path affPath) {
@@ -117,6 +159,38 @@ final class AffixManager {
                 wordChars = line.substring("WORDCHARS".length()).strip();
                 continue;
             }
+            if ("IGNORE".equals(parts[0]) && parts.length >= 2) {
+                ignoreChars = line.substring("IGNORE".length()).strip();
+                continue;
+            }
+            if ("FORBIDDENWORD".equals(parts[0]) && parts.length >= 2) {
+                forbiddenWordFlag = Flags.decodeSingle(parts[1], flagMode);
+                continue;
+            }
+            if ("NEEDAFFIX".equals(parts[0]) && parts.length >= 2) {
+                needAffixFlag = Flags.decodeSingle(parts[1], flagMode);
+                continue;
+            }
+            if ("BREAK".equals(parts[0]) && parts.length >= 2 && parts[1].matches("\\d+")) {
+                breakTableExplicit = true;
+                int count = Integer.parseInt(parts[1]);
+                int read = 0;
+                while (read < count && i + 1 < lines.size()) {
+                    i++;
+                    String entry = lines.get(i).strip();
+                    if (entry.isEmpty() || entry.startsWith("#")) {
+                        continue;
+                    }
+                    String[] tokens = entry.split("\\s+", 2);
+                    if ("BREAK".equals(tokens[0]) && tokens.length >= 2) {
+                        breakTable.add(tokens[1].strip());
+                    } else {
+                        breakTable.add(entry);
+                    }
+                    read++;
+                }
+                continue;
+            }
             if (("PFX".equals(parts[0]) || "SFX".equals(parts[0])) && parts.length >= 4
                 && parts[3].matches("\\d+")) {
                 boolean isPrefix = "PFX".equals(parts[0]);
@@ -149,6 +223,11 @@ final class AffixManager {
                         append = "0".equals(appendField) ? "" : appendField;
                         contFlags = new int[0];
                     }
+                    // IGNORE characters are removed from affix strip/append so the rule operates
+                    // in the same "ignore-stripped" space as the dictionary stems and lookup input,
+                    // mirroring how C++ Hunspell applies IGNORE across the lookup pipeline.
+                    strip = normalizeWord(strip);
+                    append = normalizeWord(append);
                     String condition = rule[4];
                     AffixRule affixRule =
                         new AffixRule(flag, isPrefix, cross, strip, append, condition, contFlags);

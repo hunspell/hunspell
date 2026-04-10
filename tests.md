@@ -30,14 +30,14 @@ Total tests: **140**
 - [x] `flagnum.dic` *(ported subset passing in Java: full `flagnum.good` corpus assertions exercising `FLAG num` comma-separated decimal flag decoding)*
 - [x] `flagutf8.dic` *(ported subset passing in Java: full `flagutf8.good` corpus assertions exercising `FLAG UTF-8` codepoint flag decoding)*
 - [x] `slash.dic` *(ported subset passing in Java: full `slash.good` corpus assertions plus direct checks for escaped slash tokens, including bare `/`, `1/2`, and `http://`)*
-- [ ] `forbiddenword.dic`
+- [x] `forbiddenword.dic` *(ported subset passing in Java: full `forbiddenword.good`/`forbiddenword.wrong` corpus assertions plus direct homonym and case-fallback short-circuit checks (`foo`/`bar`/`kg`/`cm` accepted; `bars`/`foos`/`Kg`/`KG`/`Cm` rejected))*
 - [ ] `nosuggest.dic`
 - [ ] `alias.dic`
 - [ ] `alias2.dic`
 - [ ] `alias3.dic`
 - [ ] `breakdefault.dic`
-- [ ] `break.dic`
-- [ ] `needaffix.dic`
+- [x] `break.dic` *(ported subset passing in Java: recursive hyphen/n-dash split acceptance (`foo-bar`, `foo–bar`, `foo-bar-foo-bar`, `e-mail-foo`) plus full `break.wrong` corpus rejection; leverages FORBIDDENWORD short-circuit for `foo-baz`)*
+- [x] `needaffix.dic` *(ported subset passing in Java: direct checks covering bare stem rejection (`foo` rejected via NEEDAFFIX flag) and affixed-form acceptance (`foos`, `bar`))*
 - [ ] `needaffix2.dic`
 - [ ] `needaffix3.dic`
 - [ ] `needaffix4.dic`
@@ -89,7 +89,7 @@ Total tests: **140**
 - [ ] `i54980.dic`
 - [ ] `maputf.dic`
 - [ ] `reputf.dic`
-- [ ] `ignore.dic`
+- [x] `ignore.dic` *(ported subset passing in Java: full `ignore.good` corpus assertions plus direct checks (`example`, `expression`, `xmpl`, `xprssn`, `reexpression`, `rxprssn`) covering `IGNORE aeiou` normalization of stems, affix strip/append, and lookup input)*
 - [ ] `ignoreutf.dic`
 - [ ] `right_to_left_mark.dic`
 - [ ] `1592880.dic`

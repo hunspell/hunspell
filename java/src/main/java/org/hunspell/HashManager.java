@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 /**
  * Lightweight Java port of {@code HashMgr} ({@code hashmgr.cxx}).
@@ -55,6 +56,15 @@ final class HashManager {
     }
 
     int load(Path dicPath, Charset charset) {
+        return load(dicPath, charset, UnaryOperator.identity());
+    }
+
+    /**
+     * Load a dictionary file while applying {@code normalizer} to each stem
+     * before indexing. The normalizer mirrors {@code AffixMgr} IGNORE handling
+     * so stored stems live in the same "ignore-stripped" space as lookup input.
+     */
+    int load(Path dicPath, Charset charset, UnaryOperator<String> normalizer) {
         try {
             List<String> lines = Files.readAllLines(dicPath, charset);
             int start = 0;
@@ -73,7 +83,8 @@ final class HashManager {
                 }
                 String flagToken = parseFlagToken(line);
                 int[] flags = Flags.decode(flagToken, flagMode);
-                addEntry(stem, flags);
+                String normalized = normalizer.apply(stem);
+                addEntry(normalized, flags);
                 loaded++;
             }
             return loaded;

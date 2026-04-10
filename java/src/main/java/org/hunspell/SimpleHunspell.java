@@ -96,52 +96,199 @@ final class SimpleHunspell implements Hunspell {
     }
 
     /**
-     * Walks the same lookup ladder as {@code Hunspell::spell}: exact match first,
-     * then case/punctuation normalisation variants, then affix recursion. The
-     * returned stem is the resolved root (or {@code null} if rejected).
+     * Walks the same lookup ladder as {@code HunspellImpl::spell}: the caller's
+     * word first, then (if still unresolved) a BREAK-driven recursive split,
+     * trailing-dot normalisation, and case-variant fallbacks. FORBIDDENWORD on
+     * the surface form short-circuits the ladder so a forbidden entry cannot be
+     * rescued by a lowercased variant or by affix derivation.
      */
     private String resolveStem(String word) {
         if (word == null || word.isEmpty()) {
             return null;
         }
-        String stem = lookupVariant(word);
-        if (stem != null) {
-            return stem;
+        LookupResult direct = lookupVariant(word);
+        if (direct.accepted()) {
+            return direct.stem();
+        }
+        if (direct.forbidden()) {
+            return null;
+        }
+        if (spellBreak(word, /*depth=*/ 0)) {
+            return word;
         }
         String withoutTrailingDots = stripTrailingDots(word);
         if (!withoutTrailingDots.equals(word) && !withoutTrailingDots.isEmpty()) {
-            stem = resolveStem(withoutTrailingDots);
+            String stem = resolveStem(withoutTrailingDots);
             if (stem != null) {
                 return stem;
             }
         }
         if (isTitleCase(word)) {
             String lower = word.toLowerCase(Locale.ROOT);
-            stem = lookupVariant(lower);
-            if (stem != null) {
-                return stem;
+            LookupResult lr = lookupVariant(lower);
+            if (lr.accepted()) {
+                return lr.stem();
             }
         } else if (isAllUpper(word)) {
             String lower = word.toLowerCase(Locale.ROOT);
-            stem = lookupVariant(lower);
-            if (stem != null) {
-                return stem;
+            LookupResult lr = lookupVariant(lower);
+            if (lr.accepted()) {
+                return lr.stem();
             }
             String capitalized = capitalize(lower);
-            stem = lookupVariant(capitalized);
-            if (stem != null) {
-                return stem;
+            lr = lookupVariant(capitalized);
+            if (lr.accepted()) {
+                return lr.stem();
             }
         }
         return null;
     }
 
-    private String lookupVariant(String word) {
-        if (hashManager.contains(word)) {
-            return word;
+    /**
+     * Tri-state lookup result mirroring how {@code HunspellImpl::spell}
+     * distinguishes "found", "not found (fall through)", and
+     * "found-but-forbidden (short circuit)".
+     */
+    private record LookupResult(boolean accepted, boolean forbidden, String stem) {
+        static final LookupResult NONE = new LookupResult(false, false, null);
+        static final LookupResult FORBIDDEN = new LookupResult(false, true, null);
+
+        static LookupResult of(String stem) {
+            return new LookupResult(true, false, stem);
         }
-        HashManager.Entry hit = affixManager.affixCheck(word, hashManager);
-        return hit == null ? null : hit.stem();
+    }
+
+    private LookupResult lookupVariant(String word) {
+        String normalized = affixManager.normalizeWord(word);
+        int forbiddenFlag = affixManager.forbiddenWordFlag();
+        int needAffixFlag = affixManager.needAffixFlag();
+
+        List<HashManager.Entry> direct = hashManager.lookup(normalized);
+        if (!direct.isEmpty()) {
+            boolean sawForbidden = false;
+            for (HashManager.Entry entry : direct) {
+                boolean entryForbidden = forbiddenFlag >= 0 && entry.hasFlag(forbiddenFlag);
+                if (entryForbidden) {
+                    sawForbidden = true;
+                    continue;
+                }
+                if (needAffixFlag >= 0 && entry.hasFlag(needAffixFlag)) {
+                    // Stem is marked needaffix; skip direct acceptance but still try derivations.
+                    continue;
+                }
+                return LookupResult.of(entry.stem());
+            }
+            if (sawForbidden) {
+                // A FORBIDDENWORD surface form is final: don't fall through to affix
+                // derivations or case fallbacks. This matches how C++ Hunspell rejects
+                // `bars`/`foos`/`Kg`/`Cm` even though affix or case variants exist.
+                return LookupResult.FORBIDDEN;
+            }
+        }
+
+        HashManager.Entry hit = affixManager.affixCheck(normalized, hashManager);
+        if (hit != null) {
+            if (forbiddenFlag >= 0 && hit.hasFlag(forbiddenFlag)) {
+                return LookupResult.FORBIDDEN;
+            }
+            return LookupResult.of(hit.stem());
+        }
+        return LookupResult.NONE;
+    }
+
+    /**
+     * Mirrors {@code HunspellImpl::spell_break}: if the word contains any
+     * entry from the BREAK table, split recursively on that break point and
+     * accept only when both sides are spellable. Recursion depth is bounded
+     * the same way C++ Hunspell caps it (10) to avoid pathological inputs.
+     */
+    private boolean spellBreak(String word, int depth) {
+        if (depth > 10) {
+            return false;
+        }
+        List<String> breakTable = affixManager.breakTable();
+        for (String pattern : breakTable) {
+            if (pattern == null || pattern.isEmpty()) {
+                continue;
+            }
+            boolean anchorStart = pattern.startsWith("^");
+            boolean anchorEnd = pattern.endsWith("$");
+            String core = pattern;
+            if (anchorStart) {
+                core = core.substring(1);
+            }
+            if (anchorEnd) {
+                core = core.substring(0, core.length() - 1);
+            }
+            if (core.isEmpty()) {
+                continue;
+            }
+            if (anchorStart) {
+                if (word.length() > core.length() && word.startsWith(core)) {
+                    // Leading break character is not allowed as a standalone token.
+                    return false;
+                }
+                continue;
+            }
+            if (anchorEnd) {
+                if (word.length() > core.length() && word.endsWith(core)) {
+                    return false;
+                }
+                continue;
+            }
+            int from = 1;
+            int idx;
+            while ((idx = word.indexOf(core, from)) >= 0) {
+                if (idx + core.length() >= word.length()) {
+                    break;
+                }
+                String left = word.substring(0, idx);
+                String right = word.substring(idx + core.length());
+                if (resolveStemForBreak(left, depth + 1) && resolveStemForBreak(right, depth + 1)) {
+                    return true;
+                }
+                from = idx + 1;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper invoked by {@link #spellBreak} for each split half. Mirrors the
+     * C++ recursive call into {@code spell} on the sub-word so forbidden/case
+     * handling and further break splits apply to every piece.
+     */
+    private boolean resolveStemForBreak(String segment, int depth) {
+        if (segment.isEmpty()) {
+            return false;
+        }
+        LookupResult direct = lookupVariant(segment);
+        if (direct.accepted()) {
+            return true;
+        }
+        if (direct.forbidden()) {
+            return false;
+        }
+        if (spellBreak(segment, depth)) {
+            return true;
+        }
+        if (isTitleCase(segment)) {
+            LookupResult lr = lookupVariant(segment.toLowerCase(Locale.ROOT));
+            if (lr.accepted()) {
+                return true;
+            }
+        } else if (isAllUpper(segment)) {
+            String lower = segment.toLowerCase(Locale.ROOT);
+            LookupResult lr = lookupVariant(lower);
+            if (lr.accepted()) {
+                return true;
+            }
+            lr = lookupVariant(capitalize(lower));
+            if (lr.accepted()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static int distance(String left, String right) {
@@ -260,9 +407,10 @@ final class SimpleHunspell implements Hunspell {
                 affixManager.load(affPath);
             }
             HashManager hashManager = new HashManager(affixManager.flagMode());
-            hashManager.load(primaryDictionary, affixManager.charset());
+            java.util.function.UnaryOperator<String> normalizer = affixManager::normalizeWord;
+            hashManager.load(primaryDictionary, affixManager.charset(), normalizer);
             for (Path extraDictionary : extraDictionaries) {
-                hashManager.load(extraDictionary, affixManager.charset());
+                hashManager.load(extraDictionary, affixManager.charset(), normalizer);
             }
             return new SimpleHunspell(affixManager, hashManager, maxSuggestions);
         }

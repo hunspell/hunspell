@@ -23,7 +23,7 @@ Current state is intentionally transitional: most logic is in `SimpleHunspell` a
 ---
 
 ## Phase 1: parser + spell acceptance/rejection parity (`.good/.wrong`)
-**Status: 🟡 In progress (manager-class refactor + flag-format and continuation-class parity landed)**
+**Status: ✅ Completed for the stated exit-criteria scope (manager-class refactor, FLAG/continuation parity, IGNORE/NEEDAFFIX/FORBIDDENWORD/BREAK all landed)**
 
 ### Workstreams
 1. **Affix parser parity hardening**
@@ -38,11 +38,12 @@ Current state is intentionally transitional: most logic is in `SimpleHunspell` a
 
 ### Exit criteria
 - Java passes ported `.good/.wrong` subsets for at least: `condition`, `condition_utf`, `base`, `slash`,
-  `affixes`, `flag`, `flaglong`, `flagnum`, `flagutf8`, and a `base_utf` subset.
+  `affixes`, `flag`, `flaglong`, `flagnum`, `flagutf8`, `base_utf`, `ignore`, `needaffix`,
+  `forbiddenword`, and `break`.
 - No regressions in existing Java spell tests.
 
 ### Current progress evidence
-- Java tests validate the targeted corpora as ported subsets and pass (64 total Java tests).
+- Java tests validate the targeted corpora as ported subsets and pass (73 total Java tests).
 - `SimpleHunspell` is now a thin façade over package-private `AffixManager` (mirrors `affixmgr.cxx`)
   and `HashManager` (mirrors `hashmgr.cxx`); spell-time lookup follows the C++ control flow
   (`prefix_check` → `suffix_check` → `suffix_check_twosfx` → `prefix_check_twosfx`) instead of
@@ -51,8 +52,21 @@ Current state is intentionally transitional: most logic is in `SimpleHunspell` a
   per-rule continuation classes (`SFX A 0 s/123 .`).
 - Two-level continuation lookup wired through `AffixManager.suffixCheckTwoSfx` and
   `prefixCheckTwoSfx`, enabling acceptance of fixtures like `foosbar` / `unfoosbar`.
-- Remaining gap: full `.good/.wrong` matrix across additional corpora (allcaps, needaffix,
-  forbiddenword, compound suites) and richer casing/IGNORE/BREAK behaviors.
+- `IGNORE` directive: characters are removed from stored stems, affix strip/append, and
+  spell-time input so the lookup pipeline operates in the same "ignore-stripped" space as
+  C++ `AffixMgr::remove_ignored_chars`.
+- `NEEDAFFIX` flag: direct stem matches flagged NEEDAFFIX are skipped so the lookup falls
+  through to affix derivation, mirroring C++ `needaffix` behavior on the bare stem.
+- `FORBIDDENWORD` flag: direct matches that are exclusively FORBIDDENWORD-flagged short
+  circuit the lookup ladder via a tri-state `LookupResult` so no case-variant or affix
+  fallback can rescue forbidden surface forms (replicates the C++ next-homonym walk and
+  forbidden-short-circuit semantics).
+- `BREAK` directive: `HunspellImpl::spell_break` is mirrored as a bounded-depth recursive
+  split with anchored `^`/`$` patterns, so hyphenated/recursive tokens like
+  `foo-bar-foo-bar` and `foo\u2013bar` are accepted while anchored or forbidden pieces
+  (e.g. `foo-baz`, leading `-foo`) are rejected.
+- Remaining gap (deferred to Phase 3 edge-case suites): allcaps casing matrix with
+  WORDCHARS apostrophes, compound suites, and morphological-field parity.
 
 ---
 
