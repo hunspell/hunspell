@@ -5,7 +5,7 @@ Source: `tests/Makefile.am` `TESTS` list used by `make check`.
 Total tests: **140**
 
 - [ ] `affixes.dic`
-- [x] `condition.dic` *(ported subset passing in Java: affix condition matching for selected prefix/suffix forms, including accepted/rejected examples from `condition.good`/`condition.wrong`)*
+- [x] `condition.dic` *(ported subset passing in Java: 10 direct corpus assertions from `condition.good`/`condition.wrong`, including accepted and rejected forms with ASCII and accented words)*
 - [ ] `condition_utf.dic`
 - [ ] `base.dic`
 - [ ] `base_utf.dic`
@@ -29,7 +29,7 @@ Total tests: **140**
 - [ ] `flaglong.dic`
 - [ ] `flagnum.dic`
 - [ ] `flagutf8.dic`
-- [x] `slash.dic` *(ported subset passing in Java: escaped slash token acceptance / dictionary base-path resolution)*
+- [x] `slash.dic` *(ported subset passing in Java: escaped slash token acceptance, dictionary base-path resolution, and direct checks for `1/2` + `http://` from `slash.good`)*
 - [ ] `forbiddenword.dic`
 - [ ] `nosuggest.dic`
 - [ ] `alias.dic`
