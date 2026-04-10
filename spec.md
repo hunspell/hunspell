@@ -258,6 +258,36 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 
 ---
 
+## 15) Work Log Summary
+
+### Session Date
+- 2026-04-10
+
+### Implementation Progress in This Session
+- Improved `.dic` parsing in the Java engine so escaped slashes (`\/`) are decoded as literal `/` in dictionary entries.
+- Updated parsing to stop stem extraction at unescaped flag separators (`/`) and whitespace (so entries like `created/U<TAB>st:created` load as stem `created`).
+- Kept behavior compatible with the current minimal v1 scope (still no affix-rule generation; this session only improves raw dictionary stem loading fidelity).
+
+### Tests Added/Updated
+- Added Java unit coverage for escaped slash entries (mapped from the C++ corpus intent in `tests/slash.dic` / `tests/slash.good`).
+- Added Java unit coverage for dictionary entries containing flags + morphology fields on a single line.
+- Added CLI coverage for `-d` dictionary base-path resolution without `.dic` extension.
+
+### Passing Test Count (Session-over-Session)
+- Previous session: **8 passing Java tests**
+- Current session: **11 passing Java tests**
+- Net change: **+3 tests passing** (no regressions)
+
+### Test Parity vs Original Implementation
+- Original C++ suite target listed in `tests/Makefile.am`: **140 tests**.
+- Java port passing tests in this session: **11 focused unit tests**, including one direct port of slash dictionary behavior and two API/CLI behavior checks aligned with the v1 subset.
+- Parity status: **partial / early bootstrap stage**; Java does not yet execute the full C++ corpus and does not yet implement affix expansion/suggestion parity.
+
+### Ported C++-Corpus Behaviors Currently Passing in Java
+- ✅ `slash` dictionary escaped-slash acceptance behavior (from `tests/slash.dic` + expected accepted tokens in `tests/slash.good`) is now covered and passing in Java tests.
+
+---
+
 ## Session Work Log
 
 ### Session 1 — April 10, 2026
@@ -308,6 +338,21 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
   - `check` result shape
   - CLI `-l` and `-G` output filtering behavior
 - Updated implementation for deterministic suggestion ordering (distance, then lexical tie-break).
+
+### Session 2026-04-10 (Address review feedback)
+
+- Clarified repository workflow instructions by updating `AGENTS.md` to explicitly require updating `tests.md` whenever C++ tests are ported and passing in Java.
+- Updated `tests.md` checklist progress by marking `slash.dic` as ported/passing in Java (subset behavior coverage).
+- Added a new Java unit test to verify dictionary comment lines are ignored during load.
+
+**Work-log test progression requirement**
+- Previous session passing tests: **11**.
+- Current session passing tests: **12**.
+- Status: **Improved** (current > previous), with no regressions.
+
+**Parity with original implementation**
+- Original implementation target remains **140 C++ tests**.
+- Java parity remains **partial**, but now explicitly tracked in `tests.md` with `slash.dic` marked as ported/passing subset behavior.
 - Updated implementation for `suffixSuggest` to return words that start with the supplied root.
 
 **Pass count versus previous session:**

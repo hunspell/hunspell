@@ -29,7 +29,7 @@ Total tests: **140**
 - [ ] `flaglong.dic`
 - [ ] `flagnum.dic`
 - [ ] `flagutf8.dic`
-- [ ] `slash.dic`
+- [x] `slash.dic` *(ported subset passing in Java: escaped slash token acceptance / dictionary base-path resolution)*
 - [ ] `forbiddenword.dic`
 - [ ] `nosuggest.dic`
 - [ ] `alias.dic`
