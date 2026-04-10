@@ -5,9 +5,9 @@ Source: `tests/Makefile.am` `TESTS` list used by `make check`.
 Total tests: **140**
 
 - [ ] `affixes.dic`
-- [x] `condition.dic` *(ported subset passing in Java: 10 direct corpus assertions from `condition.good`/`condition.wrong`, including accepted and rejected forms with ASCII and accented words)*
-- [ ] `condition_utf.dic`
-- [ ] `base.dic`
+- [x] `condition.dic` *(ported subset passing in Java: full `condition.good`/`condition.wrong` corpus assertions plus targeted direct checks; accepted and rejected branches are covered and passing)*
+- [x] `condition_utf.dic` *(ported subset passing in Java: full `condition_utf.good`/`condition_utf.wrong` corpus assertions plus 10 explicit direct UTF acceptance/rejection tests are passing with charset-aware loading)*
+- [x] `base.dic` *(ported subset passing in Java: explicit acceptance/rejection checks for affixed forms, case variants, and trailing-dot tokens from `base.good`/`base.wrong`)*
 - [ ] `base_utf.dic`
 - [ ] `allcaps.dic`
 - [ ] `allcaps_utf.dic`
@@ -29,7 +29,7 @@ Total tests: **140**
 - [ ] `flaglong.dic`
 - [ ] `flagnum.dic`
 - [ ] `flagutf8.dic`
-- [x] `slash.dic` *(ported subset passing in Java: escaped slash token acceptance, dictionary base-path resolution, and direct checks for `1/2` + `http://` from `slash.good`)*
+- [x] `slash.dic` *(ported subset passing in Java: full `slash.good` corpus assertions plus direct checks for escaped slash tokens, including bare `/`, `1/2`, and `http://`)*
 - [ ] `forbiddenword.dic`
 - [ ] `nosuggest.dic`
 - [ ] `alias.dic`

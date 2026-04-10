@@ -1,6 +1,7 @@
 package org.hunspell;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -17,12 +19,14 @@ import java.util.regex.Pattern;
 
 final class SimpleHunspell implements Hunspell {
     private final Set<String> words;
+    private final Map<String, String> roots;
     private final int maxSuggestions;
     private final String encoding;
     private final String wordChars;
 
-    private SimpleHunspell(Set<String> words, int maxSuggestions, String encoding, String wordChars) {
+    private SimpleHunspell(Set<String> words, Map<String, String> roots, int maxSuggestions, String encoding, String wordChars) {
         this.words = words;
+        this.roots = roots;
         this.maxSuggestions = maxSuggestions;
         this.encoding = encoding;
         this.wordChars = wordChars;
@@ -30,12 +34,14 @@ final class SimpleHunspell implements Hunspell {
 
     @Override
     public boolean spell(String word) {
-        return words.contains(word);
+        return spellNormalized(word);
     }
 
     @Override
     public SpellResult check(String word) {
-        return new SpellResult(spell(word), false, false, null);
+        boolean correct = spell(word);
+        String root = correct ? resolveRoot(word) : null;
+        return new SpellResult(correct, false, false, root);
     }
 
     @Override
@@ -59,7 +65,7 @@ final class SimpleHunspell implements Hunspell {
     @Override
     public int addDictionary(Path dicPath) {
         int before = words.size();
-        loadWords(dicPath, words, null);
+        loadWords(dicPath, words, roots, null);
         return words.size() - before;
     }
 
@@ -71,6 +77,7 @@ final class SimpleHunspell implements Hunspell {
     @Override
     public void close() {
         words.clear();
+        roots.clear();
     }
 
     private static int distance(String left, String right) {
@@ -90,6 +97,88 @@ final class SimpleHunspell implements Hunspell {
             }
         }
         return dp[left.length()][right.length()];
+    }
+
+    private String resolveRoot(String word) {
+        String normalized = normalizeForLookup(word);
+        return roots.get(normalized);
+    }
+
+    private boolean spellNormalized(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        return normalizeForLookup(word) != null;
+    }
+
+    private String normalizeForLookup(String word) {
+        if (words.contains(word)) {
+            return word;
+        }
+        String withoutTrailingDots = stripTrailingDots(word);
+        if (!withoutTrailingDots.equals(word)) {
+            String normalized = normalizeForLookup(withoutTrailingDots);
+            if (normalized != null) {
+                return normalized;
+            }
+        }
+        if (isTitleCase(word)) {
+            String lower = word.toLowerCase(Locale.ROOT);
+            return words.contains(lower) ? lower : null;
+        }
+        if (isAllUpper(word)) {
+            String lower = word.toLowerCase(Locale.ROOT);
+            if (words.contains(lower)) {
+                return lower;
+            }
+            String capitalized = capitalize(lower);
+            return words.contains(capitalized) ? capitalized : null;
+        }
+        return null;
+    }
+
+    private static String stripTrailingDots(String word) {
+        int end = word.length();
+        while (end > 0 && word.charAt(end - 1) == '.') {
+            end--;
+        }
+        return end == word.length() ? word : word.substring(0, end);
+    }
+
+    private static boolean isTitleCase(String word) {
+        if (word.length() < 2) {
+            return false;
+        }
+        if (!Character.isUpperCase(word.charAt(0))) {
+            return false;
+        }
+        for (int i = 1; i < word.length(); i++) {
+            if (!Character.isLowerCase(word.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isAllUpper(String word) {
+        boolean hasLetter = false;
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            if (Character.isLetter(ch)) {
+                hasLetter = true;
+                if (!Character.isUpperCase(ch)) {
+                    return false;
+                }
+            }
+        }
+        return hasLetter;
+    }
+
+    private static String capitalize(String word) {
+        if (word.isEmpty()) {
+            return word;
+        }
+        return Character.toUpperCase(word.charAt(0)) + word.substring(1);
     }
 
     static final class BuilderImpl implements Hunspell.Builder {
@@ -147,19 +236,21 @@ final class SimpleHunspell implements Hunspell {
             }
 
             Set<String> words = new HashSet<>();
-            loadWords(primaryDictionary, words, affixData);
+            Map<String, String> roots = new HashMap<>();
+            loadWords(primaryDictionary, words, roots, affixData);
             for (Path extraDictionary : extraDictionaries) {
-                loadWords(extraDictionary, words, affixData);
+                loadWords(extraDictionary, words, roots, affixData);
             }
             String encoding = affixData != null ? affixData.encoding : "UTF-8";
             String wordChars = affixData != null ? affixData.wordChars : "";
-            return new SimpleHunspell(words, maxSuggestions, encoding, wordChars);
+            return new SimpleHunspell(words, roots, maxSuggestions, encoding, wordChars);
         }
     }
 
-    private static void loadWords(Path dicPath, Set<String> words, AffixData affixData) {
+    private static void loadWords(Path dicPath, Set<String> words, Map<String, String> roots, AffixData affixData) {
         try {
-            List<String> lines = Files.readAllLines(dicPath, StandardCharsets.ISO_8859_1);
+            Charset dictionaryCharset = affixData != null ? affixData.charset : StandardCharsets.ISO_8859_1;
+            List<String> lines = Files.readAllLines(dicPath, dictionaryCharset);
             int start = 0;
             if (!lines.isEmpty() && lines.get(0).strip().matches("\\d+")) {
                 start = 1;
@@ -172,8 +263,11 @@ final class SimpleHunspell implements Hunspell {
                         continue;
                     }
                     words.add(entry.stem());
+                    roots.putIfAbsent(entry.stem(), entry.stem());
                     if (affixData != null) {
-                        words.addAll(affixData.generate(entry));
+                        Map<String, String> generated = affixData.generate(entry);
+                        words.addAll(generated.keySet());
+                        generated.forEach(roots::putIfAbsent);
                     }
                 }
             }
@@ -189,6 +283,9 @@ final class SimpleHunspell implements Hunspell {
     }
 
     private static String parseStem(String line) {
+        if ("/".equals(line)) {
+            return "/";
+        }
         StringBuilder stem = new StringBuilder();
         boolean escaped = false;
         for (int i = 0; i < line.length(); i++) {
@@ -243,8 +340,12 @@ final class SimpleHunspell implements Hunspell {
 
     private static AffixData loadAffixes(Path affPath) {
         try {
-            List<String> lines = Files.readAllLines(affPath, StandardCharsets.ISO_8859_1);
-            AffixData data = new AffixData();
+            byte[] bytes = Files.readAllBytes(affPath);
+            String initial = new String(bytes, StandardCharsets.ISO_8859_1);
+            Charset affixCharset = detectDeclaredCharset(initial);
+            String decoded = new String(bytes, affixCharset);
+            List<String> lines = decoded.lines().toList();
+            AffixData data = new AffixData(affixCharset);
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i).strip();
                 if (line.isEmpty() || line.startsWith("#")) {
@@ -294,22 +395,45 @@ final class SimpleHunspell implements Hunspell {
         }
     }
 
+    private static Charset detectDeclaredCharset(String affContent) {
+        for (String rawLine : affContent.lines().toList()) {
+            String line = rawLine.strip();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            String[] parts = line.split("\\s+");
+            if (parts.length >= 2 && "SET".equals(parts[0])) {
+                try {
+                    return Charset.forName(parts[1]);
+                } catch (IllegalArgumentException ignored) {
+                    return StandardCharsets.ISO_8859_1;
+                }
+            }
+        }
+        return StandardCharsets.ISO_8859_1;
+    }
+
     private record DictionaryEntry(String stem, String flags) {
     }
 
     private static final class AffixData {
         private String encoding = "UTF-8";
         private String wordChars = "";
+        private final Charset charset;
         private final Map<Character, List<AffixRule>> prefixes = new HashMap<>();
         private final Map<Character, List<AffixRule>> suffixes = new HashMap<>();
+
+        private AffixData(Charset charset) {
+            this.charset = charset;
+        }
 
         private void addRule(char flag, boolean prefix, AffixRule rule) {
             Map<Character, List<AffixRule>> target = prefix ? prefixes : suffixes;
             target.computeIfAbsent(flag, ignored -> new ArrayList<>()).add(rule);
         }
 
-        private Set<String> generate(DictionaryEntry entry) {
-            Set<String> generated = new HashSet<>();
+        private Map<String, String> generate(DictionaryEntry entry) {
+            Map<String, String> generated = new HashMap<>();
             List<AffixRule> prefixRules = new ArrayList<>();
             List<AffixRule> suffixRules = new ArrayList<>();
             for (int i = 0; i < entry.flags().length(); i++) {
@@ -323,7 +447,7 @@ final class SimpleHunspell implements Hunspell {
             for (AffixRule rule : prefixRules) {
                 String form = rule.apply(entry.stem());
                 if (form != null) {
-                    generated.add(form);
+                    generated.putIfAbsent(form, entry.stem());
                     prefixed.add(form);
                 }
             }
@@ -331,7 +455,7 @@ final class SimpleHunspell implements Hunspell {
             for (AffixRule rule : suffixRules) {
                 String form = rule.apply(entry.stem());
                 if (form != null) {
-                    generated.add(form);
+                    generated.putIfAbsent(form, entry.stem());
                 }
             }
 
@@ -349,7 +473,7 @@ final class SimpleHunspell implements Hunspell {
                     }
                     String combined = suffix.apply(prefixedStem);
                     if (combined != null) {
-                        generated.add(combined);
+                        generated.putIfAbsent(combined, entry.stem());
                     }
                 }
             }
