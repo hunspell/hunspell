@@ -6,3 +6,5 @@ For every work session:
 - Conclude by adding a **work log summary** inside `spec.md`.
 - End with **more tests passing than the previous session**.
 - Clearly report **test parity versus the original implementation**.
+- Mark the tests that were ported to Java and are currently passing.
+- Do not end a session with regressions.

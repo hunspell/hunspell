@@ -319,3 +319,9 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 - Still **far from parity** with the original Hunspell C/C++ implementation and the full `tests/test.sh` corpus.
 - Current Java port validates only a narrow bootstrap subset (basic dictionary hit/miss, simple suggestions, and minimal CLI filtering modes).
 - Suggestion quality/ranking, affix logic, compound handling, encoding edge cases, and morphology remain not yet equivalent.
+## Work Log Summary (2026-04-10)
+
+- Attempted to run the C++ test suite with `make check`, but no generated Makefile was present yet (`No rule to make target 'check'`).
+- Attempted to bootstrap the autotools build with `autoreconf -fi`; this failed because `autopoint` is not installed in the environment.
+- Current test parity status versus the original C++ implementation: **not yet measurable in this environment** because the native C++ harness could not be built/run.
+- Added a repository-level checklist file (`tests.md`) enumerating every test from `tests/Makefile.am` `TESTS` for tracking execution and Java-port progress.
