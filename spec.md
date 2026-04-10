@@ -326,93 +326,60 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 
 ---
 
-## 15) Work Log
+## 15) Milestone Summary
 
-### Session 2026-04-10 (Continue the work)
+### Milestone A — Bootstrap Java engine and harness
+**Implemented**
+- Java module scaffolding and CLI/test harness wiring.
+- Minimal spell hit/miss behavior and smoke test execution path.
 
-- Expanded Java unit coverage from the prior 2 JUnit tests to 8 JUnit tests, and kept the existing CLI smoke script green.
-- Added test coverage for:
-  - extra dictionary loading (`addDictionary`)
-  - `suggest` limit and deterministic ordering
-  - `suffixSuggest` root-prefix behavior
-  - `check` result shape
-  - CLI `-l` and `-G` output filtering behavior
-- Updated implementation for deterministic suggestion ordering (distance, then lexical tie-break).
+**Contribution**
+- Established a runnable baseline for iterative parity work.
 
-### Session 2026-04-10 (Address review feedback)
+### Milestone B — Core affix algorithm port (`PFX`/`SFX` + conditions)
+**Implemented**
+- Parsing for core `.aff` directives (`SET`, `WORDCHARS`, `PFX`, `SFX`).
+- Strip/add/condition evaluation and prefix+suffix cross-product generation.
 
-- Clarified repository workflow instructions by updating `AGENTS.md` to explicitly require updating `tests.md` whenever C++ tests are ported and passing in Java.
-- Updated `tests.md` checklist progress by marking `slash.dic` as ported/passing in Java (subset behavior coverage).
-- Added a new Java unit test to verify dictionary comment lines are ignored during load.
+**Contribution**
+- Enabled first meaningful parity with Hunspell-derived forms (e.g., `condition` fixture behaviors).
 
-**Work-log test progression requirement**
-- Previous session passing tests: **11**.
-- Current session passing tests: **12**.
-- Status: **Improved** (current > previous), with no regressions.
+### Milestone C — Charset-aware corpus handling and slash parsing fixes
+**Implemented**
+- Charset detection from `.aff` `SET` and charset-aligned `.dic` decoding.
+- Bare slash (`/`) dictionary stem parsing support.
+- Corpus-wide assertions for `condition`, `condition_utf`, and `slash` fixtures.
 
-**Parity with original implementation**
-- Original implementation target remains **140 C++ tests**.
-- Java parity remains **partial**, but now explicitly tracked in `tests.md` with `slash.dic` marked as ported/passing subset behavior.
-- Updated implementation for `suffixSuggest` to return words that start with the supplied root.
+**Contribution**
+- Unblocked UTF fixture stability and edge-case dictionary token parity.
 
-**Pass count versus previous session:**
-- Previous session: 2 passing JUnit tests (+ 1 shell smoke check).
-- This session: 8 passing JUnit tests (+ 1 shell smoke check).
-- Net: **+6 additional passing JUnit tests**.
+### Milestone D — Case/punctuation normalization for realistic spell surface
+**Implemented**
+- Title-case and uppercase normalization paths for spell checks.
+- Trailing-dot normalization (`...`) before lookup.
+- Base fixture subset tests for affix/case/punctuation acceptance and rejection.
 
-**Test parity versus original implementation:**
-- Still **far from parity** with the original Hunspell C/C++ implementation and the full `tests/test.sh` corpus.
-- Current Java port validates only a narrow bootstrap subset (basic dictionary hit/miss, simple suggestions, and minimal CLI filtering modes).
-- Suggestion quality/ranking, affix logic, compound handling, encoding edge cases, and morphology remain not yet equivalent.
-## Work Log Summary (2026-04-10)
+**Contribution**
+- Improved user-facing spell behavior compatibility and expanded fixture parity (`base` subset).
 
-- Attempted to run the C++ test suite with `make check`, but no generated Makefile was present yet (`No rule to make target 'check'`).
-- Attempted to bootstrap the autotools build with `autoreconf -fi`; this failed because `autopoint` is not installed in the environment.
-- Current test parity status versus the original C++ implementation: **not yet measurable in this environment** because the native C++ harness could not be built/run.
-- Added a repository-level checklist file (`tests.md`) enumerating every test from `tests/Makefile.am` `TESTS` for tracking execution and Java-port progress.
+### Milestone E — Root reporting in `check()` for generated forms (current session)
+**Implemented**
+- Root index tracking for stems and generated forms.
+- `check(word)` now returns `SpellResult.root()` when a known root is available.
+- Added tests for root reporting from both direct dictionary stems and affix-generated forms.
 
-## Work Log Summary (2026-04-10, Affix milestone)
+**Contribution**
+- Advances API parity with the specified rich spell result model (root visibility), not just boolean spell outcomes.
 
-- Implemented a significant milestone: Java now parses core `.aff` directives (`SET`, `WORDCHARS`, `PFX`, `SFX`) and applies affix rules to dictionary stems based on Hunspell-style strip/add/condition logic.
-- Added cross-product handling for prefix+suffix rules when both affix classes are marked `Y`.
-- Updated CLI dictionary loading so `-d <base>` now also auto-loads sibling `<base>.aff` when present.
-- Added Java tests that port a meaningful subset of `condition.dic` behavior (positive and negative checks from `condition.good`/`condition.wrong`) plus metadata checks from the `.aff` file.
+### Current parity snapshot
+- Original C++ target corpus: **140 tests**.
+- Ported/passing Java fixture coverage (meaningful subsets or full-file assertions where implemented):
+  - `condition.dic`
+  - `condition_utf.dic`
+  - `slash.dic`
+  - `base.dic`
 
-### Passing Test Count (Session-over-Session)
-- Previous session: **12 passing Java tests**.
-- Current session: **16 passing checks** (15 JUnit + 1 smoke script).
-- Net change: **+4 passing checks**, no regressions.
-
-### Test Parity vs Original Implementation
-- Original C++ corpus target remains **140 tests** from `tests/Makefile.am`.
-- Java now has direct passing subset coverage for:
-  - `slash.dic` behavior subset
-  - `condition.dic` behavior subset
-- Parity remains **partial**, but this session advances algorithmic fidelity by introducing real affix-rule evaluation rather than exact-stem-only matching.
-
-### Ported C++ Tests Currently Passing in Java
-- ✅ `slash.dic` (subset behavior previously ported).
-- ✅ `condition.dic` (subset behavior ported this session).
-
-## Work Log Summary (2026-04-10, corpus-port grind milestone)
-
-- Added a dedicated Java ported-corpus test suite (`HunspellPortedCorpusTest`) with **12 direct tests** mapped to existing C++ corpus fixtures.
-- Ported and validated concrete tokens from:
-  - `tests/condition.good` (accepted forms)
-  - `tests/condition.wrong` (rejected forms)
-  - `tests/slash.good` (escaped-slash dictionary entries)
-- This pushes the Java suite beyond the requested threshold with **at least 10 ported tests passing** in a single session.
-
-### Passing Test Count (Session-over-Session)
-- Previous session: **16 passing checks** (15 JUnit + 1 smoke script).
-- Current session: **28 passing checks** (27 JUnit + 1 smoke script).
-- Net change: **+12 passing checks** (no regressions).
-
-### Test Parity vs Original Implementation
-- Original C++ corpus target (from `tests/Makefile.am`): **140 tests**.
-- Java parity in this session: still **partial**, but now includes a stronger direct-corpus foothold with explicit passing tests derived from `condition` and `slash` fixtures.
-- Java still does not run the complete native `tests/test.sh` matrix yet, so full parity remains in progress.
-
-### Ported C++ Tests/Fixtures Currently Passing in Java
-- ✅ `condition.dic` (expanded subset coverage from `condition.good` and `condition.wrong`).
-- ✅ `slash.dic` (escaped slash entries and CLI base-path behavior).
+### Session-over-session progression
+- Previous session: **55 passing checks** (54 JUnit + 1 smoke script).
+- Current session: **56 passing checks** (55 JUnit + 1 smoke script).
+- Status: **improved with no regressions**.

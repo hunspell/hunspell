@@ -72,7 +72,19 @@ class HunspellBootstrapTest {
             assertTrue(result.correct());
             assertFalse(result.compound());
             assertFalse(result.forbidden());
-            assertTrue(result.root().isEmpty());
+            assertEquals("hello", result.root().orElseThrow());
+        }
+    }
+
+    @Test
+    void checkReturnsRootForGeneratedAffixWord() {
+        Path affix = Path.of("..", "tests", "condition.aff").normalize();
+        Path dictionary = Path.of("..", "tests", "condition.dic").normalize();
+
+        try (Hunspell hunspell = Hunspell.builder().affix(affix).dictionary(dictionary).build()) {
+            SpellResult result = hunspell.check("entertaining");
+            assertTrue(result.correct());
+            assertEquals("entertain", result.root().orElseThrow());
         }
     }
 
