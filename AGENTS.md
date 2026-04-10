@@ -9,3 +9,5 @@ For every work session:
 - Mark the tests that were ported to Java and are currently passing.
 - Update `tests.md` to reflect checklist progress for any C++ tests ported to Java in that session.
 - Do not end a session with regressions.
+- The Java implementation should implement the same algorithms as the C++ one; do not take shortcuts.
+- Work sessions should implement significant milestones.

@@ -12,10 +12,12 @@ public final class HunspellTool {
     public static void main(String[] args) throws IOException {
         String mode = "-a";
         Path dictionary = null;
+        Path affix = null;
 
         for (int i = 0; i < args.length; i++) {
             if ("-d".equals(args[i]) && i + 1 < args.length) {
                 dictionary = resolveDictionary(args[++i]);
+                affix = resolveAffix(args[i]);
             } else if ("-l".equals(args[i]) || "-G".equals(args[i]) || "-a".equals(args[i])) {
                 mode = args[i];
             }
@@ -25,7 +27,12 @@ public final class HunspellTool {
             throw new IllegalArgumentException("-d <dictionary.dic|base> is required");
         }
 
-        try (Hunspell hunspell = Hunspell.builder().dictionary(dictionary).build();
+        Hunspell.Builder builder = Hunspell.builder().dictionary(dictionary);
+        if (affix != null && affix.toFile().exists()) {
+            builder.affix(affix);
+        }
+
+        try (Hunspell hunspell = builder.build();
              BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -47,5 +54,14 @@ public final class HunspellTool {
             return raw;
         }
         return Path.of(argument + ".dic");
+    }
+
+    private static Path resolveAffix(String argument) {
+        Path raw = Path.of(argument);
+        if (raw.toString().endsWith(".dic")) {
+            String rawText = raw.toString();
+            return Path.of(rawText.substring(0, rawText.length() - 4) + ".aff");
+        }
+        return Path.of(argument + ".aff");
     }
 }

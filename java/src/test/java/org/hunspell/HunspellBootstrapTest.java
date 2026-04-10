@@ -107,6 +107,36 @@ class HunspellBootstrapTest {
         }
     }
 
+    @Test
+    void affixConditionsGenerateExpectedSuffixAndPrefixForms() {
+        Path affix = Path.of("..", "tests", "condition.aff").normalize();
+        Path dictionary = Path.of("..", "tests", "condition.dic").normalize();
+
+        try (Hunspell hunspell = Hunspell.builder().affix(affix).dictionary(dictionary).build()) {
+            assertTrue(hunspell.spell("ofosuf1"));
+            assertTrue(hunspell.spell("pre1ofo"));
+            assertTrue(hunspell.spell("entertaining"));
+            assertTrue(hunspell.spell("wries"));
+            assertTrue(hunspell.spell("unwry"));
+
+            assertFalse(hunspell.spell("ofosuf4"));
+            assertFalse(hunspell.spell("pre4ofo"));
+            assertFalse(hunspell.spell("entertainning"));
+        }
+    }
+
+    @Test
+    void infoReadsEncodingAndWordCharsFromAffixFile() {
+        Path affix = Path.of("..", "tests", "condition.aff").normalize();
+        Path dictionary = Path.of("..", "tests", "condition.dic").normalize();
+
+        try (Hunspell hunspell = Hunspell.builder().affix(affix).dictionary(dictionary).build()) {
+            DictionaryInfo info = hunspell.info();
+            assertEquals("ISO8859-2", info.encoding());
+            assertEquals("0123456789", info.wordCharacters());
+        }
+    }
+
     private static Path writeDictionary(String... lines) throws IOException {
         Path file = Files.createTempFile("hunspell-java", ".dic");
         Files.write(file, String.join(System.lineSeparator(), lines).concat(System.lineSeparator()).getBytes());

@@ -41,6 +41,18 @@ class HunspellToolTest {
         assertEquals("1/2\nhttp://\n", output);
     }
 
+    @Test
+    void goodModeLoadsSiblingAffixFileWhenUsingBasePath() throws IOException {
+        Path tempDir = Files.createTempDirectory("hunspell-cli");
+        Path dictionaryBase = tempDir.resolve("mini");
+        Files.writeString(dictionaryBase.resolveSibling("mini.aff"), "SET UTF-8\nSFX S N 1\nSFX S 0 s .\n");
+        Files.writeString(dictionaryBase.resolveSibling("mini.dic"), "1\ncat/S\n");
+
+        String output = runTool(new String[] {"-d", dictionaryBase.toString(), "-G"}, "cat\ncats\ndog\n");
+
+        assertEquals("cat\ncats\n", output);
+    }
+
     private static String runTool(String[] args, String input) throws IOException {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();

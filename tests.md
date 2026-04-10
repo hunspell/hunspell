@@ -5,7 +5,7 @@ Source: `tests/Makefile.am` `TESTS` list used by `make check`.
 Total tests: **140**
 
 - [ ] `affixes.dic`
-- [ ] `condition.dic`
+- [x] `condition.dic` *(ported subset passing in Java: affix condition matching for selected prefix/suffix forms, including accepted/rejected examples from `condition.good`/`condition.wrong`)*
 - [ ] `condition_utf.dic`
 - [ ] `base.dic`
 - [ ] `base_utf.dic`
