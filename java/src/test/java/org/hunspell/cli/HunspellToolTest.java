@@ -1,0 +1,57 @@
+package org.hunspell.cli;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.Test;
+
+class HunspellToolTest {
+
+    @Test
+    void listModePrintsOnlyMisspelledWords() throws IOException {
+        Path dictionary = writeDictionary("2", "hello", "world");
+
+        String output = runTool(new String[] {"-d", dictionary.toString(), "-l"}, "hello\nwrong\nworld\n");
+
+        assertEquals("wrong\n", output);
+    }
+
+    @Test
+    void goodModePrintsOnlyCorrectWords() throws IOException {
+        Path dictionary = writeDictionary("2", "hello", "world");
+
+        String output = runTool(new String[] {"-d", dictionary.toString(), "-G"}, "hello\nwrong\nworld\n");
+
+        assertEquals("hello\nworld\n", output);
+    }
+
+    private static String runTool(String[] args, String input) throws IOException {
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        java.io.InputStream originalIn = System.in;
+        PrintStream originalOut = System.out;
+        try {
+            System.setIn(in);
+            System.setOut(new PrintStream(out));
+            HunspellTool.main(args);
+        } finally {
+            System.setIn(originalIn);
+            System.setOut(originalOut);
+        }
+
+        return out.toString();
+    }
+
+    private static Path writeDictionary(String... lines) throws IOException {
+        Path file = Files.createTempFile("hunspell-cli", ".dic");
+        Files.write(file, String.join(System.lineSeparator(), lines).concat(System.lineSeparator()).getBytes());
+        file.toFile().deleteOnExit();
+        return file;
+    }
+}

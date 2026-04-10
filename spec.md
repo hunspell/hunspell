@@ -293,3 +293,29 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 **Parity with original implementation**
 - Parity remains **partial/early**.
 - Improvements this session add repeatable Java-side build/test infrastructure, but still do not cover full Hunspell affix behavior or the complete existing `.good/.wrong/.sug` parity surface.
+
+---
+
+## 15) Work Log
+
+### Session 2026-04-10 (Continue the work)
+
+- Expanded Java unit coverage from the prior 2 JUnit tests to 8 JUnit tests, and kept the existing CLI smoke script green.
+- Added test coverage for:
+  - extra dictionary loading (`addDictionary`)
+  - `suggest` limit and deterministic ordering
+  - `suffixSuggest` root-prefix behavior
+  - `check` result shape
+  - CLI `-l` and `-G` output filtering behavior
+- Updated implementation for deterministic suggestion ordering (distance, then lexical tie-break).
+- Updated implementation for `suffixSuggest` to return words that start with the supplied root.
+
+**Pass count versus previous session:**
+- Previous session: 2 passing JUnit tests (+ 1 shell smoke check).
+- This session: 8 passing JUnit tests (+ 1 shell smoke check).
+- Net: **+6 additional passing JUnit tests**.
+
+**Test parity versus original implementation:**
+- Still **far from parity** with the original Hunspell C/C++ implementation and the full `tests/test.sh` corpus.
+- Current Java port validates only a narrow bootstrap subset (basic dictionary hit/miss, simple suggestions, and minimal CLI filtering modes).
+- Suggestion quality/ranking, affix logic, compound handling, encoding edge cases, and morphology remain not yet equivalent.
