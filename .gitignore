@@ -98,3 +98,6 @@ hunspell-*.tar.gz
 
 #MSVC
 /msvc/Hunspell.VC.VC.opendb
+
+# Java/Maven build output
+/java/target/
