@@ -370,3 +370,26 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 - Attempted to bootstrap the autotools build with `autoreconf -fi`; this failed because `autopoint` is not installed in the environment.
 - Current test parity status versus the original C++ implementation: **not yet measurable in this environment** because the native C++ harness could not be built/run.
 - Added a repository-level checklist file (`tests.md`) enumerating every test from `tests/Makefile.am` `TESTS` for tracking execution and Java-port progress.
+
+## Work Log Summary (2026-04-10, Affix milestone)
+
+- Implemented a significant milestone: Java now parses core `.aff` directives (`SET`, `WORDCHARS`, `PFX`, `SFX`) and applies affix rules to dictionary stems based on Hunspell-style strip/add/condition logic.
+- Added cross-product handling for prefix+suffix rules when both affix classes are marked `Y`.
+- Updated CLI dictionary loading so `-d <base>` now also auto-loads sibling `<base>.aff` when present.
+- Added Java tests that port a meaningful subset of `condition.dic` behavior (positive and negative checks from `condition.good`/`condition.wrong`) plus metadata checks from the `.aff` file.
+
+### Passing Test Count (Session-over-Session)
+- Previous session: **12 passing Java tests**.
+- Current session: **16 passing checks** (15 JUnit + 1 smoke script).
+- Net change: **+4 passing checks**, no regressions.
+
+### Test Parity vs Original Implementation
+- Original C++ corpus target remains **140 tests** from `tests/Makefile.am`.
+- Java now has direct passing subset coverage for:
+  - `slash.dic` behavior subset
+  - `condition.dic` behavior subset
+- Parity remains **partial**, but this session advances algorithmic fidelity by introducing real affix-rule evaluation rather than exact-stem-only matching.
+
+### Ported C++ Tests Currently Passing in Java
+- ✅ `slash.dic` (subset behavior previously ported).
+- ✅ `condition.dic` (subset behavior ported this session).
