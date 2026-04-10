@@ -23,7 +23,7 @@ Current state is intentionally transitional: most logic is in `SimpleHunspell` a
 ---
 
 ## Phase 1: parser + spell acceptance/rejection parity (`.good/.wrong`)
-**Status: 🟡 In progress**
+**Status: 🟡 In progress (manager-class refactor + flag-format and continuation-class parity landed)**
 
 ### Workstreams
 1. **Affix parser parity hardening**
@@ -37,12 +37,22 @@ Current state is intentionally transitional: most logic is in `SimpleHunspell` a
    - Split parser/checker into dedicated classes before adding many more features.
 
 ### Exit criteria
-- Java passes ported `.good/.wrong` subsets for at least: `condition`, `condition_utf`, `base`, `slash`.
+- Java passes ported `.good/.wrong` subsets for at least: `condition`, `condition_utf`, `base`, `slash`,
+  `affixes`, `flag`, `flaglong`, `flagnum`, `flagutf8`, and a `base_utf` subset.
 - No regressions in existing Java spell tests.
 
 ### Current progress evidence
-- Existing Java tests already validate the above four corpora as ported subsets and pass.
-- Remaining gap: broad `.good/.wrong` matrix across the full test corpus and closer structural separation into manager classes.
+- Java tests validate the targeted corpora as ported subsets and pass (64 total Java tests).
+- `SimpleHunspell` is now a thin façade over package-private `AffixManager` (mirrors `affixmgr.cxx`)
+  and `HashManager` (mirrors `hashmgr.cxx`); spell-time lookup follows the C++ control flow
+  (`prefix_check` → `suffix_check` → `suffix_check_twosfx` → `prefix_check_twosfx`) instead of
+  pre-expanding all derived forms.
+- Affix parser now decodes `FLAG long`, `FLAG num`, and `FLAG UTF-8` flag vectors, including
+  per-rule continuation classes (`SFX A 0 s/123 .`).
+- Two-level continuation lookup wired through `AffixManager.suffixCheckTwoSfx` and
+  `prefixCheckTwoSfx`, enabling acceptance of fixtures like `foosbar` / `unfoosbar`.
+- Remaining gap: full `.good/.wrong` matrix across additional corpora (allcaps, needaffix,
+  forbiddenword, compound suites) and richer casing/IGNORE/BREAK behaviors.
 
 ---
 

@@ -24,6 +24,23 @@ class HunspellPortedCorpusTest {
     private static final Path SLASH_GOOD = Path.of("..", "tests", "slash.good").normalize();
     private static final Path BASE_AFF = Path.of("..", "tests", "base.aff").normalize();
     private static final Path BASE_DIC = Path.of("..", "tests", "base.dic").normalize();
+    private static final Path BASE_UTF_AFF = Path.of("..", "tests", "base_utf.aff").normalize();
+    private static final Path BASE_UTF_DIC = Path.of("..", "tests", "base_utf.dic").normalize();
+    private static final Path AFFIXES_AFF = Path.of("..", "tests", "affixes.aff").normalize();
+    private static final Path AFFIXES_DIC = Path.of("..", "tests", "affixes.dic").normalize();
+    private static final Path AFFIXES_GOOD = Path.of("..", "tests", "affixes.good").normalize();
+    private static final Path FLAG_AFF = Path.of("..", "tests", "flag.aff").normalize();
+    private static final Path FLAG_DIC = Path.of("..", "tests", "flag.dic").normalize();
+    private static final Path FLAG_GOOD = Path.of("..", "tests", "flag.good").normalize();
+    private static final Path FLAGLONG_AFF = Path.of("..", "tests", "flaglong.aff").normalize();
+    private static final Path FLAGLONG_DIC = Path.of("..", "tests", "flaglong.dic").normalize();
+    private static final Path FLAGLONG_GOOD = Path.of("..", "tests", "flaglong.good").normalize();
+    private static final Path FLAGNUM_AFF = Path.of("..", "tests", "flagnum.aff").normalize();
+    private static final Path FLAGNUM_DIC = Path.of("..", "tests", "flagnum.dic").normalize();
+    private static final Path FLAGNUM_GOOD = Path.of("..", "tests", "flagnum.good").normalize();
+    private static final Path FLAGUTF8_AFF = Path.of("..", "tests", "flagutf8.aff").normalize();
+    private static final Path FLAGUTF8_DIC = Path.of("..", "tests", "flagutf8.dic").normalize();
+    private static final Path FLAGUTF8_GOOD = Path.of("..", "tests", "flagutf8.good").normalize();
 
     @Test
     void conditionGood_ofosuf1_isAccepted() {
@@ -218,6 +235,73 @@ class HunspellPortedCorpusTest {
     @Test
     void baseWrong_sugesst_isRejected() {
         assertBaseRejected("sugesst");
+    }
+
+    @Test
+    void affixesCorpusGood_allWordsAccepted() {
+        assertAllAccepted(AFFIXES_AFF, AFFIXES_DIC, AFFIXES_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void affixesGood_reworkedCrossProductAccepted() {
+        try (Hunspell hunspell = Hunspell.builder().affix(AFFIXES_AFF).dictionary(AFFIXES_DIC).build()) {
+            assertTrue(hunspell.spell("rework"));
+            assertTrue(hunspell.spell("worked"));
+            assertTrue(hunspell.spell("reworked"));
+            assertTrue(hunspell.spell("tried"));
+        }
+    }
+
+    @Test
+    void flagCorpusGood_singleCharFlagsAccepted() {
+        assertAllAccepted(FLAG_AFF, FLAG_DIC, FLAG_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void flagGood_continuationClassChainProducesNestedSuffix() {
+        try (Hunspell hunspell = Hunspell.builder().affix(FLAG_AFF).dictionary(FLAG_DIC).build()) {
+            assertTrue(hunspell.spell("foosbar"));
+            assertTrue(hunspell.spell("foosbaz"));
+            assertTrue(hunspell.spell("unfoosbar"));
+        }
+    }
+
+    @Test
+    void flagLongCorpusGood_twoCharFlagsAccepted() {
+        assertAllAccepted(FLAGLONG_AFF, FLAGLONG_DIC, FLAGLONG_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void flagNumCorpusGood_decimalFlagsAccepted() {
+        assertAllAccepted(FLAGNUM_AFF, FLAGNUM_DIC, FLAGNUM_GOOD, StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void flagUtf8CorpusGood_unicodeFlagsAccepted() {
+        assertAllAccepted(FLAGUTF8_AFF, FLAGUTF8_DIC, FLAGUTF8_GOOD, StandardCharsets.UTF_8);
+    }
+
+    @Test
+    void baseUtfGood_unicodeStemAccepted() {
+        try (Hunspell hunspell = Hunspell.builder().affix(BASE_UTF_AFF).dictionary(BASE_UTF_DIC).build()) {
+            assertTrue(hunspell.spell("created"));
+            assertTrue(hunspell.spell("uncreated"));
+            assertTrue(hunspell.spell("conveyed"));
+            assertTrue(hunspell.spell("FAQs"));
+            assertTrue(hunspell.spell("Hello"));
+            assertTrue(hunspell.spell("HELLO"));
+            assertTrue(hunspell.spell("NASA"));
+        }
+    }
+
+    @Test
+    void baseUtfWrong_misspelledFormsRejected() {
+        try (Hunspell hunspell = Hunspell.builder().affix(BASE_UTF_AFF).dictionary(BASE_UTF_DIC).build()) {
+            assertFalse(hunspell.spell("loooked"));
+            assertFalse(hunspell.spell("hlelo"));
+            assertFalse(hunspell.spell("tomorow"));
+            assertFalse(hunspell.spell("Nasa"));
+        }
     }
 
     private static void assertConditionAccepted(String word) {

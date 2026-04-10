@@ -1,52 +1,61 @@
 package org.hunspell;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Pattern;
 
+/**
+ * Façade implementation of {@link Hunspell} that wires together the manager
+ * classes mirroring the C++ Hunspell architecture:
+ * <ul>
+ *   <li>{@link AffixManager} ↔ {@code AffixMgr}/{@code affentry.cxx}</li>
+ *   <li>{@link HashManager} ↔ {@code HashMgr}</li>
+ *   <li>This class plays the role of {@code Hunspell}/{@code HunspellImpl} in
+ *       {@code hunspell.cxx}, exposing the user-facing spell/check/suggest
+ *       surface required by the v1 Java API.</li>
+ * </ul>
+ */
 final class SimpleHunspell implements Hunspell {
-    private final Set<String> words;
-    private final Map<String, String> roots;
-    private final int maxSuggestions;
-    private final String encoding;
-    private final String wordChars;
 
-    private SimpleHunspell(Set<String> words, Map<String, String> roots, int maxSuggestions, String encoding, String wordChars) {
-        this.words = words;
-        this.roots = roots;
+    private final AffixManager affixManager;
+    private final HashManager hashManager;
+    private final int maxSuggestions;
+
+    private SimpleHunspell(AffixManager affixManager, HashManager hashManager, int maxSuggestions) {
+        this.affixManager = affixManager;
+        this.hashManager = hashManager;
         this.maxSuggestions = maxSuggestions;
-        this.encoding = encoding;
-        this.wordChars = wordChars;
     }
 
     @Override
     public boolean spell(String word) {
-        return spellNormalized(word);
+        return resolveStem(word) != null;
     }
 
     @Override
     public SpellResult check(String word) {
-        boolean correct = spell(word);
-        String root = correct ? resolveRoot(word) : null;
-        return new SpellResult(correct, false, false, root);
+        String stem = resolveStem(word);
+        boolean correct = stem != null;
+        return new SpellResult(correct, false, false, correct ? stem : null);
     }
 
     @Override
     public List<String> suggest(String word) {
-        List<String> ranked = new ArrayList<>(words);
+        // The current suggestion ranking is intentionally simple (Levenshtein over
+        // the loaded stems plus their visible derived forms) until the parity-grade
+        // SuggestManager port lands. This still preserves API contract.
+        Set<String> candidates = new LinkedHashSet<>();
+        for (var bucket : hashManager.all()) {
+            candidates.add(bucket.getKey());
+        }
+        List<String> ranked = new ArrayList<>(candidates);
         ranked.sort(Comparator
             .comparingInt((String candidate) -> distance(word, candidate))
             .thenComparing(Comparator.naturalOrder()));
@@ -58,26 +67,81 @@ final class SimpleHunspell implements Hunspell {
 
     @Override
     public List<String> suffixSuggest(String rootWord) {
-        List<String> matches = words.stream().filter(w -> w.startsWith(rootWord)).sorted().toList();
+        List<String> matches = new ArrayList<>();
+        for (var bucket : hashManager.all()) {
+            String stem = bucket.getKey();
+            if (stem.startsWith(rootWord)) {
+                matches.add(stem);
+            }
+        }
+        Collections.sort(matches);
         return Collections.unmodifiableList(matches);
     }
 
     @Override
     public int addDictionary(Path dicPath) {
-        int before = words.size();
-        loadWords(dicPath, words, roots, null);
-        return words.size() - before;
+        int before = hashManager.size();
+        hashManager.load(dicPath, affixManager.charset());
+        return hashManager.size() - before;
     }
 
     @Override
     public DictionaryInfo info() {
-        return new DictionaryInfo(encoding, "java-port-dev", 0, wordChars);
+        return new DictionaryInfo(affixManager.encoding(), "java-port-dev", 0, affixManager.wordChars());
     }
 
     @Override
     public void close() {
-        words.clear();
-        roots.clear();
+        hashManager.clear();
+    }
+
+    /**
+     * Walks the same lookup ladder as {@code Hunspell::spell}: exact match first,
+     * then case/punctuation normalisation variants, then affix recursion. The
+     * returned stem is the resolved root (or {@code null} if rejected).
+     */
+    private String resolveStem(String word) {
+        if (word == null || word.isEmpty()) {
+            return null;
+        }
+        String stem = lookupVariant(word);
+        if (stem != null) {
+            return stem;
+        }
+        String withoutTrailingDots = stripTrailingDots(word);
+        if (!withoutTrailingDots.equals(word) && !withoutTrailingDots.isEmpty()) {
+            stem = resolveStem(withoutTrailingDots);
+            if (stem != null) {
+                return stem;
+            }
+        }
+        if (isTitleCase(word)) {
+            String lower = word.toLowerCase(Locale.ROOT);
+            stem = lookupVariant(lower);
+            if (stem != null) {
+                return stem;
+            }
+        } else if (isAllUpper(word)) {
+            String lower = word.toLowerCase(Locale.ROOT);
+            stem = lookupVariant(lower);
+            if (stem != null) {
+                return stem;
+            }
+            String capitalized = capitalize(lower);
+            stem = lookupVariant(capitalized);
+            if (stem != null) {
+                return stem;
+            }
+        }
+        return null;
+    }
+
+    private String lookupVariant(String word) {
+        if (hashManager.contains(word)) {
+            return word;
+        }
+        HashManager.Entry hit = affixManager.affixCheck(word, hashManager);
+        return hit == null ? null : hit.stem();
     }
 
     private static int distance(String left, String right) {
@@ -97,44 +161,6 @@ final class SimpleHunspell implements Hunspell {
             }
         }
         return dp[left.length()][right.length()];
-    }
-
-    private String resolveRoot(String word) {
-        String normalized = normalizeForLookup(word);
-        return roots.get(normalized);
-    }
-
-    private boolean spellNormalized(String word) {
-        if (word == null || word.isEmpty()) {
-            return false;
-        }
-        return normalizeForLookup(word) != null;
-    }
-
-    private String normalizeForLookup(String word) {
-        if (words.contains(word)) {
-            return word;
-        }
-        String withoutTrailingDots = stripTrailingDots(word);
-        if (!withoutTrailingDots.equals(word)) {
-            String normalized = normalizeForLookup(withoutTrailingDots);
-            if (normalized != null) {
-                return normalized;
-            }
-        }
-        if (isTitleCase(word)) {
-            String lower = word.toLowerCase(Locale.ROOT);
-            return words.contains(lower) ? lower : null;
-        }
-        if (isAllUpper(word)) {
-            String lower = word.toLowerCase(Locale.ROOT);
-            if (words.contains(lower)) {
-                return lower;
-            }
-            String capitalized = capitalize(lower);
-            return words.contains(capitalized) ? capitalized : null;
-        }
-        return null;
     }
 
     private static String stripTrailingDots(String word) {
@@ -226,295 +252,19 @@ final class SimpleHunspell implements Hunspell {
             if (primaryDictionary == null) {
                 throw new HunspellStateException("Primary dictionary is required");
             }
-
-            AffixData affixData = null;
+            AffixManager affixManager = new AffixManager();
             if (affPath != null) {
                 if (!Files.exists(affPath)) {
                     throw new HunspellParseException("Affix file does not exist: " + affPath);
                 }
-                affixData = loadAffixes(affPath);
+                affixManager.load(affPath);
             }
-
-            Set<String> words = new HashSet<>();
-            Map<String, String> roots = new HashMap<>();
-            loadWords(primaryDictionary, words, roots, affixData);
+            HashManager hashManager = new HashManager(affixManager.flagMode());
+            hashManager.load(primaryDictionary, affixManager.charset());
             for (Path extraDictionary : extraDictionaries) {
-                loadWords(extraDictionary, words, roots, affixData);
+                hashManager.load(extraDictionary, affixManager.charset());
             }
-            String encoding = affixData != null ? affixData.encoding : "UTF-8";
-            String wordChars = affixData != null ? affixData.wordChars : "";
-            return new SimpleHunspell(words, roots, maxSuggestions, encoding, wordChars);
-        }
-    }
-
-    private static void loadWords(Path dicPath, Set<String> words, Map<String, String> roots, AffixData affixData) {
-        try {
-            Charset dictionaryCharset = affixData != null ? affixData.charset : StandardCharsets.ISO_8859_1;
-            List<String> lines = Files.readAllLines(dicPath, dictionaryCharset);
-            int start = 0;
-            if (!lines.isEmpty() && lines.get(0).strip().matches("\\d+")) {
-                start = 1;
-            }
-            for (int i = start; i < lines.size(); i++) {
-                String line = lines.get(i).strip();
-                if (!line.isEmpty() && !line.startsWith("#")) {
-                    DictionaryEntry entry = parseEntry(line);
-                    if (entry.stem().isEmpty()) {
-                        continue;
-                    }
-                    words.add(entry.stem());
-                    roots.putIfAbsent(entry.stem(), entry.stem());
-                    if (affixData != null) {
-                        Map<String, String> generated = affixData.generate(entry);
-                        words.addAll(generated.keySet());
-                        generated.forEach(roots::putIfAbsent);
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            throw new HunspellIoException("Unable to read dictionary: " + dicPath, ex);
-        }
-    }
-
-    private static DictionaryEntry parseEntry(String line) {
-        String stem = parseStem(line);
-        String flags = parseFlags(line);
-        return new DictionaryEntry(stem, flags);
-    }
-
-    private static String parseStem(String line) {
-        if ("/".equals(line)) {
-            return "/";
-        }
-        StringBuilder stem = new StringBuilder();
-        boolean escaped = false;
-        for (int i = 0; i < line.length(); i++) {
-            char current = line.charAt(i);
-            if (escaped) {
-                stem.append(current);
-                escaped = false;
-                continue;
-            }
-            if (current == '\\') {
-                escaped = true;
-                continue;
-            }
-            if (current == '/' || Character.isWhitespace(current)) {
-                break;
-            }
-            stem.append(current);
-        }
-        return stem.toString();
-    }
-
-    private static String parseFlags(String line) {
-        int slashIndex = findFirstUnescapedSlash(line);
-        if (slashIndex < 0 || slashIndex + 1 >= line.length()) {
-            return "";
-        }
-        int end = slashIndex + 1;
-        while (end < line.length() && !Character.isWhitespace(line.charAt(end))) {
-            end++;
-        }
-        return line.substring(slashIndex + 1, end);
-    }
-
-    private static int findFirstUnescapedSlash(String text) {
-        boolean escaped = false;
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
-            if (escaped) {
-                escaped = false;
-                continue;
-            }
-            if (ch == '\\') {
-                escaped = true;
-                continue;
-            }
-            if (ch == '/') {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private static AffixData loadAffixes(Path affPath) {
-        try {
-            byte[] bytes = Files.readAllBytes(affPath);
-            String initial = new String(bytes, StandardCharsets.ISO_8859_1);
-            Charset affixCharset = detectDeclaredCharset(initial);
-            String decoded = new String(bytes, affixCharset);
-            List<String> lines = decoded.lines().toList();
-            AffixData data = new AffixData(affixCharset);
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i).strip();
-                if (line.isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-
-                String[] parts = line.split("\\s+");
-                if (parts.length == 0) {
-                    continue;
-                }
-
-                if ("SET".equals(parts[0]) && parts.length >= 2) {
-                    data.encoding = parts[1];
-                    continue;
-                }
-                if ("WORDCHARS".equals(parts[0]) && parts.length >= 2) {
-                    data.wordChars = line.substring("WORDCHARS".length()).strip();
-                    continue;
-                }
-                if (("PFX".equals(parts[0]) || "SFX".equals(parts[0])) && parts.length >= 4
-                    && parts[3].matches("\\d+")) {
-                    boolean isPrefix = "PFX".equals(parts[0]);
-                    char flag = parts[1].charAt(0);
-                    boolean cross = "Y".equals(parts[2]);
-                    int count = Integer.parseInt(parts[3]);
-                    for (int j = 0; j < count && i + 1 < lines.size(); j++) {
-                        i++;
-                        String ruleLine = lines.get(i).strip();
-                        if (ruleLine.isEmpty() || ruleLine.startsWith("#")) {
-                            j--;
-                            continue;
-                        }
-                        String[] rule = ruleLine.split("\\s+");
-                        if (rule.length < 5) {
-                            continue;
-                        }
-                        String strip = "0".equals(rule[2]) ? "" : rule[2];
-                        String append = "0".equals(rule[3]) ? "" : rule[3];
-                        String condition = rule[4];
-                        data.addRule(flag, isPrefix, new AffixRule(isPrefix, cross, strip, append, condition));
-                    }
-                }
-            }
-            return data;
-        } catch (IOException ex) {
-            throw new HunspellIoException("Unable to read affix file: " + affPath, ex);
-        }
-    }
-
-    private static Charset detectDeclaredCharset(String affContent) {
-        for (String rawLine : affContent.lines().toList()) {
-            String line = rawLine.strip();
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-            String[] parts = line.split("\\s+");
-            if (parts.length >= 2 && "SET".equals(parts[0])) {
-                try {
-                    return Charset.forName(parts[1]);
-                } catch (IllegalArgumentException ignored) {
-                    return StandardCharsets.ISO_8859_1;
-                }
-            }
-        }
-        return StandardCharsets.ISO_8859_1;
-    }
-
-    private record DictionaryEntry(String stem, String flags) {
-    }
-
-    private static final class AffixData {
-        private String encoding = "UTF-8";
-        private String wordChars = "";
-        private final Charset charset;
-        private final Map<Character, List<AffixRule>> prefixes = new HashMap<>();
-        private final Map<Character, List<AffixRule>> suffixes = new HashMap<>();
-
-        private AffixData(Charset charset) {
-            this.charset = charset;
-        }
-
-        private void addRule(char flag, boolean prefix, AffixRule rule) {
-            Map<Character, List<AffixRule>> target = prefix ? prefixes : suffixes;
-            target.computeIfAbsent(flag, ignored -> new ArrayList<>()).add(rule);
-        }
-
-        private Map<String, String> generate(DictionaryEntry entry) {
-            Map<String, String> generated = new HashMap<>();
-            List<AffixRule> prefixRules = new ArrayList<>();
-            List<AffixRule> suffixRules = new ArrayList<>();
-            for (int i = 0; i < entry.flags().length(); i++) {
-                char flag = entry.flags().charAt(i);
-                prefixRules.addAll(prefixes.getOrDefault(flag, List.of()));
-                suffixRules.addAll(suffixes.getOrDefault(flag, List.of()));
-            }
-
-            List<String> prefixed = new ArrayList<>();
-            prefixed.add(entry.stem());
-            for (AffixRule rule : prefixRules) {
-                String form = rule.apply(entry.stem());
-                if (form != null) {
-                    generated.putIfAbsent(form, entry.stem());
-                    prefixed.add(form);
-                }
-            }
-
-            for (AffixRule rule : suffixRules) {
-                String form = rule.apply(entry.stem());
-                if (form != null) {
-                    generated.putIfAbsent(form, entry.stem());
-                }
-            }
-
-            for (AffixRule prefix : prefixRules) {
-                if (!prefix.crossProduct()) {
-                    continue;
-                }
-                String prefixedStem = prefix.apply(entry.stem());
-                if (prefixedStem == null) {
-                    continue;
-                }
-                for (AffixRule suffix : suffixRules) {
-                    if (!suffix.crossProduct()) {
-                        continue;
-                    }
-                    String combined = suffix.apply(prefixedStem);
-                    if (combined != null) {
-                        generated.putIfAbsent(combined, entry.stem());
-                    }
-                }
-            }
-            return generated;
-        }
-    }
-
-    private static final class AffixRule {
-        private final boolean prefix;
-        private final boolean crossProduct;
-        private final String strip;
-        private final String append;
-        private final Pattern conditionPattern;
-
-        private AffixRule(boolean prefix, boolean crossProduct, String strip, String append, String condition) {
-            this.prefix = prefix;
-            this.crossProduct = crossProduct;
-            this.strip = strip;
-            this.append = append;
-            String normalizedCondition = ".".equals(condition) ? ".*" : condition;
-            this.conditionPattern = Pattern.compile(prefix ? "^" + normalizedCondition + ".*" : ".*" + normalizedCondition + "$");
-        }
-
-        private boolean crossProduct() {
-            return crossProduct;
-        }
-
-        private String apply(String stem) {
-            if (!conditionPattern.matcher(stem).matches()) {
-                return null;
-            }
-            if (prefix) {
-                if (!stem.startsWith(strip)) {
-                    return null;
-                }
-                return append + stem.substring(strip.length());
-            }
-            if (!stem.endsWith(strip)) {
-                return null;
-            }
-            return stem.substring(0, stem.length() - strip.length()) + append;
+            return new SimpleHunspell(affixManager, hashManager, maxSuggestions);
         }
     }
 }

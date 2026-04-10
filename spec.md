@@ -303,6 +303,23 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
 **Contribution**
 - Advances API parity with the specified rich spell result model (root visibility), not just boolean spell outcomes.
 
+### Milestone F — Manager-class refactor + FLAG formats and continuation classes (current session)
+**Implemented**
+- Split `SimpleHunspell` into package-private `AffixManager` (mirroring `affixmgr.cxx`) and
+  `HashManager` (mirroring `hashmgr.cxx`); the public `SimpleHunspell` is now a thin façade
+  playing the `Hunspell`/`HunspellImpl` role from `hunspell.cxx`.
+- Replaced eager affix expansion with lookup-time recursion that mirrors the C++ control flow:
+  `prefix_check` → `suffix_check` → `suffix_check_twosfx` → `prefix_check_twosfx`.
+- `FLAG long`, `FLAG num`, and `FLAG UTF-8` decoding for both per-word stem flag vectors and
+  per-rule continuation classes (`SFX A 0 s/123 .`).
+- Two-level continuation-class suffix lookup driven by a parsed set of "flags appearing in
+  some rule's contclass", matching how `AffixMgr` walks `contclasses[]` to enable chains like
+  `foosbar` / `unfoosbar`.
+
+**Contribution**
+- Establishes the manager-class architecture target named in `plan.md` and unlocks parity for
+  the `affixes`, `flag`, `flaglong`, `flagnum`, `flagutf8`, and `base_utf` ported subsets.
+
 ### Current parity snapshot
 - Original C++ target corpus: **140 tests**.
 - Ported/passing Java fixture coverage (meaningful subsets or full-file assertions where implemented):
@@ -310,5 +327,11 @@ Immediately scaffold the Java module layout and land a trivial passing test (ver
   - `condition_utf.dic`
   - `slash.dic`
   - `base.dic`
+  - `affixes.dic`
+  - `flag.dic`
+  - `flaglong.dic`
+  - `flagnum.dic`
+  - `flagutf8.dic`
+  - `base_utf.dic`
 
 ---

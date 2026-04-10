@@ -4,11 +4,11 @@ Source: `tests/Makefile.am` `TESTS` list used by `make check`.
 
 Total tests: **140**
 
-- [ ] `affixes.dic`
+- [x] `affixes.dic` *(ported subset passing in Java: full `affixes.good` corpus assertions plus direct PFX×SFX cross-product checks (`rework`/`worked`/`reworked`/`tried`))*
 - [x] `condition.dic` *(ported subset passing in Java: full `condition.good`/`condition.wrong` corpus assertions plus targeted direct checks; accepted and rejected branches are covered and passing)*
 - [x] `condition_utf.dic` *(ported subset passing in Java: full `condition_utf.good`/`condition_utf.wrong` corpus assertions plus 10 explicit direct UTF acceptance/rejection tests are passing with charset-aware loading)*
 - [x] `base.dic` *(ported subset passing in Java: explicit acceptance/rejection checks for affixed forms, case variants, and trailing-dot tokens from `base.good`/`base.wrong`)*
-- [ ] `base_utf.dic`
+- [x] `base_utf.dic` *(ported subset passing in Java: explicit acceptance checks for `created`/`uncreated`/`conveyed`/`FAQs`/`Hello`/`HELLO`/`NASA` and rejection of misspelled forms (`loooked`/`hlelo`/`tomorow`/`Nasa`))*
 - [ ] `allcaps.dic`
 - [ ] `allcaps_utf.dic`
 - [ ] `allcaps2.dic`
@@ -25,10 +25,10 @@ Total tests: **140**
 - [ ] `phone.dic`
 - [ ] `ph.dic`
 - [ ] `ph2.dic`
-- [ ] `flag.dic`
-- [ ] `flaglong.dic`
-- [ ] `flagnum.dic`
-- [ ] `flagutf8.dic`
+- [x] `flag.dic` *(ported subset passing in Java: full `flag.good` corpus assertions plus continuation-class chain direct checks (`foosbar`/`foosbaz`/`unfoosbar`) covering `suffix_check_twosfx` and `prefix_check_twosfx`)*
+- [x] `flaglong.dic` *(ported subset passing in Java: full `flaglong.good` corpus assertions exercising `FLAG long` two-character flag decoding)*
+- [x] `flagnum.dic` *(ported subset passing in Java: full `flagnum.good` corpus assertions exercising `FLAG num` comma-separated decimal flag decoding)*
+- [x] `flagutf8.dic` *(ported subset passing in Java: full `flagutf8.good` corpus assertions exercising `FLAG UTF-8` codepoint flag decoding)*
 - [x] `slash.dic` *(ported subset passing in Java: full `slash.good` corpus assertions plus direct checks for escaped slash tokens, including bare `/`, `1/2`, and `http://`)*
 - [ ] `forbiddenword.dic`
 - [ ] `nosuggest.dic`
