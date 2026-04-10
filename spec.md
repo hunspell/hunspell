@@ -255,3 +255,41 @@ public interface Hunspell extends AutoCloseable {
 ## 14) Proposed Next Step
 
 Immediately scaffold the Java module layout and land a trivial passing test (verbatim dictionary hit), then wire the reduced CLI path (`-l/-G/-a/-d/-i`) to begin running selected existing tests.
+
+---
+
+## Session Work Log
+
+### Session 1 — April 10, 2026
+
+**Summary**
+- Added initial Java API scaffolding under `java/src/main/java/org/hunspell` matching the proposed v1 public surface (`Hunspell`, `Builder`, `SpellResult`, `DictionaryInfo`, exceptions).
+- Added a temporary bootstrap implementation (`SimpleHunspell`) that can load `.dic` word lists and perform exact-hit spell checks.
+- Added reduced CLI (`org.hunspell.cli.HunspellTool`) with starter support for `-d`, `-l`, `-G`, and `-a` to begin wiring test harness workflows.
+- Added a first smoke test script (`java/tests/session1_smoke.sh`) validating one minimal `-l` flow end-to-end.
+
+**Work-log test progression requirement**
+- Previous session passing tests: **0** (baseline).
+- Current session passing tests: **1** (`session1_smoke.sh`).
+- Status: **Improved** (current > previous).
+
+**Parity with original implementation**
+- Current parity status: **very early bootstrap only**.
+- Original implementation (`hunspell` C/C++) supports broad affix logic, rich suggestions, and full `tests/test.sh` suite coverage.
+- Java port currently demonstrates only minimal dictionary-hit behavior and does **not yet** claim parity on existing `.good/.wrong/.sug` corpora.
+
+### Session 2 — April 10, 2026
+
+**Summary**
+- Added Maven project configuration at `java/pom.xml` so the Java scaffold has a standard build/test entrypoint.
+- Added JUnit 5 bootstrap tests in `java/src/test/java/org/hunspell/HunspellBootstrapTest.java` for exact-hit acceptance and rejection of missing words.
+- Kept the existing smoke script path to validate CLI behavior end-to-end alongside Maven unit tests.
+
+**Work-log test progression requirement**
+- Previous session passing tests: **1**.
+- Current session passing tests: **3** (2 JUnit tests + 1 smoke script).
+- Status: **Improved** (current > previous).
+
+**Parity with original implementation**
+- Parity remains **partial/early**.
+- Improvements this session add repeatable Java-side build/test infrastructure, but still do not cover full Hunspell affix behavior or the complete existing `.good/.wrong/.sug` parity surface.
