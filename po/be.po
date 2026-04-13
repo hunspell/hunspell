@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2025-05-16 20:01+0000\n"
-"Last-Translator: Andrey Mukamolov <fobo66@fastmail.com>\n"
+"PO-Revision-Date: 2026-04-14 16:09+0000\n"
+"Last-Translator: Antikruk <nashtlumach@gmail.com>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/hunspell/"
 "translations/be/>\n"
 "Language: be\n"
@@ -18,58 +18,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr "Памылка - iconv_open: %s -> %s\n"
+msgstr "памылка - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr "Памылка - iconv: %s -> %s\n"
+msgstr "памылка - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr "Памылка - iconv_open: UTF-8 -> %s\n"
+msgstr "памылка - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr "Памылка стварэння часовай тэчкі"
+msgstr "Не ўдалося стварыць каталог часовых файлаў"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr "Памылка адкрыцця файлу"
+msgstr "Не ўдалося адкрыць файл"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr "Памылка адкрыцця %s.\n"
+msgstr "Не ўдалося адкрыць %s.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr ""
+msgstr "памылка - няма зменнай HOME\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr ""
+msgstr "Радок %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr ""
+msgstr "ЗАБАРОНЕНА!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr ""
+msgstr "Арфаграфічная памылка?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -77,6 +77,8 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
+"\t%s\t\tФайл: %s\n"
+"\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
@@ -86,6 +88,9 @@ msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
+"\n"
+"[ПРАГАЛ] З)амяніць У)хваліць у(С)тавіць М)ал А)сн В)ыйсці с(К)лечыць або ? "
+"для даведкі\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -95,6 +100,14 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
+"Кожны раз, калі сустракаецца слова, якога няма ў слоўніку,\n"
+"\n"
+"яно будзе выводзіцца ў першым радку экрана.   Калі слоўнік\n"
+"\n"
+"змяшчае падобныя словы, яны пералічваюцца з нумарам\n"
+"\n"
+"побач з кожным. Вы можаце цалкам замяніць слова або абраць адно з "
+"прапанаваных слоў.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -102,26 +115,29 @@ msgid ""
 "Commands are:\n"
 "\n"
 msgstr ""
+"\n"
+"Каманды:\n"
+"\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr ""
+msgstr "R\tЦалкам замяніць слова з памылкай.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr ""
+msgstr "Прагал\tУхваліць слова толькі гэтым разам.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr ""
+msgstr "A\tУхваляць слова да канца сеанса.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr ""
+msgstr "I\tУхваліць слова і ўставіць у прыватны слоўнік.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
-msgstr ""
+msgstr "U\tУхваліць і дадаць маленькімі літарамі ў прыватны слоўнік.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
