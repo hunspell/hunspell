@@ -2153,7 +2153,8 @@ int Hunspell::add_dic(const char* dpath, const char* key) {
 
 bool Hunspell::spell(const std::string& word, int* info, std::string* root) {
   std::vector<std::string> candidate_stack;
-  return m_Impl->spell(word, candidate_stack, info, root);
+  return m_Impl->spell(word, candidate_stack, info, root,
+                       std::chrono::steady_clock::now());
 }
 
 std::vector<std::string> Hunspell::suggest(const std::string& word) {
