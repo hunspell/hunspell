@@ -379,6 +379,14 @@ int HashMgr::add_word(const std::string& in_word,
           delete desc_copy;
           delete word_copy;
           return 0;
+        } else if (!dp->astr && dp->alen == 0 &&
+                   !hp->astr && hp->alen == 0) {
+          // word already exists with no flags, skip duplicate
+          release_flags(hp->astr, hp->var & H_OPT_OWNFLAGS);
+          free(hp);
+          delete desc_copy;
+          delete word_copy;
+          return 0;
         } else {
           dp->next_homonym = hp;
         }
@@ -397,6 +405,14 @@ int HashMgr::add_word(const std::string& in_word,
         dp->alen = hp->alen;
         dp->var &= ~H_OPT_OWNFLAGS;
         dp->var |= (hp->var & H_OPT_OWNFLAGS);
+        free(hp);
+        delete desc_copy;
+        delete word_copy;
+        return 0;
+      } else if (!dp->astr && dp->alen == 0 &&
+                 !hp->astr && hp->alen == 0) {
+        // word already exists with no flags, skip duplicate
+        release_flags(hp->astr, hp->var & H_OPT_OWNFLAGS);
         free(hp);
         delete desc_copy;
         delete word_copy;
@@ -505,8 +521,25 @@ void HashMgr::remove_forbidden_flag(const std::string& word) {
   if (!dp)
     return;
   while (dp) {
-    if (dp->astr && TESTAFF(dp->astr, forbiddenword, dp->alen))
-      dp->alen = 0;  // XXX forbidden words of personal dic.
+    if (dp->astr && TESTAFF(dp->astr, forbiddenword, dp->alen)) {
+      if (dp->alen == 1) {
+        release_flags(dp->astr, dp->var & H_OPT_OWNFLAGS);
+        dp->astr = NULL;
+        dp->alen = 0;
+        dp->var &= ~H_OPT_OWNFLAGS;
+      } else {
+        auto newflags = new unsigned short[dp->alen - 1];
+        int j = 0;
+        for (int i = 0; i < dp->alen; i++) {
+          if (dp->astr[i] != forbiddenword)
+            newflags[j++] = dp->astr[i];
+        }
+        release_flags(dp->astr, dp->var & H_OPT_OWNFLAGS);
+        dp->astr = newflags;
+        dp->alen = (short)j;
+        dp->var |= H_OPT_OWNFLAGS;
+      }
+    }
     dp = dp->next_homonym;
   }
 }
