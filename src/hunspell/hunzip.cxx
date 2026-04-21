@@ -210,7 +210,10 @@ bool Hunzip::getline(std::string& dest) {
   int l = 0, eol = 0, left = 0, right = 0;
   if (bufsiz == -1)
     return false;
-  while (l < bufsiz && !eol) {
+  // Stop one byte before BUFSIZE so the post-loop linebuf[l] = '\0' below
+  // (and the right-suffix path) always have room for the terminator without
+  // overflowing the stack buffer.
+  while (l < bufsiz && l < BUFSIZE - 1 && !eol) {
     linebuf[l++] = out[outc];
     switch (out[outc]) {
       case '\t':
