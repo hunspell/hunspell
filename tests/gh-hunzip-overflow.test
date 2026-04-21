@@ -1,0 +1,11 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+$LIBTOOL --mode=execute "$DIR/../tests/gh-hunzip-overflow"
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: gh-hunzip-overflow crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: gh-hunzip-overflow"
+exit 0
