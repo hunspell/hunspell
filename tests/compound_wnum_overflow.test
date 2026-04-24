@@ -1,0 +1,21 @@
+#!/bin/sh
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+
+# This test verifies the fix for wnum overflow in compound_check.
+# A 127-char word ending in '-' with LANG hu triggers the moving rule
+# path which can cause wnum to grow past maxwordnum (100) due to 
+# wordnum resets during recursion.
+
+# Test word: 126 'a's + '-'  
+word="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-"
+
+out=$(echo "$word" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/compound_wnum_overflow" -a 2>&1)
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "FAIL: compound_wnum_overflow crashed with exit code $rc"
+    exit 1
+fi
+echo "PASS: compound_wnum_overflow"
+exit 0

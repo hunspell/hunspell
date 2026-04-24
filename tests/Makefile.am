@@ -154,7 +154,8 @@ gh1044.test \
 gh646.test \
 ofz51432.test \
 ofz5627151457255424.test \
-gh1095.test
+gh1095.test \
+compound_wnum_overflow.test
 
 clean-local:
 	-rm -rf testSubDir
@@ -682,6 +683,9 @@ limit-multiple-compounding.wrong \
 iconv_break_overflow.aff \
 iconv_break_overflow.dic \
 iconv_break_overflow.wrong \
+compound_wnum_overflow.aff \
+compound_wnum_overflow.dic \
+compound_wnum_overflow.test \
 gh1032.cxx \
 gh1032.aff \
 gh1032.dic \
