@@ -35,7 +35,7 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
     if (size < 1)
         return 0;
     // use first byte as len of following word to feed into the spell checking
-    int wordlen = data[0];
+    size_t wordlen = static_cast<unsigned char>(data[0]);
     ++data;
     --size;
     if (wordlen > size)

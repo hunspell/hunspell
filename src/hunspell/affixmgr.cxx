@@ -1380,6 +1380,7 @@ struct metachar_data {
 // check compound patterns
 int AffixMgr::defcpd_check(hentry*** words,
                            short wnum,
+                           short maxwordnum,
                            hentry* rv,
                            hentry** def,
                            char all) {
@@ -1391,6 +1392,12 @@ int AffixMgr::defcpd_check(hentry*** words,
   }
 
   if (!*words) {
+    return 0;
+  }
+
+  if (wnum >= maxwordnum) {
+    if (w)
+      *words = NULL;
     return 0;
   }
 
@@ -1586,6 +1593,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   hentry** oldwords = words;
   size_t scpd = 0, len = word.size();
 
+  // protect subsequent words[wnum + 1] reads and any recursion
+  if (wnum + 1 >= maxwordnum)
+    return NULL;
+
   int checked_prefix;
 
   // add a time limit to handle possible
@@ -1710,9 +1721,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                    TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
                   (!defcpdtable.empty() && onlycpdrule &&
                    ((!words && !wordnum &&
-                     defcpd_check(&words, wnum, rv, rwords, 0)) ||
+                     defcpd_check(&words, wnum, maxwordnum, rv, rwords, 0)) ||
                     (words &&
-                     defcpd_check(&words, wnum, rv, rwords, 0))))) ||
+                     defcpd_check(&words, wnum, maxwordnum, rv, rwords, 0))))) ||
                 (scpd != 0 && checkcpdtable[scpd - 1].cond != FLAG_NULL &&
                  !TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond, rv->alen)))) {
           rv = rv->next_homonym;
@@ -1898,7 +1909,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                       (compoundend && !words &&
                        TESTAFF(rv->astr, compoundend, rv->alen)) ||
                       (!defcpdtable.empty() && words &&
-                       defcpd_check(&words, wnum + 1, rv, NULL, 1))) ||
+                       defcpd_check(&words, wnum + 1, maxwordnum, rv, NULL, 1))) ||
                     (scpd != 0 && checkcpdtable[scpd - 1].cond2 != FLAG_NULL &&
                      !TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2,
                               rv->alen)))) {
@@ -1989,7 +2000,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             if (!rv && !defcpdtable.empty() && words) {
               if (i < word.size())
                 rv = affix_check(word, i, word.size() - i, 0, IN_CPD_END);
-              if (rv && defcpd_check(&words, wnum + 1, rv, NULL, 1))
+              if (rv && defcpd_check(&words, wnum + 1, maxwordnum, rv, NULL, 1))
                 return rv_first;
               rv = NULL;
             }
@@ -2219,6 +2230,10 @@ int AffixMgr::compound_check_morph(const std::string& word,
   hentry** oldwords = words;
   size_t len = word.size();
 
+  // protect subsequent words[wnum + 1] reads and any recursion
+  if (wnum + 1 >= maxwordnum)
+    return 0;
+
   // add a time limit to handle possible
   // combinatorical explosion of the overlapping words
 
@@ -2295,9 +2310,9 @@ int AffixMgr::compound_check_morph(const std::string& word,
                  TESTAFF(rv->astr, compoundmiddle, rv->alen)) ||
                 (!defcpdtable.empty() && onlycpdrule &&
                  ((!words && !wordnum &&
-                   defcpd_check(&words, wnum, rv, rwords, 0)) ||
+                   defcpd_check(&words, wnum, maxwordnum, rv, rwords, 0)) ||
                   (words &&
-                   defcpd_check(&words, wnum, rv, rwords, 0))))))) {
+                   defcpd_check(&words, wnum, maxwordnum, rv, rwords, 0))))))) {
         rv = rv->next_homonym;
       }
 
@@ -2486,7 +2501,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                           (compoundend && !words &&
                            TESTAFF(rv->astr, compoundend, rv->alen)) ||
                           (!defcpdtable.empty() && words &&
-                           defcpd_check(&words, wnum + 1, rv, NULL, 1))))) {
+                           defcpd_check(&words, wnum + 1, maxwordnum, rv, NULL, 1))))) {
           rv = rv->next_homonym;
         }
 
@@ -2591,7 +2606,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
         if (!rv && !defcpdtable.empty() && words) {
           rv = affix_check(word, i, word.size() - i, 0, IN_CPD_END);
-          if (rv && words && defcpd_check(&words, wnum + 1, rv, NULL, 1)) {
+          if (rv && words && defcpd_check(&words, wnum + 1, maxwordnum, rv, NULL, 1)) {
             std::string m;
             if (compoundflag)
               m = affix_check_morph(word, i, word.size() - i, compoundflag);
