@@ -24,6 +24,8 @@ $CXX $CXXFLAGS -o $OUT/parserfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/par
 
 #dic/aff combos to test
 cp -f ./tests/arabic.* $OUT/
-cp -f ./tests/checkcompoundpattern*.* $OUT/
+cp -f ./tests/checkcompound*.* $OUT/
+cp -f ./tests/compound*.* $OUT/
+cp -f ./tests/hu.* $OUT/
 cp -f ./tests/korean.* $OUT/
 cp -f ./tests/utf8*.* $OUT/
