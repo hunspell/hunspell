@@ -1,7 +1,8 @@
 #!/bin/sh
 DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
-$LIBTOOL --mode=execute "$DIR/../tests/gh-hunzip-overflow"
+out=$(echo "test" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh-hunzip-overflow" -a 2>&1)
 rc=$?
 if [ $rc -ne 0 ]; then
     echo "FAIL: gh-hunzip-overflow crashed with exit code $rc"
