@@ -22,10 +22,24 @@ $CXX $CXXFLAGS -o $OUT/affdicfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/aff
 $CXX $CXXFLAGS -o $OUT/persdicfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/persdicfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 $CXX $CXXFLAGS -o $OUT/parserfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/parserfuzzer.cxx ./src/parsers/libparsers.a ./src/hunspell/.libs/libhunspell-1.7.a
 
-#dic/aff combos to test
+#dic/aff combos to test - one representative per feature to keep the
+#fuzzer's loop-over-all-dicts cost bounded
+cp -f ./tests/alias.* $OUT/
 cp -f ./tests/arabic.* $OUT/
-cp -f ./tests/checkcompound*.* $OUT/
-cp -f ./tests/compound*.* $OUT/
+cp -f ./tests/break.* $OUT/
+cp -f ./tests/checkcompoundpattern.* $OUT/
+cp -f ./tests/circumfix.* $OUT/
+cp -f ./tests/complexprefixes.* $OUT/
+cp -f ./tests/compoundflag.* $OUT/
 cp -f ./tests/hu.* $OUT/
+cp -f ./tests/iconv.* $OUT/
+cp -f ./tests/ignore.* $OUT/
+cp -f ./tests/keepcase.* $OUT/
 cp -f ./tests/korean.* $OUT/
-cp -f ./tests/utf8*.* $OUT/
+cp -f ./tests/maputf.* $OUT/
+cp -f ./tests/needaffix.* $OUT/
+cp -f ./tests/oconv.* $OUT/
+cp -f ./tests/phone.* $OUT/
+cp -f ./tests/reputf.* $OUT/
+cp -f ./tests/utf8.* $OUT/
+cp -f ./tests/warn.* $OUT/

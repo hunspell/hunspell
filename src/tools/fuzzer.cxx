@@ -31,6 +31,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <libgen.h>
+#include <algorithm>
 #include <memory>
 
 std::vector<std::unique_ptr<Hunspell>> dictionaries;
@@ -49,17 +50,24 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     char* dir = dirname(exe_path_copy);
     DIR* d = opendir(dir);
     struct dirent *direntry;
+    std::vector<std::string> affs;
     while ((direntry = readdir(d)) != NULL)
     {
         std::string entry(direntry->d_name);
         if (endswith(entry, ".aff"))
-        {
-            std::string dic = entry.substr(0, entry.size() - 4) + ".dic";
-            dictionaries.emplace_back(new Hunspell(entry.c_str(), dic.c_str()));
-        }
+            affs.push_back(std::move(entry));
     }
     closedir(d);
     free(exe_path_copy);
+
+    // sort so dict iteration order is reproducible across runs regardless of
+    // readdir ordering; a failing input then reproduces against the same dict
+    std::sort(affs.begin(), affs.end());
+    for (const auto& entry : affs)
+    {
+        std::string dic = entry.substr(0, entry.size() - 4) + ".dic";
+        dictionaries.emplace_back(new Hunspell(entry.c_str(), dic.c_str()));
+    }
 
     return 0;
 }
