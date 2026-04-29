@@ -1,3 +1,12 @@
+2022-12-29: Hunspell 1.7.2 release:
+  - #517 add SPELL_COMPOUND bit to BREAK-based compounding
+  - tdf#136306 don't accept/suggest typos as 3-or-more-word compound words
+  - Fix regression in CHECKCOMPOUNDREP
+  - Add suffix_suggest to the C API
+  - Code modernization (std::string, std::vector, new/delete)
+  - #838 update copyright shown in UI
+  - Merge in weblate translations
+
 2022-08-22: Hunspell 1.7.1 release:
   - Merge chromium fix for #714 OOB string write in hunspell
   - Merge firefox fix for #756 various issues parsing incomplete aff files
