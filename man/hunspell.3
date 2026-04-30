@@ -1,4 +1,4 @@
-.TH hunspell 3 "2017-11-20"
+.TH hunspell 3 "2026-04-30"
 .LO 1
 .hy 0
 .SH NAME
@@ -62,45 +62,45 @@ Hunspell_create and Hunspell_destroy constructor and destructor, and
 an extra HunHandle parameter (the allocated object) in the
 wrapper functions (see in the C header file \fBhunspell.h\fR).
 .PP
-The basic spelling functions, \fBspell()\fR and \fBsuggest()\fR can
-be used for stemming, morphological generation and analysis by
-XML input texts (see XML API).
+The basic spelling functions, \fBspell()\fR and \fBsuggest()\fR, can
+also be used for stemming, morphological generation and analysis via
+XML input (see XML API).
 .
 .SS Constructor and destructor
-Hunspell's constructor needs paths of the affix and dictionary files.
-(In WIN32 environment, use UTF-8 encoded paths started with the long path prefix \\\\?\\ to handle system-independent character encoding and very long path names, too.)
+Hunspell's constructor takes the paths to the affix and dictionary files.
+(On Windows, use UTF-8 encoded paths starting with the long path prefix \\\\?\\ to handle system-independent character encoding and very long path names.)
 See the \fBhunspell\fR(4) manual page for the dictionary format.
-Optional \fBkey\fR parameter is for dictionaries encrypted by
+The optional \fBkey\fR parameter is for dictionaries encrypted by
 the \fBhzip\fR tool of the Hunspell distribution.
 .
 .SS Extra dictionaries
-The add_dic() function load an extra dictionary file. 
+The add_dic() function loads an extra dictionary file.
 The extra dictionaries use the affix file of the allocated Hunspell
-object. Maximal number of the extra dictionaries is limited in the source code (20).
+object. The maximum number of extra dictionaries is limited in the source code (20).
 .
 .SS Spelling and correction
 The spell() function returns non-zero, if the input word is recognised
 by the spell checker, and a zero value if not. Optional reference
 variables return a bit array (info) and the root word of the input word.
 Info bits checked with the SPELL_COMPOUND, SPELL_FORBIDDEN or SPELL_WARN
-macros sign compound words, explicit forbidden and probably bad words.
-From version 1.3, the non-zero return value is 2 for the dictionary
-words with the flag "WARN" (probably bad words).
+macros mark compound words, explicitly forbidden words, and probably bad words.
+Since version 1.3, the non-zero return value is 2 for dictionary
+words with the "WARN" flag (probably bad words).
 .PP
-The suggest() function has two input parameters, a reference variable
-of the output suggestion list, and an input word. The function returns
-the number of the suggestions. The reference variable
-will contain the address of the newly allocated suggestion list or NULL,
-if the return value of suggest() is zero. Maximal number of the suggestions
-is limited in the source code.
+The suggest() function has two input parameters: a reference to the
+output suggestion list, and an input word. The function returns the
+number of suggestions. The reference variable will hold the address
+of the newly allocated suggestion list, or NULL if the return value
+of suggest() is zero. The maximum number of suggestions is limited
+in the source code.
 .PP
 The spell() and suggest() can recognize XML input, see the XML API section.
 .
 .SS Morphological functions
-The plain stem() and analyze() functions are similar to the suggest(), but
-instead of suggestions, return stems and results of the morphological
-analysis. The plain generate() takes a second word as well. This extra word
-and its affixation will be the model of the morphological generation of
+The plain stem() and analyze() functions are similar to suggest(), but
+instead of suggestions they return stems and results of the morphological
+analysis. The plain generate() takes a second word as well. This extra
+word and its affixation serve as the model for morphologically generating
 the requested forms of the first word.
 .PP
 The extended stem() and generate() use the results of a
@@ -114,9 +114,9 @@ int n2 = stem(&result2, result, n1);
 .fi
 .RE
 .PP
-The morphological annotation of the Hunspell library has fixed
-(two letter and a colon) field identifiers, see the
-\fBhunspell\fR(4) manual page.
+The morphological annotation of the Hunspell library uses fixed field
+identifiers (two letters and a colon); see the \fBhunspell\fR(4) manual
+page.
 .PP
 .RS
 .nf
@@ -128,13 +128,14 @@ for (int i = 0; i < n; i++) printf("%s\\n", result[i]);
 .RE
 .PP
 .SS Memory deallocation
-The free_list() function frees the memory allocated by suggest(),
-analyze, generate and stem() functions.
+The free_list() function frees the memory allocated by the suggest(),
+analyze(), generate() and stem() functions.
 .SS Other functions
-The add(), add_with_affix() and remove() are helper functions of a
-personal dictionary implementation to add and remove words from the
-base dictionary in run-time. The add_with_affix() uses a second root word
-as the model of the enabled affixation and compounding of the new word.
+The add(), add_with_affix() and remove() are helper functions for
+implementing a personal dictionary, used to add and remove words from
+the base dictionary at run time. The add_with_affix() function uses a
+second root word as the model for the affixation and compounding of
+the new word.
 .PP
 The get_dic_encoding() function returns "ISO8859-1" or the character
 encoding defined in the affix file with the "SET" keyword.
@@ -142,8 +143,8 @@ encoding defined in the affix file with the "SET" keyword.
 The get_csconv() function returns the 8-bit character case table of the
 encoding of the dictionary.
 .PP
-The get_wordchars() and get_wordchars_utf16() return the 
-extra word characters defined in affix file for tokenization by
+The get_wordchars() and get_wordchars_utf16() functions return the
+extra word characters defined for tokenization in the affix file by
 the "WORDCHARS" keyword.
 .PP
 The get_version() returns the version string of the library.
@@ -152,7 +153,7 @@ The spell() function returns non-zero for the "<?xml?>" input
 indicating the XML API support.
 .PP
 The suggest() function stems, analyzes and generates the forms of the
-input word, if it was added by one of the following "SPELLML" syntaxes:
+input word when called with one of the following "SPELLML" syntaxes:
 .PP
 .RS
 .nf
@@ -225,13 +226,14 @@ input word, if it was added by one of the following "SPELLML" syntaxes:
 
 
 The outputs of the type="stem" query and the stem() library function
-are the same. The output of the type="analyze" query is a string contained
-a <code><a>result1</a><a>result2</a>...</code> element. This 
-element can be used in the second syntax of the type="generate" query.
+are the same. The output of the type="analyze" query is a string
+containing a <code><a>result1</a><a>result2</a>...</code> element.
+This element can be used in the second syntax of the type="generate"
+query.
 .SH EXAMPLE
 See analyze.cxx in the Hunspell distribution.
 .SH AUTHORS
-Hunspell based on Ispell's spell checking algorithms and OpenOffice.org's Myspell source code.
+Hunspell is based on Ispell's spell checking algorithms and OpenOffice.org's Myspell source code.
 .PP
 Author of International Ispell is Geoff Kuenning.
 .PP
