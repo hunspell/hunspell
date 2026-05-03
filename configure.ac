@@ -20,6 +20,11 @@ AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
 AC_SUBST(PC_CFLAGS)
 
+# In-tree consumers need HUNSPELL_STATIC for static-only builds so the
+# public headers skip the dllimport/dllexport annotations on Windows.
+AS_IF([test "x$enable_shared" = xno], [HUNSPELL_STATIC_DEFINE=-DHUNSPELL_STATIC])
+AC_SUBST(HUNSPELL_STATIC_DEFINE)
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC

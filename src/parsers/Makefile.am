@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS=-I${top_builddir}/src/hunspell
+AM_CPPFLAGS=-I${top_builddir}/src/hunspell $(HUNSPELL_STATIC_DEFINE)
 
 noinst_LIBRARIES=libparsers.a
 libparsers_a_SOURCES=firstparser.cxx xmlparser.cxx \

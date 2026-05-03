@@ -20,4 +20,4 @@ libhunspell_1_7_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
 # Linux SONAME suffix is (current - age). See RELEASING.md.
 libhunspell_1_7_la_LDFLAGS=-no-undefined -version-info 0:1:0
 
-AM_CXXFLAGS=$(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL
+AM_CXXFLAGS=$(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL $(HUNSPELL_STATIC_DEFINE)
