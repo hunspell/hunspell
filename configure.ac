@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 # When bumping the package version below, also update -version-info in
 # src/hunspell/Makefile.am per the libtool rules. See RELEASING.md.
-AC_INIT([hunspell],[1.7.2],[https://github.com/hunspell/hunspell/issues],,[https://hunspell.github.io])
+AC_INIT([hunspell],[1.7.3],[https://github.com/hunspell/hunspell/issues],,[https://hunspell.github.io])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST

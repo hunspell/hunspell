@@ -18,6 +18,6 @@ libhunspell_1_7_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
 #  - public API added:                     c += 1; r = 0; a += 1
 #  - public API removed or signature change: c += 1; r = 0; a = 0
 # Linux SONAME suffix is (current - age). See RELEASING.md.
-libhunspell_1_7_la_LDFLAGS=-no-undefined -version-info 0:1:0
+libhunspell_1_7_la_LDFLAGS=-no-undefined -version-info 1:0:1
 
 AM_CXXFLAGS=$(CFLAG_VISIBILITY) -DBUILDING_LIBHUNSPELL $(HUNSPELL_STATIC_DEFINE)
