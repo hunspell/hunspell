@@ -4,9 +4,8 @@ Regenerate src/hunspell/utf_info.hxx from a Unicode UnicodeData.txt.
 
 Usage:
     gen_utf_info.py UnicodeData.txt > src/hunspell/utf_info.hxx
-    gen_utf_info.py --mc-only UnicodeData.txt CURRENT_HXX > new_HXX
 
-Default mode emits a fresh BMP table (U+0000 to U+FFFF), one
+Emits a fresh BMP table (U+0000 to U+FFFF), one
 { cletter, cupper, clower } entry per codepoint.
 
 cletter is true when the codepoint's General_Category is one of:
@@ -31,16 +30,8 @@ script expands them.
 The download lives at:
 
     https://www.unicode.org/Public/<version>/ucd/UnicodeData.txt
-
---mc-only takes the currently checked-in utf_info.hxx as a base and
-re-emits it with only the Mc-category cletter flips applied. Use this
-to land the #1057 fix in isolation, without rolling the rest of the
-table forward to current Unicode (which would touch tens of thousands
-of entries: CJK Ideograph range expansions, post-2010 letter additions,
-new case mappings, and so on).
 """
 
-import re
 import sys
 
 LETTER_LIKE = {'Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Mn', 'Mc'}
@@ -131,40 +122,6 @@ def build_table(unicode_data_path):
     return table
 
 
-ENTRY_RE = re.compile(
-    r'/\* 0x([0-9a-f]{4}) \*/ \{ (true|false), 0x([0-9a-f]{4}), 0x([0-9a-f]{4}) \},'
-)
-
-
-def parse_existing(path):
-    """Parse a previously-emitted utf_info.hxx into the same shape build_table
-    returns. Codepoints not found in the file default to (False, cp, cp) -
-    in practice every BMP codepoint is present."""
-    table = [(False, c, c) for c in range(0x10000)]
-    with open(path, encoding='utf-8') as f:
-        for line in f:
-            m = ENTRY_RE.match(line)
-            if not m:
-                continue
-            cp = int(m.group(1), 16)
-            table[cp] = (m.group(2) == 'true',
-                         int(m.group(3), 16), int(m.group(4), 16))
-    return table
-
-
-def patch_mc_only(base_table, unicode_data_path):
-    """Take an existing table and flip cletter to true for every Mc codepoint
-    per UnicodeData.txt. Case mappings are left alone (Mc characters don't
-    have any). Everything else is preserved verbatim."""
-    table = list(base_table)
-    for cp, gc, _, _ in parse_unicode_data(unicode_data_path):
-        if cp >= 0x10000 or gc != 'Mc':
-            continue
-        _, up, lo = table[cp]
-        table[cp] = (True, up, lo)
-    return table
-
-
 def emit(table, out):
     out.write(LICENSE_HEADER)
     out.write("\n")
@@ -187,23 +144,10 @@ def emit(table, out):
     out.write("// clang-format on\n")
 
 
-USAGE = (
-    "usage: gen_utf_info.py UnicodeData.txt > utf_info.hxx\n"
-    "       gen_utf_info.py --mc-only UnicodeData.txt CURRENT_HXX > utf_info.hxx"
-)
-
-
 def main(argv):
-    args = argv[1:]
-    if args and args[0] == '--mc-only':
-        if len(args) != 3:
-            sys.exit(USAGE)
-        base = parse_existing(args[2])
-        table = patch_mc_only(base, args[1])
-    else:
-        if len(args) != 1:
-            sys.exit(USAGE)
-        table = build_table(args[0])
+    if len(argv) != 2:
+        sys.exit("usage: gen_utf_info.py UnicodeData.txt > utf_info.hxx")
+    table = build_table(argv[1])
     emit(table, sys.stdout)
 
 

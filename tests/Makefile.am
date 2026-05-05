@@ -133,6 +133,7 @@ opentaal_forbiddenword1.dic \
 opentaal_forbiddenword2.dic \
 opentaal_keepcase.dic \
 arabic.dic \
+arabic_nsm.dic \
 2970240.dic \
 2970242.dic \
 breakoff.dic \
@@ -631,6 +632,9 @@ opentaal_keepcase.wrong \
 arabic.aff \
 arabic.dic \
 arabic.wrong \
+arabic_nsm.aff \
+arabic_nsm.dic \
+arabic_nsm.good \
 2970240.aff \
 2970240.dic \
 2970240.good \
