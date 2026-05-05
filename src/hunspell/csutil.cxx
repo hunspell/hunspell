@@ -2462,7 +2462,8 @@ unsigned short unicodetoupper(unsigned short c, int langnum) {
 #ifdef MOZILLA_CLIENT
   return ToUpperCase((char16_t)c);
 #else
-  return utf_tbl[c].cupper;
+  unsigned short up = utf_pages[utf_page_index[c >> 8]][c & 0xFF].cupper;
+  return up ? up : c;
 #endif
 #endif
 }
@@ -2479,7 +2480,8 @@ unsigned short unicodetolower(unsigned short c, int langnum) {
 #ifdef MOZILLA_CLIENT
   return ToLowerCase((char16_t)c);
 #else
-  return utf_tbl[c].clower;
+  unsigned short lo = utf_pages[utf_page_index[c >> 8]][c & 0xFF].clower;
+  return lo ? lo : c;
 #endif
 #endif
 }
@@ -2488,7 +2490,7 @@ int unicodeisalpha(unsigned short c) {
 #ifdef OPENOFFICEORG
   return u_isalpha(c);
 #else
-  return utf_tbl[c].cletter;
+  return utf_pages[utf_page_index[c >> 8]][c & 0xFF].cletter;
 #endif
 }
 
