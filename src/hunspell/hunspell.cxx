@@ -193,11 +193,11 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   complexprefixes = 0;
 
   /* first set up the hash manager */
-  m_HMgrs.push_back(std::unique_ptr<HashMgr>(new HashMgr(dpath, affpath, key)));
+  m_HMgrs.push_back(std::make_unique<HashMgr>(dpath, affpath, key));
 
   /* next set up the affix manager */
   /* it needs access to the hash manager lookup methods */
-  pAMgr.reset(new AffixMgr(affpath, m_HMgrs, key));
+  pAMgr = std::make_unique<AffixMgr>(affpath, m_HMgrs, key);
 
   /* get the preferred try string and the dictionary */
   /* encoding from the Affix Manager for that dictionary */
@@ -211,7 +211,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   wordbreak = pAMgr->get_breaktable();
 
   /* and finally set up the suggestion manager */
-  pSMgr.reset(new SuggestMgr(try_string, MAXSUGGESTION, pAMgr.get()));
+  pSMgr = std::make_unique<SuggestMgr>(try_string, MAXSUGGESTION, pAMgr.get());
 }
 
 HunspellImpl::~HunspellImpl() {
@@ -223,7 +223,7 @@ HunspellImpl::~HunspellImpl() {
 
 // load extra dictionaries
 int HunspellImpl::add_dic(const char* dpath, const char* key) {
-  m_HMgrs.push_back(std::unique_ptr<HashMgr>(new HashMgr(dpath, affixpath.c_str(), key)));
+  m_HMgrs.push_back(std::make_unique<HashMgr>(dpath, affixpath.c_str(), key));
   return 0;
 }
 
