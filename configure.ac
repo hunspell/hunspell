@@ -31,7 +31,7 @@ AC_PROG_CC
 LT_INIT
 AC_PROG_AWK
 
-AX_CXX_COMPILE_STDCXX_11([noext], [optional])
+AX_CXX_COMPILE_STDCXX([14], [noext], [mandatory])
 
 # Checks for libraries.
 AM_ICONV

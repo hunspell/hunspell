@@ -3887,7 +3887,7 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        new_phone.reset(new phonetable);
+        new_phone = std::make_unique<phonetable>();
         new_phone->utf8 = (char)utf8;
         np++;
         break;
