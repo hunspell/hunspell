@@ -78,6 +78,7 @@
 
 RepList::RepList(int n) {
   dat.reserve(std::min(n, 16384));
+  can_use_trie = true;
 }
 
 RepList::~RepList() {
@@ -118,15 +119,20 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   if (in_pat1.empty() || pat2.empty()) {
     return 1;
   }
+
+  trie.add(in_pat1, pat2);
+
   // analyse word context
   int type = 0;
   std::string pat1(in_pat1);
   if (pat1[0] == '_') {
     pat1.erase(0, 1);
     type = 1;
+    can_use_trie = false;
   }
   if (!pat1.empty() && pat1[pat1.size() - 1] == '_') {
     type = type + 2;
+    can_use_trie = false;
     pat1.erase(pat1.size() - 1);
   }
   mystrrep(pat1, "_", " ");
@@ -159,6 +165,9 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
 }
 
 bool RepList::conv(const std::string& in_word, std::string& dest) {
+  if (can_use_trie)
+    return trie.transcode(in_word, dest) != TranscodeResult::None;
+
   dest.clear();
 
   const size_t wordlen = in_word.size();
