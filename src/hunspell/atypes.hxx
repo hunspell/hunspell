@@ -134,4 +134,17 @@ struct patentry {
   }
 };
 
+// Reusable scratch tmpwords for the affix-matching path, passed though
+// through compound_check[_morph] -> prefix_check[_*] / suffix_check[_*]
+// -> Pfx/SfxEntry::checkword[_*]. Each slot is owned by the entry
+// method named in its comment.
+// Passing them around for reuse is both faster than recreating repeatedly
+// and avoids asan running out of quarantine memory
+struct AffixScratch {
+  std::string pfx_check_word;    // PfxEntry::checkword / check_morph
+  std::string pfx_check_twosfx;  // PfxEntry::check_twosfx[_morph]
+  std::string sfx_check_word;    // SfxEntry::checkword
+  std::string sfx_check_twosfx;  // SfxEntry::check_twosfx[_morph]
+};
+
 #endif

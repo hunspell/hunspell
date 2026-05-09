@@ -1746,7 +1746,8 @@ int SuggestMgr::checkword(const std::string& word,
         struct hentry* rv2 = nullptr;
         struct hentry* rwords[100] = {};  // buffer for COMPOUND pattern checking
         int info = (cpdsuggest == 1) ? SPELL_COMPOUND_2 : 0;
-        rv = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 1, &info);  // EXT
+        AffixScratch scratch;
+        rv = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 1, &info, scratch);  // EXT
         // TODO filter 3-word or more compound words, as in spell()
         // (it's too slow to call suggest() here for all possible compound words)
         if (rv &&
@@ -1776,20 +1777,24 @@ int SuggestMgr::checkword(const std::string& word,
         } else
           break;
       }
-    } else
+    } else {
+      AffixScratch scratch;
       rv = pAMgr->prefix_check(word, 0, word.size(),
-                               0);  // only prefix, and prefix + suffix XXX
+                               0, scratch);  // only prefix, and prefix + suffix XXX
+    }
 
     if (rv) {
       nosuffix = 1;
     } else {
-      rv = pAMgr->suffix_check(word, 0, word.size(), 0, nullptr, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // only suffix
+      AffixScratch scratch;
+      rv = pAMgr->suffix_check(word, 0, word.size(), 0, nullptr, scratch, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // only suffix
     }
 
     if (!rv && pAMgr->have_contclass()) {
-      rv = pAMgr->suffix_check_twosfx(word, 0, word.size(), 0, nullptr, FLAG_NULL);
+      AffixScratch scratch;
+      rv = pAMgr->suffix_check_twosfx(word, 0, word.size(), 0, nullptr, scratch, FLAG_NULL);
       if (!rv)
-        rv = pAMgr->prefix_check_twosfx(word, 0, word.size(), 0, FLAG_NULL);
+        rv = pAMgr->prefix_check_twosfx(word, 0, word.size(), 0, scratch, FLAG_NULL);
     }
 
     // check forbidden words
@@ -1818,8 +1823,9 @@ int SuggestMgr::check_forbidden(const std::string& word) {
          TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen)))
       rv = nullptr;
     size_t len = word.size();
-    if (!(pAMgr->prefix_check(word, 0, len, 1)))
-      rv = pAMgr->suffix_check(word, 0, len, 0, nullptr, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
+    AffixScratch scratch;
+    if (!(pAMgr->prefix_check(word, 0, len, 1, scratch)))
+      rv = pAMgr->suffix_check(word, 0, len, 0, nullptr, scratch, FLAG_NULL, FLAG_NULL, IN_CPD_NOT);  // prefix+suffix, suffix
     // check forbidden words
     if ((rv) && (rv->astr) &&
         TESTAFF(rv->astr, pAMgr->get_forbiddenword(), rv->alen))
@@ -1867,14 +1873,15 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
     rv = rv->next_homonym;
   }
 
-  std::string st = pAMgr->affix_check_morph(w, 0, w.size());
+  AffixScratch scratch;
+  std::string st = pAMgr->affix_check_morph(w, 0, w.size(), scratch);
   if (!st.empty()) {
     result.append(st);
   }
 
   if (pAMgr->get_compound() && result.empty()) {
     struct hentry* rwords[100] = {};  // buffer for COMPOUND pattern checking
-    pAMgr->compound_check_morph(w, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, result, nullptr);
+    pAMgr->compound_check_morph(w, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, result, nullptr, scratch);
   }
 
   line_uniq(result, MSEP_REC);

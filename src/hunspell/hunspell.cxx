@@ -869,7 +869,8 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   // check with affixes
   if (!he && pAMgr) {
     // try stripping off affixes
-    he = pAMgr->affix_check(word, 0, len, 0);
+    AffixScratch scratch;
+    he = pAMgr->affix_check(word, 0, len, scratch, 0);
 
     // check compound restriction and onlyupcase
     if (he && he->astr &&
@@ -904,14 +905,14 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       int setinfo = SPELL_COMPOUND_2;
       if (info)
         setinfo |= *info;
-      he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, &setinfo);
+      he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, &setinfo, scratch);
       if (info)
         *info = setinfo & ~SPELL_COMPOUND_2;
       // if not 2-word compoud word, try with 3 or more words
       // (only if original info didn't forbid it)
       if (!he && info && !(*info & SPELL_COMPOUND_2)) {
         *info &= ~SPELL_COMPOUND_2;
-        he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, info);
+        he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, info, scratch);
         // accept the compound with 3 or more words only if it is
         // - not a dictionary word with a typo and
         // - not two words written separately,
@@ -927,7 +928,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       // LANG_hu section: `moving rule' with last dash
       if ((!he) && (langnum == LANG_hu) && (word[len - 1] == '-')) {
         std::string dup(word, 0, len - 1);
-        he = pAMgr->compound_check(dup, -5, 0, 100, 0, nullptr, (hentry**)&rwords, 1, 0, info);
+        he = pAMgr->compound_check(dup, -5, 0, 100, 0, nullptr, (hentry**)&rwords, 1, 0, info, scratch);
       }
       // end of LANG specific region
       if (he) {
