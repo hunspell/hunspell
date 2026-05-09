@@ -19,10 +19,12 @@ cp -f ./src/tools/fuzzer.options $OUT/
 cp -f ./src/tools/persdicfuzzer.options $OUT/
 cp -f ./src/tools/parserfuzzer.options $OUT/
 cp -f ./src/tools/morphfuzzer.options $OUT/
+cp -f ./src/tools/hzfuzzer.options $OUT/
 $CXX $CXXFLAGS -o $OUT/affdicfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/affdicfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 $CXX $CXXFLAGS -o $OUT/persdicfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/persdicfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 $CXX $CXXFLAGS -o $OUT/parserfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/parserfuzzer.cxx ./src/parsers/libparsers.a ./src/hunspell/.libs/libhunspell-1.7.a
 $CXX $CXXFLAGS -o $OUT/morphfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/morphfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
+$CXX $CXXFLAGS -o $OUT/hzfuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/hzfuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 
 #dic/aff combos to test - one representative per feature to keep the
 #fuzzer's loop-over-all-dicts cost bounded
