@@ -141,7 +141,9 @@
   "/usr/lib/openoffice.org2.1/share/dict/ooo:"       \
   "/opt/openoffice.org2.0/share/dict/ooo:"           \
   "/usr/lib/openoffice.org2.0/share/dict/ooo"
-#define HOME getenv("HOME")
+#define HOME                                           \
+  ((getenv("HUNSPELL_DATA")) ? getenv("HUNSPELL_DATA") \
+                             : getenv("HOME"))
 #define DICBASENAME ".hunspell_"
 #define LOGFILE "/tmp/hunspell.log"
 #define DIRSEPCH '/'
