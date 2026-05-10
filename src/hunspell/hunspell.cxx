@@ -1825,10 +1825,13 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
 
     // temporary filtering of prefix related errors (eg.
     // generate("undrinkable", "eats") --> "undrinkables" and "*undrinks")
+    auto suggest_start = std::chrono::steady_clock::now();
     auto it = slst.begin();
     while (it != slst.end()) {
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
+        break;
       std::vector<std::string> candidate_stack;
-      if (!spell(*it, candidate_stack)) {
+      if (!spell(*it, candidate_stack, nullptr, nullptr, suggest_start)) {
         it = slst.erase(it);
       } else  {
         ++it;
