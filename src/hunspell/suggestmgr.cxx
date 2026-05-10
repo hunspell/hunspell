@@ -998,6 +998,8 @@ int SuggestMgr::swapchar_utf(std::vector<std::string>& wlst,
   std::string candidate;
   // try swapping adjacent chars one by one
   for (size_t i = 0; i < candidate_utf.size() - 1; ++i) {
+    if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
+      return wlst.size();
     std::swap(candidate_utf[i], candidate_utf[i+1]);
     u16_u8(candidate, candidate_utf);
     testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
