@@ -47,11 +47,41 @@ AFF=`basename $2 .aff`
 # copy aff content before SFX/PFX lines
 sed '/^[SP]FX/,$d;s/\s\+$//' $2 >"${AFF}_alias.aff"
 
-# space conversion (space separated multi-word expressions
-# are allowed in the dictionary)
-cat $1 | sed 's/ /_/g' > "${DIC}_alias.tmp.dic"
-
 awk $AWK_ARG '
+# Mirror HashMgr::load_tables: a morph-field section is introduced by
+# a tab, or by a (whitespace + 2 chars + colon) marker like " po:".
+# Headwords may legitimately contain spaces, so a plain space cannot
+# be assumed to terminate the headword.
+function find_morph_start(line,    tab_pos, code_pos) {
+    tab_pos = index(line, "\t")
+    code_pos = match(line, /[ \t]..:/) ? RSTART : 0
+    if (tab_pos == 0) return code_pos
+    if (code_pos == 0) return tab_pos
+    return (tab_pos < code_pos) ? tab_pos : code_pos
+}
+# Split a .dic line into headword / flag-vector / morph-field. The first
+# unescaped slash that is not at column 1 separates the word from its
+# flags; everything from the morph boundary on is the morph field.
+function parse_dic(line, parts,    morph_pos, head, i, c) {
+    morph_pos = find_morph_start(line)
+    if (morph_pos > 0) {
+        head = substr(line, 1, morph_pos - 1)
+        parts["morph"] = ltrim(substr(line, morph_pos))
+    } else {
+        head = line
+        parts["morph"] = ""
+    }
+    parts["word"] = head
+    parts["flags"] = ""
+    for (i = 2; i <= length(head); i++) {
+        c = substr(head, i, 1)
+        if (c == "/" && substr(head, i-1, 1) != "\\") {
+            parts["word"] = substr(head, 1, i - 1)
+            parts["flags"] = substr(head, i + 1)
+            break
+        }
+    }
+}
 BEGIN{
   n=1;m=1
   # make smaller and more readable diff for LibreOffice git
@@ -72,27 +102,26 @@ BEGIN{
      }
      # reuse unused AF and AM items
      # first load dic
-     while ((getline $0 < ARGV[1]) > 0) {
-       if (match($0, "^([^ \t/]+)(/([^ \t]*))?([ \t]*(.*))?", flds)) {
-         if (length(flds[3]) > 0) {
-             if(a[flds[3]]) {
-                 used[flds[3]] = 1
-             } else if (!not_used_registered[flds[3]]) {
-                 not_used[un] = flds[3]
-                 not_used_registered[flds[3]] = 1
-                 un++
-             }
-         }
-         if (length(flds[5]) > 0) {
-                 mfld = ltrim(flds[5])
-                 if(a2[mfld] || not_used2[mfld]) {
-                     used2[mfld] = 1
-                 } else if (!not_used2_registered[mfld]) {
-                     not_used2[um] = mfld
-                     not_used2_registered[mfld] = 1
-                     um++
-                 }
-         }
+     while ((getline line < ARGV[1]) > 0) {
+       parse_dic(line, dp)
+       if (length(dp["flags"]) > 0) {
+           if(a[dp["flags"]]) {
+               used[dp["flags"]] = 1
+           } else if (!not_used_registered[dp["flags"]]) {
+               not_used[un] = dp["flags"]
+               not_used_registered[dp["flags"]] = 1
+               un++
+           }
+       }
+       if (length(dp["morph"]) > 0) {
+               mfld = dp["morph"]
+               if(a2[mfld] || not_used2[mfld]) {
+                   used2[mfld] = 1
+               } else if (!not_used2_registered[mfld]) {
+                   not_used2[um] = mfld
+                   not_used2_registered[mfld] = 1
+                   um++
+               }
        }
      }
      # load aff file
@@ -148,29 +177,28 @@ function ltrim(st) {
     return st
 }
 
-FILENAME ~ /.dic$/ && match($0, "^([^ \t/]+)(/([^ \t]*))?([ \t]*(.*))?", flds) {
-    # flag vector?
+FILENAME ~ /.dic$/ {
+    parse_dic($0, dp)
     flags = ""
-    if(length(flds[3]) > 0) {
-        if (!a[flds[3]]) {
-            a[flds[3]]=n
-            b[n]=flds[3]
+    if(length(dp["flags"]) > 0) {
+        if (!a[dp["flags"]]) {
+            a[dp["flags"]]=n
+            b[n]=dp["flags"]
             n++
         }
-        flags = "/" a[flds[3]]
+        flags = "/" a[dp["flags"]]
     }
     end = ""
-    # morphological fields?
-    if (length(flds[5]) > 0) {
-        mfld = ltrim(flds[5])
+    if (length(dp["morph"]) > 0) {
+        mfld = dp["morph"]
         if(!a2[mfld]){
             a2[mfld]=m
             c[m]=mfld
             m++
-        } 
+        }
         end = "\t" a2[mfld]
     }
-    print flds[1] flags end
+    print dp["word"] flags end
     next
 }
 
@@ -210,9 +238,8 @@ END {
         print "AM", m-1 >>"'${AFF}_alias.aff'"
         for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>"'${AFF}_alias.aff'"
     }
-}' "${DIC}_alias.tmp.dic" $2 >"${DIC}_alias.tmp" 2>"${AFF}_alias.$$"
-cat "${DIC}_alias.tmp" | sed 's/_/ /g' > "${DIC}_alias.dic"
+}' $1 $2 >"${DIC}_alias.dic" 2>"${AFF}_alias.$$"
 sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
 
-rm ${DIC}_alias.tmp ${DIC}_alias.tmp.dic ${AFF}_alias.$$
+rm ${AFF}_alias.$$

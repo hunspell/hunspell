@@ -163,6 +163,7 @@ ofz5627151457255424.test \
 gh1095.test \
 compound_wnum_overflow.test \
 gh1116.test \
+gh211.test \
 abi-check.sh
 
 clean-local:
@@ -744,6 +745,7 @@ gh1095.test \
 gh1116.aff \
 gh1116.dic \
 gh1116.test \
+gh211.test \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt

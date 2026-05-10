@@ -1,0 +1,93 @@
+#!/bin/sh
+# gh#211: makealias must not jam morphological fields into the AF
+# flag-vector table; and dictionary entries with multi-word headwords
+# must round-trip unchanged.
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+
+if ! command -v gawk >/dev/null 2>&1; then
+    echo "SKIP: gh211 (gawk not available)"
+    exit 77
+fi
+
+WORK=$(mktemp -d) || exit 1
+trap 'rm -rf "$WORK"' EXIT
+cd "$WORK" || exit 1
+
+cat > orig.aff <<'EOF'
+SET UTF-8
+SFX A Y 2
+SFX A 0 ed [^y]
+SFX A y ied y
+EOF
+
+cat > orig.dic <<'EOF'
+3
+walk/A po:verb
+ad hoc/A po:adj
+try/A po:verb is:transitive
+EOF
+
+"$TOOLS/makealias" orig.dic orig.aff >/dev/null || {
+    echo "FAIL: gh211 makealias exited non-zero"
+    exit 1
+}
+
+# AF entries must be plain flag vectors. The buggy script injected the
+# morph fields into the flag string, joined by underscores from a
+# space-to-underscore hack; reject any AF row whose flag string has an
+# underscore or a colon.
+if grep -E '^AF [^ ]*[_:]' orig_alias.aff; then
+    echo "FAIL: gh211 AF flag vectors contain morph-field debris"
+    exit 1
+fi
+
+# AM entries must be present and exactly the morph fields from the .dic.
+grep -qx 'AM po:verb' orig_alias.aff || {
+    echo "FAIL: gh211 missing 'AM po:verb'"
+    cat orig_alias.aff
+    exit 1
+}
+grep -qx 'AM po:adj' orig_alias.aff || {
+    echo "FAIL: gh211 missing 'AM po:adj'"
+    cat orig_alias.aff
+    exit 1
+}
+grep -qx 'AM po:verb is:transitive' orig_alias.aff || {
+    echo "FAIL: gh211 missing combined morph entry"
+    cat orig_alias.aff
+    exit 1
+}
+
+# Multi-word headword must survive intact (no underscore substitution).
+grep -q '^ad hoc/' orig_alias.dic || {
+    echo "FAIL: gh211 multi-word headword corrupted"
+    cat orig_alias.dic
+    exit 1
+}
+
+# Functional round-trip: spell + morph analysis on the aliased
+# dictionary must match the unaliased original.
+for word in walk walked tried tries jumped; do
+    a=$(echo "$word" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$WORK/orig" 2>/dev/null | tail -n+2)
+    b=$(echo "$word" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$WORK/orig_alias" 2>/dev/null | tail -n+2)
+    if [ "$a" != "$b" ]; then
+        echo "FAIL: gh211 spell-check mismatch for '$word': orig='$a' alias='$b'"
+        exit 1
+    fi
+done
+for word in tried walked; do
+    a=$(echo "$word" | $LIBTOOL --mode=execute "$HUNSPELL" -m -d "$WORK/orig" 2>/dev/null | tail -n+2)
+    b=$(echo "$word" | $LIBTOOL --mode=execute "$HUNSPELL" -m -d "$WORK/orig_alias" 2>/dev/null | tail -n+2)
+    if [ "$a" != "$b" ]; then
+        echo "FAIL: gh211 morph analysis mismatch for '$word': orig='$a' alias='$b'"
+        exit 1
+    fi
+done
+
+echo "PASS: gh211"
+exit 0
