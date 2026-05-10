@@ -129,10 +129,11 @@
   "/usr/share/myspell:"       \
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
-#define USEROOODIR {                  \
-  ".openoffice.org/3/user/wordbook", \
-  ".openoffice.org2/user/wordbook",  \
-  ".openoffice.org2.0/user/wordbook",\
+#define USEROOODIR {                       \
+  ".openoffice.org/3/user/wordbook",       \
+  ".openoffice.org2/user/wordbook",        \
+  ".openoffice.org2.0/user/wordbook",      \
+  ".config/libreoffice/4/user/wordbook",   \
   "Library/Spelling" }
 #define OOODIR                                       \
   "/opt/openoffice.org/basis3.0/share/dict/ooo:"     \
@@ -148,6 +149,10 @@
   "/opt/openoffice.org2.0/share/dict/ooo:"           \
   "/usr/lib/openoffice.org2.0/share/dict/ooo"
 #define HOME getenv("HOME")
+#define LODIR                                       \
+  "/opt/libreoffice/share/extensions:"              \
+  "/usr/lib/libreoffice/share/extensions:"          \
+  "/usr/lib64/libreoffice/share/extensions"
 #define DICBASENAME ".hunspell_"
 #define LOGFILE "/tmp/hunspell.log"
 #define DIRSEPCH '/'
@@ -2111,7 +2116,7 @@ int main(int argc, char** argv) {
         path_std_str.append(i).append(PATHSEP);
       }
       path_std_str.append(OOODIR);
-      if (LODIR) path_std_str.append(LODIR);
+      path_std_str.append(PATHSEP).append(LODIR);
     }
     path = mystrdup(path_std_str.c_str());
   }
