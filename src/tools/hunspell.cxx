@@ -1783,13 +1783,26 @@ int listdicpath(char* dir, int len) {
     return 0;
   struct dirent* de;
   while ((de = readdir(d))) {
-    len = strlen(de->d_name);
-    if ((len > 4 && strcmp(de->d_name + len - 4, ".dic") == 0) ||
-        (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
-      char* s = mystrdup(de->d_name);
-      s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
-      fprintf(stderr, "%s%s\n", buf.c_str(), s);
-      free(s);
+    const char* name = de->d_name;
+    if (name[0] == '.')  // skip ".", "..", and dotfiles
+      continue;
+    std::string entry = buf + name;
+    struct stat st;
+    if (stat(entry.c_str(), &st) != 0)
+      continue;
+    if (S_ISDIR(st.st_mode)) {
+      // recurse so LO's share/extensions/dict-XX/*.dic layout is found
+      listdicpath(&entry[0], entry.size());
+      continue;
+    }
+    if (strncmp(name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
+      continue;
+    len = strlen(name);
+    bool is_hz = len > 7 && strcmp(name + len - 7, ".dic.hz") == 0;
+    bool is_dic = len > 4 && strcmp(name + len - 4, ".dic") == 0;
+    if (is_hz || is_dic) {
+      std::string s(name, len - (is_hz ? 7 : 4));
+      fprintf(stderr, "%s%s\n", buf.c_str(), s.c_str());
     }
   }
   closedir(d);
