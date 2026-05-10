@@ -1794,39 +1794,33 @@ int listdicpath(char* dir, int len) {
   }
   closedir(d);
 #else  // _WIN32  || __MINGW32__
-    WIN32_FIND_DATA de;
-    HANDLE handle = FindFirstFile((buf + "*").c_str(), &de);
-    char lpath[MAX_PATH];
-    if (handle != INVALID_HANDLE_VALUE) {
-      do {
-        char *name = de.cFileName;
-        // ignore directories, hidden files
-        if ((de.dwFileAttributes  & FILE_ATTRIBUTE_HIDDEN) == FILE_ATTRIBUTE_HIDDEN) continue;
-        if (((de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) &&
-          (strncmp(".", name, 1) != 0) && (strncmp("..", name, 2) != 0)) {
-            sprintf(lpath, "%s\\%s", buf.c_str(), name);
-            listdicpath(lpath, strlen(lpath));
-        }
-        if (name[0] == '.') continue;
-        len = strlen(name);
-        if (((len > 4 && strcmp(name + len - 4, ".dic") == 0) ||
-             (len > 7 && strcmp(name + len - 7, ".dic.hz") == 0))
-            /* ignore hyph_ dictionaries */
-            && (strncmp(name, "hyph_", 5) != 0)) {
-          char* s = mystrdup(name);
-          s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
-          fprintf(stderr, "%s%s\n", buf.c_str(), s);
-        }
-      } while (FindNextFile(handle, &de));
-      if (GetLastError() != ERROR_NO_MORE_FILES) {
-        fprintf(stderr, "FindNextFile died for some reason; path = \"%s\"\n", buf.c_str());
-        abort();
-      }
-      if (FindClose(handle) == FALSE) {
-        fprintf(stderr, "FindClose failed\n");
-        abort();
-      }
+  WIN32_FIND_DATA de;
+  HANDLE handle = FindFirstFile((buf + "*").c_str(), &de);
+  if (handle == INVALID_HANDLE_VALUE)
+    return 0;
+  do {
+    const char *name = de.cFileName;
+    if (de.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+      continue;
+    if (name[0] == '.')  // skip ".", "..", and dotfiles
+      continue;
+    if (de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+      // recurse so LO's share\extensions\dict-XX\*.dic layout is found
+      std::string sub = buf + name;
+      listdicpath(&sub[0], sub.size());
+      continue;
     }
+    if (strncmp(name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
+      continue;
+    len = strlen(name);
+    bool is_hz = len > 7 && strcmp(name + len - 7, ".dic.hz") == 0;
+    bool is_dic = len > 4 && strcmp(name + len - 4, ".dic") == 0;
+    if (is_hz || is_dic) {
+      std::string s(name, len - (is_hz ? 7 : 4));
+      fprintf(stderr, "%s%s\n", buf.c_str(), s.c_str());
+    }
+  } while (FindNextFile(handle, &de));
+  FindClose(handle);
 #endif  // _WIN32  || __MINGW32__
   return 1;
 }
