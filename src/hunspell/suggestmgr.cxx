@@ -1962,7 +1962,8 @@ std::string SuggestMgr::suggest_hentry_gen(hentry* rv, const char* pattern) {
   return result;
 }
 
-std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const std::string& in_pattern) {
+std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const std::string& in_pattern,
+                                    std::chrono::steady_clock::time_point start_time) {
   if (desc.empty() || !pAMgr)
     return {};
 
@@ -1974,6 +1975,8 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
   // search affixed forms with and without derivational suffixes
   while (true) {
     for (const auto& k : desc) {
+      if (std::chrono::steady_clock::now() - start_time > TIMELIMIT_GLOBAL_MS)
+        return result2;
       std::string result;
 
       // add compound word parts (except the last one)
@@ -2013,6 +2016,8 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
           copy_field(tok, st, MORPH_STEM);
           rv = pAMgr->lookup(tok.c_str(), tok.size());
           while (rv) {
+            if (std::chrono::steady_clock::now() - start_time > TIMELIMIT_GLOBAL_MS)
+              return result2;
             std::string newpat(i);
             newpat.append(pattern);
             std::string sg = suggest_hentry_gen(rv, newpat.c_str());

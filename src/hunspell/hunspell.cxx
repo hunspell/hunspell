@@ -1804,8 +1804,9 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   cleanword(cw, word, &captype, &abbv);
   std::string result;
 
+  auto suggest_start = std::chrono::steady_clock::now();
   for (const auto& i : pl) {
-    cat_result(result, pSMgr->suggest_gen(pl2, i));
+    cat_result(result, pSMgr->suggest_gen(pl2, i, suggest_start));
   }
 
   if (!result.empty()) {
@@ -1825,7 +1826,6 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
 
     // temporary filtering of prefix related errors (eg.
     // generate("undrinkable", "eats") --> "undrinkables" and "*undrinks")
-    auto suggest_start = std::chrono::steady_clock::now();
     auto it = slst.begin();
     while (it != slst.end()) {
       if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
