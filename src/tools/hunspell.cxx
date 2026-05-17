@@ -66,8 +66,6 @@
 // for debugging only
 //#define LOG
 
-#define DEFAULTDICNAME "default"
-
 #ifdef WIN32
 #include <windows.h>
 
@@ -2113,9 +2111,11 @@ int main(int argc, char** argv) {
        * LANG
       */
       const char* tests[] = {"LC_ALL", "LC_MESSAGES", "LANG"};
+      dicname = nullptr;
       for (auto& test : tests) {
-        if ((dicname = getenv(test)) && strcmp(dicname, "") != 0) {
-          dicname = mystrdup(dicname);
+        const char* v = getenv(test);
+        if (v && *v != '\0') {
+          dicname = mystrdup(v);
           char* dot = strchr(dicname, '.');
           if (dot)
             *dot = '\0';
@@ -2133,7 +2133,7 @@ int main(int argc, char** argv) {
       }
 
       if (!dicname) {
-        dicname = mystrdup(DEFAULTDICNAME);
+        dicname = mystrdup("en_US");
       }
     } else {
       dicname = mystrdup(dicname);
