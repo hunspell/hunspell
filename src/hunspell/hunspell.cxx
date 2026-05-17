@@ -84,6 +84,7 @@
 #include <string>
 
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
+#define MAXSPELLMLLEN 8192
 
 class HunspellImpl
 {
@@ -1099,6 +1100,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
 
   // process XML input of the simplified API (see manual)
   if (word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
+    if (word.size() > MAXSPELLMLLEN)
+      return slst;
     return spellml(word);
   }
   if (utf8) {
