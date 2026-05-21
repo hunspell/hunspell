@@ -965,7 +965,7 @@ std::string HashMgr::encode_flag(unsigned short f) const {
 
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
 
-#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
+#if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
     auto wc = std::bit_cast<w_char>(f);
 #else
     w_char wc;
