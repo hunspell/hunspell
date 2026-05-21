@@ -4737,9 +4737,9 @@ bool AffixMgr::parse_affix(const std::string& line,
   auto start = affentries.begin(), end = affentries.end();
   for (auto affentry = start; affentry != end; ++affentry) {
     if (at == 'P') {
-      build_pfxtree(dynamic_cast<PfxEntry*>(*affentry));
+      build_pfxtree(static_cast<PfxEntry*>(*affentry));
     } else {
-      build_sfxtree(dynamic_cast<SfxEntry*>(*affentry));
+      build_sfxtree(static_cast<SfxEntry*>(*affentry));
     }
   }
 
