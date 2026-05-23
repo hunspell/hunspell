@@ -452,8 +452,10 @@ bool HunspellImpl::spell(const std::string& word, std::vector<std::string>& cand
   if (std::find(candidate_stack.begin(), candidate_stack.end(), word) != candidate_stack.end())
     return false;
 
-  // ofz#42529814 prevent deeply nested wordbreak recursion
   if (candidate_stack.size() >= MAXBREAKDEPTH)
+    return false;
+
+  if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
     return false;
 
   candidate_stack.push_back(word);
