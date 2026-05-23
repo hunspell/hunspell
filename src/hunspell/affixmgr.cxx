@@ -2263,8 +2263,11 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
     do {  // onlycpdrule loop
 
-      if (timelimit_exceeded)
+      if (timelimit_exceeded ||
+          std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+        timelimit_exceeded = true;
         return 0;
+      }
 
       oldnumsyllable = numsyllable;
       oldwordnum = wordnum;
