@@ -1283,7 +1283,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     for (auto& j : slst) {
       size_t pos = j.find('-');
       if (pos != std::string::npos) {
-        int info;
+        int info = 0;
         std::string w(j.substr(0, pos));
         w.append(j.substr(pos + 1));
         (void)spell(w, spell_candidate_stack, &info, nullptr, suggest_start);
