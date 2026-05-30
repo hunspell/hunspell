@@ -77,15 +77,7 @@
 #include <string>
 #include <vector>
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <map>
-#include <chrono>
 #include <limits>
-#include <random>
-#include <cstring>
 #include <cstdint>
 
 // ============================================================================
@@ -206,19 +198,6 @@ public:
         sub_info_arena[curr_idx] = sub_val;
     }
 
-    void init(const std::map<std::string, std::string>& dict) {
-        for (auto const& pair : dict) {
-            add(pair.first, pair.second);
-        }
-        // ALGORITHM: Capacity trimming
-        // Vectors often allocate more memory than needed (e.g., doubling capacity).
-        // Since initialization is over, we strip away all excess capacity to 
-        // absolutely minimize memory footprint.
-        nodes.shrink_to_fit();
-        sub_info_arena.shrink_to_fit();
-        char_arena.shrink_to_fit();
-    }
-
     // ALGORITHM: Longest-Prefix Match Transcoding with 3-State Outcome Tracking
     // Scans the source string and attempts to dive as deep as possible into the trie
     // for each character. Tracks whether we successfully applied substitutions, 
@@ -291,12 +270,6 @@ public:
         }
         
         return TranscodeResult::None;
-    }
-
-    size_t get_arena_size() const {
-        return (nodes.capacity() * sizeof(Node)) +
-               (sub_info_arena.capacity() * sizeof(uint32_t)) +
-               (char_arena.capacity() * sizeof(char));
     }
 
     bool get_status() const { return status_ok; }

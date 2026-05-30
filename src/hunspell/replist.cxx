@@ -120,22 +120,31 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
     return 1;
   }
 
-  trie.add(in_pat1, pat2);
-
   // analyse word context
   int type = 0;
   std::string pat1(in_pat1);
   if (pat1[0] == '_') {
     pat1.erase(0, 1);
     type = 1;
-    can_use_trie = false;
   }
   if (!pat1.empty() && pat1[pat1.size() - 1] == '_') {
     type = type + 2;
-    can_use_trie = false;
     pat1.erase(pat1.size() - 1);
   }
   mystrrep(pat1, "_", " ");
+
+  // The trie does unanchored whole-string replacement only. Anchored entries
+  // (a leading or trailing _) depend on the match position within the word,
+  // which the trie does not model, so fall back to the linear scan once one is
+  // seen. Feed the trie the same _-to-space normalised strings the linear path
+  // stores, otherwise the two paths would disagree on output.
+  if (type == 0 && can_use_trie) {
+    std::string out(pat2);
+    mystrrep(out, "_", " ");
+    trie.add(pat1, out);
+  } else {
+    can_use_trie = false;
+  }
 
   // find existing entry
   int m = find(pat1.c_str());
@@ -165,7 +174,9 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
 }
 
 bool RepList::conv(const std::string& in_word, std::string& dest) {
-  if (can_use_trie)
+  // get_status guards against a trie that overflowed its index type while
+  // building, in which case the linear scan below is the correct fallback.
+  if (can_use_trie && trie.get_status())
     return trie.transcode(in_word, dest) != TranscodeResult::None;
 
   dest.clear();
