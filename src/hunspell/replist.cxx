@@ -87,20 +87,28 @@ RepList::~RepList() {
   }
 }
 
-int RepList::find(const char* word) {
+int RepList::find(const char* word, size_t max_len) {
   int p1 = 0;
   int p2 = dat.size() - 1;
   int ret = -1;
   while (p1 <= p2) {
     int m = ((unsigned)p1 + (unsigned)p2) >> 1;
-    int c = strncmp(word, dat[m]->pattern.c_str(), dat[m]->pattern.size());
+    const std::string& pattern = dat[m]->pattern;
+    // compare only as far as max_len, so a caller can restrict the search to
+    // patterns no longer than a given length
+    size_t cmplen = pattern.size() < max_len ? pattern.size() : max_len;
+    int c = strncmp(word, pattern.c_str(), cmplen);
     if (c < 0)
       p2 = m - 1;
     else if (c > 0)
       p1 = m + 1;
-    else {      // scan in the right half for a longer match
-      ret = m;
+    else if (pattern.size() <= max_len) {  // a prefix within the limit
+      ret = m;                             // scan right for a longer match
       p1 = m + 1;
+    } else {
+      // pattern shares the capped prefix but is too long; any shorter
+      // candidate sorts earlier
+      p2 = m - 1;
     }
   }
   return ret;
@@ -147,7 +155,7 @@ int RepList::add(const std::string& in_pat1, const std::string& pat2) {
   }
 
   // find existing entry
-  int m = find(pat1.c_str());
+  int m = find(pat1.c_str(), pat1.size());
   if (m >= 0 && dat[m]->pattern == pat1) {
     // since already used
     dat[m]->outstrings[type] = pat2;
@@ -186,16 +194,29 @@ bool RepList::conv(const std::string& in_word, std::string& dest) {
 
   bool change = false;
   for (size_t i = 0; i < wordlen; ++i) {
-    int n = find(word + i);
+    int n = -1;
+    std::string l;
 
-    bool empty = n < 0;
-    if (empty) {
-      dest.push_back(word[i]);
-      continue;
+    // Find the longest matching pattern whose replacement actually applies.
+    // The longest match may be rejected, for example an end-anchored key that
+    // is not at the end of the word, in which case retry with strictly shorter
+    // patterns so a shorter match can still apply.
+    for (size_t max_len = wordlen - i; max_len > 0;) {
+      int m = find(word + i, max_len);
+      if (m < 0)
+        break;
+      l = replace(wordlen - i, m, i == 0);
+      if (!l.empty()) {
+        n = m;
+        break;
+      }
+      size_t plen = dat[m]->pattern.size();
+      if (plen == 0)
+        break;
+      max_len = plen - 1;
     }
 
-    std::string l = replace(wordlen - i, n, i == 0);
-    if (l.empty()) {
+    if (n < 0) {
       dest.push_back(word[i]);
       continue;
     }

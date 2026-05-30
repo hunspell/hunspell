@@ -1,0 +1,7 @@
+# A shorter non-anchored key must still match when a longer key that
+# shares its prefix is anchored to the end of the word and so cannot apply
+# in the middle of the string (issue #1126)
+SET UTF-8
+ICONV 2
+ICONV abc_ x
+ICONV ab y

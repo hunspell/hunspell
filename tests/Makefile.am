@@ -125,6 +125,7 @@ morph.dic \
 fullstrip.dic \
 iconv.dic \
 iconv2.dic \
+iconv3.dic \
 oconv.dic \
 oconv2.dic \
 encoding.dic \
@@ -595,6 +596,9 @@ iconv.good \
 iconv2.aff \
 iconv2.dic \
 iconv2.good \
+iconv3.aff \
+iconv3.dic \
+iconv3.good \
 oconv.aff \
 oconv.dic \
 oconv.good \
