@@ -535,24 +535,18 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
         if (!pos) {
           // dots are not metacharacters in groups: [.]
           p = nextchar(p);
-          // skip the next character
-          for (st--; (opts & aeUTF8) && (st >= beg) && is_utf8_cont(*st);
-               st--)
+          // skip one character to the left. Walk back over any UTF-8
+          // continuation bytes of that character to its leading byte first,
+          // then step past it, so a single-byte match preceded by a
+          // multibyte character does not consume the multibyte character.
+          for (; (opts & aeUTF8) && (st >= beg) && is_utf8_cont(*st); st--)
             ;
+          st--;
           if (st < beg) {  // word <= condition
             if (p)
               return 0;
             else
               return 1;
-          }
-          if ((opts & aeUTF8) && (*st & 0x80)) {  // head of the UTF-8 character
-            st--;
-            if (st < beg) {  // word <= condition
-              if (p)
-                return 0;
-              else
-                return 1;
-            }
           }
           break;
         }
