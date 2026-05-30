@@ -1266,6 +1266,15 @@ std::string lower_first_char(const std::string& token, const char* ioenc, int la
   return chenc(scratch, "UTF-8", ioenc);
 }
 
+static bool keymatch(int c, const char* key) {
+  int k = (unsigned char)key[0];
+  if (k >= 'a' && k <= 'z')
+    return c == k || c == k - ('a' - 'A');
+  if (k >= 'A' && k <= 'Z')
+    return c == k || c == k + ('a' - 'A');
+  return c == k;
+}
+
 // for terminal interface
 int dialog(TextParser* parser,
            Hunspell* pMS,
@@ -1358,7 +1367,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "R)epl" before */
-        if (c == (gettext("r"))[0]) {
+        if (keymatch(c, gettext("r"))) {
           modified = 1;
 
 #ifdef HAVE_READLINE
@@ -1391,11 +1400,11 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate these letters according to the shortcut letter
            used
            previously in the  translation of "U)ncap" and I)nsert before */
-        int u_key = gettext("u")[0];
-        int i_key = gettext("i")[0];
+        bool u_match = keymatch(c, gettext("u"));
+        bool i_match = keymatch(c, gettext("i"));
 
-        if (c == u_key || c == i_key) {
-          std::string word = (c == i_key)
+        if (u_match || i_match) {
+          std::string word = i_match
                       ? token
                       : lower_first_char(token, io_enc, pMS->get_langnum());
           dicwords.push_back(std::move(word));
@@ -1427,8 +1436,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "U)ncap" and I)nsert before */
-        if ((c == (gettext("u"))[0]) || (c == (gettext("i"))[0]) ||
-            (c == (gettext("a"))[0])) {
+        if (u_match || i_match || keymatch(c, gettext("a"))) {
           modified = 1;
           putdic(token, pMS);
           return 0;
@@ -1436,7 +1444,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "S)tem" before */
-        if (c == (gettext("s"))[0]) {
+        if (keymatch(c, gettext("s"))) {
           modified = 1;
 
           std::string w(token);
@@ -1549,19 +1557,19 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "e(X)it" before */
-        if (c == (gettext("x"))[0]) {
+        if (keymatch(c, gettext("x"))) {
           return 1;
         }
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "Q)uit" before */
-        if (c == (gettext("q"))[0]) {
+        if (keymatch(c, gettext("q"))) {
           if (modified) {
             printw(
                 gettext("Are you sure you want to throw away your changes? "));
             /* TRANSLATORS: translate this letter according to the shortcut
              * letter y)es */
-            if (getch() == (gettext("y"))[0]) {
+            if (keymatch(getch(), gettext("y"))) {
               return -1;
             }
             dialogscreen(parser, token, filename, forbidden, wlst);
