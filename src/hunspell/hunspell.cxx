@@ -1610,6 +1610,8 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
   std::string result;
 
+  auto suggest_start = std::chrono::steady_clock::now();
+
   size_t n = 0;
   // test numbers
   // LANG_hu section: set dash information for suggestions
@@ -1631,7 +1633,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
     if ((n == wl) && (n3 > 0) && (n - n3 > 3))
       return slst;
-    if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) && checkword(scw.substr(n), nullptr, nullptr))) {
+    if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) && checkword(scw.substr(n), nullptr, nullptr, suggest_start))) {
       result.append(scw);
       result.resize(n - 1);
       if (n == wl)
@@ -1724,7 +1726,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
     // examine 2 sides of the dash
     if (part2.empty()) {  // base word ending with dash
-      if (spell(part1, candidate_stack)) {
+      if (spell(part1, candidate_stack, nullptr, nullptr, suggest_start)) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
@@ -1732,7 +1734,8 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
-      if (spell(part1, candidate_stack) && (spell("-e", candidate_stack))) {
+      if (spell(part1, candidate_stack, nullptr, nullptr, suggest_start) &&
+          (spell("-e", candidate_stack, nullptr, nullptr, suggest_start))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
           result.append(st);
@@ -1747,9 +1750,9 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
     } else {
       // first word ending with dash: word- XXX ???
       part1.push_back(' ');
-      nresult = spell(part1, candidate_stack);
+      nresult = spell(part1, candidate_stack, nullptr, nullptr, suggest_start);
       part1.erase(part1.size() - 1);
-      if (nresult && spell(part2, candidate_stack) &&
+      if (nresult && spell(part2, candidate_stack, nullptr, nullptr, suggest_start) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
@@ -1785,7 +1788,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
             continue;
         }
         std::string chunk = scw.substr(dash_pos - n);
-        if (checkword(chunk, nullptr, nullptr)) {
+        if (checkword(chunk, nullptr, nullptr, suggest_start)) {
           result.append(chunk);
           std::string st = pSMgr->suggest_morph(chunk);
           if (!st.empty()) {
