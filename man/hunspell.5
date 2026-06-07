@@ -17,7 +17,16 @@ Each word may optionally be followed by a slash ("/") and one or
 more flags, which represent the word's attributes (for example,
 affixes).
 
-Note: Dictionary words can also contain slashes if escaped as "\\/".
+The slash separates the word from its flags, so it is the first
+unescaped slash on the line that marks the end of the word. A word
+may itself contain a slash if the slash is escaped as "\\/".
+
+A slash in the very first column is part of the word, not a separator.
+A line such as "/foo" is the whole word "/foo" with no flags. To give
+a word that starts with a slash some flags, write a second slash
+before the flags, as in "/foo/X". A leading slash followed by other
+text and no later slash, such as "/ comment text", is therefore loaded
+as one literal word and never expands into flagged forms.
 
 It is worth adding not only individual words but also word pairs to
 the dictionary, to get correct suggestions for common misspellings
