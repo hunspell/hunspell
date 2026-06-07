@@ -153,6 +153,7 @@ iconv_break_overflow.dic \
 gh1076.dic \
 pfxdot.dic \
 gh749.dic \
+gh1122.dic \
 gh1032.test \
 gh1058.test \
 gh1002.dic \
@@ -746,6 +747,10 @@ gh749.aff \
 gh749.dic \
 gh749.good \
 gh749.wrong \
+gh1122.aff \
+gh1122.dic \
+gh1122.good \
+gh1122.wrong \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

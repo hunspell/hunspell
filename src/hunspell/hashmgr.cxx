@@ -697,6 +697,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
     while (ap_pos != std::string::npos) {
       if (ap_pos == 0) {
         ++ap_pos;
+        ap_pos = ts.find('/', ap_pos);
         continue;
       } else if (ts[ap_pos - 1] != '\\')
         break;

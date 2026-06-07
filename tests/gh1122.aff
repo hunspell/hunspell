@@ -1,0 +1,6 @@
+SET UTF-8
+WORDCHARS /
+SFX A Y 1
+SFX A 0 a .
+SFX B Y 1
+SFX B 0 b .
