@@ -2300,6 +2300,10 @@ const char* Hunspell::get_version() const {
   return m_Impl->get_version();
 }
 
+const char* Hunspell::get_library_version() {
+  return HUNSPELL_VERSION_STRING;
+}
+
 int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
   return m_Impl->input_conv(word, dest, destsize);
 }
@@ -2328,6 +2332,10 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
 
 char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
   return reinterpret_cast<HunspellImpl*>(pHunspell)->get_dic_encoding();
+}
+
+const char* Hunspell_get_library_version(void) {
+  return Hunspell::get_library_version();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {
