@@ -71,6 +71,7 @@
 #define MYSPELLMGR_HXX_
 
 #include "hunvisapi.h"
+#include "hunversion.h"
 #include "w_char.hxx"
 #include "atypes.hxx"
 #include <string>
@@ -220,6 +221,11 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   struct cs_info* get_csconv();
 
+  /* version of the hunspell library itself, for example "1.7.3" */
+  static const char* get_library_version();
+
+  /* version string from the affix file's VERSION line, not the library
+   * version */
   const char* get_version() const;
   const std::string& get_version_cpp() const;
 

@@ -52,7 +52,6 @@
 #include "../hunspell/csutil.hxx"
 #include "../hunspell/hunzip.hxx"
 
-#define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
 
 #define HUNSPELL_PIPE_HEADING                                                  \
@@ -739,7 +738,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
 
   if (filter_mode == NORMAL) {
     fprintf(stdout, "%s", gettext(HUNSPELL_HEADING));
-    fprintf(stdout, HUNSPELL_VERSION);
+    fprintf(stdout, "%s", VERSION);
     const std::string& version = pMS[0]->get_version_cpp();
     if (!version.empty())
       fprintf(stdout, " - %s", version.c_str());

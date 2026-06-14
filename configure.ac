@@ -12,12 +12,15 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
 
-# the following 6 lines are used for pkg-check's .pc.in file
+# The major and minor parts form the .pc file library name. All three
+# parts are substituted into the public hunversion.h header.
 HUNSPELL_VERSION_MAJOR=`echo $VERSION | cut -d"." -f1`
 HUNSPELL_VERSION_MINOR=`echo $VERSION | cut -d"." -f2`
+HUNSPELL_VERSION_PATCH=`echo $VERSION | cut -d"." -f3`
 AS_IF([test "x$enable_static" = xyes], [PC_CFLAGS=-DHUNSPELL_STATIC])
 AC_SUBST(HUNSPELL_VERSION_MAJOR)
 AC_SUBST(HUNSPELL_VERSION_MINOR)
+AC_SUBST(HUNSPELL_VERSION_PATCH)
 AC_SUBST(PC_CFLAGS)
 
 # In-tree consumers need HUNSPELL_STATIC for static-only builds so the
@@ -133,6 +136,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/hunspell/Makefile
 	src/hunspell/hunvisapi.h
+	src/hunspell/hunversion.h
 	src/parsers/Makefile
 	src/tools/Makefile
 	tests/Makefile
