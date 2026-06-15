@@ -163,6 +163,7 @@ gh1086.test \
 gh1018.test \
 gh1044.test \
 gh646.test \
+gh910.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -756,6 +757,11 @@ gh353.aff \
 gh353.dic \
 gh353.good \
 gh353.wrong \
+gh910.test \
+gh910.aff \
+gh910.dic \
+gh910.pers \
+gh910.txt \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

@@ -2235,21 +2235,24 @@ int main(int argc, char** argv) {
     buf.append(DICBASENAME);
     buf.append(basename(dicname, DIRSEPCH));
     load_privdic(buf.c_str(), pMS[0]);
-    buf.assign(HOME);
-#ifndef WIN32
-    buf.append("/");
-#endif
     if (!privdicname) {
       buf.assign(DICBASENAME);
       buf.append(basename(dicname, DIRSEPCH));
       load_privdic(buf.c_str(), pMS[0]);
     } else {
+      buf.assign(HOME);
+#ifndef WIN32
+      buf.append("/");
+#endif
       buf.append(privdicname);
-      load_privdic(buf.c_str(), pMS[0]);
-      buf.assign(privdicname);
       load_privdic(buf.c_str(), pMS[0]);
     }
   }
+
+  // a personal dictionary named with -p is loaded as given, so it is
+  // honoured even when no home directory is set
+  if (privdicname)
+    load_privdic(privdicname, pMS[0]);
 
   /*
      If in pipe mode, output pipe mode version string only when
