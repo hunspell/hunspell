@@ -154,6 +154,7 @@ gh1076.dic \
 pfxdot.dic \
 gh749.dic \
 gh1122.dic \
+gh353.dic \
 gh1032.test \
 gh1058.test \
 gh1002.dic \
@@ -751,6 +752,10 @@ gh1122.aff \
 gh1122.dic \
 gh1122.good \
 gh1122.wrong \
+gh353.aff \
+gh353.dic \
+gh353.good \
+gh353.wrong \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

@@ -532,22 +532,27 @@ bool HunspellImpl::spell_internal(const std::string& word, std::vector<std::stri
     root->clear();
 
   // allow numbers with dots, dashes and commas (but forbid double separators:
-  // "..", "--" etc.)
+  // "..", "--" etc.). Besides the ASCII digits, accept the Arabic-Indic and
+  // Extended Arabic-Indic (Persian) digit ranges so those numbers are passed
+  // over the same way ASCII numbers are.
   enum { NBEGIN, NNUM, NSEP };
   int nstate = NBEGIN;
   size_t i;
+  size_t n = utf8 ? sunicw.size() : wl;
 
-  for (i = 0; (i < wl); i++) {
-    if ((scw[i] <= '9') && (scw[i] >= '0')) {
+  for (i = 0; (i < n); i++) {
+    unsigned short c = utf8 ? static_cast<unsigned short>(sunicw[i]) : static_cast<unsigned char>(scw[i]);
+    if ((c >= '0' && c <= '9') || (c >= 0x0660 && c <= 0x0669) ||  // Arabic-Indic digits
+        (c >= 0x06F0 && c <= 0x06F9)) {                            // Extended Arabic-Indic (Persian) digits
       nstate = NNUM;
-    } else if ((scw[i] == ',') || (scw[i] == '.') || (scw[i] == '-')) {
+    } else if ((c == ',') || (c == '.') || (c == '-')) {
       if ((nstate == NSEP) || (i == 0))
         break;
       nstate = NSEP;
     } else
       break;
   }
-  if ((i == wl) && (nstate == NNUM))
+  if ((i == n) && (nstate == NNUM))
     return true;
 
   switch (captype) {
