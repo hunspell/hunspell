@@ -1,0 +1,15 @@
+#!/bin/sh
+# A personal dictionary named with -p must be honoured even when no home
+# directory is set (issue #910).
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+unset HOME USERPROFILE
+out=$(env -u HOME -u USERPROFILE $LIBTOOL --mode=execute "$HUNSPELL" \
+        -d "$DIR/gh910" -p "$DIR/gh910.pers" -l "$DIR/gh910.txt" 2>&1)
+if [ -n "$out" ]; then
+    echo "FAIL: gh910 -p personal dictionary not honoured with HOME unset: $out"
+    exit 1
+fi
+echo "PASS: gh910"
+exit 0
