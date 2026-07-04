@@ -52,7 +52,6 @@
 #include "../hunspell/csutil.hxx"
 #include "../hunspell/hunzip.hxx"
 
-#define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
 
 #define HUNSPELL_PIPE_HEADING                                                  \
@@ -66,19 +65,24 @@
 // for debugging only
 //#define LOG
 
-#define DEFAULTDICNAME "default"
-
 #ifdef WIN32
+#include <windows.h>
 
 #define LIBDIR "C:\\Hunspell\\"
-#define USEROOODIR { "Application Data\\OpenOffice.org 2\\user\\wordbook" }
+#define USEROOODIR {                                    \
+  "Application Data\\OpenOffice.org 2\\user\\wordbook", \
+  "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
+}
 #define OOODIR                                                 \
   "C:\\Program files\\OpenOffice.org 2.4\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.2\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
   "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\"
-#define HOME "%USERPROFILE%\\"
+#define HOME getenv("USERPROFILE")
+#define LODIR                                               \
+  "C:\\Program Files\\LibreOffice\\share\\extensions;"      \
+  "C:\\Program Files (x86)\\LibreOffice\\share\\extensions"
 #define DICBASENAME "hunspell_"
 #define LOGFILE "C:\\Hunspell\\log"
 #define DIRSEPCH '\\'
@@ -123,10 +127,11 @@
   "/usr/share/myspell:"       \
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
-#define USEROOODIR {                  \
-  ".openoffice.org/3/user/wordbook", \
-  ".openoffice.org2/user/wordbook",  \
-  ".openoffice.org2.0/user/wordbook",\
+#define USEROOODIR {                       \
+  ".openoffice.org/3/user/wordbook",       \
+  ".openoffice.org2/user/wordbook",        \
+  ".openoffice.org2.0/user/wordbook",      \
+  ".config/libreoffice/4/user/wordbook",   \
   "Library/Spelling" }
 #define OOODIR                                       \
   "/opt/openoffice.org/basis3.0/share/dict/ooo:"     \
@@ -142,6 +147,10 @@
   "/opt/openoffice.org2.0/share/dict/ooo:"           \
   "/usr/lib/openoffice.org2.0/share/dict/ooo"
 #define HOME getenv("HOME")
+#define LODIR                                       \
+  "/opt/libreoffice/share/extensions:"              \
+  "/usr/lib/libreoffice/share/extensions:"          \
+  "/usr/lib64/libreoffice/share/extensions"
 #define DICBASENAME ".hunspell_"
 #define LOGFILE "/tmp/hunspell.log"
 #define DIRSEPCH '/'
@@ -729,7 +738,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
 
   if (filter_mode == NORMAL) {
     fprintf(stdout, "%s", gettext(HUNSPELL_HEADING));
-    fprintf(stdout, HUNSPELL_VERSION);
+    fprintf(stdout, "%s", VERSION);
     const std::string& version = pMS[0]->get_version_cpp();
     if (!version.empty())
       fprintf(stdout, " - %s", version.c_str());
@@ -1256,6 +1265,15 @@ std::string lower_first_char(const std::string& token, const char* ioenc, int la
   return chenc(scratch, "UTF-8", ioenc);
 }
 
+static bool keymatch(int c, const char* key) {
+  int k = (unsigned char)key[0];
+  if (k >= 'a' && k <= 'z')
+    return c == k || c == k - ('a' - 'A');
+  if (k >= 'A' && k <= 'Z')
+    return c == k || c == k + ('a' - 'A');
+  return c == k;
+}
+
 // for terminal interface
 int dialog(TextParser* parser,
            Hunspell* pMS,
@@ -1348,7 +1366,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "R)epl" before */
-        if (c == (gettext("r"))[0]) {
+        if (keymatch(c, gettext("r"))) {
           modified = 1;
 
 #ifdef HAVE_READLINE
@@ -1381,11 +1399,11 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate these letters according to the shortcut letter
            used
            previously in the  translation of "U)ncap" and I)nsert before */
-        int u_key = gettext("u")[0];
-        int i_key = gettext("i")[0];
+        bool u_match = keymatch(c, gettext("u"));
+        bool i_match = keymatch(c, gettext("i"));
 
-        if (c == u_key || c == i_key) {
-          std::string word = (c == i_key)
+        if (u_match || i_match) {
+          std::string word = i_match
                       ? token
                       : lower_first_char(token, io_enc, pMS->get_langnum());
           dicwords.push_back(std::move(word));
@@ -1417,8 +1435,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "U)ncap" and I)nsert before */
-        if ((c == (gettext("u"))[0]) || (c == (gettext("i"))[0]) ||
-            (c == (gettext("a"))[0])) {
+        if (u_match || i_match || keymatch(c, gettext("a"))) {
           modified = 1;
           putdic(token, pMS);
           return 0;
@@ -1426,7 +1443,7 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "S)tem" before */
-        if (c == (gettext("s"))[0]) {
+        if (keymatch(c, gettext("s"))) {
           modified = 1;
 
           std::string w(token);
@@ -1539,19 +1556,19 @@ int dialog(TextParser* parser,
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "e(X)it" before */
-        if (c == (gettext("x"))[0]) {
+        if (keymatch(c, gettext("x"))) {
           return 1;
         }
         /* TRANSLATORS: translate this letter according to the shortcut letter
            used
            previously in the  translation of "Q)uit" before */
-        if (c == (gettext("q"))[0]) {
+        if (keymatch(c, gettext("q"))) {
           if (modified) {
             printw(
                 gettext("Are you sure you want to throw away your changes? "));
             /* TRANSLATORS: translate this letter according to the shortcut
              * letter y)es */
-            if (getch() == (gettext("y"))[0]) {
+            if (keymatch(getch(), gettext("y"))) {
               return -1;
             }
             dialogscreen(parser, token, filename, forbidden, wlst);
@@ -1760,30 +1777,71 @@ char* exist2(char* dir, int len, const char* name, const char* ext) {
   return nullptr;
 }
 
-#if !defined(WIN32) || defined(__MINGW32__)
 int listdicpath(char* dir, int len) {
   std::string buf;
   const char* sep = (len == 0) ? "" : DIRSEP;
   buf.assign(dir, len);
   buf.append(sep);
+#if !defined(WIN32) || defined(__MINGW32__)
   DIR* d = opendir(buf.c_str());
   if (!d)
     return 0;
   struct dirent* de;
   while ((de = readdir(d))) {
-    len = strlen(de->d_name);
-    if ((len > 4 && strcmp(de->d_name + len - 4, ".dic") == 0) ||
-        (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
-      char* s = mystrdup(de->d_name);
-      s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
-      fprintf(stderr, "%s%s\n", buf.c_str(), s);
-      free(s);
+    const char* name = de->d_name;
+    if (name[0] == '.')  // skip ".", "..", and dotfiles
+      continue;
+    std::string entry = buf + name;
+    struct stat st;
+    if (stat(entry.c_str(), &st) != 0)
+      continue;
+    if (S_ISDIR(st.st_mode)) {
+      // recurse so LO's share/extensions/dict-XX/*.dic layout is found
+      listdicpath(&entry[0], entry.size());
+      continue;
+    }
+    if (strncmp(name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
+      continue;
+    len = strlen(name);
+    bool is_hz = len > 7 && strcmp(name + len - 7, ".dic.hz") == 0;
+    bool is_dic = len > 4 && strcmp(name + len - 4, ".dic") == 0;
+    if (is_hz || is_dic) {
+      std::string s(name, len - (is_hz ? 7 : 4));
+      fprintf(stderr, "%s%s\n", buf.c_str(), s.c_str());
     }
   }
   closedir(d);
+#else  // _WIN32  || __MINGW32__
+  WIN32_FIND_DATA de;
+  HANDLE handle = FindFirstFile((buf + "*").c_str(), &de);
+  if (handle == INVALID_HANDLE_VALUE)
+    return 0;
+  do {
+    const char *name = de.cFileName;
+    if (de.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+      continue;
+    if (name[0] == '.')  // skip ".", "..", and dotfiles
+      continue;
+    if (de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+      // recurse so LO's share\extensions\dict-XX\*.dic layout is found
+      std::string sub = buf + name;
+      listdicpath(&sub[0], sub.size());
+      continue;
+    }
+    if (strncmp(name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
+      continue;
+    len = strlen(name);
+    bool is_hz = len > 7 && strcmp(name + len - 7, ".dic.hz") == 0;
+    bool is_dic = len > 4 && strcmp(name + len - 4, ".dic") == 0;
+    if (is_hz || is_dic) {
+      std::string s(name, len - (is_hz ? 7 : 4));
+      fprintf(stderr, "%s%s\n", buf.c_str(), s.c_str());
+    }
+  } while (FindNextFile(handle, &de));
+  FindClose(handle);
+#endif  // _WIN32  || __MINGW32__
   return 1;
 }
-#endif
 
 // search existing path for file "name + ext"
 char* search(char* begin, char* name, const char* ext) {
@@ -1795,9 +1853,7 @@ char* search(char* begin, char* name, const char* ext) {
     if (name) {
       res = exist2(begin, int(end - begin), name, ext);
     } else {
-#if !defined(WIN32) || defined(__MINGW32__)
       listdicpath(begin, end - begin);
-#endif
     }
     if ((*end == '\0') || res)
       return res;
@@ -2062,9 +2118,11 @@ int main(int argc, char** argv) {
        * LANG
       */
       const char* tests[] = {"LC_ALL", "LC_MESSAGES", "LANG"};
+      dicname = nullptr;
       for (auto& test : tests) {
-        if ((dicname = getenv(test)) && strcmp(dicname, "") != 0) {
-          dicname = mystrdup(dicname);
+        const char* v = getenv(test);
+        if (v && *v != '\0') {
+          dicname = mystrdup(v);
           char* dot = strchr(dicname, '.');
           if (dot)
             *dot = '\0';
@@ -2082,7 +2140,7 @@ int main(int argc, char** argv) {
       }
 
       if (!dicname) {
-        dicname = mystrdup(DEFAULTDICNAME);
+        dicname = mystrdup("en_US");
       }
     } else {
       dicname = mystrdup(dicname);
@@ -2101,12 +2159,11 @@ int main(int argc, char** argv) {
       const char * userooodir[] = USEROOODIR;
       for (auto& i : userooodir) {
         path_std_str += HOME;
-#ifndef _WIN32
         path_std_str += DIRSEP;
-#endif
         path_std_str.append(i).append(PATHSEP);
       }
       path_std_str.append(OOODIR);
+      path_std_str.append(PATHSEP).append(LODIR);
     }
     path = mystrdup(path_std_str.c_str());
   }
@@ -2178,21 +2235,24 @@ int main(int argc, char** argv) {
     buf.append(DICBASENAME);
     buf.append(basename(dicname, DIRSEPCH));
     load_privdic(buf.c_str(), pMS[0]);
-    buf.assign(HOME);
-#ifndef WIN32
-    buf.append("/");
-#endif
     if (!privdicname) {
       buf.assign(DICBASENAME);
       buf.append(basename(dicname, DIRSEPCH));
       load_privdic(buf.c_str(), pMS[0]);
     } else {
+      buf.assign(HOME);
+#ifndef WIN32
+      buf.append("/");
+#endif
       buf.append(privdicname);
-      load_privdic(buf.c_str(), pMS[0]);
-      buf.assign(privdicname);
       load_privdic(buf.c_str(), pMS[0]);
     }
   }
+
+  // a personal dictionary named with -p is loaded as given, so it is
+  // honoured even when no home directory is set
+  if (privdicname)
+    load_privdic(privdicname, pMS[0]);
 
   /*
      If in pipe mode, output pipe mode version string only when

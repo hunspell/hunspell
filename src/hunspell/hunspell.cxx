@@ -84,6 +84,7 @@
 #include <string>
 
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
+#define MAXSPELLMLLEN 8192
 
 class HunspellImpl
 {
@@ -193,11 +194,11 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   complexprefixes = 0;
 
   /* first set up the hash manager */
-  m_HMgrs.push_back(std::unique_ptr<HashMgr>(new HashMgr(dpath, affpath, key)));
+  m_HMgrs.push_back(std::make_unique<HashMgr>(dpath, affpath, key));
 
   /* next set up the affix manager */
   /* it needs access to the hash manager lookup methods */
-  pAMgr.reset(new AffixMgr(affpath, m_HMgrs, key));
+  pAMgr = std::make_unique<AffixMgr>(affpath, m_HMgrs, key);
 
   /* get the preferred try string and the dictionary */
   /* encoding from the Affix Manager for that dictionary */
@@ -211,7 +212,7 @@ HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* k
   wordbreak = pAMgr->get_breaktable();
 
   /* and finally set up the suggestion manager */
-  pSMgr.reset(new SuggestMgr(try_string, MAXSUGGESTION, pAMgr.get()));
+  pSMgr = std::make_unique<SuggestMgr>(try_string, MAXSUGGESTION, pAMgr.get());
 }
 
 HunspellImpl::~HunspellImpl() {
@@ -223,7 +224,7 @@ HunspellImpl::~HunspellImpl() {
 
 // load extra dictionaries
 int HunspellImpl::add_dic(const char* dpath, const char* key) {
-  m_HMgrs.push_back(std::unique_ptr<HashMgr>(new HashMgr(dpath, affixpath.c_str(), key)));
+  m_HMgrs.push_back(std::make_unique<HashMgr>(dpath, affixpath.c_str(), key));
   return 0;
 }
 
@@ -451,8 +452,10 @@ bool HunspellImpl::spell(const std::string& word, std::vector<std::string>& cand
   if (std::find(candidate_stack.begin(), candidate_stack.end(), word) != candidate_stack.end())
     return false;
 
-  // ofz#42529814 prevent deeply nested wordbreak recursion
   if (candidate_stack.size() >= MAXBREAKDEPTH)
+    return false;
+
+  if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
     return false;
 
   candidate_stack.push_back(word);
@@ -529,22 +532,27 @@ bool HunspellImpl::spell_internal(const std::string& word, std::vector<std::stri
     root->clear();
 
   // allow numbers with dots, dashes and commas (but forbid double separators:
-  // "..", "--" etc.)
+  // "..", "--" etc.). Besides the ASCII digits, accept the Arabic-Indic and
+  // Extended Arabic-Indic (Persian) digit ranges so those numbers are passed
+  // over the same way ASCII numbers are.
   enum { NBEGIN, NNUM, NSEP };
   int nstate = NBEGIN;
   size_t i;
+  size_t n = utf8 ? sunicw.size() : wl;
 
-  for (i = 0; (i < wl); i++) {
-    if ((scw[i] <= '9') && (scw[i] >= '0')) {
+  for (i = 0; (i < n); i++) {
+    unsigned short c = utf8 ? static_cast<unsigned short>(sunicw[i]) : static_cast<unsigned char>(scw[i]);
+    if ((c >= '0' && c <= '9') || (c >= 0x0660 && c <= 0x0669) ||  // Arabic-Indic digits
+        (c >= 0x06F0 && c <= 0x06F9)) {                            // Extended Arabic-Indic (Persian) digits
       nstate = NNUM;
-    } else if ((scw[i] == ',') || (scw[i] == '.') || (scw[i] == '-')) {
+    } else if ((c == ',') || (c == '.') || (c == '-')) {
       if ((nstate == NSEP) || (i == 0))
         break;
       nstate = NSEP;
     } else
       break;
   }
-  if ((i == wl) && (nstate == NNUM))
+  if ((i == n) && (nstate == NNUM))
     return true;
 
   switch (captype) {
@@ -1099,6 +1107,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
 
   // process XML input of the simplified API (see manual)
   if (word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
+    if (word.size() > MAXSPELLMLLEN)
+      return slst;
     return spellml(word);
   }
   if (utf8) {
@@ -1278,7 +1288,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     for (auto& j : slst) {
       size_t pos = j.find('-');
       if (pos != std::string::npos) {
-        int info;
+        int info = 0;
         std::string w(j.substr(0, pos));
         w.append(j.substr(pos + 1));
         (void)spell(w, spell_candidate_stack, &info, nullptr, suggest_start);
@@ -1605,6 +1615,8 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
   std::string result;
 
+  auto suggest_start = std::chrono::steady_clock::now();
+
   size_t n = 0;
   // test numbers
   // LANG_hu section: set dash information for suggestions
@@ -1626,7 +1638,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
     if ((n == wl) && (n3 > 0) && (n - n3 > 3))
       return slst;
-    if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) && checkword(scw.substr(n), nullptr, nullptr))) {
+    if ((n == wl) || ((n > 0) && ((scw[n] == '%') || (scw[n] == '\xB0')) && checkword(scw.substr(n), nullptr, nullptr, suggest_start))) {
       result.append(scw);
       result.resize(n - 1);
       if (n == wl)
@@ -1719,7 +1731,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
 
     // examine 2 sides of the dash
     if (part2.empty()) {  // base word ending with dash
-      if (spell(part1, candidate_stack)) {
+      if (spell(part1, candidate_stack, nullptr, nullptr, suggest_start)) {
         std::string p = pSMgr->suggest_morph(part1);
         if (!p.empty()) {
           slst = line_tok(p, MSEP_REC);
@@ -1727,7 +1739,8 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
         }
       }
     } else if (part2.size() == 1 && part2[0] == 'e') {  // XXX (HU) -e hat.
-      if (spell(part1, candidate_stack) && (spell("-e", candidate_stack))) {
+      if (spell(part1, candidate_stack, nullptr, nullptr, suggest_start) &&
+          (spell("-e", candidate_stack, nullptr, nullptr, suggest_start))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
           result.append(st);
@@ -1742,9 +1755,9 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
     } else {
       // first word ending with dash: word- XXX ???
       part1.push_back(' ');
-      nresult = spell(part1, candidate_stack);
+      nresult = spell(part1, candidate_stack, nullptr, nullptr, suggest_start);
       part1.erase(part1.size() - 1);
-      if (nresult && spell(part2, candidate_stack) &&
+      if (nresult && spell(part2, candidate_stack, nullptr, nullptr, suggest_start) &&
           ((part2.size() > 1) || ((part2[0] > '0') && (part2[0] < '9')))) {
         std::string st = pSMgr->suggest_morph(part1);
         if (!st.empty()) {
@@ -1780,7 +1793,7 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
             continue;
         }
         std::string chunk = scw.substr(dash_pos - n);
-        if (checkword(chunk, nullptr, nullptr)) {
+        if (checkword(chunk, nullptr, nullptr, suggest_start)) {
           result.append(chunk);
           std::string st = pSMgr->suggest_morph(chunk);
           if (!st.empty()) {
@@ -1804,8 +1817,9 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   cleanword(cw, word, &captype, &abbv);
   std::string result;
 
+  auto suggest_start = std::chrono::steady_clock::now();
   for (const auto& i : pl) {
-    cat_result(result, pSMgr->suggest_gen(pl2, i));
+    cat_result(result, pSMgr->suggest_gen(pl2, i, suggest_start));
   }
 
   if (!result.empty()) {
@@ -1827,8 +1841,10 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
     // generate("undrinkable", "eats") --> "undrinkables" and "*undrinks")
     auto it = slst.begin();
     while (it != slst.end()) {
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
+        break;
       std::vector<std::string> candidate_stack;
-      if (!spell(*it, candidate_stack)) {
+      if (!spell(*it, candidate_stack, nullptr, nullptr, suggest_start)) {
         it = slst.erase(it);
       } else  {
         ++it;
@@ -2289,6 +2305,10 @@ const char* Hunspell::get_version() const {
   return m_Impl->get_version();
 }
 
+const char* Hunspell::get_library_version() {
+  return HUNSPELL_VERSION_STRING;
+}
+
 int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
   return m_Impl->input_conv(word, dest, destsize);
 }
@@ -2317,6 +2337,10 @@ int Hunspell_spell(Hunhandle* pHunspell, const char* word) {
 
 char* Hunspell_get_dic_encoding(Hunhandle* pHunspell) {
   return reinterpret_cast<HunspellImpl*>(pHunspell)->get_dic_encoding();
+}
+
+const char* Hunspell_get_library_version(void) {
+  return Hunspell::get_library_version();
 }
 
 int Hunspell_suggest(Hunhandle* pHunspell, char*** slst, const char* word) {

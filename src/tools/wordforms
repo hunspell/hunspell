@@ -15,7 +15,13 @@ ln -s "$PWD/$1" /tmp/wordforms.aff
 # prepared dic only with the query word
 echo 1 >/tmp/wordforms.dic
 grep "^$3/" $2 >>/tmp/wordforms.dic
-echo $3 | awk -v "fx=$fx" '
+# match awk's locale to the dictionary's SET encoding so a multibyte
+# letter is not sliced in half by length()/substr() below
+case `grep -i '^SET' "$1" | head -n 1 | awk '{print $2}'` in
+  [Uu][Tt][Ff]*) awkloc='env LC_ALL=C.UTF-8' ;;
+  *)             awkloc='env LC_ALL=C' ;;
+esac
+echo $3 | $awkloc awk -v "fx=$fx" '
 fx!=2 && FILENAME!="-" && /^SFX/ && NF > 4{split($4,a,"/");clen=($3=="0") ? 0 : length($3);sfx[a[1],clen]=a[1];sfxc[a[1],clen]=clen;next}
 fx!=1 && FILENAME!="-" && /^PFX/ && NF > 4{split($4,a,"/");clen=($3=="0") ? 0 : length($3);pfx[a[1],clen]=a[1];pfxc[a[1],clen]=clen;next}
 FILENAME=="-"{

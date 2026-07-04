@@ -1277,14 +1277,21 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
 }
 
 // Is word a non-compound with a REP substitution (see checkcompoundrep)?
-int AffixMgr::cpdrep_check(const std::string& in_word, int wl, AffixScratch& scratch) {
-
+int AffixMgr::cpdrep_check(const std::string& in_word,
+                           int wl,
+                           AffixScratch& scratch,
+                           bool& timelimit_exceeded,
+                           std::chrono::steady_clock::time_point clock_time_start) {
   if ((wl < 2) || get_reptable().empty())
     return 0;
 
   std::string word(in_word, 0, wl);
 
   for (const auto& i : get_reptable()) {
+    if (timelimit_exceeded || std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+      timelimit_exceeded = true;
+      return 0;
+    }
     // use only available mid patterns
     if (!i.outstrings[0].empty()) {
       size_t r = 0;
@@ -1305,10 +1312,18 @@ int AffixMgr::cpdrep_check(const std::string& in_word, int wl, AffixScratch& scr
 
 // forbid compound words, if they are in the dictionary as a
 // word pair separated by space
-int AffixMgr::cpdwordpair_check(const std::string& word, int wl, AffixScratch& scratch) {
+int AffixMgr::cpdwordpair_check(const std::string& word,
+                                int wl,
+                                AffixScratch& scratch,
+                                bool& timelimit_exceeded,
+                                std::chrono::steady_clock::time_point clock_time_start) {
   if (wl > 2) {
     std::string candidate(word, 0, wl);
     for (size_t i = 1; i < candidate.size(); i++) {
+      if (timelimit_exceeded || std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+        timelimit_exceeded = true;
+        return 0;
+      }
       // go to end of the UTF-8 character
       if (utf8 && is_utf8_cont(candidate[i]))
           continue;
@@ -1955,8 +1970,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2, rv->alen))) {
               // forbid compound word, if it is a non-compound word with typical
               // fault
-              if ((checkcompoundrep && cpdrep_check(word, len, scratch)) ||
-                      cpdwordpair_check(word, len, scratch))
+              if ((checkcompoundrep && cpdrep_check(word, len, scratch, timelimit_exceeded, clock_time_start)) ||
+                  cpdwordpair_check(word, len, scratch, timelimit_exceeded, clock_time_start))
                 return nullptr;
               return rv_first;
             }
@@ -2082,8 +2097,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 ((!checkcompounddup || (rv != rv_first)))) {
               // forbid compound word, if it is a non-compound word with typical
               // fault
-              if ((checkcompoundrep && cpdrep_check(word, len, scratch)) ||
-                      cpdwordpair_check(word, len, scratch))
+              if ((checkcompoundrep && cpdrep_check(word, len, scratch, timelimit_exceeded, clock_time_start)) ||
+                  cpdwordpair_check(word, len, scratch, timelimit_exceeded, clock_time_start))
                 return nullptr;
               return rv_first;
             }
@@ -2111,12 +2126,11 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               // forbid compound word, if it is a non-compound word with typical
               // fault, or a dictionary word pair
 
-              if (cpdwordpair_check(word, len, scratch))
+              if (cpdwordpair_check(word, len, scratch, timelimit_exceeded, clock_time_start))
                 return nullptr;
 
               if (checkcompoundrep || forbiddenword) {
-
-                if (checkcompoundrep && cpdrep_check(word, len, scratch))
+                if (checkcompoundrep && cpdrep_check(word, len, scratch, timelimit_exceeded, clock_time_start))
                   return nullptr;
 
                 // check first part
@@ -2124,8 +2138,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   char r = st[i + rv->blen];
                   st[i + rv->blen] = '\0';
 
-                  if ((checkcompoundrep && cpdrep_check(st, i + rv->blen, scratch)) ||
-                      cpdwordpair_check(st, i + rv->blen, scratch)) {
+                  if ((checkcompoundrep && cpdrep_check(st, i + rv->blen, scratch, timelimit_exceeded, clock_time_start)) ||
+                      cpdwordpair_check(st, i + rv->blen, scratch, timelimit_exceeded, clock_time_start)) {
                     st[ + i + rv->blen] = r;
                     continue;
                   }
@@ -2249,8 +2263,11 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
     do {  // onlycpdrule loop
 
-      if (timelimit_exceeded)
+      if (timelimit_exceeded ||
+          std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+        timelimit_exceeded = true;
         return 0;
+      }
 
       oldnumsyllable = numsyllable;
       oldwordnum = wordnum;
@@ -3887,7 +3904,7 @@ bool AffixMgr::parse_phonetable(const std::string& line, FileMgr* af) {
                            af->getlinenum());
           return false;
         }
-        new_phone.reset(new phonetable);
+        new_phone = std::make_unique<phonetable>();
         new_phone->utf8 = (char)utf8;
         np++;
         break;
@@ -4723,9 +4740,9 @@ bool AffixMgr::parse_affix(const std::string& line,
   auto start = affentries.begin(), end = affentries.end();
   for (auto affentry = start; affentry != end; ++affentry) {
     if (at == 'P') {
-      build_pfxtree(dynamic_cast<PfxEntry*>(*affentry));
+      build_pfxtree(static_cast<PfxEntry*>(*affentry));
     } else {
-      build_sfxtree(dynamic_cast<SfxEntry*>(*affentry));
+      build_sfxtree(static_cast<SfxEntry*>(*affentry));
     }
   }
 

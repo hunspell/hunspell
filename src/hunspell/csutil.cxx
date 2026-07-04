@@ -535,7 +535,7 @@ w_char upper_utf(w_char u, int langnum) {
 //but g++ remains in five instructions
 //maybe use inline asm for g++?
 
-#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
+#if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
   return std::bit_cast<w_char>(unicodetoupper((unsigned short)u, langnum));
 #else
   const auto us = unicodetoupper((unsigned short)u, langnum);
@@ -559,7 +559,7 @@ w_char lower_utf(w_char u, int langnum) {
 //but g++ remains in five instructions
 //maybe use inline asm for g++?
 
-#if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
+#if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
   return std::bit_cast<w_char>(unicodetolower((unsigned short)u, langnum));
 #else
   const auto us = unicodetolower((unsigned short)u, langnum);
@@ -2462,7 +2462,8 @@ unsigned short unicodetoupper(unsigned short c, int langnum) {
 #ifdef MOZILLA_CLIENT
   return ToUpperCase((char16_t)c);
 #else
-  return utf_tbl[c].cupper;
+  unsigned short up = utf_pages[utf_page_index[c >> 8]][c & 0xFF].cupper;
+  return up ? up : c;
 #endif
 #endif
 }
@@ -2479,7 +2480,8 @@ unsigned short unicodetolower(unsigned short c, int langnum) {
 #ifdef MOZILLA_CLIENT
   return ToLowerCase((char16_t)c);
 #else
-  return utf_tbl[c].clower;
+  unsigned short lo = utf_pages[utf_page_index[c >> 8]][c & 0xFF].clower;
+  return lo ? lo : c;
 #endif
 #endif
 }
@@ -2488,7 +2490,7 @@ int unicodeisalpha(unsigned short c) {
 #ifdef OPENOFFICEORG
   return u_isalpha(c);
 #else
-  return utf_tbl[c].cletter;
+  return utf_pages[utf_page_index[c >> 8]][c & 0xFF].cletter;
 #endif
 }
 

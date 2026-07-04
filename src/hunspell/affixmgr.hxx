@@ -71,6 +71,7 @@
 #ifndef AFFIXMGR_HXX_
 #define AFFIXMGR_HXX_
 
+#include <chrono>
 #include <cstdio>
 
 #include <memory>
@@ -269,8 +270,16 @@ class AffixMgr {
                       const char*);
 
   short get_syllable(const std::string& word);
-  int cpdrep_check(const std::string& word, int len, AffixScratch& scratch);
-  int cpdwordpair_check(const std::string& word, int len, AffixScratch& scratch);
+  int cpdrep_check(const std::string& word,
+                   int len,
+                   AffixScratch& scratch,
+                   bool& timelimit_exceeded,
+                   std::chrono::steady_clock::time_point clock_time_start);
+  int cpdwordpair_check(const std::string& word,
+                        int len,
+                        AffixScratch& scratch,
+                        bool& timelimit_exceeded,
+                        std::chrono::steady_clock::time_point clock_time_start);
   int cpdpat_check(const std::string& word,
                    size_t len,
                    hentry* r1,

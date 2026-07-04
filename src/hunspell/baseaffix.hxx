@@ -43,20 +43,17 @@
 class AffEntry {
  public:
   AffEntry()
-      : numconds(0)
-      , opts(0)
-      , aflag(0)
-      , morphcode(nullptr)
+      : morphcode(nullptr)
       , contclass(nullptr)
-      , contclasslen(0) {}
+      , aflag(0)
+      , contclasslen(0)
+      , numconds(0)
+      , opts(0) {}
   AffEntry(const AffEntry&) = delete;
   AffEntry& operator=(const AffEntry&) = delete;
   virtual ~AffEntry();
   std::string appnd;
   std::string strip;
-  unsigned char numconds;
-  char opts;
-  unsigned short aflag;
   union {
     char conds[MAXCONDLEN];
     struct {
@@ -66,7 +63,10 @@ class AffEntry {
   } c;
   char* morphcode;
   unsigned short* contclass;
+  unsigned short aflag;
   unsigned short contclasslen;
+  unsigned char numconds;
+  char opts;
 };
 
 #endif

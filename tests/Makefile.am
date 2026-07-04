@@ -125,6 +125,7 @@ morph.dic \
 fullstrip.dic \
 iconv.dic \
 iconv2.dic \
+iconv3.dic \
 oconv.dic \
 oconv2.dic \
 encoding.dic \
@@ -133,6 +134,7 @@ opentaal_forbiddenword1.dic \
 opentaal_forbiddenword2.dic \
 opentaal_keepcase.dic \
 arabic.dic \
+arabic_nsm.dic \
 2970240.dic \
 2970242.dic \
 breakoff.dic \
@@ -150,6 +152,9 @@ limit-multiple-compounding.dic \
 iconv_break_overflow.dic \
 gh1076.dic \
 pfxdot.dic \
+gh749.dic \
+gh1122.dic \
+gh353.dic \
 gh1032.test \
 gh1058.test \
 gh1002.dic \
@@ -158,11 +163,13 @@ gh1086.test \
 gh1018.test \
 gh1044.test \
 gh646.test \
+gh910.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
 compound_wnum_overflow.test \
 gh1116.test \
+gh211.test \
 abi-check.sh
 
 clean-local:
@@ -593,6 +600,9 @@ iconv.good \
 iconv2.aff \
 iconv2.dic \
 iconv2.good \
+iconv3.aff \
+iconv3.dic \
+iconv3.good \
 oconv.aff \
 oconv.dic \
 oconv.good \
@@ -630,6 +640,9 @@ opentaal_keepcase.wrong \
 arabic.aff \
 arabic.dic \
 arabic.wrong \
+arabic_nsm.aff \
+arabic_nsm.dic \
+arabic_nsm.good \
 2970240.aff \
 2970240.dic \
 2970240.good \
@@ -732,6 +745,23 @@ pfxdot.aff \
 pfxdot.dic \
 pfxdot.good \
 pfxdot.wrong \
+gh749.aff \
+gh749.dic \
+gh749.good \
+gh749.wrong \
+gh1122.aff \
+gh1122.dic \
+gh1122.good \
+gh1122.wrong \
+gh353.aff \
+gh353.dic \
+gh353.good \
+gh353.wrong \
+gh910.test \
+gh910.aff \
+gh910.dic \
+gh910.pers \
+gh910.txt \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \
@@ -744,6 +774,7 @@ gh1095.test \
 gh1116.aff \
 gh1116.dic \
 gh1116.test \
+gh211.test \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt
