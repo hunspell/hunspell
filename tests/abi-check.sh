@@ -45,6 +45,14 @@ nm -D --defined-only --extern-only "$LIB" \
     | grep -v '^_ZNSt\|^_ZSt\|^_ZNKSt' \
     | LC_ALL=C sort -u > "$CURRENT"
 
+# The baseline uses libstdc++ mangling, where std::string carries the
+# __cxx11 inline namespace. Another C++ library mangles the same functions
+# differently, so skip rather than report a false break.
+if grep -q cxx11 "$BASELINE" && ! grep -q cxx11 "$CURRENT"; then
+    echo "abi-check: current build does not use libstdc++ string mangling, skipping"
+    exit 77
+fi
+
 if [ "$MODE" = "update" ]; then
     if [ -e "$BASELINE" ]; then
         ADDED="$(LC_ALL=C comm -13 "$BASELINE" "$CURRENT")"
