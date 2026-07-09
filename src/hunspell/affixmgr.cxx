@@ -2269,6 +2269,9 @@ int AffixMgr::compound_check_morph(const std::string& word,
         return 0;
       }
 
+      if (result.size() > MAXMORPHRESULT)
+        return 0;
+
       oldnumsyllable = numsyllable;
       oldwordnum = wordnum;
       checked_prefix = 0;

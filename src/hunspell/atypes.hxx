@@ -107,6 +107,9 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define MINTIMER 100
 #define MAXPLUSTIMER 100
 
+// ceiling on the accumulated compound morph analysis string
+#define MAXMORPHRESULT (4 * 1024 * 1024)
+
 struct guessword {
   char* word;
   bool allow;
