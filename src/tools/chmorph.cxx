@@ -89,7 +89,7 @@ int main(int, char** argv) {
         for (auto& i : pl) {
           const char* pos = strstr(i.c_str(), argv[4]);
           if (pos) {
-            std::string r(i, pos - i.c_str());
+            std::string r(i, 0, pos - i.c_str());
             r.append(argv[5]);
             r.append(pos + strlen(argv[4]));
             i = std::move(r);
