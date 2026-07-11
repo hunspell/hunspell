@@ -638,6 +638,10 @@ int SuggestMgr::badcharkey(std::vector<std::string>& wlst,
     while ((loc < ckeyl) && ckey[loc] != tmpc)
       ++loc;
     while (loc < ckeyl) {
+      // a long keyboard string can hold many neighbours for this
+      // character, so give up once the overall time budget is spent
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
+        return wlst.size();
       if ((loc > 0) && ckey[loc - 1] != '|') {
         candidate[i] = ckey[loc - 1];
         testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
@@ -680,6 +684,10 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
     while ((loc < ckeyl) && ckey_utf[loc] != tmpc)
       ++loc;
     while (loc < ckeyl) {
+      // a long keyboard string can hold many neighbours for this
+      // character, so give up once the overall time budget is spent
+      if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
+        return wlst.size();
       if ((loc > 0) && ckey_utf[loc - 1] != W_VLINE) {
         candidate_utf[i] = ckey_utf[loc - 1];
         u16_u8(candidate, candidate_utf);
