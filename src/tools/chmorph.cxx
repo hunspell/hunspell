@@ -85,18 +85,21 @@ int main(int, char** argv) {
     while (p->next_token(next)) {
       std::vector<std::string> pl = pMS->analyze(next);
       if (!pl.empty()) {
-        int gen = 0;
+        size_t gen = 0;
         for (auto& i : pl) {
           const char* pos = strstr(i.c_str(), argv[4]);
           if (pos) {
             std::string r(i, 0, pos - i.c_str());
             r.append(argv[5]);
             r.append(pos + strlen(argv[4]));
-            i = std::move(r);
-            gen = 1;
+            pl[gen] = std::move(r);
+            ++gen;
           }
         }
         if (gen) {
+          // generate only from the analyses that carried the source
+          // description, so an unrelated homonym cannot win the result
+          pl.resize(gen);
           std::vector<std::string> pl2 = pMS->generate(next, pl);
           if (!pl2.empty()) {
             p->change_token(pl2[0].c_str());

@@ -1,0 +1,36 @@
+#!/bin/sh
+# gh#303: chmorph must rewrite a word through the homonym that carries
+# the requested morphological description. "drinks" analyses as both a
+# noun plural and a verb third person, so changing the third person
+# present to the past tense must follow the verb and yield "drank", not
+# leave the word untouched.
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+CHMORPH="${CHMORPH:-$TOOLS/chmorph}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+
+WORK=$(mktemp -d) || exit 1
+trap 'rm -rf "$WORK"' EXIT
+
+printf 'drinks\n' > "$WORK/in.txt"
+
+check() {
+    from=$1
+    to=$2
+    want=$3
+    got=$($LIBTOOL --mode=execute "$CHMORPH" \
+        "$SRCDIR/morph.aff" "$SRCDIR/morph.dic" "$WORK/in.txt" \
+        "$from" "$to" 2>/dev/null)
+    if [ "$got" != "$want" ]; then
+        echo "FAIL: gh303 chmorph drinks $from $to: want '$want' got '$got'"
+        exit 1
+    fi
+}
+
+check is:sg_3 is:past_1 drank
+check is:sg_3 is:past_2 drunk
+
+echo "PASS: gh303"
+exit 0
