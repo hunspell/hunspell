@@ -2375,6 +2375,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
             presult.append(MORPH_PART);
             presult.append(st, 0, i);
             line_uniq_app(p, MSEP_REC);
+            if (!p.empty() && p[0] != MSEP_FLD)
+              presult.push_back(MSEP_FLD);
             presult.append(p);
           }
           checked_prefix = 1;
