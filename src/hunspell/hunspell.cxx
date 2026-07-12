@@ -509,9 +509,13 @@ bool HunspellImpl::spell_internal(const std::string& word, std::vector<std::stri
     std::string wspace;
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
-    if (convstatus)
+    if (convstatus) {
+      // the input conversion can grow the word without limit, so hold the
+      // converted word to the same maximum length as the raw word
+      if (utf8 ? wspace.size() >= MAXWORDUTF8LEN : wspace.size() >= MAXWORDLEN)
+        return false;
       wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
-    else
+    } else
       wl = cleanword2(scw, sunicw, word, &captype, &abbv);
   }
 
@@ -1129,9 +1133,13 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     std::string wspace;
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
-    if (convstatus)
+    if (convstatus) {
+      // the input conversion can grow the word without limit, so hold the
+      // converted word to the same maximum length as the raw word
+      if (utf8 ? wspace.size() >= MAXWORDUTF8LEN : wspace.size() >= MAXWORDLEN)
+        return slst;
       wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
-    else
+    } else
       wl = cleanword2(scw, sunicw, word, &captype, &abbv);
 
     if (wl == 0)
@@ -1592,9 +1600,13 @@ std::vector<std::string> HunspellImpl::analyze_internal(const std::string& word)
     std::string wspace;
 
     bool convstatus = rl ? rl->conv(word, wspace) : false;
-    if (convstatus)
+    if (convstatus) {
+      // the input conversion can grow the word without limit, so hold the
+      // converted word to the same maximum length as the raw word
+      if (utf8 ? wspace.size() >= MAXWORDUTF8LEN : wspace.size() >= MAXWORDLEN)
+        return slst;
       wl = cleanword2(scw, sunicw, wspace, &captype, &abbv);
-    else
+    } else
       wl = cleanword2(scw, sunicw, word, &captype, &abbv);
 
 #if defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
