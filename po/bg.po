@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2023-08-07 12:05+0000\n"
-"Last-Translator: 109247019824 <stoyan@gmx.com>\n"
+"PO-Revision-Date: 2026-07-17 04:01+0000\n"
+"Last-Translator: 109247019824 <109247019824@users.noreply.hosted.weblate.org>"
+"\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/hunspell/"
 "translations/bg/>\n"
 "Language: bg\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
@@ -337,7 +338,7 @@ msgstr "  -O\t\tвходен файл на OpenDocument (ODF или Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr "  -p реч\tзадава потребителски РЕЧник\n"
+msgstr "  -p dict\tзадава потребителски речник\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
