@@ -1022,7 +1022,9 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vec
   if (pAMgr && (pAMgr->get_keepcase() || pAMgr->get_forbiddenword())) {
     switch (captype) {
       case INITCAP:
-      case ALLCAP: {
+      case ALLCAP:
+      case HUHCAP:
+      case HUHINITCAP: {
         size_t l = 0;
         for (size_t j = 0; j < slst.size(); ++j) {
           if (slst[j].find(' ') == std::string::npos && !spell(slst[j], spell_candidate_stack, nullptr, nullptr, suggest_start)) {

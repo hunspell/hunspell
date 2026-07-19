@@ -1,0 +1,36 @@
+#!/bin/sh
+# gh#712: a suggestion must never be a word the same speller rejects. In this
+# dictionary "tv-" and "-tv" carry KEEPCASE, so the mixed-case compound
+# "Tv-word" is misspelled. For the mixed-case input "TV-word" the suggester
+# used to offer "Tv-word" (and "Tv-word-tv"), which are themselves misspelled.
+# Every single-word suggestion returned here must pass the spell check.
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+RUN="$LIBTOOL --mode=execute $HUNSPELL -d $SRCDIR/gh712"
+
+# pull the comma-separated suggestion lists, drop the multi-word ones (those
+# are "insert a space" suggestions checked as separate tokens, not single words)
+sugs=$(printf 'TV-word\nTV-word-TV\n' | $RUN -a 2>/dev/null \
+    | sed -n 's/^&[^:]*: //p' | tr ',' '\n' | sed 's/^ *//;s/ *$//' \
+    | grep -v ' ' | grep .)
+
+fail=0
+for s in $sugs; do
+    verdict=$(printf '%s\n' "$s" | $RUN 2>/dev/null | grep '^[-+*&#]')
+    case "$verdict" in
+        "&"*|"#"*)
+            echo "FAIL: gh712 suggestion '$s' is itself misspelled: $verdict"
+            fail=1
+            ;;
+    esac
+done
+
+if [ "$fail" -ne 0 ]; then
+    exit 1
+fi
+echo "PASS: gh712"
+exit 0
