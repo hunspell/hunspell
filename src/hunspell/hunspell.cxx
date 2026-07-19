@@ -1423,9 +1423,8 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
     if (part) {
       const char* nextpart = strstr(part + 1, MORPH_PART);
       while (nextpart) {
-        std::string field;
-        copy_field(field, part, MORPH_PART);
-        result.append(field);
+        const char* field = part + MORPH_TAG_LEN;
+        result.append(field, fieldlen(field));
         part = nextpart;
         nextpart = strstr(part + 1, MORPH_PART);
       }
