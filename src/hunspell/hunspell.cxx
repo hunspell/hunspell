@@ -1027,7 +1027,27 @@ std::vector<std::string> HunspellImpl::suggest(const std::string& word, std::vec
       case HUHINITCAP: {
         size_t l = 0;
         for (size_t j = 0; j < slst.size(); ++j) {
-          if (slst[j].find(' ') == std::string::npos && !spell(slst[j], spell_candidate_stack, nullptr, nullptr, suggest_start)) {
+          // A space-containing suggestion can be an "insert a space" split
+          // whose parts each spell on their own, so it is good when every
+          // part spells even though the whole string does not.
+          bool bad = !spell(slst[j], spell_candidate_stack, nullptr, nullptr, suggest_start);
+          if (bad && slst[j].find(' ') != std::string::npos) {
+            bad = false;
+            for (size_t start = 0; start <= slst[j].size(); ) {
+              size_t sp = slst[j].find(' ', start);
+              size_t end = (sp == std::string::npos) ? slst[j].size() : sp;
+              std::string part = slst[j].substr(start, end - start);
+              if (!part.empty() &&
+                  !spell(part, spell_candidate_stack, nullptr, nullptr, suggest_start)) {
+                bad = true;
+                break;
+              }
+              if (sp == std::string::npos)
+                break;
+              start = sp + 1;
+            }
+          }
+          if (bad) {
             std::string s;
             std::vector<w_char> w;
             if (utf8) {
