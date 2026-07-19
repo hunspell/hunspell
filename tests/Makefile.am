@@ -171,6 +171,7 @@ compound_wnum_overflow.test \
 gh1116.test \
 gh211.test \
 gh303.test \
+gh106.test \
 gh175.test \
 gh489.test \
 gh712.test \
@@ -781,6 +782,9 @@ gh1116.dic \
 gh1116.test \
 gh211.test \
 gh303.test \
+gh106.aff \
+gh106.dic \
+gh106.test \
 gh175.aff \
 gh175.dic \
 gh175.test \

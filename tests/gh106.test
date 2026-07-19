@@ -1,0 +1,38 @@
+#!/bin/sh
+# gh#106: a stem with an inner capital (uLinda, and its prefixed form noLinda),
+# capitalised at the start of a sentence (ULinda, NoLinda), must be accepted.
+# The plain lower-case "ulinda" is not a valid stem and must stay rejected.
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+RUN="$LIBTOOL --mode=execute $HUNSPELL -d $SRCDIR/gh106"
+
+check_accepted() {
+    got=$(printf '%s\n' "$1" | $RUN 2>/dev/null | grep '^[-+*&#]')
+    case "$got" in
+        "*"|"+ "*) return 0 ;;
+    esac
+    echo "FAIL: gh106 '$1' want accepted, got '$got'"
+    exit 1
+}
+
+check_rejected() {
+    got=$(printf '%s\n' "$1" | $RUN 2>/dev/null | grep '^[-+*&#]')
+    case "$got" in
+        "&"*|"#"*) return 0 ;;
+    esac
+    echo "FAIL: gh106 '$1' want rejected, got '$got'"
+    exit 1
+}
+
+check_accepted uLinda
+check_accepted noLinda
+check_accepted ULinda
+check_accepted NoLinda
+check_rejected ulinda
+
+echo "PASS: gh106"
+exit 0

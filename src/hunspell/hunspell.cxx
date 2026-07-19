@@ -572,6 +572,16 @@ bool HunspellImpl::spell_internal(const std::string& word, std::vector<std::stri
         u8buffer.push_back('.');
         rv = checkword(u8buffer, info, root, suggest_start);
       }
+      // A stem with an inner capital, capitalised at the start of a sentence
+      // (uLinda written ULinda), is found by lowering only the first letter.
+      if (!rv && captype == HUHINITCAP) {
+        std::string u8buffer(scw);
+        std::vector<w_char> u16buffer(sunicw);
+        mkinitsmall2(u8buffer, u16buffer);
+        rv = checkword(u8buffer, info, root, suggest_start);
+        if (rv && is_keepcase(rv))
+          rv = nullptr;
+      }
       break;
     case ALLCAP: {
       *info |= SPELL_ORIGCAP;
