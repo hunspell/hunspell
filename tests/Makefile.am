@@ -175,6 +175,7 @@ gh489.test \
 gh100.test \
 gh106.dic \
 gh1045.dic \
+gh1060.dic \
 abi-check.sh
 
 clean-local:
@@ -794,6 +795,10 @@ gh100.test \
 gh1045.aff \
 gh1045.dic \
 gh1045.good \
+gh1060.aff \
+gh1060.dic \
+gh1060.good \
+gh1060.wrong \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt

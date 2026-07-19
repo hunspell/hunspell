@@ -1,0 +1,9 @@
+SET UTF-8
+CIRCUMFIX X
+
+PFX A Y 1
+PFX A 0 leg/X .
+
+SFX C Y 2
+SFX C 0 obb .
+SFX C 0 obb/AX .

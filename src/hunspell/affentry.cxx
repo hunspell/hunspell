@@ -243,6 +243,9 @@ struct hentry* PfxEntry::checkword(const std::string& word,
           if (TESTAFF(he->astr, aflag, he->alen) &&
               // forbid single prefixes with needaffix flag
               !TESTAFF(contclass, pmyMgr->get_needaffix(), contclasslen) &&
+              // a circumfix prefix needs a matching circumfix suffix, so it
+              // cannot stand on its own
+              !TESTAFF(contclass, pmyMgr->get_circumfix(), contclasslen) &&
               // needflag
               ((!needflag) || TESTAFF(he->astr, needflag, he->alen) ||
                (contclass && TESTAFF(contclass, needflag, contclasslen))))
@@ -406,6 +409,9 @@ std::string PfxEntry::check_morph(const std::string& word,
           if (TESTAFF(he->astr, aflag, he->alen) &&
               // forbid single prefixes with needaffix flag
               !TESTAFF(contclass, pmyMgr->get_needaffix(), contclasslen) &&
+              // a circumfix prefix needs a matching circumfix suffix, so it
+              // cannot stand on its own
+              !TESTAFF(contclass, pmyMgr->get_circumfix(), contclasslen) &&
               // needflag
               ((!needflag) || TESTAFF(he->astr, needflag, he->alen) ||
                (contclass && TESTAFF(contclass, needflag, contclasslen)))) {

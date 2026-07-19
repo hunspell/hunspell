@@ -348,6 +348,7 @@ class AffixMgr {
   FLAG get_nongramsuggest() const;
   FLAG get_substandard() const;
   FLAG get_needaffix() const;
+  FLAG get_circumfix() const;
   FLAG get_onlyincompound() const;
   const char* get_derived() const;
   const std::string& get_version() const;

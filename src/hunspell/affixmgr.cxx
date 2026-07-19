@@ -3679,6 +3679,11 @@ FLAG AffixMgr::get_needaffix() const {
   return needaffix;
 }
 
+// return the circumfix flag
+FLAG AffixMgr::get_circumfix() const {
+  return circumfix;
+}
+
 // return the onlyincompound flag
 FLAG AffixMgr::get_onlyincompound() const {
   return onlyincompound;
