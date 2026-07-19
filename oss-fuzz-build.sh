@@ -16,6 +16,7 @@ make clean
 make -j$(nproc)
 $CXX $CXXFLAGS -o $OUT/fuzzer -I./src/ $LIB_FUZZING_ENGINE ./src/tools/fuzzer.cxx ./src/hunspell/.libs/libhunspell-1.7.a
 cp -f ./src/tools/fuzzer.options $OUT/
+cp -f ./src/tools/affdicfuzzer.options $OUT/
 cp -f ./src/tools/persdicfuzzer.options $OUT/
 cp -f ./src/tools/parserfuzzer.options $OUT/
 cp -f ./src/tools/morphfuzzer.options $OUT/
