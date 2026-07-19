@@ -3288,7 +3288,8 @@ std::string AffixMgr::morphgen(const char* ts,
                                unsigned short al,
                                const char* morph,
                                const char* targetmorph,
-                         int level) {
+                         int level,
+                         const FLAG avoidflag) {
   // handle suffixes
   if (!morph)
     return {};
@@ -3313,6 +3314,12 @@ std::string AffixMgr::morphgen(const char* ts,
   }
 
   for (int i = 0; i < al; i++) {
+    // A derivational suffix whose own continuation class re-enables the same
+    // suffix would otherwise be applied twice here, doubling the ending (for
+    // example the Hungarian -szeru adjective suffix producing peldaszeruszeru).
+    // Skip the flag that was just applied one level up.
+    if (avoidflag != FLAG_NULL && ap[i] == avoidflag)
+      continue;
     const auto c = (unsigned char)(ap[i] & 0x00FF);
     SfxEntry* sptr = sFlag[c];
     while (sptr) {
@@ -3349,7 +3356,8 @@ std::string AffixMgr::morphgen(const char* ts,
           if (!newword.empty()) {
             std::string newword2 =
                 morphgen(newword.c_str(), newword.size(), sptr->getCont(),
-                         sptr->getContLen(), stemmorph, targetmorph, 1);
+                         sptr->getContLen(), stemmorph, targetmorph, 1,
+                         sptr->getFlag());
 
             if (!newword2.empty()) {
               return newword2;

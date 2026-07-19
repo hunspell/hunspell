@@ -257,7 +257,8 @@ class AffixMgr {
                        unsigned short al,
                        const char* morph,
                        const char* targetmorph,
-                       int level);
+                       int level,
+                       const FLAG avoidflag = FLAG_NULL);
 
   int expand_rootword(struct guessword* wlst,
                       int maxn,

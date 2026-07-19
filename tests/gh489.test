@@ -1,0 +1,23 @@
+#!/bin/sh
+# gh#489: stemming must not double a derivational suffix whose own
+# continuation class re-enables the same suffix. "foobar" derives from
+# "foo" through the -bar suffix, and that suffix carries a continuation
+# that allows -bar again. Producing the stem used to regenerate the word
+# through that continuation and apply -bar a second time, so "hunspell -s"
+# returned "foobarbar". The stem must stay "foobar".
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+
+got=$(printf 'foobar\n' | $LIBTOOL --mode=execute "$HUNSPELL" -s -d "$SRCDIR/gh489" 2>/dev/null)
+want='foobar foobar'
+if [ "$got" != "$want" ]; then
+    echo "FAIL: gh489 stem foobar: want '$want' got '$got'"
+    exit 1
+fi
+
+echo "PASS: gh489"
+exit 0
