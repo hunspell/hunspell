@@ -820,6 +820,11 @@ nextline:
           pos = 1;
           break;
         }
+        case '~': {
+          // The ispell line that sets the string character type from a
+          // filename is accepted and ignored, so it is not checked as a word.
+          break;
+        }
 
         default: {
           pos = 0;

@@ -1,0 +1,24 @@
+#!/bin/sh
+# gh#100: in the -a pipe interface a line starting with '~' is an ispell command,
+# not text. It used to fall through and be spell checked as a word, so "~latin1"
+# was reported as the misspelled word "latin". It must produce no spell result.
+
+DIR="$(dirname "$0")"
+SRCDIR="$(cd "$DIR" && pwd)"
+TOOLS="$SRCDIR/../src/tools"
+HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+RUN="$LIBTOOL --mode=execute $HUNSPELL -a -d $SRCDIR/gh100"
+
+# The '~' line must yield nothing; the following real word is still checked.
+out=$(printf '~latin1\naaa\n' | $RUN 2>/dev/null | grep '^[-+*&#]')
+
+if printf '%s\n' "$out" | grep -q 'latin'; then
+    echo "FAIL: gh100 the '~' line was spell checked: $out"
+    exit 1
+fi
+case "$out" in
+    "*") echo "PASS: gh100"; exit 0 ;;
+esac
+echo "FAIL: gh100 unexpected output: $out"
+exit 1

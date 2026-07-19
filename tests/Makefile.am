@@ -172,6 +172,7 @@ gh1116.test \
 gh211.test \
 gh303.test \
 gh489.test \
+gh100.test \
 gh106.dic \
 gh1045.dic \
 abi-check.sh
@@ -787,6 +788,9 @@ gh106.wrong \
 gh489.aff \
 gh489.dic \
 gh489.test \
+gh100.aff \
+gh100.dic \
+gh100.test \
 gh1045.aff \
 gh1045.dic \
 gh1045.good \

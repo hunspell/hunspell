@@ -175,20 +175,12 @@ in TeX/LaTeX mode (similar to the
 option) and '\-' returns
 .I hunspell
 to nroff/troff mode (but these commands are obsolete).
-However, the string character type is
-.I not
-changed;
-the '~' command must be used to do this.
-A line starting with '~' causes
-.I hunspell
-to set internal parameters (in particular, the default string
-character type) based on the filename given in the rest of the line.
-(A file suffix is sufficient, but the period must be included.
-Instead of a file name or suffix, a unique name, as listed in the language
-affix file, may be specified.)
-However, the formatter parsing is
-.I not
-changed;  the '+' command must be used to change the formatter.
+A line starting with '~' is accepted and ignored.
+In the original ispell it set internal parameters (in particular, the
+default string character type) based on the filename given in the rest of
+the line, but that feature is not implemented in
+.IR hunspell .
+The formatter parsing is changed only by the '+' command.
 A line prefixed with '#' will cause the
 personal dictionary to be saved.
 A line prefixed with '!' will turn on
@@ -200,8 +192,8 @@ A line prefixed with '`' will turn on verbose-correction mode (see below);
 this mode can only be disabled by turning on terse mode with '%'.
 .IP ""
 Any input following the prefix
-characters '+', '\-', '#', '!', '%', or '`' is ignored, as is any input
-following the filename on a '~' line.
+characters '+', '\-', '#', '!', '%', or '`' is ignored, as is a '~' line
+in its entirety.
 To allow spell-checking of lines beginning with these characters, a
 line starting with '^' has that character removed before it is passed
 to the spell-checking code.
@@ -219,7 +211,7 @@ Accept word, but leave out of dictionary
 .IP #
 Save current personal dictionary
 .IP ~
-Set parameters based on filename
+Accepted and ignored
 .IP +
 Enter TeX mode
 .IP \-
