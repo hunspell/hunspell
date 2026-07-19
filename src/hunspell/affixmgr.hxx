@@ -183,13 +183,15 @@ class AffixMgr {
                              int len,
                              AffixScratch& scratch,
                              const unsigned short needflag = (unsigned short)0,
-                             char in_compound = IN_CPD_NOT);
+                             char in_compound = IN_CPD_NOT,
+                             const FLAG avoidflag = FLAG_NULL);
   struct hentry* prefix_check(const std::string& word,
                               int start,
                               int len,
                               char in_compound,
                               AffixScratch& scratch,
-                              const FLAG needflag = FLAG_NULL);
+                              const FLAG needflag = FLAG_NULL,
+                              const FLAG avoidflag = FLAG_NULL);
   inline int isSubset(const char* s1, const char* s2);
   struct hentry* prefix_check_twosfx(const std::string& word,
                                      int start,
@@ -206,7 +208,8 @@ class AffixMgr {
                               AffixScratch& scratch,
                               const FLAG cclass = FLAG_NULL,
                               const FLAG needflag = FLAG_NULL,
-                              char in_compound = IN_CPD_NOT);
+                              char in_compound = IN_CPD_NOT,
+                              const FLAG avoidflag = FLAG_NULL);
   struct hentry* suffix_check_twosfx(const std::string& word,
                                      int start,
                                      int len,

@@ -1080,7 +1080,8 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
                                       int len,
                                       char in_compound,
                                       AffixScratch& scratch,
-                                      const FLAG needflag) {
+                                      const FLAG needflag,
+                                      const FLAG avoidflag) {
   struct hentry* rv = nullptr;
 
   pfx = nullptr;
@@ -1102,6 +1103,9 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
           (TESTAFF(pe->getCont(), compoundpermitflag, pe->getContLen()))))) {
       // check prefix
       rv = pe->checkword(word, start, len, in_compound, needflag, scratch);
+      // Skip a stem with the avoid flag and keep scanning the other prefixes.
+      if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+        rv = nullptr;
       if (rv) {
         pfx = pe;  // BUG: pfx not stateless
         return rv;
@@ -1127,6 +1131,8 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
                                         pptr->getContLen()))))) {
         // check prefix
         rv = pptr->checkword(word, start, len, in_compound, needflag, scratch);
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+          rv = nullptr;
         if (rv) {
           pfx = pptr;  // BUG: pfx not stateless
           return rv;
@@ -2734,7 +2740,8 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       AffixScratch& scratch,
                                       const FLAG cclass,
                                       const FLAG needflag,
-                                      char in_compound) {
+                                      char in_compound,
+                                      const FLAG avoidflag) {
   struct hentry* rv = nullptr;
   PfxEntry* ep = ppfx;
 
@@ -2774,6 +2781,9 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                            (FLAG)cclass, needflag,
                            (in_compound ? 0 : onlyincompound),
                            scratch);
+        // Skip a stem with the avoid flag and keep scanning the other suffixes.
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+          rv = nullptr;
         if (rv) {
           sfx = se;  // BUG: sfx not stateless
           return rv;
@@ -2826,6 +2836,8 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                                cclass, needflag,
                                (in_compound ? 0 : onlyincompound),
                                scratch);
+          if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+            rv = nullptr;
           if (rv) {
             sfx = sptr;                 // BUG: sfx not stateless
             sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
@@ -3130,15 +3142,16 @@ struct hentry* AffixMgr::affix_check(const std::string& word,
                                      int len,
                                      AffixScratch& scratch,
                                      const FLAG needflag,
-                                     char in_compound) {
+                                     char in_compound,
+                                     const FLAG avoidflag) {
 
   // check all prefixes (also crossed with suffixes if allowed)
-  struct hentry* rv = prefix_check(word, start, len, in_compound, scratch, needflag);
+  struct hentry* rv = prefix_check(word, start, len, in_compound, scratch, needflag, avoidflag);
   if (rv)
     return rv;
 
   // if still not found check all suffixes
-  rv = suffix_check(word, start, len, 0, nullptr, scratch, FLAG_NULL, needflag, in_compound);
+  rv = suffix_check(word, start, len, 0, nullptr, scratch, FLAG_NULL, needflag, in_compound, avoidflag);
 
   if (havecontclass) {
     sfx = nullptr;
