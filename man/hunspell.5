@@ -246,6 +246,30 @@ KEY qwertzuop|yxcvbnm|qaw|say|wse|dsx|sy|edr|fdc|dx|rft|gfv|fc|tgz|hgb|gv|zhu|jh
 Hunspell can suggest correct word forms when they differ from the
 bad input word by one TRY character. The parameter of TRY is
 case-sensitive.
+.PP
+For example, take a dictionary that contains the word "work" and
+the bad input word "wark". Hunspell tries to fix the word by
+replacing each letter in turn with each character listed in TRY.
+With
+.PP
+.RS
+.nf
+TRY o
+.fi
+.RE
+.PP
+replacing the "a" with "o" produces "work", so "work" is suggested.
+With
+.PP
+.RS
+.nf
+TRY i
+.fi
+.RE
+.PP
+the letter "o" is never tried, so "work" is never produced and there
+is no suggestion. The list should therefore hold the characters of the
+language, most frequent first, so that likely corrections are found.
 .IP "NOSUGGEST flag"
 Words flagged with NOSUGGEST are not suggested (but are still accepted
 when typed correctly). Proposed for vulgar and obscene words (see also
