@@ -391,14 +391,11 @@ bool copy_field(std::string& dest,
   size_t pos = morph.find(var);
   if (pos == std::string::npos)
     return false;
-  dest.clear();
-  std::string beg(morph.substr(pos + MORPH_TAG_LEN, std::string::npos));
-
-  for (const char c : beg) {
-    if (c == ' ' || c == '\t' || c == '\n')
-      break;
-    dest.push_back(c);
-  }
+  pos += MORPH_TAG_LEN;
+  // copy the field value up to the next whitespace, without first
+  // making a throwaway copy of the whole remaining tail of the string
+  size_t end = morph.find_first_of(" \t\n", pos);
+  dest.assign(morph, pos, end == std::string::npos ? std::string::npos : end - pos);
 
   return true;
 }
