@@ -1587,12 +1587,22 @@ std::vector<std::string> HunspellImpl::analyze(const std::string& word) {
   // output conversion
   RepList* rl = (pAMgr) ? pAMgr->get_oconvtable() : nullptr;
   if (rl) {
-    for (size_t i = 0; rl && i < slst.size(); ++i) {
+    // the output conversion can multiply the length of every line, so hold the
+    // converted analysis to the same ceiling as the raw analysis
+    size_t total = 0;
+    size_t i = 0;
+    for (; i < slst.size(); ++i) {
       std::string wspace;
       if (rl->conv(slst[i], wspace)) {
         slst[i] = std::move(wspace);
       }
+      total += slst[i].size();
+      if (total > MAXMORPHRESULT) {
+        ++i;
+        break;
+      }
     }
+    slst.resize(i);
   }
   return slst;
 }
