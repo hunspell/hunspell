@@ -76,6 +76,7 @@
 #include <cctype>
 #include <iterator>
 #include <sstream>
+#include <unordered_set>
 #if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
 #include <bit>
 #endif
@@ -298,6 +299,14 @@ std::vector<std::string> line_tok(const std::string& text, char breakchar) {
   return ret;
 }
 
+// keep the first of each line and drop the later repeats
+static void drop_repeated_lines(std::vector<std::string>& lines) {
+  std::unordered_set<std::string> seen;
+  auto firstrepeat = std::remove_if(lines.begin(), lines.end(),
+                                    [&seen](const std::string& line) { return !seen.insert(line).second; });
+  lines.erase(firstrepeat, lines.end());
+}
+
 // uniq line in place
 void line_uniq(std::string& text, char breakchar)
 {
@@ -306,20 +315,13 @@ void line_uniq(std::string& text, char breakchar)
   if (lines.empty()) {
     return;
   }
+
+  drop_repeated_lines(lines);
+
   text = lines[0];
   for (size_t i = 1; i < lines.size(); ++i) {
-    bool dup = false;
-    for (size_t j = 0; j < i; ++j) {
-      if (lines[i] == lines[j]) {
-        dup = true;
-        break;
-      }
-    }
-    if (!dup) {
-      if (!text.empty())
-        text.push_back(breakchar);
-      text.append(lines[i]);
-    }
+    text.push_back(breakchar);
+    text.append(lines[i]);
   }
 }
 
@@ -334,21 +336,8 @@ void line_uniq_app(std::string& text, char breakchar) {
   if (lines.empty()) {
     return;
   }
-  text = lines[0];
-  for (size_t i = 1; i < lines.size(); ++i) {
-    bool dup = false;
-    for (size_t j = 0; j < i; ++j) {
-      if (lines[i] == lines[j]) {
-        dup = true;
-        break;
-      }
-    }
-    if (!dup) {
-      if (!text.empty())
-        text.push_back(breakchar);
-      text.append(lines[i]);
-    }
-  }
+
+  drop_repeated_lines(lines);
 
   if (lines.size() == 1) {
     text = lines[0];
