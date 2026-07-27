@@ -271,6 +271,11 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 
+// append the field of each compound word part of desc except the last, return the offset of that
+// last part, or 0 if desc has no compound word part
+LIBHUNSPELL_DLL_EXPORTED size_t append_compound_parts(const std::string& desc,
+                                                     std::string& result);
+
 LIBHUNSPELL_DLL_EXPORTED bool copy_field(std::string& dest,
                                          const std::string& morph,
                                          const std::string& var);

@@ -1453,20 +1453,7 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
     std::string result;
 
     // add compound word parts (except the last one)
-    const char* s = i.c_str();
-    const char* part = strstr(s, MORPH_PART);
-    if (part) {
-      const char* nextpart = strstr(part + 1, MORPH_PART);
-      while (nextpart) {
-        const char* field = part + MORPH_TAG_LEN;
-        result.append(field, fieldlen(field));
-        part = nextpart;
-        nextpart = strstr(part + 1, MORPH_PART);
-      }
-      s = part;
-    }
-
-    std::string tok(s);
+    std::string tok(i, append_compound_parts(i, result));
     size_t alt = 0;
     while ((alt = tok.find(" | ", alt)) != std::string::npos) {
       tok[alt + 1] = MSEP_ALT;

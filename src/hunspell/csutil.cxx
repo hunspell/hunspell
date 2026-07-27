@@ -372,6 +372,21 @@ int fieldlen(const char* r) {
   return n;
 }
 
+size_t append_compound_parts(const std::string& desc, std::string& result) {
+  // find by offset, a search from a bare pointer remeasures the rest of desc on every step
+  size_t part = desc.find(MORPH_PART);
+  if (part == std::string::npos)
+    return 0;
+  size_t nextpart = desc.find(MORPH_PART, part + 1);
+  while (nextpart != std::string::npos) {
+    const char* field = desc.c_str() + part + MORPH_TAG_LEN;
+    result.append(field, fieldlen(field));
+    part = nextpart;
+    nextpart = desc.find(MORPH_PART, part + 1);
+  }
+  return part;
+}
+
 bool copy_field(std::string& dest,
                 const std::string& morph,
                 const std::string& var) {

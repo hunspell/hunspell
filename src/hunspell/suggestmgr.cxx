@@ -1988,20 +1988,9 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
       std::string result;
 
       // add compound word parts (except the last one)
-      const char* s = k.c_str();
-      const char* part = strstr(s, MORPH_PART);
-      if (part) {
-        const char* nextpart = strstr(part + 1, MORPH_PART);
-        while (nextpart) {
-          const char* field = part + MORPH_TAG_LEN;
-          result.append(field, fieldlen(field));
-          part = nextpart;
-          nextpart = strstr(part + 1, MORPH_PART);
-        }
-        s = part;
-      }
-
-      std::string tok(s);
+      const size_t lastpart = append_compound_parts(k, result);
+      const char* s = k.c_str() + lastpart;
+      std::string tok(k, lastpart);
       size_t pos = tok.find(" | ");
       while (pos != std::string::npos) {
         tok[pos + 1] = MSEP_ALT;
