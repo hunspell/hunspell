@@ -651,7 +651,9 @@ WORDCHARS extends the tokenizer of the Hunspell command-line interface
 with additional word characters. For example, the dot, dash, n-dash,
 digits, and percent sign are word characters in Hungarian.
 .IP "CHECKSHARPS"
-SS letter pair in uppercased (German) words may be upper case sharp s (ß).
+SS letter pair in uppercased (German) words may be sharp s (ß), or
+capital sharp s (ẞ, U+1E9E), which German orthography has permitted in
+uppercased words since 2017.
 Hunspell can handle this special casing with the CHECKSHARPS
 declaration (see also KEEPCASE flag and tests/germancompounding example)
 in both spelling and suggestion.
