@@ -1,0 +1,5 @@
+# test capital sharp s (U+1E9E) in uppercased words, UTF-8
+SET UTF-8
+CHECKSHARPS
+WORDCHARS ßẞ
+KEEPCASE k
