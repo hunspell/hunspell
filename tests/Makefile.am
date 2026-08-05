@@ -94,6 +94,7 @@ checkcompoundpattern4.dic \
 utfcompound.dic \
 checksharps.dic \
 checksharpsutf.dic \
+checksharpsutf2.dic \
 germancompounding.dic \
 germancompoundingold.dic \
 i35725.dic \
@@ -468,6 +469,10 @@ checksharpsutf.dic \
 checksharpsutf.good \
 checksharpsutf.sug \
 checksharpsutf.wrong \
+checksharpsutf2.aff \
+checksharpsutf2.dic \
+checksharpsutf2.good \
+checksharpsutf2.wrong \
 conditionalprefix.aff \
 conditionalprefix.dic \
 conditionalprefix.good \
