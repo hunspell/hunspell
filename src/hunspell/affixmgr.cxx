@@ -79,6 +79,7 @@
 #include <memory>
 #include <limits>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "affixmgr.hxx"
@@ -86,6 +87,48 @@
 #include "langnum.hxx"
 
 #include "csutil.hxx"
+
+namespace {
+  // the distinct records of one analysis, in the order they were first added. a record is a run of
+  // text between two breakchar separators
+  class DistinctRecords {
+   public:
+    explicit DistinctRecords(char breakchar) : sep(breakchar) {}
+
+    // add each record of add that is not held already
+    void append(const std::string& add) {
+      size_t pos = 0;
+      while (pos < add.size()) {
+        size_t end = add.find(sep, pos);
+        size_t len = (end == std::string::npos ? add.size() : end) - pos;
+        if (len) {
+          std::string record(add, pos, len);
+          if (seen.insert(record).second)
+            records.push_back(std::move(record));
+        }
+        if (end == std::string::npos)
+          break;
+        pos = end + 1;
+      }
+    }
+
+    // the records joined back into one string, each one terminated by breakchar
+    std::string join() const {
+      std::string text;
+      for (const std::string& record : records) {
+        text.append(record);
+        text.push_back(sep);
+      }
+      return text;
+    }
+
+   private:
+    std::vector<std::string> records;
+    // the same records again, to answer "have I seen this one" without a walk over records
+    std::unordered_set<std::string> seen;
+    char sep;
+  };
+}
 
 AffixMgr::AffixMgr(const char* affpath,
                    const std::vector<std::unique_ptr<HashMgr>>& ptr,
@@ -1198,7 +1241,8 @@ std::string AffixMgr::prefix_check_morph(const std::string& word,
                                          AffixScratch& scratch,
                                          const FLAG needflag) {
 
-  std::string result;
+  // many prefixes can analyse a word the same way
+  DistinctRecords result(MSEP_REC);
 
   pfx = nullptr;
   sfxappnd = nullptr;
@@ -1236,7 +1280,7 @@ std::string AffixMgr::prefix_check_morph(const std::string& word,
     }
   }
 
-  return result;
+  return result.join();
 }
 
 // check word for prefixes and morph and two-level suffixes
@@ -1246,7 +1290,8 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
                                                 char in_compound,
                                                 AffixScratch& scratch,
                                                 const FLAG needflag) {
-  std::string result;
+  // every prefix crosses with every pair of suffixes
+  DistinctRecords result(MSEP_REC);
 
   pfx = nullptr;
   sfxappnd = nullptr;
@@ -1279,7 +1324,7 @@ std::string AffixMgr::prefix_check_twosfx_morph(const std::string& word,
     }
   }
 
-  return result;
+  return result.join();
 }
 
 // Is word a non-compound with a REP substitution (see checkcompoundrep)?
@@ -2917,9 +2962,10 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
                                                 PfxEntry* ppfx,
                                                 AffixScratch& scratch,
                                                 const FLAG needflag) {
-  std::string result;
   std::string result2;
   std::string result3;
+  // the second suffix runs the whole suffix table again for every first suffix
+  DistinctRecords result(MSEP_REC);
 
   // first handle the special case of 0 length suffixes
   SfxEntry* se = sStart[0];
@@ -2927,20 +2973,21 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
     if (contclasses[se->getFlag()]) {
       std::string st = se->check_twosfx_morph(word, start, len, sfxopts, ppfx, needflag, scratch);
       if (!st.empty()) {
+        std::string analysis;
         if (ppfx) {
           if (ppfx->getMorph()) {
-            result.append(ppfx->getMorph());
-            result.push_back(MSEP_FLD);
+            analysis.append(ppfx->getMorph());
+            analysis.push_back(MSEP_FLD);
           } else
-            debugflag(result, ppfx->getFlag());
+            debugflag(analysis, ppfx->getFlag());
         }
-        result.append(st);
+        analysis.append(st);
         if (se->getMorph()) {
-          result.push_back(MSEP_FLD);
-          result.append(se->getMorph());
+          analysis.push_back(MSEP_FLD);
+          analysis.append(se->getMorph());
         } else
-          debugflag(result, se->getFlag());
-        result.push_back(MSEP_REC);
+          debugflag(analysis, se->getFlag());
+        result.append(analysis);
       }
     }
     se = se->getNext();
@@ -2970,7 +3017,6 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
           } else
             debugflag(result3, sptr->getFlag());
           strlinecat(result2, result3);
-          result2.push_back(MSEP_REC);
           result.append(result2);
         }
       }
@@ -2980,7 +3026,7 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
     }
   }
 
-  return result;
+  return result.join();
 }
 
 std::string AffixMgr::suffix_check_morph(const std::string& word,
@@ -3178,7 +3224,8 @@ std::string AffixMgr::affix_check_morph(const std::string& word,
                                   AffixScratch& scratch,
                                   const FLAG needflag,
                                   char in_compound) {
-  std::string result;
+  // the four checks below overlap
+  DistinctRecords result(MSEP_REC);
 
   // check all prefixes (also crossed with suffixes if allowed)
   std::string st = prefix_check_morph(word, start, len, in_compound, scratch);
@@ -3208,7 +3255,7 @@ std::string AffixMgr::affix_check_morph(const std::string& word,
     }
   }
 
-  return result;
+  return result.join();
 }
 
 // morphcmp(): compare MORPH_DERI_SFX, MORPH_INFL_SFX and MORPH_TERM_SFX fields
