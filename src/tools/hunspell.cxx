@@ -223,10 +223,12 @@ enum {
   AUTO,        // automatic spelling to standard output
   AUTO2,       // automatic spelling to standard output with sed log
   AUTO3,
-  SUFFIX  // print suffixes that can be attached to a given word
+  SUFFIX, // print suffixes that can be attached to a given word
+  TRACE   // check each word and print nothing of its own
 };        // automatic spelling to standard output with gcc error format
 int filter_mode = NORMAL;
 int printgood = 0;  // print only good words and lines
+int printtrace = 0; // report the decisions taken while checking input words
 int showpath = 0;   // show detected path of the dictionary
 int checkurl = 0;   // check URLs and mail addresses
 int checkapos = 0;  // force typographic apostrophe
@@ -517,6 +519,12 @@ void log(char* message) {
   }
 }
 #endif
+
+// The userdata is the encoding of the dictionary the record came from.
+void print_trace(void* userdata, int depth, const char* line) {
+  const char* enc = static_cast<const char*>(userdata);
+  fprintf(stdout, "%*s%s\n", depth * 2, "", chenc(line, enc, ui_enc).c_str());
+}
 
 int putdic(const std::string& in_word, Hunspell* pMS, const char* context = nullptr) {
   std::string word = chenc(in_word, ui_enc, dic_enc[0], context);
@@ -953,6 +961,12 @@ nextline:
             if (result.empty())
               fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc).c_str());
             fprintf(stdout, "\n");
+            continue;
+          }
+
+          case TRACE: {
+            pMS[d]->spell(chenc(token, io_enc, dic_enc[d]));
+            fflush(stdout);
             continue;
           }
 
@@ -1959,6 +1973,8 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s", gettext("  -s \t\tstem the words of the input text\n"));
       fprintf(stderr, "%s", gettext("  -S \t\tsuffix words of the input text\n"));
       fprintf(stderr, "%s", gettext("  -t\t\tTeX/LaTeX input file format\n"));
+      fprintf(stderr, "%s",
+              gettext("  --trace\treport how each input word was decided\n"));
       fprintf(stderr, "%s", gettext("  -v, --version\tprint version number\n"));
       fprintf(stderr, "%s",
               gettext("  -vv\t\tprint Ispell compatible version number\n"));
@@ -2014,6 +2030,8 @@ int main(int argc, char** argv) {
       */
       if (filter_mode != PIPE)
         filter_mode = ANALYZE;
+    } else if ((strcmp(argv[i], "--trace") == 0)) {
+      printtrace = 1;
     } else if ((strcmp(argv[i], "-s") == 0)) {
       /*
        if -a was used, don't override, i.e. keep ispell compatability
@@ -2115,6 +2133,11 @@ int main(int argc, char** argv) {
 
   if (printgood && (filter_mode == NORMAL))
     filter_mode = BADWORD;
+
+  // The trace decorates whatever the other options asked for, and on its own
+  // it just checks each word.
+  if (printtrace && (filter_mode == NORMAL))
+    filter_mode = TRACE;
 
   if (!dicname) {
     if (!(dicname = getenv("DICTIONARY"))) {
@@ -2229,6 +2252,12 @@ int main(int argc, char** argv) {
 
   if (showpath && -1 == arg_files) {
       exit(0);
+  }
+
+  if (printtrace) {
+    for (int i = 0; i < dmax; ++i)
+      pMS[i]->set_trace_callback(print_trace,
+                                 const_cast<char*>(dic_enc[i]));
   }
 
   /* open the private dictionaries */

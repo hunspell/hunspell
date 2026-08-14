@@ -75,6 +75,7 @@
 
 #include "affixmgr.hxx"
 #include "hunspell.hxx"
+#include "hunspelltrace.hxx"
 #include "suggestmgr.hxx"
 #include "hunspell.h"
 #include "csutil.hxx"
@@ -134,9 +135,14 @@ public:
  const char* get_wordchars() const;
  const char* get_version() const;
  int input_conv(const char* word, char* dest, size_t destsize);
+ void set_trace_callback(HunspellTraceCallback callback, void* userdata);
 
 private:
   std::vector<std::unique_ptr<HashMgr>> m_HMgrs;
+  std::unique_ptr<TraceCtx> m_trace;
+  TraceCtx* active_trace() const {
+    return (m_trace && m_trace->on()) ? m_trace.get() : nullptr;
+  }
   std::unique_ptr<AffixMgr> pAMgr; // pAMgr depends on m_HMgrs
   std::unique_ptr<SuggestMgr> pSMgr; // pSMgr depends on pAMgr
   std::string affixpath;
@@ -458,9 +464,18 @@ bool HunspellImpl::spell(const std::string& word, std::vector<std::string>& cand
   if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
     return false;
 
+  TraceCtx* t = active_trace();
+  if (t)
+    trace(*t, "word \"%s\"", word.c_str());
+  // A word split on a BREAK pattern nests its parts a further level in.
+  TraceScope trace_depth(t);
+
   candidate_stack.push_back(word);
   bool r = spell_internal(word, candidate_stack, info, root, suggest_start);
   candidate_stack.pop_back();
+
+  if (t)
+    trace(*t, "result %s", r ? "correct" : "incorrect");
 
   if (r && root) {
     // output conversion
@@ -858,12 +873,30 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
 
   // look word in hash table
   struct hentry* he = nullptr;
+  TraceCtx* t = active_trace();
   for (size_t i = 0; (i < m_HMgrs.size()) && !he; ++i) {
     he = m_HMgrs[i]->lookup(word.c_str(), word.size());
+
+    if (t) {
+      std::string dic;
+      if (m_HMgrs.size() > 1)
+        dic = " dic=" + std::to_string(i);
+      if (he)
+        trace(*t, "lookup \"%s\"%s -> entry \"%s\" flags=%s", word.c_str(),
+              dic.c_str(), he->word,
+              trace_flags(pAMgr.get(), he->astr, he->alen).c_str());
+      else
+        trace(*t, "lookup \"%s\"%s -> miss", word.c_str(), dic.c_str());
+    }
 
     // check forbidden and onlyincompound words
     if ((he) && (he->astr) && (pAMgr) &&
         TESTAFF(he->astr, pAMgr->get_forbiddenword(), he->alen)) {
+      if (t)
+        trace(*t, "test forbidden flag=%s in=dic have=%s"
+                  " -> fail, the word is forbidden",
+              pAMgr->encode_flag(pAMgr->get_forbiddenword()).c_str(),
+              trace_flags(pAMgr.get(), he->astr, he->alen).c_str());
       if (info)
         *info |= SPELL_FORBIDDEN;
       // LANG_hu section: set dash information for suggestions
@@ -878,14 +911,44 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
     }
 
     // he = next not needaffix, onlyincompound homonym or onlyupcase word
+    const struct hentry* first_he = he;
     while (he && (he->astr) && pAMgr &&
            ((pAMgr->get_needaffix() &&
              TESTAFF(he->astr, pAMgr->get_needaffix(), he->alen)) ||
             (pAMgr->get_onlyincompound() &&
              TESTAFF(he->astr, pAMgr->get_onlyincompound(), he->alen)) ||
             (info && (*info & SPELL_INITCAP) &&
-             TESTAFF(he->astr, ONLYUPCASEFLAG, he->alen))))
+             TESTAFF(he->astr, ONLYUPCASEFLAG, he->alen)))) {
+      if (t) {
+        // Name the branch that fired, in the order the condition tests them.
+        const char* reason = "onlyupcase";
+        FLAG flag = ONLYUPCASEFLAG;
+        if (pAMgr->get_needaffix() &&
+            TESTAFF(he->astr, pAMgr->get_needaffix(), he->alen)) {
+          reason = "needaffix";
+          flag = pAMgr->get_needaffix();
+        } else if (pAMgr->get_onlyincompound() &&
+                   TESTAFF(he->astr, pAMgr->get_onlyincompound(), he->alen)) {
+          reason = "onlyincompound";
+          flag = pAMgr->get_onlyincompound();
+        }
+        trace(*t, "test %s flag=%s in=dic have=%s"
+                  " -> fail, on to the next homonym",
+              reason, pAMgr->encode_flag(flag).c_str(),
+              trace_flags(pAMgr.get(), he->astr, he->alen).c_str());
+      }
       he = he->next_homonym;
+    }
+
+    // Say which entry the walk left in hand, so the transcript does not end
+    // on a homonym that was passed over.
+    if (t && he != first_he) {
+      if (he)
+        trace(*t, "lookup \"%s\" -> entry \"%s\" flags=%s", word.c_str(),
+              he->word, trace_flags(pAMgr.get(), he->astr, he->alen).c_str());
+      else
+        trace(*t, "lookup \"%s\" -> no more homonyms", word.c_str());
+    }
   }
 
   // check with affixes
@@ -1134,6 +1197,10 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         std::vector<std::string>& suggest_candidate_stack,
         bool& capwords, size_t& abbv, int& captype,
         std::chrono::steady_clock::time_point suggest_start) {
+  // The candidates tried here are the tool's own guesses, not the word the
+  // user asked about.
+  TraceSuppress no_trace(m_trace.get());
+
   captype = NOCAP;
   abbv = 0;
   capwords = false;
@@ -1981,6 +2048,9 @@ std::vector<std::string> HunspellImpl::get_xml_list(const std::string& list, std
 }
 
 std::vector<std::string> HunspellImpl::spellml(const std::string& in_word) {
+  // The XML interface spell checks words of its own to answer the query.
+  TraceSuppress no_trace(m_trace.get());
+
   std::vector<std::string> slst;
 
   std::string::size_type qpos = in_word.find("<query");
@@ -2199,6 +2269,13 @@ const char* HunspellImpl::get_version() const {
   return get_version_cpp().c_str();
 }
 
+void HunspellImpl::set_trace_callback(HunspellTraceCallback callback, void* userdata) {
+  if (callback)
+    m_trace.reset(new TraceCtx(callback, userdata));
+  else
+    m_trace.reset();
+}
+
 int HunspellImpl::input_conv(const char* word, char* dest, size_t destsize) {
   std::string d;
   bool ret = input_conv(word, d);
@@ -2354,6 +2431,10 @@ const char* Hunspell::get_library_version() {
 
 int Hunspell::input_conv(const char* word, char* dest, size_t destsize) {
   return m_Impl->input_conv(word, dest, destsize);
+}
+
+void Hunspell::set_trace_callback(HunspellTraceCallback callback, void* userdata) {
+  m_Impl->set_trace_callback(callback, userdata);
 }
 
 Hunhandle* Hunspell_create(const char* affpath, const char* dpath) {

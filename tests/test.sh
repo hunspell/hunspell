@@ -160,6 +160,28 @@ fi
 
 check_valgrind_log "morphological analysis"
 
+# Tests the trace of how each word was decided
+expected_file="$in_dict.trace"
+
+if [[ -f $expected_file ]]; then
+	trace_input=()
+	[[ -f $in_dict.good ]] && trace_input+=("$in_dict.good")
+	[[ -f $in_dict.wrong ]] && trace_input+=("$in_dict.wrong")
+	out=$(cat "${trace_input[@]}" \
+	      | hunspell --trace -i "$ENCODING" "$@" -d "$in_dict" \
+	      | tr -d "$CR")
+	if [[ $? -ne 0 ]]; then exit 2; fi
+	expected=$(<"$expected_file")
+	if [[ "$out" != "$expected" ]]; then
+		echo "============================================="
+		echo "Fail in $NAME.trace. Bad trace?"
+		diff "$expected_file" <(echo "$out")
+		exit 1
+	fi
+fi
+
+check_valgrind_log "trace"
+
 # Tests suggestions
 in_file=$in_dict.wrong
 expected_file=$in_dict.sug

@@ -177,6 +177,7 @@ gh100.test \
 gh106.dic \
 gh1045.dic \
 gh1060.dic \
+trace_basic.dic \
 abi-check.sh
 
 clean-local:
@@ -805,6 +806,11 @@ gh1060.aff \
 gh1060.dic \
 gh1060.good \
 gh1060.wrong \
+trace_basic.aff \
+trace_basic.dic \
+trace_basic.good \
+trace_basic.wrong \
+trace_basic.trace \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt

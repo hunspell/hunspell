@@ -552,6 +552,7 @@
     <ClInclude Include="..\src\hunspell\htypes.hxx" />
     <ClInclude Include="..\src\hunspell\hunspell.h" />
     <ClInclude Include="..\src\hunspell\hunspell.hxx" />
+    <ClInclude Include="..\src\hunspell\hunspelltrace.hxx" />
     <ClInclude Include="..\src\hunspell\hunzip.hxx" />
     <ClInclude Include="..\src\hunspell\langnum.hxx" />
     <ClInclude Include="..\src\hunspell\phonet.hxx" />
@@ -570,6 +571,7 @@
     <ClCompile Include="..\src\hunspell\filemgr.cxx" />
     <ClCompile Include="..\src\hunspell\hashmgr.cxx" />
     <ClCompile Include="..\src\hunspell\hunspell.cxx" />
+    <ClCompile Include="..\src\hunspell\hunspelltrace.cxx" />
     <ClCompile Include="..\src\hunspell\hunzip.cxx" />
     <ClCompile Include="..\src\hunspell\phonet.cxx" />
     <ClCompile Include="..\src\hunspell\replist.cxx" />

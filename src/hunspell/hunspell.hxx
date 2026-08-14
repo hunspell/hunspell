@@ -100,6 +100,16 @@
 
 class HunspellImpl;
 
+/* receives one line of trace output at a time, without a trailing newline.
+ * depth is the nesting level of the record and carries no indentation, so a
+ * caller that wants an indented transcript prints the spaces itself.
+ *
+ * the words and flags in a record are in the encoding of the dictionary they
+ * came from, so a transcript covering several dictionaries can carry several
+ * encodings.
+ */
+typedef void (*HunspellTraceCallback)(void* userdata, int depth, const char* line);
+
 class LIBHUNSPELL_DLL_EXPORTED Hunspell {
  private:
   HunspellImpl* m_Impl;
@@ -234,6 +244,12 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* need for putdic */
   bool input_conv(const std::string& word, std::string& dest);
   H_DEPRECATED int input_conv(const char* word, char* dest, size_t destsize);
+
+  /* report each decision spell() makes to the given callback, for dictionary
+   * debugging. A null callback turns reporting off again. The userdata is
+   * handed back to the callback untouched.
+   */
+  void set_trace_callback(HunspellTraceCallback callback, void* userdata);
 };
 
 #endif

@@ -1,0 +1,3 @@
+# a dictionary hit, a miss, a forbidden word and a homonym that is skipped
+FORBIDDENWORD !
+NEEDAFFIX Z
