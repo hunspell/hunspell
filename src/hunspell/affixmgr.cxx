@@ -2776,6 +2776,18 @@ inline int AffixMgr::isRevSubset(const char* s1,
   return (*s1 == '\0');
 }
 
+// a circumfix is one affix split in two halves, so the flag has to be on both the prefix and the
+// suffix, or on neither of them
+bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const {
+  if (!circumfix)
+    return true;
+  bool in_prefix = pfx && pfx->getCont() &&
+                   TESTAFF(pfx->getCont(), circumfix, pfx->getContLen());
+  bool in_suffix = sfx->getCont() &&
+                   TESTAFF(sfx->getCont(), circumfix, sfx->getContLen());
+  return in_prefix == in_suffix;
+}
+
 // check word for suffixes
 struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       int start,
@@ -2800,17 +2812,7 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
            // except when signed with compoundpermitflag flag
            (se->getCont() && compoundpermitflag &&
             TESTAFF(se->getCont(), compoundpermitflag, se->getContLen()))) &&
-          (!circumfix ||
-           // no circumfix flag in prefix and suffix
-           ((!ppfx || !(ep->getCont()) ||
-             !TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-            (!se->getCont() ||
-             !(TESTAFF(se->getCont(), circumfix, se->getContLen())))) ||
-           // circumfix flag in prefix AND suffix
-           ((ppfx && (ep->getCont()) &&
-             TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-            (se->getCont() &&
-             (TESTAFF(se->getCont(), circumfix, se->getContLen()))))) &&
+          circumfix_ok(ep, se) &&
           // fogemorpheme
           (in_compound ||
            !(se->getCont() &&
@@ -2852,17 +2854,7 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
            (sptr->getCont() && compoundpermitflag &&
             TESTAFF(sptr->getCont(), compoundpermitflag,
                     sptr->getContLen()))) &&
-          (!circumfix ||
-           // no circumfix flag in prefix and suffix
-           ((!ppfx || !(ep->getCont()) ||
-             !TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-            (!sptr->getCont() ||
-             !(TESTAFF(sptr->getCont(), circumfix, sptr->getContLen())))) ||
-           // circumfix flag in prefix AND suffix
-           ((ppfx && (ep->getCont()) &&
-             TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-            (sptr->getCont() &&
-             (TESTAFF(sptr->getCont(), circumfix, sptr->getContLen()))))) &&
+          circumfix_ok(ep, sptr) &&
           // fogemorpheme
           (in_compound ||
            !((sptr->getCont() && (TESTAFF(sptr->getCont(), onlyincompound,
@@ -3053,17 +3045,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
             // except when signed with compoundpermitflag flag
             (se->getCont() && compoundpermitflag &&
              TESTAFF(se->getCont(), compoundpermitflag, se->getContLen()))) &&
-           (!circumfix ||
-            // no circumfix flag in prefix and suffix
-            ((!ppfx || !(ep->getCont()) ||
-              !TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-             (!se->getCont() ||
-              !(TESTAFF(se->getCont(), circumfix, se->getContLen())))) ||
-            // circumfix flag in prefix AND suffix
-            ((ppfx && (ep->getCont()) &&
-              TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-             (se->getCont() &&
-              (TESTAFF(se->getCont(), circumfix, se->getContLen()))))) &&
+           circumfix_ok(ep, se) &&
            // fogemorpheme
            (in_compound ||
             !((se->getCont() &&
@@ -3123,17 +3105,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
             (sptr->getCont() && compoundpermitflag &&
              TESTAFF(sptr->getCont(), compoundpermitflag,
                      sptr->getContLen()))) &&
-           (!circumfix ||
-            // no circumfix flag in prefix and suffix
-            ((!ppfx || !(ep->getCont()) ||
-              !TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-             (!sptr->getCont() ||
-              !(TESTAFF(sptr->getCont(), circumfix, sptr->getContLen())))) ||
-            // circumfix flag in prefix AND suffix
-            ((ppfx && (ep->getCont()) &&
-              TESTAFF(ep->getCont(), circumfix, ep->getContLen())) &&
-             (sptr->getCont() &&
-              (TESTAFF(sptr->getCont(), circumfix, sptr->getContLen()))))) &&
+           circumfix_ok(ep, sptr) &&
            // fogemorpheme
            (in_compound ||
             !((sptr->getCont() && (TESTAFF(sptr->getCont(), onlyincompound,
