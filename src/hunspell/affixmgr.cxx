@@ -2788,6 +2788,38 @@ bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const {
   return in_prefix == in_suffix;
 }
 
+// decide whether a suffix entry may be applied at all, before the suffix itself is matched
+// against the word
+bool AffixMgr::suffix_applicable(PfxEntry* pfx,
+                                 SfxEntry* sfx,
+                                 const FLAG cclass,
+                                 char in_compound) const {
+  // suffixes are only allowed at the beginning of a compound when they are signed with the
+  // compoundpermitflag flag
+  if (in_compound == IN_CPD_BEGIN &&
+      !(sfx->getCont() && compoundpermitflag &&
+        TESTAFF(sfx->getCont(), compoundpermitflag, sfx->getContLen())))
+    return false;
+
+  if (!circumfix_ok(pfx, sfx))
+    return false;
+
+  // a fogemorpheme is only allowed inside a compound
+  if (!in_compound && sfx->getCont() &&
+      TESTAFF(sfx->getCont(), onlyincompound, sfx->getContLen()))
+    return false;
+
+  // a needaffix suffix needs a further affix, so it is allowed either as a second suffix or
+  // when a prefix is present that does not itself need one
+  if (!cclass && sfx->getCont() &&
+      TESTAFF(sfx->getCont(), needaffix, sfx->getContLen()) &&
+      !(pfx && !(pfx->getCont() &&
+                 TESTAFF(pfx->getCont(), needaffix, pfx->getContLen()))))
+    return false;
+
+  return true;
+}
+
 // check word for suffixes
 struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       int start,
@@ -2800,30 +2832,13 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       char in_compound,
                                       const FLAG avoidflag) {
   struct hentry* rv = nullptr;
-  PfxEntry* ep = ppfx;
 
   // first handle the special case of 0 length suffixes
   SfxEntry* se = sStart[0];
 
   while (se) {
     if (!cclass || se->getCont()) {
-      // suffixes are not allowed in beginning of compounds
-      if ((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
-           // except when signed with compoundpermitflag flag
-           (se->getCont() && compoundpermitflag &&
-            TESTAFF(se->getCont(), compoundpermitflag, se->getContLen()))) &&
-          circumfix_ok(ep, se) &&
-          // fogemorpheme
-          (in_compound ||
-           !(se->getCont() &&
-             (TESTAFF(se->getCont(), onlyincompound, se->getContLen())))) &&
-          // needaffix on prefix or first suffix
-          (cclass ||
-           !(se->getCont() &&
-             TESTAFF(se->getCont(), needaffix, se->getContLen())) ||
-           (ppfx &&
-            !((ep->getCont()) &&
-              TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))) {
+      if (suffix_applicable(ppfx, se, cclass, in_compound)) {
         rv = se->checkword(word, start, len, sfxopts, ppfx,
                            (FLAG)cclass, needflag,
                            (in_compound ? 0 : onlyincompound),
@@ -2848,24 +2863,7 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
 
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
-      // suffixes are not allowed in beginning of compounds
-      if ((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
-           // except when signed with compoundpermitflag flag
-           (sptr->getCont() && compoundpermitflag &&
-            TESTAFF(sptr->getCont(), compoundpermitflag,
-                    sptr->getContLen()))) &&
-          circumfix_ok(ep, sptr) &&
-          // fogemorpheme
-          (in_compound ||
-           !((sptr->getCont() && (TESTAFF(sptr->getCont(), onlyincompound,
-                                          sptr->getContLen()))))) &&
-          // needaffix on prefix or first suffix
-          (cclass ||
-           !(sptr->getCont() &&
-             TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())) ||
-           (ppfx &&
-            !((ep->getCont()) &&
-              TESTAFF(ep->getCont(), needaffix, ep->getContLen())))))
+      if (suffix_applicable(ppfx, sptr, cclass, in_compound))
         if (in_compound != IN_CPD_END || ppfx ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
@@ -3034,29 +3032,11 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
 
   struct hentry* rv = nullptr;
 
-  PfxEntry* ep = ppfx;
-
   // first handle the special case of 0 length suffixes
   SfxEntry* se = sStart[0];
   while (se) {
     if (!cclass || se->getCont()) {
-      // suffixes are not allowed in beginning of compounds
-      if (((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
-            // except when signed with compoundpermitflag flag
-            (se->getCont() && compoundpermitflag &&
-             TESTAFF(se->getCont(), compoundpermitflag, se->getContLen()))) &&
-           circumfix_ok(ep, se) &&
-           // fogemorpheme
-           (in_compound ||
-            !((se->getCont() &&
-               (TESTAFF(se->getCont(), onlyincompound, se->getContLen()))))) &&
-           // needaffix on prefix or first suffix
-           (cclass ||
-            !(se->getCont() &&
-              TESTAFF(se->getCont(), needaffix, se->getContLen())) ||
-            (ppfx &&
-             !((ep->getCont()) &&
-               TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
+      if (suffix_applicable(ppfx, se, cclass, in_compound))
         rv = se->checkword(word, start, len, sfxopts, ppfx, cclass,
                            needflag, FLAG_NULL, scratch);
       while (rv) {
@@ -3099,24 +3079,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
 
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
-      // suffixes are not allowed in beginning of compounds
-      if (((((in_compound != IN_CPD_BEGIN)) ||  // && !cclass
-            // except when signed with compoundpermitflag flag
-            (sptr->getCont() && compoundpermitflag &&
-             TESTAFF(sptr->getCont(), compoundpermitflag,
-                     sptr->getContLen()))) &&
-           circumfix_ok(ep, sptr) &&
-           // fogemorpheme
-           (in_compound ||
-            !((sptr->getCont() && (TESTAFF(sptr->getCont(), onlyincompound,
-                                           sptr->getContLen()))))) &&
-           // needaffix on prefix or first suffix
-           (cclass ||
-            !(sptr->getCont() &&
-              TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())) ||
-            (ppfx &&
-             !((ep->getCont()) &&
-               TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
+      if (suffix_applicable(ppfx, sptr, cclass, in_compound))
         rv = sptr->checkword(word, start, len, sfxopts, ppfx, cclass,
                              needflag, FLAG_NULL, scratch);
       while (rv) {

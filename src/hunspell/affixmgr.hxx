@@ -387,6 +387,10 @@ class AffixMgr {
   bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
   bool circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const;
+  bool suffix_applicable(PfxEntry* pfx,
+                         SfxEntry* sfx,
+                         const FLAG cclass,
+                         char in_compound) const;
 
   void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);
