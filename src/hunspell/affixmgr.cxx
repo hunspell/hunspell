@@ -3110,10 +3110,13 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
            (in_compound ||
             !((sptr->getCont() && (TESTAFF(sptr->getCont(), onlyincompound,
                                            sptr->getContLen()))))) &&
-           // needaffix on first suffix
+           // needaffix on prefix or first suffix
            (cclass ||
             !(sptr->getCont() &&
-              TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())))))
+              TESTAFF(sptr->getCont(), needaffix, sptr->getContLen())) ||
+            (ppfx &&
+             !((ep->getCont()) &&
+               TESTAFF(ep->getCont(), needaffix, ep->getContLen()))))))
         rv = sptr->checkword(word, start, len, sfxopts, ppfx, cclass,
                              needflag, FLAG_NULL, scratch);
       while (rv) {

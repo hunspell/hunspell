@@ -1,0 +1,33 @@
+> foo
+analyze(foo) =  st:foo
+stem(foo) = foo
+> prefoo
+analyze(prefoo) = pre st:foo fl:C
+stem(prefoo) = foo
+> foosuf
+analyze(foosuf) =  st:foo fl:A
+stem(foosuf) = foo
+> prefoosuf
+analyze(prefoosuf) =  fl:C st:foo fl:A
+stem(prefoosuf) = foo
+> foosufbar
+analyze(foosufbar) =  st:foo fl:A fl:B
+stem(foosufbar) = foo
+> prefoosufbar
+analyze(prefoosufbar) =  fl:C st:foo fl:A fl:B
+stem(prefoosufbar) = foo
+> pseudoprefoosuf
+analyze(pseudoprefoosuf) =  fl:C st:foo fl:A
+stem(pseudoprefoosuf) = foo
+> pseudoprefoosufbar
+analyze(pseudoprefoosufbar) =  fl:C st:foo fl:A fl:B
+stem(pseudoprefoosufbar) = foo
+> pseudoprefoopseudosufbar
+analyze(pseudoprefoopseudosufbar) =  fl:C st:foo fl:A fl:B
+stem(pseudoprefoopseudosufbar) = foo
+> prefoopseudosuf
+analyze(prefoopseudosuf) =  fl:C st:foo fl:A
+stem(prefoopseudosuf) = foo
+> prefoopseudosufbar
+analyze(prefoopseudosufbar) =  fl:C st:foo fl:A fl:B
+stem(prefoopseudosufbar) = foo

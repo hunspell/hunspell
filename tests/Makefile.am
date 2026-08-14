@@ -333,6 +333,7 @@ needaffix4.good \
 needaffix5.aff \
 needaffix5.dic \
 needaffix5.good \
+needaffix5.morph \
 needaffix5.wrong \
 needaffix.aff \
 needaffix.dic \
