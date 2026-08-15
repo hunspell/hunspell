@@ -1383,24 +1383,43 @@ int AffixMgr::cpdwordpair_check(const std::string& word,
                                 AffixScratch& scratch,
                                 bool& timelimit_exceeded,
                                 std::chrono::steady_clock::time_point clock_time_start) {
-  if (wl > 2) {
-    std::string candidate(word, 0, wl);
-    for (size_t i = 1; i < candidate.size(); i++) {
-      if (timelimit_exceeded || std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
-        timelimit_exceeded = true;
-        return 0;
+  TraceCtx* t = trace_on(scratch.trace);
+  int pair_found = 0;
+  std::string pair;
+
+  {
+    // this check puts a space at every position in turn, so the trace reports the verdict alone
+    TraceSuppress no_trace(scratch.trace);
+
+    if (wl > 2) {
+      std::string candidate(word, 0, wl);
+      for (size_t i = 1; i < candidate.size(); i++) {
+        if (timelimit_exceeded || std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+          timelimit_exceeded = true;
+          break;
+        }
+        // go to end of the UTF-8 character
+        if (utf8 && is_utf8_cont(candidate[i]))
+            continue;
+        candidate.insert(i, 1, ' ');
+        if (candidate_check(candidate, scratch)) {
+          pair_found = 1;
+          pair = candidate;
+          break;
+        }
+        candidate.erase(i, 1);
       }
-      // go to end of the UTF-8 character
-      if (utf8 && is_utf8_cont(candidate[i]))
-          continue;
-      candidate.insert(i, 1, ' ');
-      if (candidate_check(candidate, scratch))
-        return 1;
-      candidate.erase(i, 1);
     }
   }
 
-  return 0;
+  if (t) {
+    if (pair_found)
+      trace(*t, "test wordpair pair=\"%s\" -> fail, the parts are a known word pair", pair.c_str());
+    else if (!timelimit_exceeded)
+      trace(*t, "test wordpair -> pass, no space splits this into a known word pair");
+  }
+
+  return pair_found;
 }
 
 // forbid compoundings when there are special patterns at word bound
@@ -1678,9 +1697,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   hentry** oldwords = words;
   size_t scpd = 0, len = word.size();
 
-  // the trace stops at the edge of a compound. The compound search runs under a
-  // time limit, so its records would differ from one run to the next
-  TraceSuppress no_trace(scratch.trace);
+  TraceCtx* t = trace_on(scratch.trace);
 
   // protect subsequent words[wnum + 1] reads and any recursion
   if (wnum + 1 >= maxwordnum)
@@ -1731,6 +1748,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
         if (timelimit_exceeded ||
             std::chrono::steady_clock::now() - clock_time_start > TIMELIMIT_MS) {
+          if (t && !timelimit_exceeded)
+            trace(*t, "test timelimit -> fail, the compound search stops here and gives up");
           timelimit_exceeded = true;
           return nullptr;
         }
@@ -1767,6 +1786,18 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
           return nullptr;
 
         ch = st[i];
+        if (t) {
+          // a non-zero scpd means this split is the retry that one CHECKCOMPOUNDPATTERN entry asks
+          // for, with the text at the join replaced by the two sides of that entry
+          if (scpd != 0)
+            trace(*t, "split at=%d left=\"%s\" right=\"%s\" cpdpattern=%d", (int)i,
+                  st.substr(0, i).c_str(), st.substr(i).c_str(), (int)scpd);
+          else
+            trace(*t, "split at=%d left=\"%s\" right=\"%s\"", (int)i,
+                  st.substr(0, i).c_str(), st.substr(i).c_str());
+        }
+        // everything this split point tries belongs to the split
+        TraceScope split_depth(t);
         st[i] = '\0';
 
         sfx = nullptr;
@@ -1776,6 +1807,13 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
         affixed = 1;
         rv = lookup(st.c_str(), i);  // perhaps without prefix
+        if (t) {
+          if (rv)
+            trace(*t, "first \"%s\" -> entry \"%s\" flags=%s", st.c_str(),
+                  rv->word, trace_flags(this, rv->astr, rv->alen).c_str());
+          else
+            trace(*t, "first \"%s\" -> miss", st.c_str());
+        }
 
         // forbid dictionary stems with COMPOUNDFORBIDFLAG in
         // compound words, overriding the effect of COMPOUNDPERMITFLAG
@@ -1971,6 +2009,13 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             }
 
             rv = lookup(st.c_str() + i, st.size() - i);  // perhaps without prefix
+            if (t) {
+              if (rv)
+                trace(*t, "second \"%s\" -> entry \"%s\" flags=%s", st.c_str() + i,
+                      rv->word, trace_flags(this, rv->astr, rv->alen).c_str());
+              else
+                trace(*t, "second \"%s\" -> miss", st.c_str() + i);
+            }
 
             // search homonym with compound flag
             while ((rv) && ((needaffix && TESTAFF(rv->astr, needaffix, rv->alen)) ||

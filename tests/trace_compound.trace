@@ -1,0 +1,27 @@
+word "foobar"
+  lookup "foobar" -> miss
+  pfx candidates=0
+  sfx candidates=0
+  compound words=2
+    split at=3 left="foo" right="bar"
+      first "foo" -> entry "foo" flags=C
+      second "bar" -> entry "bar" flags=C
+      test wordpair -> pass, no space splits this into a known word pair
+  result correct
+word "footin"
+  lookup "footin" -> miss
+  pfx candidates=0
+  sfx candidates=0
+  compound words=2
+    split at=3 left="foo" right="tin"
+      first "foo" -> entry "foo" flags=C
+      second "tin" -> entry "tin" flags=(none)
+      pfx candidates=0
+      sfx candidates=0
+  compound words=3+
+    split at=3 left="foo" right="tin"
+      first "foo" -> entry "foo" flags=C
+      second "tin" -> entry "tin" flags=(none)
+      pfx candidates=0
+      sfx candidates=0
+  result incorrect

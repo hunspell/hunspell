@@ -180,6 +180,7 @@ gh1060.dic \
 trace_avoidflag.dic \
 trace_basic.dic \
 trace_circumfix.dic \
+trace_compound.dic \
 trace_reject.dic \
 trace_xprod.dic \
 abi-check.sh
@@ -825,6 +826,11 @@ trace_circumfix.dic \
 trace_circumfix.good \
 trace_circumfix.wrong \
 trace_circumfix.trace \
+trace_compound.aff \
+trace_compound.dic \
+trace_compound.good \
+trace_compound.wrong \
+trace_compound.trace \
 trace_reject.aff \
 trace_reject.dic \
 trace_reject.good \

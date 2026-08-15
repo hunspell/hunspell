@@ -994,14 +994,24 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
       int setinfo = SPELL_COMPOUND_2;
       if (info)
         setinfo |= *info;
-      he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, &setinfo, scratch);
+      if (TraceCtx* t = trace_on(scratch.trace))
+        trace(*t, "compound words=2");
+      {
+        TraceScope compound_depth(trace_on(scratch.trace));
+        he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, &setinfo, scratch);
+      }
       if (info)
         *info = setinfo & ~SPELL_COMPOUND_2;
       // if not 2-word compoud word, try with 3 or more words
       // (only if original info didn't forbid it)
       if (!he && info && !(*info & SPELL_COMPOUND_2)) {
         *info &= ~SPELL_COMPOUND_2;
-        he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, info, scratch);
+        if (TraceCtx* t = trace_on(scratch.trace))
+          trace(*t, "compound words=3+");
+        {
+          TraceScope compound_depth(trace_on(scratch.trace));
+          he = pAMgr->compound_check(word, 0, 0, 100, 0, nullptr, (hentry**)&rwords, 0, 0, info, scratch);
+        }
         // accept the compound with 3 or more words only if it is
         // - not a dictionary word with a typo and
         // - not two words written separately,
@@ -1009,7 +1019,18 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
         if (he && !isdigit(word[0]))
         {
           std::vector<std::string> slst;
-          if (pSMgr->suggest(slst, word, nullptr, /*test_simplesug=*/true))
+          bool simple;
+          {
+            // the suggester runs its whole search here, so report what it
+            // decided rather than every candidate it tried
+            TraceSuppress no_trace(scratch.trace);
+            simple = pSMgr->suggest(slst, word, nullptr, /*test_simplesug=*/true);
+          }
+          if (TraceCtx* t = trace_on(scratch.trace))
+            trace(*t, "test simplesug -> %s",
+                  simple ? "fail, a simpler form of this word exists"
+                         : "pass, no simpler form of this word exists");
+          if (simple)
             he = nullptr;
         }
       }
