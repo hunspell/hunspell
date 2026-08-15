@@ -409,6 +409,7 @@ class AffixMgr {
   bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
   bool circumfix_ok(PfxEntry* pfx, SfxEntry* sfx, const TraceCtx* t) const;
+  void trace_avoidflag(TraceCtx* t, const FLAG avoidflag, const struct hentry* stem) const;
   bool suffix_applicable(PfxEntry* pfx,
                          SfxEntry* sfx,
                          const FLAG cclass,

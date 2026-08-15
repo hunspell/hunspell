@@ -1152,8 +1152,10 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
       ++candidates;
       rv = pe->checkword(word, start, len, in_compound, needflag, scratch);
       // Skip a stem with the avoid flag and keep scanning the other prefixes.
-      if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+      if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen)) {
+        trace_avoidflag(t, avoidflag, rv);
         rv = nullptr;
+      }
       if (rv) {
         pfx = pe;  // BUG: pfx not stateless
         return rv;
@@ -1180,8 +1182,10 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
         // check prefix
         ++candidates;
         rv = pptr->checkword(word, start, len, in_compound, needflag, scratch);
-        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen)) {
+          trace_avoidflag(t, avoidflag, rv);
           rv = nullptr;
+        }
         if (rv) {
           pfx = pptr;  // BUG: pfx not stateless
           return rv;
@@ -2807,6 +2811,18 @@ bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx, const TraceCtx* t) con
 
 // decide whether a suffix entry may be applied at all, before the suffix itself is matched
 // against the word
+// the stem was found and then dropped again for carrying the flag the caller asked to keep away
+// from
+void AffixMgr::trace_avoidflag(TraceCtx* t,
+                               const FLAG avoidflag,
+                               const struct hentry* stem) const {
+  if (!t)
+    return;
+  TraceScope trace_depth(t);
+  trace_test(*t, "avoidflag", this, avoidflag, "dic", stem->astr, stem->alen,
+             "fail, the caller is skipping stems with this flag");
+}
+
 bool AffixMgr::suffix_applicable(PfxEntry* pfx,
                                  SfxEntry* sfx,
                                  const FLAG cclass,
@@ -2899,8 +2915,10 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                            (in_compound ? 0 : onlyincompound),
                            scratch);
         // Skip a stem with the avoid flag and keep scanning the other suffixes.
-        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen)) {
+          trace_avoidflag(t, avoidflag, rv);
           rv = nullptr;
+        }
         if (rv) {
           sfx = se;  // BUG: sfx not stateless
           return rv;
@@ -2932,8 +2950,10 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                              cclass, needflag,
                              (in_compound ? 0 : onlyincompound),
                              scratch);
-        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen)) {
+          trace_avoidflag(t, avoidflag, rv);
           rv = nullptr;
+        }
         if (rv) {
           sfx = sptr;                 // BUG: sfx not stateless
           sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless

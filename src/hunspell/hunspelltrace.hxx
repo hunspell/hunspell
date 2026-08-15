@@ -163,6 +163,11 @@ inline TraceCtx* trace_on(TraceCtx* context) {
 void trace(const TraceCtx& context, TRACE_FORMAT const char* format, ...)
     TRACE_FORMAT_CHECK;
 
+// Formats one flag in the dictionary's own flag syntax. The flag hunspell
+// keeps for itself, the one on the hidden capitalised form of a word, prints
+// as (onlyupcase).
+std::string trace_flag(const AffixMgr* pAMgr, unsigned short flag);
+
 // Formats a flag list in the dictionary's own flag syntax. An empty list
 // prints as (none).
 std::string trace_flags(const AffixMgr* pAMgr,

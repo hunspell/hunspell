@@ -177,6 +177,7 @@ gh100.test \
 gh106.dic \
 gh1045.dic \
 gh1060.dic \
+trace_avoidflag.dic \
 trace_basic.dic \
 trace_circumfix.dic \
 trace_reject.dic \
@@ -809,6 +810,11 @@ gh1060.aff \
 gh1060.dic \
 gh1060.good \
 gh1060.wrong \
+trace_avoidflag.aff \
+trace_avoidflag.dic \
+trace_avoidflag.good \
+trace_avoidflag.wrong \
+trace_avoidflag.trace \
 trace_basic.aff \
 trace_basic.dic \
 trace_basic.good \

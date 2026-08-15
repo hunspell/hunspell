@@ -76,6 +76,7 @@
 
 #include "affentry.hxx"
 #include "affixmgr.hxx"
+#include "csutil.hxx"
 
 void trace(const TraceCtx& context, const char* format, ...) {
   va_list args;
@@ -96,6 +97,15 @@ void trace(const TraceCtx& context, const char* format, ...) {
   context.emit(line);
 }
 
+std::string trace_flag(const AffixMgr* pAMgr, unsigned short flag) {
+  // hunspell marks the hidden capitalised form of a word with a flag of its
+  // own, which no affix file ever writes. Give that one a name, because the
+  // character it encodes to is not one a reader can look up
+  if (flag == ONLYUPCASEFLAG)
+    return "(onlyupcase)";
+  return pAMgr->encode_flag(flag);
+}
+
 std::string trace_flags(const AffixMgr* pAMgr,
                         const unsigned short* astr,
                         int alen) {
@@ -105,7 +115,7 @@ std::string trace_flags(const AffixMgr* pAMgr,
   for (int i = 0; i < alen; ++i) {
     if (i)
       result.push_back(',');
-    result.append(pAMgr->encode_flag(astr[i]));
+    result.append(trace_flag(pAMgr, astr[i]));
   }
   return result;
 }
@@ -122,7 +132,7 @@ void trace_affix(const TraceCtx& context,
   trace(context,
         "%s flag=%s strip=\"%s\" add=\"%s\" cont=%s cond=\"%s\"%s at=aff:%d"
         " xprod=%c hdr=aff:%d",
-        verb, pAMgr->encode_flag(entry.aflag).c_str(), entry.strip.c_str(),
+        verb, trace_flag(pAMgr, entry.aflag).c_str(), entry.strip.c_str(),
         entry.appnd.c_str(),
         trace_flags(pAMgr, entry.contclass, entry.contclasslen).c_str(),
         entry.get_condition().c_str(), redundant, entry.line, entry.xprod,
@@ -138,7 +148,7 @@ void trace_test(const TraceCtx& context,
                 int alen,
                 const char* outcome) {
   trace(context, "test %s flag=%s in=%s have=%s -> %s", name,
-        pAMgr->encode_flag(flag).c_str(), where,
+        trace_flag(pAMgr, flag).c_str(), where,
         trace_flags(pAMgr, astr, alen).c_str(), outcome);
 }
 
@@ -164,7 +174,7 @@ void trace_circumfix(const TraceCtx& context,
   std::string sfx_cont = trace_flags(pAMgr, sfx->getCont(), sfx->getContLen());
 
   trace(context, "test circumfix flag=%s pfx-cont=%s sfx-cont=%s -> %s",
-        pAMgr->encode_flag(flag).c_str(), pfx_cont.c_str(), sfx_cont.c_str(),
+        trace_flag(pAMgr, flag).c_str(), pfx_cont.c_str(), sfx_cont.c_str(),
         outcome);
 }
 

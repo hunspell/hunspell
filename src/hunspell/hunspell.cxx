@@ -934,7 +934,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
         }
         trace(*t, "test %s flag=%s in=dic have=%s"
                   " -> fail, on to the next homonym",
-              reason, pAMgr->encode_flag(flag).c_str(),
+              reason, trace_flag(pAMgr.get(), flag).c_str(),
               trace_flags(pAMgr.get(), he->astr, he->alen).c_str());
       }
       he = he->next_homonym;

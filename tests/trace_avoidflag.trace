@@ -1,0 +1,28 @@
+word "MacLeods"
+  lookup "MacLeods" -> miss
+  pfx candidates=0
+  sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "MacLeod"
+    test condition cond="." on "MacLeod" -> pass
+    lookup "MacLeod" -> entry "MacLeod" flags=S
+    test sfx-aflag flag=S in=dic have=S -> pass
+    accept
+  form "MacLeods" = "MacLeod" + sfx(S:"s")
+  result correct
+word "Macleods"
+  lookup "Macleods" -> miss
+  pfx candidates=0
+  sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "Macleod"
+    test condition cond="." on "Macleod" -> pass
+    lookup "Macleod" -> entry "Macleod" flags=S,(onlyupcase)
+    test sfx-aflag flag=S in=dic have=S,(onlyupcase) -> pass
+    accept
+    test avoidflag flag=(onlyupcase) in=dic have=S,(onlyupcase) -> fail, the caller is skipping stems with this flag
+  lookup "macleods" -> miss
+  pfx candidates=0
+  sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "macleod"
+    test condition cond="." on "macleod" -> pass
+    lookup "macleod" -> miss
+  result incorrect
