@@ -621,6 +621,43 @@ inline int SfxEntry::test_condition(const char* st, const char* beg) {
   }
 }
 
+// decide whether this suffix may be applied to a dictionary entry
+bool SfxEntry::applies_to(const struct hentry* he,
+                          int optflags,
+                          PfxEntry* ep,
+                          const FLAG cclass,
+                          const FLAG needflag,
+                          const FLAG badflag) const {
+  // the suffix flag is either on the entry itself, or on a prefix that enables
+  // this suffix
+  if (!TESTAFF(he->astr, aflag, he->alen) &&
+      !(ep && ep->getCont() &&
+        TESTAFF(ep->getCont(), aflag, ep->getContLen())))
+    return false;
+
+  // the prefix and the suffix have to be allowed to meet
+  if ((optflags & aeXPRODUCT) != 0 &&
+      !(ep && TESTAFF(he->astr, ep->getFlag(), he->alen)) &&
+      // enabled by prefix
+      !(contclass && ep && TESTAFF(contclass, ep->getFlag(), contclasslen)))
+    return false;
+
+  // handle cont. class
+  if (cclass && !(contclass && TESTAFF(contclass, cclass, contclasslen)))
+    return false;
+
+  // check only in compound homonyms (bad flags)
+  if (badflag && TESTAFF(he->astr, badflag, he->alen))
+    return false;
+
+  // handle required flag
+  if (needflag && !TESTAFF(he->astr, needflag, he->alen) &&
+      !(contclass && TESTAFF(contclass, needflag, contclasslen)))
+    return false;
+
+  return true;
+}
+
 // see if this suffix is present in the word
 struct hentry* SfxEntry::checkword(const std::string& word,
                                    int start,
@@ -678,24 +715,7 @@ struct hentry* SfxEntry::checkword(const std::string& word,
 #endif
       if ((he = pmyMgr->lookup(tmpword.c_str(), tmpword.size())) != nullptr) {
         do {
-          // check conditional suffix (enabled by prefix)
-          if ((TESTAFF(he->astr, aflag, he->alen) ||
-               (ep && ep->getCont() &&
-                TESTAFF(ep->getCont(), aflag, ep->getContLen()))) &&
-              (((optflags & aeXPRODUCT) == 0) ||
-               (ep && TESTAFF(he->astr, ep->getFlag(), he->alen)) ||
-               // enabled by prefix
-               ((contclass) &&
-                (ep && TESTAFF(contclass, ep->getFlag(), contclasslen)))) &&
-              // handle cont. class
-              ((!cclass) ||
-               ((contclass) && TESTAFF(contclass, cclass, contclasslen))) &&
-              // check only in compound homonyms (bad flags)
-              (!badflag || !TESTAFF(he->astr, badflag, he->alen)) &&
-              // handle required flag
-              ((!needflag) ||
-               (TESTAFF(he->astr, needflag, he->alen) ||
-                ((contclass) && TESTAFF(contclass, needflag, contclasslen)))))
+          if (applies_to(he, optflags, ep, cclass, needflag, badflag))
             return he;
           he = he->next_homonym;  // check homonyms
         } while (he);

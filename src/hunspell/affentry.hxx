@@ -172,6 +172,14 @@ class SfxEntry : public AffEntry {
   explicit SfxEntry(AffixMgr* pmgr);
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
+
+  bool applies_to(const struct hentry* he,
+                  int optflags,
+                  PfxEntry* ep,
+                  const FLAG cclass,
+                  const FLAG needflag,
+                  const FLAG badflag) const;
+
   struct hentry* checkword(const std::string& word,
                            int start,
                            int len,
