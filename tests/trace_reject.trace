@@ -1,0 +1,36 @@
+word "hoping"
+  lookup "hoping" -> miss
+  pfx candidates=0
+  sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
+    stem "hop"
+    test condition cond="[^e]" on "hop" -> pass
+    lookup "hop" -> entry "hop" flags=G
+    test sfx-aflag flag=G in=dic have=G -> pass
+    accept
+  form "hoping" = "hop" + sfx(G:"ing")
+  result correct
+word "hopeing"
+  lookup "hopeing" -> miss
+  pfx candidates=0
+  sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
+    stem "hope"
+    test condition cond="[^e]" on "hope" -> fail
+  sfx flag=G strip="e" add="ing" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "hopee"
+    test condition cond="." on "hopee" -> pass
+    lookup "hopee" -> miss
+  result incorrect
+word "walking"
+  lookup "walking" -> miss
+  pfx candidates=0
+  sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
+    stem "walk"
+    test condition cond="[^e]" on "walk" -> pass
+    lookup "walk" -> entry "walk" flags=(none)
+    test sfx-aflag flag=G in=dic have=(none) -> fail
+    lookup "walk" -> no more homonyms
+  sfx flag=G strip="e" add="ing" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "walke"
+    test condition cond="." on "walke" -> pass
+    lookup "walke" -> miss
+  result incorrect

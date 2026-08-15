@@ -89,7 +89,10 @@
 #  define TRACE_FORMAT_CHECK
 #endif
 
+class AffEntry;
 class AffixMgr;
+class PfxEntry;
+class SfxEntry;
 
 // Receives one trace record at a time. A record is a lowercase verb from a
 // closed vocabulary followed by key=value fields. The depth is the nesting
@@ -150,6 +153,12 @@ class TraceSuppress {
   TraceCtx* m_context;
 };
 
+// Returns the sink while something is listening to it, and null while nothing
+// is.
+inline TraceCtx* trace_on(TraceCtx* context) {
+  return (context && context->on()) ? context : nullptr;
+}
+
 // Formats one record and hands it to the sink.
 void trace(const TraceCtx& context, TRACE_FORMAT const char* format, ...)
     TRACE_FORMAT_CHECK;
@@ -159,5 +168,34 @@ void trace(const TraceCtx& context, TRACE_FORMAT const char* format, ...)
 std::string trace_flags(const AffixMgr* pAMgr,
                         const unsigned short* astr,
                         int alen);
+
+// Opens an affix rule with the verb given, pfx or sfx. The fields of the rule
+// line run in the order that line writes them and end at the line number of the
+// rule, then come the fields of the affix class header and its own line number.
+void trace_affix(const TraceCtx& context,
+                 const char* verb,
+                 const AffixMgr* pAMgr,
+                 const AffEntry& entry);
+
+// Reports one flag test: the flag looked for, the place it was looked for, the
+// flags that place actually holds, and how the test came out. The outcome is
+// pass or fail, and may carry a comma and a few words on what it means here.
+void trace_test(const TraceCtx& context,
+                const char* name,
+                const AffixMgr* pAMgr,
+                unsigned short flag,
+                const char* where,
+                const unsigned short* astr,
+                int alen,
+                const char* outcome);
+
+// Sums up an accepted analysis in one line, as the stem with the affixes that
+// were applied to it.
+void trace_form(const TraceCtx& context,
+                const AffixMgr* pAMgr,
+                const std::string& surface,
+                const char* stem,
+                PfxEntry* pfx,
+                SfxEntry* sfx);
 
 #endif

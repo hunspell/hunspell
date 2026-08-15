@@ -93,7 +93,9 @@ class PfxEntry : public AffEntry {
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
 
-  bool applies_to(const struct hentry* he, const FLAG needflag) const;
+  bool applies_to(const struct hentry* he,
+                  const FLAG needflag,
+                  const TraceCtx* t) const;
 
   struct hentry* checkword(const std::string& word,
                            int start,
@@ -173,12 +175,15 @@ class SfxEntry : public AffEntry {
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
 
+  std::string get_condition() const override;
+
   bool applies_to(const struct hentry* he,
                   int optflags,
                   PfxEntry* ep,
                   const FLAG cclass,
                   const FLAG needflag,
-                  const FLAG badflag) const;
+                  const FLAG badflag,
+                  const TraceCtx* t) const;
 
   struct hentry* checkword(const std::string& word,
                            int start,

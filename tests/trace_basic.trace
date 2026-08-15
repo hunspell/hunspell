@@ -12,4 +12,6 @@ word "dog"
   result incorrect
 word "xyzzy"
   lookup "xyzzy" -> miss
+  pfx candidates=0
+  sfx candidates=0
   result incorrect

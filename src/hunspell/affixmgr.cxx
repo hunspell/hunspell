@@ -84,6 +84,7 @@
 
 #include "affixmgr.hxx"
 #include "affentry.hxx"
+#include "hunspelltrace.hxx"
 #include "langnum.hxx"
 
 #include "csutil.hxx"
@@ -1132,6 +1133,9 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
   sfxappnd = nullptr;
   sfxextra = 0;
 
+  TraceCtx* t = trace_on(scratch.trace);
+  int candidates = 0;
+
   // first handle the special case of 0 length prefixes
   PfxEntry* pe = pStart[0];
   while (pe) {
@@ -1145,6 +1149,7 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
          (pe->getCont() &&
           (TESTAFF(pe->getCont(), compoundpermitflag, pe->getContLen()))))) {
       // check prefix
+      ++candidates;
       rv = pe->checkword(word, start, len, in_compound, needflag, scratch);
       // Skip a stem with the avoid flag and keep scanning the other prefixes.
       if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
@@ -1173,6 +1178,7 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
            (pptr->getCont() && (TESTAFF(pptr->getCont(), compoundpermitflag,
                                         pptr->getContLen()))))) {
         // check prefix
+        ++candidates;
         rv = pptr->checkword(word, start, len, in_compound, needflag, scratch);
         if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
           rv = nullptr;
@@ -1186,6 +1192,11 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
       pptr = pptr->getNextNE();
     }
   }
+
+  // a pass that had nothing to try says so, which is different from a pass that
+  // did not run
+  if (t && candidates == 0)
+    trace(*t, "pfx candidates=0");
 
   return nullptr;
 }
@@ -1662,6 +1673,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
   int striple = 0, soldi = 0, oldcmin = 0, oldcmax = 0, oldlen = 0, checkedstriple = 0;
   hentry** oldwords = words;
   size_t scpd = 0, len = word.size();
+
+  // the trace stops at the edge of a compound. The compound search runs under a
+  // time limit, so its records would differ from one run to the next
+  TraceSuppress no_trace(scratch.trace);
 
   // protect subsequent words[wnum + 1] reads and any recursion
   if (wnum + 1 >= maxwordnum)
@@ -2833,12 +2848,23 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
                                       const FLAG avoidflag) {
   struct hentry* rv = nullptr;
 
+  TraceCtx* t = trace_on(scratch.trace);
+  int candidates = 0;
+  // a pass that had nothing to try says so, which is different from a pass that
+  // did not run
+  auto report_empty_pass = [t, sfxopts, &candidates]() {
+    if (t && candidates == 0)
+      trace(*t, "sfx candidates=0%s",
+            (sfxopts & aeXPRODUCT) != 0 ? " xprod=Y" : "");
+  };
+
   // first handle the special case of 0 length suffixes
   SfxEntry* se = sStart[0];
 
   while (se) {
     if (!cclass || se->getCont()) {
       if (suffix_applicable(ppfx, se, cclass, in_compound)) {
+        ++candidates;
         rv = se->checkword(word, start, len, sfxopts, ppfx,
                            (FLAG)cclass, needflag,
                            (in_compound ? 0 : onlyincompound),
@@ -2856,8 +2882,10 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
   }
 
   // now handle the general case
-  if (len == 0)
+  if (len == 0) {
+    report_empty_pass();
     return nullptr;  // FULLSTRIP
+  }
   unsigned char sp = word[start + len - 1];
   SfxEntry* sptr = sStart[sp];
 
@@ -2867,6 +2895,7 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
         if (in_compound != IN_CPD_END || ppfx ||
             !(sptr->getCont() &&
               TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
+          ++candidates;
           rv = sptr->checkword(word, start, len, sfxopts, ppfx,
                                cclass, needflag,
                                (in_compound ? 0 : onlyincompound),
@@ -2893,6 +2922,8 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
       sptr = sptr->getNextNE();
     }
   }
+
+  report_empty_pass();
 
   return nullptr;
 }
@@ -3129,15 +3160,26 @@ struct hentry* AffixMgr::affix_check(const std::string& word,
                                      char in_compound,
                                      const FLAG avoidflag) {
 
+  TraceCtx* t = trace_on(scratch.trace);
+  auto report_form = [this, t, &word, start, len](const struct hentry* rv) {
+    if (t && rv)
+      trace_form(*t, this, word.substr(start, len), rv->word, pfx, sfx);
+  };
+
   // check all prefixes (also crossed with suffixes if allowed)
   struct hentry* rv = prefix_check(word, start, len, in_compound, scratch, needflag, avoidflag);
-  if (rv)
+  if (rv) {
+    report_form(rv);
     return rv;
+  }
 
   // if still not found check all suffixes
   rv = suffix_check(word, start, len, 0, nullptr, scratch, FLAG_NULL, needflag, in_compound, avoidflag);
 
   if (havecontclass) {
+    if (rv)
+      report_form(rv);
+
     sfx = nullptr;
     pfx = nullptr;
 
@@ -3146,11 +3188,15 @@ struct hentry* AffixMgr::affix_check(const std::string& word,
     // if still not found check all two-level suffixes
     rv = suffix_check_twosfx(word, start, len, 0, nullptr, scratch, needflag);
 
-    if (rv)
+    if (rv) {
+      report_form(rv);
       return rv;
+    }
     // if still not found check all two-level suffixes
     rv = prefix_check_twosfx(word, start, len, IN_CPD_NOT, scratch, needflag);
   }
+
+  report_form(rv);
 
   return rv;
 }
@@ -4469,6 +4515,8 @@ bool AffixMgr::parse_affix(const std::string& line,
   unsigned short aflag = 0;  // affix char identifier
 
   char ff = 0;
+  char xprod = 0;
+  int headerline = af->getlinenum();
   entries_container affentries(at, this);
 
   int i = 0;
@@ -4507,7 +4555,8 @@ bool AffixMgr::parse_affix(const std::string& line,
       // piece 3 - is cross product indicator
       case 2: {
         np++;
-        if (*start_piece == 'Y')
+        xprod = *start_piece;
+        if (xprod == 'Y')
           ff = aeXPRODUCT;
         break;
       }
@@ -4555,6 +4604,7 @@ bool AffixMgr::parse_affix(const std::string& line,
     if (!af->getline(nl))
       return false;
     mychomp(nl);
+    int ruleline = af->getlinenum();
 
     iter = nl.begin();
     i = 0;
@@ -4735,6 +4785,10 @@ bool AffixMgr::parse_affix(const std::string& line,
                        af->getlinenum(), err.c_str());
       return false;
     }
+
+    entry->line = ruleline;
+    entry->headerline = headerline;
+    entry->xprod = xprod;
 
 #ifdef DEBUG
     // detect unnecessary fields, excepting comments

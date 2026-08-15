@@ -1,0 +1,39 @@
+word "reworked"
+  lookup "reworked" -> miss
+  pfx flag=A strip="" add="re" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "worked"
+    test condition cond="." on "worked" -> pass
+    lookup "worked" -> miss
+    sfx flag=B strip="" add="ed" cont=(none) cond="." at=aff:5 xprod=Y hdr=aff:4
+      stem "work"
+      test condition cond="." on "work" -> pass
+      lookup "work" -> entry "work" flags=A,B,C
+      test sfx-aflag flag=B in=dic have=A,B,C -> pass
+      test xprod flag=A in=dic have=A,B,C -> pass
+      accept
+  form "reworked" = pfx(A:"re") + "work" + sfx(B:"ed")
+  result correct
+word "works"
+  lookup "works" -> miss
+  pfx candidates=0
+  sfx flag=C strip="" add="s" cont=(none) cond="." at=aff:8 xprod=N hdr=aff:7
+    stem "work"
+    test condition cond="." on "work" -> pass
+    lookup "work" -> entry "work" flags=A,B,C
+    test sfx-aflag flag=C in=dic have=A,B,C -> pass
+    accept
+  form "works" = "work" + sfx(C:"s")
+  result correct
+word "reworks"
+  lookup "reworks" -> miss
+  pfx flag=A strip="" add="re" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+    stem "works"
+    test condition cond="." on "works" -> pass
+    lookup "works" -> miss
+    sfx flag=C strip="" add="s" cont=(none) cond="." at=aff:8 xprod=N hdr=aff:7
+      test xprod -> fail, this suffix class does not cross with a prefix
+  sfx flag=C strip="" add="s" cont=(none) cond="." at=aff:8 xprod=N hdr=aff:7
+    stem "rework"
+    test condition cond="." on "rework" -> pass
+    lookup "rework" -> miss
+  result incorrect

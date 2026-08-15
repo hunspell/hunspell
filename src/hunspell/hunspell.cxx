@@ -955,6 +955,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
   if (!he && pAMgr) {
     // try stripping off affixes
     AffixScratch scratch;
+    scratch.trace = t;
     // For an initial-capital query, make affix_check skip an all-uppercase-only
     // stem and keep looking, so a valid mixed-case match behind it is found.
     FLAG avoidflag = (info && (*info & SPELL_INITCAP)) ? ONLYUPCASEFLAG : FLAG_NULL;

@@ -74,6 +74,7 @@
 #include <cstdio>
 #include <string>
 
+#include "affentry.hxx"
 #include "affixmgr.hxx"
 
 void trace(const TraceCtx& context, const char* format, ...) {
@@ -107,4 +108,50 @@ std::string trace_flags(const AffixMgr* pAMgr,
     result.append(pAMgr->encode_flag(astr[i]));
   }
   return result;
+}
+
+void trace_affix(const TraceCtx& context,
+                 const char* verb,
+                 const AffixMgr* pAMgr,
+                 const AffEntry& entry) {
+  trace(context,
+        "%s flag=%s strip=\"%s\" add=\"%s\" cont=%s cond=\"%s\" at=aff:%d"
+        " xprod=%c hdr=aff:%d",
+        verb, pAMgr->encode_flag(entry.aflag).c_str(), entry.strip.c_str(),
+        entry.appnd.c_str(),
+        trace_flags(pAMgr, entry.contclass, entry.contclasslen).c_str(),
+        entry.get_condition().c_str(), entry.line, entry.xprod,
+        entry.headerline);
+}
+
+void trace_test(const TraceCtx& context,
+                const char* name,
+                const AffixMgr* pAMgr,
+                unsigned short flag,
+                const char* where,
+                const unsigned short* astr,
+                int alen,
+                const char* outcome) {
+  trace(context, "test %s flag=%s in=%s have=%s -> %s", name,
+        pAMgr->encode_flag(flag).c_str(), where,
+        trace_flags(pAMgr, astr, alen).c_str(), outcome);
+}
+
+void trace_form(const TraceCtx& context,
+                const AffixMgr* pAMgr,
+                const std::string& surface,
+                const char* stem,
+                PfxEntry* pfx,
+                SfxEntry* sfx) {
+  std::string line = "form \"" + surface + "\" = ";
+  if (pfx)
+    line += "pfx(" + pAMgr->encode_flag(pfx->getFlag()) + ":\"" +
+            pfx->getKey() + "\") + ";
+  line += '"';
+  line += stem;
+  line += '"';
+  if (sfx)
+    line += " + sfx(" + pAMgr->encode_flag(sfx->getFlag()) + ":\"" +
+            sfx->getAffix() + "\")";
+  context.emit(line);
 }

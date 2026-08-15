@@ -90,6 +90,7 @@
 
 class PfxEntry;
 class SfxEntry;
+class TraceCtx;
 
 // Reusable scratch tmpwords for the affix-matching path, passed though
 // through compound_check[_morph] -> prefix_check[_*] / suffix_check[_*]
@@ -102,6 +103,10 @@ struct AffixScratch {
   std::string pfx_check_twosfx;  // PfxEntry::check_twosfx[_morph]
   std::string sfx_check_word;    // SfxEntry::checkword
   std::string sfx_check_twosfx;  // SfxEntry::check_twosfx[_morph]
+
+  // where the affix path reports its decisions, or null while nothing is
+  // listening
+  TraceCtx* trace = nullptr;
 };
 
 class AffixMgr {
@@ -189,6 +194,10 @@ class AffixMgr {
                                // affix)
 
  public:
+  // Turns a condition around, so that a group keeps its meaning once the text
+  // it belongs to has been reversed.
+  static void reverse_condition(std::string&);
+
   AffixMgr(const char* affpath, const std::vector<std::unique_ptr<HashMgr>>& ptr, const char* key = nullptr);
   ~AffixMgr();
   struct hentry* affix_check(const std::string& word,
@@ -405,7 +414,6 @@ class AffixMgr {
                          const FLAG cclass,
                          char in_compound) const;
 
-  void reverse_condition(std::string&);
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const std::string& s);
   int encodeit(AffEntry& entry, const std::string& cs);
