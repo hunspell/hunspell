@@ -1200,7 +1200,7 @@ struct hentry* AffixMgr::prefix_check(const std::string& word,
   // a pass that had nothing to try says so, which is different from a pass that
   // did not run
   if (t && candidates == 0)
-    trace(*t, "pfx candidates=0");
+    trace(*t, "pfx \"%s\" candidates=0", word.substr(start, len).c_str());
 
   return nullptr;
 }
@@ -2960,9 +2960,9 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
   int candidates = 0;
   // a pass that had nothing to try says so, which is different from a pass that
   // did not run
-  auto report_empty_pass = [t, sfxopts, &candidates]() {
+  auto report_empty_pass = [t, &word, start, len, sfxopts, &candidates]() {
     if (t && candidates == 0)
-      trace(*t, "sfx candidates=0%s",
+      trace(*t, "sfx \"%s\" candidates=0%s", word.substr(start, len).c_str(),
             (sfxopts & aeXPRODUCT) != 0 ? " xprod=Y" : "");
   };
   // a rule the suffix conditions turned away never reaches checkword, so name

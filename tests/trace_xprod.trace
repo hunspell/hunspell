@@ -15,7 +15,7 @@ word "reworked"
   result correct
 word "works"
   lookup "works" -> miss
-  pfx candidates=0
+  pfx "works" candidates=0
   sfx flag=C strip="" add="s" cont=(none) cond="." at=aff:8 xprod=N hdr=aff:7
     stem "work"
     test condition cond="." on "work" -> pass

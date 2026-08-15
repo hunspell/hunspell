@@ -25,12 +25,12 @@ word "prefixstem"
     test pfx-aflag flag=P in=dic have=P,S -> pass
     test circumfix flag=X in=pfx-cont have=X -> fail, a circumfix prefix needs its suffix
     lookup "stem" -> no more homonyms
-    sfx candidates=0 xprod=Y
-  sfx candidates=0
+    sfx "stem" candidates=0 xprod=Y
+  sfx "prefixstem" candidates=0
   result incorrect
 word "stemsuffix"
   lookup "stemsuffix" -> miss
-  pfx candidates=0
+  pfx "stemsuffix" candidates=0
   sfx flag=S strip="" add="suffix" cont=X cond="." at=aff:7 xprod=Y hdr=aff:6
     test circumfix flag=X pfx-cont=(none) sfx-cont=X -> fail, this circumfix suffix needs its prefix
   result incorrect

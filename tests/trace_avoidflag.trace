@@ -1,6 +1,6 @@
 word "MacLeods"
   lookup "MacLeods" -> miss
-  pfx candidates=0
+  pfx "MacLeods" candidates=0
   sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
     stem "MacLeod"
     test condition cond="." on "MacLeod" -> pass
@@ -11,7 +11,7 @@ word "MacLeods"
   result correct
 word "Macleods"
   lookup "Macleods" -> miss
-  pfx candidates=0
+  pfx "Macleods" candidates=0
   sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
     stem "Macleod"
     test condition cond="." on "Macleod" -> pass
@@ -20,7 +20,7 @@ word "Macleods"
     accept
     test avoidflag flag=(onlyupcase) in=dic have=S,(onlyupcase) -> fail, the caller is skipping stems with this flag
   lookup "macleods" -> miss
-  pfx candidates=0
+  pfx "macleods" candidates=0
   sfx flag=S strip="" add="s" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
     stem "macleod"
     test condition cond="." on "macleod" -> pass

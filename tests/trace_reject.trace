@@ -1,6 +1,6 @@
 word "hoping"
   lookup "hoping" -> miss
-  pfx candidates=0
+  pfx "hoping" candidates=0
   sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
     stem "hop"
     test condition cond="[^e]" on "hop" -> pass
@@ -11,7 +11,7 @@ word "hoping"
   result correct
 word "hopeing"
   lookup "hopeing" -> miss
-  pfx candidates=0
+  pfx "hopeing" candidates=0
   sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
     stem "hope"
     test condition cond="[^e]" on "hope" -> fail
@@ -22,7 +22,7 @@ word "hopeing"
   result incorrect
 word "walking"
   lookup "walking" -> miss
-  pfx candidates=0
+  pfx "walking" candidates=0
   sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
     stem "walk"
     test condition cond="[^e]" on "walk" -> pass
