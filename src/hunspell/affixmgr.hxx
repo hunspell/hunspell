@@ -310,7 +310,8 @@ class AffixMgr {
                    size_t len,
                    hentry* r1,
                    hentry* r2,
-                   const char affixed);
+                   const char affixed,
+                   const TraceCtx* t);
   int defcpd_check(hentry*** words,
                    short wnum,
                    short maxwordnum,
