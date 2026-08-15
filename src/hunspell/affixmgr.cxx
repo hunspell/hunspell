@@ -2793,13 +2793,15 @@ inline int AffixMgr::isRevSubset(const char* s1,
 
 // a circumfix is one affix split in two halves, so the flag has to be on both the prefix and the
 // suffix, or on neither of them
-bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const {
+bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx, const TraceCtx* t) const {
   if (!circumfix)
     return true;
   bool in_prefix = pfx && pfx->getCont() &&
                    TESTAFF(pfx->getCont(), circumfix, pfx->getContLen());
   bool in_suffix = sfx->getCont() &&
                    TESTAFF(sfx->getCont(), circumfix, sfx->getContLen());
+  if (t)
+    trace_circumfix(*t, this, circumfix, pfx, sfx, in_prefix, in_suffix);
   return in_prefix == in_suffix;
 }
 
@@ -2808,29 +2810,45 @@ bool AffixMgr::circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const {
 bool AffixMgr::suffix_applicable(PfxEntry* pfx,
                                  SfxEntry* sfx,
                                  const FLAG cclass,
-                                 char in_compound) const {
+                                 char in_compound,
+                                 const TraceCtx* t) const {
   // suffixes are only allowed at the beginning of a compound when they are signed with the
   // compoundpermitflag flag
   if (in_compound == IN_CPD_BEGIN &&
       !(sfx->getCont() && compoundpermitflag &&
-        TESTAFF(sfx->getCont(), compoundpermitflag, sfx->getContLen())))
+        TESTAFF(sfx->getCont(), compoundpermitflag, sfx->getContLen()))) {
+    if (t)
+      trace_test(*t, "compoundpermit", this, compoundpermitflag, "sfx-cont",
+                 sfx->getCont(), sfx->getContLen(),
+                 "fail, a suffix at the start of a compound needs this flag");
     return false;
+  }
 
-  if (!circumfix_ok(pfx, sfx))
+  if (!circumfix_ok(pfx, sfx, t))
     return false;
 
   // a fogemorpheme is only allowed inside a compound
   if (!in_compound && sfx->getCont() &&
-      TESTAFF(sfx->getCont(), onlyincompound, sfx->getContLen()))
+      TESTAFF(sfx->getCont(), onlyincompound, sfx->getContLen())) {
+    if (t)
+      trace_test(*t, "onlyincompound", this, onlyincompound, "sfx-cont",
+                 sfx->getCont(), sfx->getContLen(),
+                 "fail, this suffix is only allowed inside a compound");
     return false;
+  }
 
   // a needaffix suffix needs a further affix, so it is allowed either as a second suffix or
   // when a prefix is present that does not itself need one
   if (!cclass && sfx->getCont() &&
       TESTAFF(sfx->getCont(), needaffix, sfx->getContLen()) &&
       !(pfx && !(pfx->getCont() &&
-                 TESTAFF(pfx->getCont(), needaffix, pfx->getContLen()))))
+                 TESTAFF(pfx->getCont(), needaffix, pfx->getContLen())))) {
+    if (t)
+      trace_test(*t, "needaffix", this, needaffix, "sfx-cont", sfx->getCont(),
+                 sfx->getContLen(),
+                 "fail, this suffix needs a further affix and has none");
     return false;
+  }
 
   return true;
 }
@@ -2857,13 +2875,24 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
       trace(*t, "sfx candidates=0%s",
             (sfxopts & aeXPRODUCT) != 0 ? " xprod=Y" : "");
   };
+  // a rule the suffix conditions turned away never reaches checkword, so name
+  // the rule here and run the conditions again to say which of them refused it
+  auto report_refused = [this, t, ppfx, cclass, in_compound,
+                         &candidates](SfxEntry* se) {
+    if (!t)
+      return;
+    ++candidates;
+    trace_affix(*t, "sfx", this, *se);
+    TraceScope trace_depth(t);
+    suffix_applicable(ppfx, se, cclass, in_compound, t);
+  };
 
   // first handle the special case of 0 length suffixes
   SfxEntry* se = sStart[0];
 
   while (se) {
     if (!cclass || se->getCont()) {
-      if (suffix_applicable(ppfx, se, cclass, in_compound)) {
+      if (suffix_applicable(ppfx, se, cclass, in_compound, nullptr)) {
         ++candidates;
         rv = se->checkword(word, start, len, sfxopts, ppfx,
                            (FLAG)cclass, needflag,
@@ -2876,6 +2905,8 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
           sfx = se;  // BUG: sfx not stateless
           return rv;
         }
+      } else {
+        report_refused(se);
       }
     }
     se = se->getNext();
@@ -2891,32 +2922,33 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
 
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
-      if (suffix_applicable(ppfx, sptr, cclass, in_compound))
-        if (in_compound != IN_CPD_END || ppfx ||
-            !(sptr->getCont() &&
-              TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
-          ++candidates;
-          rv = sptr->checkword(word, start, len, sfxopts, ppfx,
-                               cclass, needflag,
-                               (in_compound ? 0 : onlyincompound),
-                               scratch);
-          if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
-            rv = nullptr;
-          if (rv) {
-            sfx = sptr;                 // BUG: sfx not stateless
-            sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
-            if (!sptr->getCont())
-              sfxappnd = sptr->getKey();  // BUG: sfxappnd not stateless
-            // LANG_hu section: spec. Hungarian rule
-            else if (langnum == LANG_hu && sptr->getKeyLen() &&
-                     sptr->getKey()[0] == 'i' && sptr->getKey()[1] != 'y' &&
-                     sptr->getKey()[1] != 't') {
-              sfxextra = 1;
-            }
-            // END of LANG_hu section
-            return rv;
+      if (!suffix_applicable(ppfx, sptr, cclass, in_compound, nullptr))
+        report_refused(sptr);
+      else if (in_compound != IN_CPD_END || ppfx ||
+               !(sptr->getCont() &&
+                 TESTAFF(sptr->getCont(), onlyincompound, sptr->getContLen()))) {
+        ++candidates;
+        rv = sptr->checkword(word, start, len, sfxopts, ppfx,
+                             cclass, needflag,
+                             (in_compound ? 0 : onlyincompound),
+                             scratch);
+        if (rv && avoidflag != FLAG_NULL && TESTAFF(rv->astr, avoidflag, rv->alen))
+          rv = nullptr;
+        if (rv) {
+          sfx = sptr;                 // BUG: sfx not stateless
+          sfxflag = sptr->getFlag();  // BUG: sfxflag not stateless
+          if (!sptr->getCont())
+            sfxappnd = sptr->getKey();  // BUG: sfxappnd not stateless
+          // LANG_hu section: spec. Hungarian rule
+          else if (langnum == LANG_hu && sptr->getKeyLen() &&
+                   sptr->getKey()[0] == 'i' && sptr->getKey()[1] != 'y' &&
+                   sptr->getKey()[1] != 't') {
+            sfxextra = 1;
           }
+          // END of LANG_hu section
+          return rv;
         }
+      }
       sptr = sptr->getNextEQ();
     } else {
       sptr = sptr->getNextNE();
@@ -3067,7 +3099,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
   SfxEntry* se = sStart[0];
   while (se) {
     if (!cclass || se->getCont()) {
-      if (suffix_applicable(ppfx, se, cclass, in_compound))
+      if (suffix_applicable(ppfx, se, cclass, in_compound, nullptr))
         rv = se->checkword(word, start, len, sfxopts, ppfx, cclass,
                            needflag, FLAG_NULL, scratch);
       while (rv) {
@@ -3110,7 +3142,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
 
   while (sptr) {
     if (isRevSubset(sptr->getKey(), word.c_str() + start + len - 1, len)) {
-      if (suffix_applicable(ppfx, sptr, cclass, in_compound))
+      if (suffix_applicable(ppfx, sptr, cclass, in_compound, nullptr))
         rv = sptr->checkword(word, start, len, sfxopts, ppfx, cclass,
                              needflag, FLAG_NULL, scratch);
       while (rv) {

@@ -408,11 +408,12 @@ class AffixMgr {
   bool parse_defcpdtable(const std::string& line, FileMgr* af);
   bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
 
-  bool circumfix_ok(PfxEntry* pfx, SfxEntry* sfx) const;
+  bool circumfix_ok(PfxEntry* pfx, SfxEntry* sfx, const TraceCtx* t) const;
   bool suffix_applicable(PfxEntry* pfx,
                          SfxEntry* sfx,
                          const FLAG cclass,
-                         char in_compound) const;
+                         char in_compound,
+                         const TraceCtx* t) const;
 
   std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const std::string& s);

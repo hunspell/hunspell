@@ -191,6 +191,19 @@ void trace_test(const TraceCtx& context,
                 int alen,
                 const char* outcome);
 
+// Reports the circumfix test, which reads two places at once. The record names
+// the flag, then the continuation flags of the prefix and of the suffix, so a
+// reader sees both halves of the circumfix and which of them carries the flag.
+// A missing prefix prints its side as (none), the same as a prefix with no
+// continuation flags, because the test treats the two alike.
+void trace_circumfix(const TraceCtx& context,
+                     const AffixMgr* pAMgr,
+                     unsigned short flag,
+                     PfxEntry* pfx,
+                     SfxEntry* sfx,
+                     bool in_prefix,
+                     bool in_suffix);
+
 // Sums up an accepted analysis in one line, as the stem with the affixes that
 // were applied to it.
 void trace_form(const TraceCtx& context,

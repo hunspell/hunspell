@@ -142,6 +142,32 @@ void trace_test(const TraceCtx& context,
         trace_flags(pAMgr, astr, alen).c_str(), outcome);
 }
 
+void trace_circumfix(const TraceCtx& context,
+                     const AffixMgr* pAMgr,
+                     unsigned short flag,
+                     PfxEntry* pfx,
+                     SfxEntry* sfx,
+                     bool in_prefix,
+                     bool in_suffix) {
+  const char* outcome;
+  if (in_prefix && in_suffix)
+    outcome = "pass, both halves carry the flag";
+  else if (!in_prefix && !in_suffix)
+    outcome = "pass, neither affix is half of a circumfix";
+  else if (in_suffix)
+    outcome = "fail, this circumfix suffix needs its prefix";
+  else
+    outcome = "fail, this circumfix prefix needs its suffix";
+
+  std::string pfx_cont =
+      pfx ? trace_flags(pAMgr, pfx->getCont(), pfx->getContLen()) : "(none)";
+  std::string sfx_cont = trace_flags(pAMgr, sfx->getCont(), sfx->getContLen());
+
+  trace(context, "test circumfix flag=%s pfx-cont=%s sfx-cont=%s -> %s",
+        pAMgr->encode_flag(flag).c_str(), pfx_cont.c_str(), sfx_cont.c_str(),
+        outcome);
+}
+
 void trace_form(const TraceCtx& context,
                 const AffixMgr* pAMgr,
                 const std::string& surface,

@@ -178,6 +178,7 @@ gh106.dic \
 gh1045.dic \
 gh1060.dic \
 trace_basic.dic \
+trace_circumfix.dic \
 trace_reject.dic \
 trace_xprod.dic \
 abi-check.sh
@@ -813,6 +814,11 @@ trace_basic.dic \
 trace_basic.good \
 trace_basic.wrong \
 trace_basic.trace \
+trace_circumfix.aff \
+trace_circumfix.dic \
+trace_circumfix.good \
+trace_circumfix.wrong \
+trace_circumfix.trace \
 trace_reject.aff \
 trace_reject.dic \
 trace_reject.good \
