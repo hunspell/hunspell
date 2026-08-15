@@ -1,0 +1,8 @@
+# the condition flag for the word before the join may arrive through a prefix continuation class
+COMPOUNDFLAG x
+COMPOUNDMIN 1
+CHECKCOMPOUNDPATTERN 1
+CHECKCOMPOUNDPATTERN a/A /A O
+
+PFX P Y 1
+PFX P 0 p/A .

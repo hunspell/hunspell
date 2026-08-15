@@ -2013,7 +2013,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
              (
                  // test CHECKCOMPOUNDPATTERN conditions
                  scpd == 0 || checkcpdtable[scpd - 1].cond == FLAG_NULL ||
-                 TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond, rv->alen)) &&
+                 join_side_has_flag(rv, checkcpdtable[scpd - 1].cond, pfx, sfx)) &&
              !((checkcompoundtriple && scpd == 0 &&
                 !words && i < word.size() && // test triple letters
                 (word[i - 1] == word[i]) &&
@@ -2175,7 +2175,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             // test CHECKCOMPOUNDPATTERN conditions (allowed forms)
             if (rv &&
                 !(scpd == 0 || checkcpdtable[scpd - 1].cond2 == FLAG_NULL ||
-                  TESTAFF(rv->astr, checkcpdtable[scpd - 1].cond2, rv->alen)))
+                  join_side_has_flag(rv, checkcpdtable[scpd - 1].cond2, rv_second_pfx,
+                                     rv_second_sfx)))
               rv = nullptr;
 
             // test CHECKCOMPOUNDPATTERN conditions (forbidden compounds)

@@ -1,0 +1,8 @@
+# the condition flag for the word after the join may arrive through a suffix continuation class
+COMPOUNDFLAG x
+COMPOUNDMIN 1
+CHECKCOMPOUNDPATTERN 1
+CHECKCOMPOUNDPATTERN a/A /A O
+
+SFX S Y 1
+SFX S 0 aM/A .

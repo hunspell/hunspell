@@ -92,6 +92,8 @@ checkcompoundpattern2.dic \
 checkcompoundpattern3.dic \
 checkcompoundpattern4.dic \
 checkcompoundpattern5.dic \
+checkcompoundpattern6.dic \
+checkcompoundpattern7.dic \
 utfcompound.dic \
 checksharps.dic \
 checksharpsutf.dic \
@@ -471,6 +473,14 @@ checkcompoundpattern5.aff \
 checkcompoundpattern5.dic \
 checkcompoundpattern5.good \
 checkcompoundpattern5.wrong \
+checkcompoundpattern6.aff \
+checkcompoundpattern6.dic \
+checkcompoundpattern6.good \
+checkcompoundpattern6.wrong \
+checkcompoundpattern7.aff \
+checkcompoundpattern7.dic \
+checkcompoundpattern7.good \
+checkcompoundpattern7.wrong \
 checksharps.aff \
 checksharps.dic \
 checksharps.good \
