@@ -1429,6 +1429,14 @@ static std::string trace_cond_flag(const AffixMgr* pAMgr, FLAG cond) {
   return trace_flag(pAMgr, cond);
 }
 
+// one side of a compound join, as the entry it was found in and the flags that entry carries
+static std::string trace_join_word(const AffixMgr* pAMgr, const hentry* entry) {
+  if (!entry)
+    return "(none)";
+  return "\"" + std::string(entry->word, entry->blen) + "\"/" +
+         trace_flags(pAMgr, entry->astr, entry->alen);
+}
+
 // forbid compoundings when there are special patterns at word bound
 int AffixMgr::cpdpat_check(const std::string& word,
                            size_t pos,
@@ -1456,20 +1464,24 @@ int AffixMgr::cpdpat_check(const std::string& word,
            strncmp(word.c_str() + pos - len, i.pattern.c_str(), len) == 0)));
 
     if (t) {
-      std::string rule = "left=\"" + i.pattern + "\"/" + trace_cond_flag(this, i.cond) +
-                         " right=\"" + i.pattern2 + "\"/" + trace_cond_flag(this, i.cond2);
+      std::string fields = "left=\"" + i.pattern + "\"/" + trace_cond_flag(this, i.cond) +
+                           " right=\"" + i.pattern2 + "\"/" + trace_cond_flag(this, i.cond2) +
+                           " first=" + trace_join_word(this, r1) +
+                           " second=" + trace_join_word(this, r2);
       if (left_text_ok)
-        trace(*t, "test cpdpattern %s -> fail, this pair is forbidden at the join", rule.c_str());
+        trace(*t, "test cpdpattern %s -> fail, this pair is forbidden at the join", fields.c_str());
       else if (!right_text_ok)
-        trace(*t, "test cpdpattern %s -> pass, the text after the join is different", rule.c_str());
+        trace(*t, "test cpdpattern %s -> pass, the text after the join does not start with \"%s\"",
+              fields.c_str(), i.pattern2.c_str());
       else if (!left_flag_ok)
-        trace(*t, "test cpdpattern %s -> pass, the word before the join has flags %s", rule.c_str(),
-              trace_flags(this, r1->astr, r1->alen).c_str());
+        trace(*t, "test cpdpattern %s -> pass, \"%s\" has no %s", fields.c_str(),
+              std::string(r1->word, r1->blen).c_str(), trace_flag(this, i.cond).c_str());
       else if (!right_flag_ok)
-        trace(*t, "test cpdpattern %s -> pass, the word after the join has flags %s", rule.c_str(),
-              trace_flags(this, r2->astr, r2->alen).c_str());
+        trace(*t, "test cpdpattern %s -> pass, \"%s\" has no %s", fields.c_str(),
+              std::string(r2->word, r2->blen).c_str(), trace_flag(this, i.cond2).c_str());
       else
-        trace(*t, "test cpdpattern %s -> pass, the text before the join is different", rule.c_str());
+        trace(*t, "test cpdpattern %s -> pass, the text before the join does not end with \"%s\"",
+              fields.c_str(), i.pattern.c_str());
     }
 
     if (left_text_ok)
