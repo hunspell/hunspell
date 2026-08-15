@@ -92,6 +92,9 @@ class PfxEntry : public AffEntry {
   PfxEntry& operator=(const PfxEntry&) = delete;
 
   bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
+
+  bool applies_to(const struct hentry* he, const FLAG needflag) const;
+
   struct hentry* checkword(const std::string& word,
                            int start,
                            int len,

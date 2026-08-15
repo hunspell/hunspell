@@ -204,6 +204,28 @@ inline int PfxEntry::test_condition(const std::string& s) {
   }
 }
 
+// decide whether this prefix may be applied to a dictionary entry on its own
+bool PfxEntry::applies_to(const struct hentry* he, const FLAG needflag) const {
+  if (!TESTAFF(he->astr, aflag, he->alen))
+    return false;
+
+  // forbid single prefixes with needaffix flag
+  if (TESTAFF(contclass, pmyMgr->get_needaffix(), contclasslen))
+    return false;
+
+  // a circumfix prefix needs a matching circumfix suffix, so it cannot stand
+  // on its own
+  if (TESTAFF(contclass, pmyMgr->get_circumfix(), contclasslen))
+    return false;
+
+  // needflag
+  if (needflag && !TESTAFF(he->astr, needflag, he->alen) &&
+      !(contclass && TESTAFF(contclass, needflag, contclasslen)))
+    return false;
+
+  return true;
+}
+
 // check if this prefix entry matches
 struct hentry* PfxEntry::checkword(const std::string& word,
                                    int start,
@@ -240,15 +262,7 @@ struct hentry* PfxEntry::checkword(const std::string& word,
       tmpl += strip.size();
       if ((he = pmyMgr->lookup(tmpword.c_str(), tmpword.size())) != nullptr) {
         do {
-          if (TESTAFF(he->astr, aflag, he->alen) &&
-              // forbid single prefixes with needaffix flag
-              !TESTAFF(contclass, pmyMgr->get_needaffix(), contclasslen) &&
-              // a circumfix prefix needs a matching circumfix suffix, so it
-              // cannot stand on its own
-              !TESTAFF(contclass, pmyMgr->get_circumfix(), contclasslen) &&
-              // needflag
-              ((!needflag) || TESTAFF(he->astr, needflag, he->alen) ||
-               (contclass && TESTAFF(contclass, needflag, contclasslen))))
+          if (applies_to(he, needflag))
             return he;
           he = he->next_homonym;  // check homonyms
         } while (he);
@@ -406,15 +420,7 @@ std::string PfxEntry::check_morph(const std::string& word,
       struct hentry* he;  // hash entry of root word or NULL
       if ((he = pmyMgr->lookup(tmpword.c_str(), tmpword.size())) != nullptr) {
         do {
-          if (TESTAFF(he->astr, aflag, he->alen) &&
-              // forbid single prefixes with needaffix flag
-              !TESTAFF(contclass, pmyMgr->get_needaffix(), contclasslen) &&
-              // a circumfix prefix needs a matching circumfix suffix, so it
-              // cannot stand on its own
-              !TESTAFF(contclass, pmyMgr->get_circumfix(), contclasslen) &&
-              // needflag
-              ((!needflag) || TESTAFF(he->astr, needflag, he->alen) ||
-               (contclass && TESTAFF(contclass, needflag, contclasslen)))) {
+          if (applies_to(he, needflag)) {
             if (morphcode) {
               result.push_back(MSEP_FLD);
               result.append(morphcode);
