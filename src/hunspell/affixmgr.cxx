@@ -1437,22 +1437,32 @@ static std::string trace_join_word(const AffixMgr* pAMgr, const hentry* entry) {
          trace_flags(pAMgr, entry->astr, entry->alen);
 }
 
+// one side of a compound join carries a flag when the dictionary entry has it, or when a prefix or
+// suffix that built that side passes it on through its continuation classes
+static bool join_side_has_flag(const hentry* entry, FLAG cond, PfxEntry* p, SfxEntry* s) {
+  return (entry->astr && TESTAFF(entry->astr, cond, entry->alen)) ||
+         (p && p->getCont() && TESTAFF(p->getCont(), cond, p->getContLen())) ||
+         (s && s->getCont() && TESTAFF(s->getCont(), cond, s->getContLen()));
+}
+
 // forbid compoundings when there are special patterns at word bound
 int AffixMgr::cpdpat_check(const std::string& word,
                            size_t pos,
                            hentry* r1,
                            hentry* r2,
                            const char /*affixed*/,
-                           const TraceCtx* t) {
+                           const TraceCtx* t,
+                           PfxEntry* p1,
+                           SfxEntry* s1,
+                           PfxEntry* p2,
+                           SfxEntry* s2) {
   for (auto& i : checkcpdtable) {
     size_t len;
     bool right_text_ok = isSubset(i.pattern2.c_str(), word.c_str() + pos);
     bool left_flag_ok = right_text_ok &&
-        (!r1 || !i.cond ||
-         (r1->astr && TESTAFF(r1->astr, i.cond, r1->alen)));
+        (!r1 || !i.cond || join_side_has_flag(r1, i.cond, p1, s1));
     bool right_flag_ok = left_flag_ok &&
-        (!r2 || !i.cond2 ||
-         (r2->astr && TESTAFF(r2->astr, i.cond2, r2->alen)));
+        (!r2 || !i.cond2 || join_side_has_flag(r2, i.cond2, p2, s2));
     // zero length pattern => only TESTAFF
     // zero pattern (0/flag) => unmodified stem (zero affixes allowed)
     bool left_text_ok = right_flag_ok &&
@@ -2036,6 +2046,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
           // NEXT WORD(S)
           rv_first = rv;
+          // the affixes that built the first word, so its continuation classes stay reachable once
+          // the second word has overwritten pfx and sfx
+          PfxEntry* rv_first_pfx = pfx;
+          SfxEntry* rv_first_sfx = sfx;
           st[i] = ch;
 
           do {  // striple loop
@@ -2118,7 +2132,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (
                     // test CHECKCOMPOUNDPATTERN
                     checkcpdtable.empty() || scpd != 0 ||
-                    (i < word.size() && !cpdpat_check(word, i, rv_first, rv, 0, t))) &&
+                    (i < word.size() && !cpdpat_check(word, i, rv_first, rv, 0, t, rv_first_pfx, rv_first_sfx, nullptr, nullptr))) &&
                 ((!checkcompounddup || (rv != rv_first)))
                 // test CHECKCOMPOUNDPATTERN conditions
                 &&
@@ -2138,13 +2152,16 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             // perhaps second word has prefix or/and suffix
             sfx = nullptr;
             sfxflag = FLAG_NULL;
-            rv = (compoundflag && !onlycpdrule && i < word.size()) ? affix_check(word, i, word.size() - i, scratch, compoundflag, IN_CPD_END)
+            // the affixes that built the second word, kept because affix_check clears the members
+            PfxEntry* rv_second_pfx = nullptr;
+            SfxEntry* rv_second_sfx = nullptr;
+            rv = (compoundflag && !onlycpdrule && i < word.size()) ? affix_check(word, i, word.size() - i, scratch, compoundflag, IN_CPD_END, FLAG_NULL, &rv_second_pfx, &rv_second_sfx)
                                                                    : nullptr;
             if (!rv && compoundend && !onlycpdrule) {
               sfx = nullptr;
               pfx = nullptr;
               if (i < word.size())
-                rv = affix_check(word, i, word.size() - i, scratch, compoundend, IN_CPD_END);
+                rv = affix_check(word, i, word.size() - i, scratch, compoundend, IN_CPD_END, FLAG_NULL, &rv_second_pfx, &rv_second_sfx);
             }
 
             if (!rv && !defcpdtable.empty() && words) {
@@ -2163,7 +2180,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
             // test CHECKCOMPOUNDPATTERN conditions (forbidden compounds)
             if (rv && !checkcpdtable.empty() && scpd == 0 &&
-                cpdpat_check(word, i, rv_first, rv, affixed, t))
+                cpdpat_check(word, i, rv_first, rv, affixed, t, rv_first_pfx, rv_first_sfx, rv_second_pfx, rv_second_sfx))
               rv = nullptr;
 
             // check non_compound flag in suffix and prefix
@@ -2271,9 +2288,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
               if (rv && !checkcpdtable.empty() && i < word.size() &&
                   ((scpd == 0 &&
-                    cpdpat_check(word, i, rv_first, rv, affixed, t)) ||
+                    cpdpat_check(word, i, rv_first, rv, affixed, t, rv_first_pfx, rv_first_sfx, nullptr, nullptr)) ||
                    (scpd != 0 &&
-                    !cpdpat_check(word, i, rv_first, rv, affixed, t))))
+                    !cpdpat_check(word, i, rv_first, rv, affixed, t, rv_first_pfx, rv_first_sfx, nullptr, nullptr))))
                 rv = nullptr;
             } else {
               rv = nullptr;
@@ -2601,7 +2618,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
                )) ||
              (
                  // test CHECKCOMPOUNDPATTERN
-                 !checkcpdtable.empty() && !words && cpdpat_check(word, i, rv, nullptr, affixed, nullptr)) ||
+                 !checkcpdtable.empty() && !words && cpdpat_check(word, i, rv, nullptr, affixed, nullptr, nullptr, nullptr, nullptr, nullptr)) ||
              (checkcompoundcase && !words && cpdcase_check(word, i))))
           // LANG_hu section: spec. Hungarian rule
           || ((!rv) && (langnum == LANG_hu) && hu_mov_rule && (rv = affix_check(st, 0, i, scratch)) &&
@@ -3296,12 +3313,21 @@ struct hentry* AffixMgr::affix_check(const std::string& word,
                                      AffixScratch& scratch,
                                      const FLAG needflag,
                                      char in_compound,
-                                     const FLAG avoidflag) {
+                                     const FLAG avoidflag,
+                                     PfxEntry** found_pfx,
+                                     SfxEntry** found_sfx) {
 
   TraceCtx* t = trace_on(scratch.trace);
-  auto report_form = [this, t, &word, start, len](const struct hentry* rv) {
-    if (t && rv)
+  // the affixes that built the word are reported before the members holding them are cleared
+  auto report_form = [this, t, &word, start, len, found_pfx, found_sfx](const struct hentry* rv) {
+    if (!rv)
+      return;
+    if (t)
       trace_form(*t, this, word.substr(start, len), rv->word, pfx, sfx);
+    if (found_pfx)
+      *found_pfx = pfx;
+    if (found_sfx)
+      *found_sfx = sfx;
   };
 
   // check all prefixes (also crossed with suffixes if allowed)

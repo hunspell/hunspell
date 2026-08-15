@@ -206,7 +206,9 @@ class AffixMgr {
                              AffixScratch& scratch,
                              const unsigned short needflag = (unsigned short)0,
                              char in_compound = IN_CPD_NOT,
-                             const FLAG avoidflag = FLAG_NULL);
+                             const FLAG avoidflag = FLAG_NULL,
+                             PfxEntry** found_pfx = nullptr,
+                             SfxEntry** found_sfx = nullptr);
   struct hentry* prefix_check(const std::string& word,
                               int start,
                               int len,
@@ -311,7 +313,11 @@ class AffixMgr {
                    hentry* r1,
                    hentry* r2,
                    const char affixed,
-                   const TraceCtx* t);
+                   const TraceCtx* t,
+                   PfxEntry* p1,
+                   SfxEntry* s1,
+                   PfxEntry* p2,
+                   SfxEntry* s2);
   int defcpd_check(hentry*** words,
                    short wnum,
                    short maxwordnum,
