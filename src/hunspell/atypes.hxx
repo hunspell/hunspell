@@ -67,6 +67,9 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define aeALIASF (1 << 2)
 #define aeALIASM (1 << 3)
 #define aeLONGCOND (1 << 4)
+// the rule wrote a condition that the stripping already forces, so the
+// condition was dropped and the rule now matches anything
+#define aeREDUNDANTCOND (1 << 5)
 
 // compound options
 #define IN_CPD_NOT 0

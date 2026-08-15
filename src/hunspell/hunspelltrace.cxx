@@ -114,13 +114,18 @@ void trace_affix(const TraceCtx& context,
                  const char* verb,
                  const AffixMgr* pAMgr,
                  const AffEntry& entry) {
+  // the rule file wrote a condition the stripping already forces, so hunspell
+  // dropped it. Say so, or the dot looks like the file's own text
+  const char* redundant =
+      (entry.opts & aeREDUNDANTCOND) != 0 ? " redundant=Y" : "";
+
   trace(context,
-        "%s flag=%s strip=\"%s\" add=\"%s\" cont=%s cond=\"%s\" at=aff:%d"
+        "%s flag=%s strip=\"%s\" add=\"%s\" cont=%s cond=\"%s\"%s at=aff:%d"
         " xprod=%c hdr=aff:%d",
         verb, pAMgr->encode_flag(entry.aflag).c_str(), entry.strip.c_str(),
         entry.appnd.c_str(),
         trace_flags(pAMgr, entry.contclass, entry.contclasslen).c_str(),
-        entry.get_condition().c_str(), entry.line, entry.xprod,
+        entry.get_condition().c_str(), redundant, entry.line, entry.xprod,
         entry.headerline);
 }
 

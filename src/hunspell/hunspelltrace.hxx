@@ -172,6 +172,8 @@ std::string trace_flags(const AffixMgr* pAMgr,
 // Opens an affix rule with the verb given, pfx or sfx. The fields of the rule
 // line run in the order that line writes them and end at the line number of the
 // rule, then come the fields of the affix class header and its own line number.
+// A condition that hunspell dropped as already forced by the stripping is
+// marked with redundant=Y, which follows the condition it belongs to.
 void trace_affix(const TraceCtx& context,
                  const char* verb,
                  const AffixMgr* pAMgr,

@@ -15,7 +15,7 @@ word "hopeing"
   sfx flag=G strip="" add="ing" cont=(none) cond="[^e]" at=aff:3 xprod=Y hdr=aff:1
     stem "hope"
     test condition cond="[^e]" on "hope" -> fail
-  sfx flag=G strip="e" add="ing" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+  sfx flag=G strip="e" add="ing" cont=(none) cond="." redundant=Y at=aff:2 xprod=Y hdr=aff:1
     stem "hopee"
     test condition cond="." on "hopee" -> pass
     lookup "hopee" -> miss
@@ -29,7 +29,7 @@ word "walking"
     lookup "walk" -> entry "walk" flags=(none)
     test sfx-aflag flag=G in=dic have=(none) -> fail
     lookup "walk" -> no more homonyms
-  sfx flag=G strip="e" add="ing" cont=(none) cond="." at=aff:2 xprod=Y hdr=aff:1
+  sfx flag=G strip="e" add="ing" cont=(none) cond="." redundant=Y at=aff:2 xprod=Y hdr=aff:1
     stem "walke"
     test condition cond="." on "walke" -> pass
     lookup "walke" -> miss

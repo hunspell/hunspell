@@ -4739,8 +4739,10 @@ bool AffixMgr::parse_affix(const std::string& line,
           }
           if (!entry->strip.empty() && chunk != "." &&
               redundant_condition(at, entry->strip, chunk,
-                                  af->getlinenum()))
+                                  af->getlinenum())) {
             chunk = ".";
+            entry->opts |= aeREDUNDANTCOND;
+          }
           if (at == 'S') {
             reverseword(chunk);
             reverse_condition(chunk);
