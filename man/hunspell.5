@@ -504,8 +504,10 @@ middle of compound words, overriding the effect of COMPOUNDPERMITFLAG.
 .IP "COMPOUNDMORESUFFIXES"
 Allow twofold suffixes within compounds.
 .IP "COMPOUNDROOT flag"
-The COMPOUNDROOT flag marks compounds in the dictionary
-(currently only used in the Hungarian language-specific code).
+The COMPOUNDROOT flag marks compound words in the dictionary.
+A dictionary word with this flag counts as two words against the
+COMPOUNDWORDMAX limit. Hungarian uses this flag so that a compound
+built from an already compound stem reaches the word limit sooner.
 .IP "COMPOUNDWORDMAX number"
 Set maximum word count in a compound word. (Default is unlimited.)
 .IP "CHECKCOMPOUNDDUP"
