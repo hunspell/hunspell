@@ -146,6 +146,7 @@ opentaal_cpdpat.dic \
 opentaal_cpdpat2.dic \
 2999225.dic \
 onlyincompound2.dic \
+onlyincompound3.dic \
 forceucase.dic \
 nepali.dic \
 hu.dic \
@@ -707,6 +708,10 @@ onlyincompound2.aff \
 onlyincompound2.dic \
 onlyincompound2.good \
 onlyincompound2.wrong \
+onlyincompound3.aff \
+onlyincompound3.dic \
+onlyincompound3.good \
+onlyincompound3.wrong \
 forceucase.aff \
 forceucase.dic \
 forceucase.good \

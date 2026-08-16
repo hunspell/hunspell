@@ -1,0 +1,9 @@
+# prefixes only in compounds (see also the German dictionary, where the
+# hyphen prefixes carry this flag)
+ONLYINCOMPOUND O
+COMPOUNDBEGIN B
+COMPOUNDEND E
+COMPOUNDPERMITFLAG P
+
+PFX C Y 1
+PFX C 0 pre/BPO .
