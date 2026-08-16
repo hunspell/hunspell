@@ -145,8 +145,10 @@ FLAG long
 .PP
 
 .IP "COMPLEXPREFIXES"
-Set twofold prefix stripping (but single suffix stripping), e.g. for morphologically complex
-languages with a right-to-left writing system.
+Set twofold prefix matching, but only one suffix level instead of the default
+two. Set it when words take two stacked prefixes. This is common in
+agglutinative languages written right to left, but any language that stacks
+prefixes can use it.
 
 .IP "LANG langcode"
 Set language code for language-specific functions of Hunspell. Use it to activate special casing
