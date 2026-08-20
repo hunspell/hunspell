@@ -70,6 +70,7 @@
 
 #define LIBDIR "C:\\Hunspell\\"
 #define USEROOODIR {                                    \
+  "AppData\\Roaming\\hunspell"    \
   "Application Data\\OpenOffice.org 2\\user\\wordbook", \
   "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
 }
@@ -128,6 +129,7 @@
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
 #define USEROOODIR {                       \
+  ".config/hunspell",                      \
   ".openoffice.org/3/user/wordbook",       \
   ".openoffice.org2/user/wordbook",        \
   ".openoffice.org2.0/user/wordbook",      \
