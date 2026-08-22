@@ -5,70 +5,71 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: hunspell 1.5.0\n"
+"Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
 "POT-Creation-Date: 2022-08-25 16:40+0100\n"
-"PO-Revision-Date: 2026-08-22 12:51+0000\n"
-"Last-Translator: Vianney Hervy <vian.hervy@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/hunspell/"
-"translations/fr/>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2026-08-21 06:53+0000\n"
+"Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
+"Language-Team: Irish <https://hosted.weblate.org/projects/hunspell/"
+"translations/ga/>\n"
+"Language: ga\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>"
+"6 && n<11) ? 3 : 4;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
 #: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
-msgstr "erreur - iconv_open : %s -> %s\n"
+msgstr "earráid - iconv_open: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:275
 #, c-format
 msgid "error - iconv: %s -> %s\n"
-msgstr "erreur - iconv : %s -> %s\n"
+msgstr "earráid - iconv: %s -> %s\n"
 
 #: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
 #, c-format
 msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr "erreur - iconv_open : UTF-8 -> %s 1\n"
+msgstr "earráid - iconv_open: UTF-8 -> %s\n"
 
 #: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
 msgid "Can't create tmp dir"
-msgstr "Impossible de créer tmp dir"
+msgstr "Ní féidir an comhad tmp a chruthú"
 
 #: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
 #: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
 #: src/tools/hunspell.cxx:1608
 msgid "Can't open inputfile"
-msgstr "Impossible d'ouvrir inputfile"
+msgstr "Ní féidir an comhad ionchuir a oscailt"
 
 #: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
 #: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
 #: src/tools/hunspell.cxx:2188
 #, c-format
 msgid "Can't open %s.\n"
-msgstr "Impossible d'ouvrir %s.\n"
+msgstr "Ní féidir %s a oscailt.\n"
 
 #: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
 #: src/tools/hunspell.cxx:1464
 #, c-format
 msgid "error - missing HOME variable\n"
-msgstr "erreur - variable HOME manquante\n"
+msgstr "earráid - athróg HOME ar iarraidh\n"
 
 #: src/tools/hunspell.cxx:853
 #, c-format
 msgid "Line %d: %s -> "
-msgstr "Ligne %d : %s -> "
+msgstr "Líne %d: %s -> "
 
 #: src/tools/hunspell.cxx:1133
 msgid "FORBIDDEN!"
-msgstr "INTERDIT !"
+msgstr "TOIRMISCTHE!"
 
 #: src/tools/hunspell.cxx:1135
 msgid "Spelling mistake?"
-msgstr "Faute d'orthographe ?"
+msgstr "Botún litrithe?"
 
 #: src/tools/hunspell.cxx:1137
 #, c-format
@@ -76,7 +77,7 @@ msgid ""
 "\t%s\t\tFile: %s\n"
 "\n"
 msgstr ""
-"\t%s\t\tFichier : %s\n"
+"\t%s\t\tComhad: %s\n"
 "\n"
 
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
@@ -88,8 +89,8 @@ msgid ""
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
 msgstr ""
 "\n"
-"[ESPACE] R)emplacer A)ccepter I)nsérer M)inuscule ra(C)ine Q)uitter S)ortir "
-"ou ? pour l'aide\n"
+"[SPÁS] R)Repl A)Glac I)Ionsáigh U)Díchaipín S)Stem Q)Fág (X)Scor nó ? le "
+"haghaidh cabhrach\n"
 
 #: src/tools/hunspell.cxx:1265
 msgid ""
@@ -99,11 +100,11 @@ msgid ""
 "next to each one.  You have the option of replacing the word\n"
 "completely, or choosing one of the suggested words.\n"
 msgstr ""
-"Lorsqu'un mot trouvé n'est pas dans le dictionnaire\n"
-"il est affiché sur la première ligne de l'écran.  Si le dictionnaire\n"
-"contient des mots similaires, ils sont listés  avec un numéro\n"
-"en préfixe. Vous pouvez remplacer le mot \n"
-"complètement, ou choisir l'un des mots suggérés.\n"
+"Aon uair a aimsítear focal nach bhfuil sa bhfoclóir, clóitear\n"
+"é ar an gcéad líne den scáileán.  Má tá aon fhocail chomhchosúla\n"
+"sa bhfoclóir, liostaítear iad le huimhir in aice le gach ceann acu.\n"
+"Tá an rogha agat an focal a athsholáthar go hiomlán,\n"
+"nó ceann de na focail atá molta a roghnú.\n"
 
 #: src/tools/hunspell.cxx:1271
 msgid ""
@@ -112,64 +113,62 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Les commandes sont :\n"
+"Is iad na horduithe:\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1272
 msgid "R\tReplace the misspelled word completely.\n"
-msgstr "R\tRemplacer tout le mot mal orthographié.\n"
+msgstr "R\tCuir an focal mílitrithe ina áit go hiomlán.\n"
 
 #: src/tools/hunspell.cxx:1273
 msgid "Space\tAccept the word this time only.\n"
-msgstr "Espace\tAccepter le mot pour cette fois seulement.\n"
+msgstr "Spás\tGlac leis an bhfocal an uair seo amháin.\n"
 
 #: src/tools/hunspell.cxx:1275
 msgid "A\tAccept the word for the rest of this session.\n"
-msgstr "A\tAccepter le mot pour le reste de cette session\n"
+msgstr "A\tGlac leis an bhfocal don chuid eile den seisiún seo.\n"
 
 #: src/tools/hunspell.cxx:1277
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
-msgstr "I\tAccepter le mot, et l'ajouter à votre dictionnaire personnel.\n"
+msgstr "I\tGlac leis an bhfocal, agus cuir i do fhoclóir príobháideach é.\n"
 
 #: src/tools/hunspell.cxx:1279
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr ""
-"M\tAccepter et ajouter une version en minuscule à votre dictionnaire "
-"personnel.\n"
+"U\tGlac leis an leagan beag agus cuir leis an bhfoclóir príobháideach é.\n"
 
 #: src/tools/hunspell.cxx:1281
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
 msgstr ""
-"C\tDemander une racine et un mot modèle et les enregistrer dans le "
-"dictionnaire personnel.\n"
-"\tLa racine sera acceptée ainsi que les affixes du mot modèle.\n"
+"S\tIarr bunús agus focal samhail agus stóráil iad sa fhoclóir "
+"príobháideach.\n"
+"\tGlacfar leis an mbunús freisin le hiarmhíreanna an fhocail mhúnla.\n"
 
 #: src/tools/hunspell.cxx:1285
 msgid "0-n\tReplace with one of the suggested words.\n"
-msgstr "0-n\tReplacer par l'un des mots suggérés.\n"
+msgstr "0-n\tCuir ceann de na focail molta ina áit.\n"
 
 #: src/tools/hunspell.cxx:1287
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr ""
-"Q\tÉcrire le reste du fichier, en ignorant les fautes d'orthographe, et "
-"commencer le prochain fichier.\n"
+"X\tScríobh an chuid eile den chomhad seo, ag déanamh neamhaird ar "
+"mhílitrithe, agus tosaigh ar an gcéad chomhad eile.\n"
 
 #: src/tools/hunspell.cxx:1290
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr ""
-"S\tQuitter immédiatement. Confirmation demandée. Laisse les fichiers "
-"inchangés.\n"
+"Q\tScoir láithreach. Iarrann sé dearbhú. Fágann sé an comhad gan athrú.\n"
 
 #: src/tools/hunspell.cxx:1292
 msgid "^Z\tSuspend program. Restart with fg command.\n"
-msgstr "^Z\tSuspendre le programme. Redémarrer avec la commande fg.\n"
+msgstr "^Z\tCuir an clár ar fionraí. Atosaigh leis an ordú fg.\n"
 
 #: src/tools/hunspell.cxx:1293
 msgid "?\tShow this help screen.\n"
-msgstr "?\tAfficher cet écran d'aide.\n"
+msgstr "?\tTaispeáin an scáileán cabhrach seo.\n"
 
 #: src/tools/hunspell.cxx:1294
 msgid ""
@@ -177,7 +176,7 @@ msgid ""
 "-- Type space to continue -- \n"
 msgstr ""
 "\n"
-"-- Appuyez sur Espace pour continuer -- \n"
+"-- Clóscríobh spás le leanúint ar aghaidh -- \n"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
@@ -188,7 +187,7 @@ msgstr "r"
 
 #: src/tools/hunspell.cxx:1315
 msgid "Replace with: "
-msgstr "Remplacer par : "
+msgstr "Cuir in ionad le: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
@@ -207,7 +206,7 @@ msgstr "i"
 #: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
 #, c-format
 msgid "Cannot update personal dictionary."
-msgstr "Impossible de mettre à jour le dictionnaire personnel."
+msgstr "Ní féidir an foclóir pearsanta a nuashonrú."
 
 #: src/tools/hunspell.cxx:1376
 msgid "a"
@@ -218,176 +217,173 @@ msgstr "a"
 #. previously in the  translation of "S)tem" before
 #: src/tools/hunspell.cxx:1384
 msgid "s"
-msgstr "c"
+msgstr "s"
 
 #: src/tools/hunspell.cxx:1399
 msgid "New word (stem): "
-msgstr "Nouveau mot (racine) : "
+msgstr "Focal nua (stem): "
 
 #: src/tools/hunspell.cxx:1427
 msgid "Model word (a similar dictionary word): "
-msgstr "Mot modèle (un mot similaire du dictionnaire)  : "
+msgstr "Focal samhail (focal foclóra cosúil leis): "
 
 #: src/tools/hunspell.cxx:1487
 msgid "Model word must be in the dictionary. Press any key!"
-msgstr "Le mot modèle doit être dans le dictionnaire. Appuyez sur une touche  !"
+msgstr "Caithfidh an focal samhail a bheith sa bhfoclóir. Brúigh aon eochair!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
 #: src/tools/hunspell.cxx:1497
 msgid "x"
-msgstr "q"
+msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
 #: src/tools/hunspell.cxx:1503
 msgid "q"
-msgstr "s"
+msgstr "q"
 
 #: src/tools/hunspell.cxx:1506
 msgid "Are you sure you want to throw away your changes? "
-msgstr "Voulez-vous vraiment perdre vos changements ? "
+msgstr ""
+"An bhfuil tú cinnte gur mian leat do chuid athruithe a chaitheamh amach? "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
 #: src/tools/hunspell.cxx:1509
 msgid "y"
-msgstr "o"
+msgstr "y"
 
 #: src/tools/hunspell.cxx:1618
 msgid "Can't create tempfile"
-msgstr "Impossible de créer un fichier temporaire"
+msgstr "Ní féidir comhad sealadach a chruthú"
 
 #: src/tools/hunspell.cxx:1663
 msgid "Can't open outputfile"
-msgstr "Impossible d'ouvrir le fichier de sortie"
+msgstr "Ní féidir an comhad aschuir a oscailt"
 
 #: src/tools/hunspell.cxx:1816
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
-msgstr "Utilisation : hunspell [OPTION]... [FICHIER]...\n"
+msgstr "Úsáid: hunspell [ROGHA]... [COMHAD]...\n"
 
 #: src/tools/hunspell.cxx:1817
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
 msgstr ""
-"Vérifier l'orthographe de chaque FICHIER. Sans FICHIER, vérifier l'entrée "
-"standard.\n"
+"Seiceáil litriú gach COMHAD. Gan COMHAD, seiceáil an t-ionchur "
+"caighdeánach.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1819
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr ""
-"  -1\t\tvérifier uniquement le premier champ de chaque ligne (délimiteur = "
-"tabulation)\n"
+"  -1\t\tseiceáil an chéad réimse sna línte amháin (delimiter = tabulator)\n"
 
 #: src/tools/hunspell.cxx:1821
 msgid "  -a\t\tIspell's pipe interface\n"
-msgstr "  -a\t\tl'interface de combinaison d'Ispell\n"
+msgstr "  -a\t\tComhéadan píopa Ispell\n"
 
 #: src/tools/hunspell.cxx:1822
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr ""
-"  --check-url\tvérifier les URL, les adresses de courriels et l'emplacement "
-"des répertoires\n"
+"  --check-url\tseiceáil URLanna, seoltaí ríomhphoist agus cosáin eolaire\n"
 
 #: src/tools/hunspell.cxx:1827
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
-msgstr ""
-"  --check-apostrophe\tvérifier la présence d'apostrophes typographiques "
-"Unicode\n"
+msgstr "  --check-apostrophe\tseiceáil apostróf clóghrafach Unicode\n"
 
 #: src/tools/hunspell.cxx:1829
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
-msgstr "  -d d[,d2,...]\tutiliser les dictionnaires d (d2 etc.)\n"
+msgstr "  -d d[,d2,...]\tbain úsáid as foclóirí d (d2 srl.)\n"
 
 #: src/tools/hunspell.cxx:1830
 msgid "  -D\t\tshow available dictionaries\n"
-msgstr "  -D\t\tmontrer les dictionnaires disponibles\n"
+msgstr "  -D\t\ttaispeáin na foclóirí atá ar fáil\n"
 
 #: src/tools/hunspell.cxx:1831
 msgid "  -G\t\tprint only correct words or lines\n"
-msgstr "  -G\t\tafficher seulement les mots ou les lignes corrects\n"
+msgstr "  -G\t\tpriontáil focail nó línte cearta amháin\n"
 
 #: src/tools/hunspell.cxx:1832
 msgid "  -h, --help\tdisplay this help and exit\n"
-msgstr "  -h, --help\tafficher cette aide et quitter\n"
+msgstr "  -h, --help\ttaispeáin an chabhair seo agus scoir\n"
 
 #: src/tools/hunspell.cxx:1833
 msgid "  -H\t\tHTML input file format\n"
-msgstr "  -H\t\tformat de fichier en entrée en HTML\n"
+msgstr "  -H\t\tFormáid comhaid ionchuir HTML\n"
 
 #: src/tools/hunspell.cxx:1834
 msgid "  -i enc\tinput encoding\n"
-msgstr "  -i enc\tencodage de l'entrée\n"
+msgstr "  -i enc\tionchódú ionchuir\n"
 
 #: src/tools/hunspell.cxx:1835
 msgid "  -l\t\tprint misspelled words\n"
-msgstr "  -l\t\tafficher les mots mal orthographiés\n"
+msgstr "  -l\t\tfocail mhílitrithe a phriontáil\n"
 
 #: src/tools/hunspell.cxx:1836
 msgid "  -L\t\tprint lines with misspelled words\n"
-msgstr "  -L\t\tafficher les lignes avec des mots mal orthographiés\n"
+msgstr "  -L\t\tlínte a phriontáil le focail mhílitrithe\n"
 
 #: src/tools/hunspell.cxx:1838
 msgid "  -m \t\tanalyze the words of the input text\n"
-msgstr "  -m \t\tanalyser les mots du texte en entrée\n"
+msgstr "  -m \t\tanailís a dhéanamh ar fhocail an téacs ionchuir\n"
 
 #: src/tools/hunspell.cxx:1839
 msgid "  -n\t\tnroff/troff input file format\n"
-msgstr "  -n\t\tformat de fichier nroff/troff en entrée\n"
+msgstr "  -n\t\tformáid comhaid ionchuir nroff/troff\n"
 
 #: src/tools/hunspell.cxx:1843
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
-msgstr "  -O\t\tformat de fichier OpenDocument (ODF ou Flat ODF) en entrée\n"
+msgstr "  -O\t\tFormáid comhaid ionchuir OpenDocument (ODF nó Flat ODF)\n"
 
 #: src/tools/hunspell.cxx:1844
 msgid "  -p dict\tset dict custom dictionary\n"
-msgstr "  -p dict\tutiliser dict comme dictionnaire personnalisé\n"
+msgstr "  -p dict\tsocraigh foclóir saincheaptha dict\n"
 
 #: src/tools/hunspell.cxx:1846
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
-msgstr "  -r\t\tavertir d'une erreur possible en cas de mot rare\n"
+msgstr ""
+"  -r\t\trabhadh a thabhairt faoi na botúin a d'fhéadfadh a bheith ann "
+"(focail neamhchoitianta)\n"
 
 #: src/tools/hunspell.cxx:1849
 msgid "  -P password\tset password for encrypted dictionaries\n"
-msgstr ""
-"  -P password\tindiquer le mot de passe pour les dictionnaires chiffrés\n"
+msgstr "  -P password\tsocraigh pasfhocal le haghaidh foclóirí criptithe\n"
 
 #: src/tools/hunspell.cxx:1850
 msgid "  -s \t\tstem the words of the input text\n"
-msgstr "  -s \t\trenvoyer la racine des mots du texte en entrée\n"
+msgstr "  -s \t\tcuir tús le focail an téacs ionchuir\n"
 
 #: src/tools/hunspell.cxx:1851
 msgid "  -S \t\tsuffix words of the input text\n"
-msgstr "  -S \t\tsuffixer les mots du texte en entrée\n"
+msgstr "  -S \t\tfocail iarmhír an téacs ionchuir\n"
 
 #: src/tools/hunspell.cxx:1852
 msgid "  -t\t\tTeX/LaTeX input file format\n"
-msgstr "  -t\t\tformat de fichier TeX/LaTeX en entrée\n"
+msgstr "  -t\t\tFormáid comhaid ionchuir TeX/LaTeX\n"
 
 #: src/tools/hunspell.cxx:1853
 msgid "  -v, --version\tprint version number\n"
-msgstr "  -v, --version\tafficher le numéro de version\n"
+msgstr "  -v, --version\tuimhir leagan priontála\n"
 
 #: src/tools/hunspell.cxx:1855
 msgid "  -vv\t\tprint Ispell compatible version number\n"
-msgstr "  -vv\t\tafficher le numéro de version de compatibilité d'Ispell\n"
+msgstr "  -vv\t\tuimhir leagan comhoiriúnach le Ispell a phriontáil\n"
 
 #: src/tools/hunspell.cxx:1856
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr ""
-"  -w\t\tafficher les mots (= lignes) mal orthographiés à partir d'un mot ou "
-"d'une ligne en entrée.\n"
+"  -w\t\tpriontáil focail mhílitrithe (= línte) ó ionchur focal/líne amháin.\n"
 
 #: src/tools/hunspell.cxx:1858
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
 msgstr ""
-"  -X\t\tformat de fichier XML en entrée\n"
+"  -X\t\tFormáid comhaid ionchuir XML\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1862
@@ -409,31 +405,27 @@ msgid ""
 "         hunspell -p words *.odt\n"
 "\n"
 msgstr ""
-"Exemple : hunspell -d en_US file.txt    # vérification orthographique "
-"interactive\n"
-"         hunspell -i utf-8 file.txt    # vérification d'un fichier encodé en "
-"UTF-8\n"
-"         hunspell -l *.odt             # affichage des mots mal "
-"orthographiés de fichiers ODF\n"
+"Sampla: hunspell -d en_US file.txt # litriú idirghníomhach\n"
+"         hunspell -i utf-8 file.txt # seiceáil comhad ionchódaithe UTF-8\n"
+"         hunspell -l *.odt             # priontáil focail mhílitrithe de "
+"chomhaid ODF\n"
 "\n"
-"         # Correction rapide de documents ODF en créant un dictionnaire "
-"personnel\n"
+"         # Deisiúchán tapa ar dhoiciméid ODF trí chruthú foclóir pearsanta\n"
 "\n"
-"         # 1 Créez une liste réduite des mots mal orthographiés et "
-"inconnus :\n"
+"         # 1 Déan liosta laghdaithe ó fhocail mhílitrithe agus anaithnid:\n"
 "\n"
 "         hunspell -l *.odt | sort | uniq >words\n"
 "\n"
-"         # 2 supprimez les mots mal orthographiés du fichier avec un éditeur "
-"de texte.\n"
-"         # 3 utilisez ce dictionnaire pour corriger les mots supprimés :\n"
+"         # 2 Scrios focail mhílitrithe an chomhaid le heagarthóir téacs.\n"
+"         # 3 Úsáid an foclóir pearsanta seo chun na focail scriosta a "
+"dheisiú:\n"
 "\n"
 "         hunspell -p words *.odt\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1877
 msgid "Bug reports: http://hunspell.github.io/\n"
-msgstr "Signalez les anomalies sur : http://hunspell.github.io\n"
+msgstr "Tuairiscí fabht: http://hunspell.github.io/\n"
 
 #: src/tools/hunspell.cxx:1885
 msgid ""
@@ -445,10 +437,10 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Copyright (C) 2002-2014 László Németh. Licence : MPL/GPL/LGPL.\n"
+"Cóipcheart (C) 2002-2014 László Németh. Ceadúnas: MPL/GPL/LGPL.\n"
 "\n"
-"Basé sur la bibliothèque Myspell d'OpenOffice.org.\n"
-"copyright de Myspell (C) Kevin Hendricks, 2001-2002, Licence : BSD.\n"
+"Bunaithe ar leabharlann Myspell OpenOffice.org.\n"
+"Cóipcheart Myspell (C) Kevin Hendricks, 2001-2002, Ceadúnas: BSD.\n"
 "\n"
 
 #: src/tools/hunspell.cxx:1890
@@ -457,12 +449,11 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
 "to the extent permitted by law.\n"
 msgstr ""
-"Ce programme est un logiciel libre ; voir les sources pour les conditions "
-"liés au droit\n"
-"d'auteur. Il n'y a AUCUNE GARANTIE ; pas même la garantie implicite de "
-"COMMERCIALISABILITÉ\n"
-"ni d’ADÉQUATION À UN OBJECTIF PARTICULIER, dans la mesure permise par la "
-"loi.\n"
+"Is bogearraí saor in aisce é seo; féach an fhoinse le haghaidh coinníollacha "
+"cóipeála.  NÍL AON\n"
+"bharántas ann; fiú amháin maidir le INDÍOLTAÍOCHT ná OIRIÚNACHT DO CHUSPÓIR "
+"AR LEITH,\n"
+"a mhéid a cheadaítear faoin dlí.\n"
 
 #: src/tools/hunspell.cxx:2067
 #, c-format
@@ -470,14 +461,12 @@ msgid ""
 "SEARCH PATH:\n"
 "%s\n"
 msgstr ""
-"CHEMIN DE RECHERCHE :\n"
+"COSÁN CUARDAIGH:\n"
 "%s\n"
 
 #: src/tools/hunspell.cxx:2071
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
-msgstr ""
-"DICTIONNAIRES DISPONIBLES (le chemin n'est pas nécessaire pour l'option -"
-"d) :\n"
+msgstr "FOCLÓIRÍ AR FÁIL (níl an cosán éigeantach don rogha -d):\n"
 
 #: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
 #, c-format
@@ -486,22 +475,21 @@ msgid ""
 "%s\n"
 "%s\n"
 msgstr ""
-"DICTIONNAIRES CHARGÉS :\n"
+"FOCLÓIR LÓDÁILTE:\n"
 "%s\n"
 "%s\n"
 
 #: src/tools/hunspell.cxx:2108
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
-msgstr "erreur — %s dépasse la limite d'un dictionnaire.\n"
+msgstr "earráid - sáraíonn %s teorainn an fhoclóra.\n"
 
 #: src/tools/hunspell.cxx:2114
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr ""
-"Impossible d'ouvrir les fichiers affix ou les fichiers de dictionnaire pour "
-"le dictionnaire nommé « %s ».\n"
+"Ní féidir comhaid affix ná foclóra a oscailt don fhoclóir darb ainm \"%s\".\n"
 
 #: src/tools/hunspell.cxx:2201
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
-msgstr "Hunspell a été compilé sans l'interface utilisateur Ncurses.\n"
+msgstr "Tá Hunspell tiomsaithe gan chomhéadan úsáideora Ncurses.\n"
