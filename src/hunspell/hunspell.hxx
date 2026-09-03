@@ -147,7 +147,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * input: pointer to an array of strings pointer and the (bad) word
    *   array of strings pointer (here *slst) may not be initialized
    * output: number of suggestions in string array, and suggestions in
-   *   a newly allocated array of strings (*slts will be NULL when number
+   *   a newly allocated array of strings (*slst will be NULL when number
    *   of suggestion equals 0.)
    */
   std::vector<std::string> suggest(const std::string& word);
@@ -158,7 +158,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
    * input: pointer to an array of strings pointer and the  word
    *   array of strings pointer (here *slst) may not be initialized
    * output: number of suggestions in string array, and suggestions in
-   *   a newly allocated array of strings (*slts will be NULL when number
+   *   a newly allocated array of strings (*slst will be NULL when number
    *   of suggestion equals 0.)
    */
   std::vector<std::string> suffix_suggest(const std::string& root_word);
@@ -224,7 +224,7 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* other */
 
-  /* get extra word characters definied in affix file for tokenization */
+  /* get extra word characters defined in affix file for tokenization */
   const char* get_wordchars() const;
   const std::string& get_wordchars_cpp() const;
   const std::vector<w_char>& get_wordchars_utf16() const;
