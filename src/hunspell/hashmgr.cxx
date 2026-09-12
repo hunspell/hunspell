@@ -508,7 +508,8 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
 int HashMgr::remove(const std::string& word) {
   struct hentry* dp = lookup(word.c_str(), word.size());
   while (dp) {
-    if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
+    if ((dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) &&
+        dp->alen < std::numeric_limits<short>::max()) {
       auto flags = new unsigned short[dp->alen + 1];
       for (int i = 0; i < dp->alen; i++)
         flags[i] = dp->astr[i];
