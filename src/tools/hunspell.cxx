@@ -914,6 +914,9 @@ nextline:
                           chenc(orig_token, io_enc, ui_enc).c_str());
                   fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 }
+              } else if (filter_mode == AUTO3) {
+                fprintf(f, "%s:%d: Locate: %s\n", currentfilename, lineno,
+                        chenc(token, io_enc, ui_enc).c_str());
               }
             }
             continue;
