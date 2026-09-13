@@ -904,7 +904,8 @@ nextline:
                 (void)parser->next_token(token);
                 if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
-                          lineno, orig_token.c_str(), best_io.c_str());
+                          lineno, chenc(orig_token, io_enc, ui_enc).c_str(),
+                          chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 } else if (filter_mode == AUTO2) {
                   fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, orig_token.c_str(),
                           best_io.c_str(), buf);
