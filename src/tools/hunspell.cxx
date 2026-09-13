@@ -1979,6 +1979,18 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s", gettext("  -t\t\tTeX/LaTeX input file format\n"));
       fprintf(stderr, "%s",
               gettext("  --trace\treport how each input word was decided\n"));
+      fprintf(stderr, "%s",
+              gettext("  -u\t\tprint the line number, misspelled word and first "
+                      "suggestion\n"));
+      fprintf(stderr, "%s",
+              gettext("  -U\t\tprint the input text with each misspelled word "
+                      "replaced by its\n\t\tfirst suggestion\n"));
+      fprintf(stderr, "%s",
+              gettext("  -u2\t\tprint the replacements that -U would make, as a "
+                      "sed script\n"));
+      fprintf(stderr, "%s",
+              gettext("  -u3\t\tprint the file name and line number with each "
+                      "misspelled word\n"));
       fprintf(stderr, "%s", gettext("  -v, --version\tprint version number\n"));
       fprintf(stderr, "%s",
               gettext("  -vv\t\tprint Ispell compatible version number\n"));

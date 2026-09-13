@@ -338,6 +338,31 @@ dictionary developers. One record is printed per decision, indented to show
 which decision it belongs to. It can be given alongside the other modes,
 and on its own it checks the input and prints only the records.
 
+.IP \fB\-u\fR
+For each misspelled word that has a suggestion, print the line number, the
+word itself and the first suggestion. A word with no suggestion is not
+reported.
+
+.IP \fB\-U\fR
+Print the input text to the standard output with each misspelled word
+replaced by its first suggestion. The replacements are listed on the
+standard error output in the same form as
+.BR \-u .
+The input file itself is left unchanged.
+
+.IP \fB\-u2\fR
+Print the replacements that
+.B \-U
+would make as a sed script, one substitution per line, each followed by the
+original line as a comment. The script is written in the encoding of the
+input text, so that it can be applied to the file.
+
+.IP \fB\-u3\fR
+Print one line for each misspelled word, giving the name of the file, the
+line number, the word, and the first suggestion when there is one. This is
+the form that compilers use to report errors, so editors and build tools
+can usually read it and go straight to the word.
+
 .IP \fB\-v,\ \-\-version\fR
 Print version number.
 
