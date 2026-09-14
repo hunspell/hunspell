@@ -41,10 +41,13 @@
 #define __USE_MISC
 #endif
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
 #include <string.h>
 #include <config.h>
 #include "../hunspell/atypes.hxx"
@@ -223,9 +226,12 @@ enum {
   AUTO,        // automatic spelling to standard output
   AUTO2,       // automatic spelling to standard output with sed log
   AUTO3,
-  SUFFIX, // print suffixes that can be attached to a given word
-  TRACE   // check each word and print nothing of its own
-};        // automatic spelling to standard output with gcc error format
+  GREP,        // print only lines with bad words, with grep-like location info
+  GREPONLY,    // print only bad words, with grep-like location info
+  GREPSUGGEST, // print bad words and suggestions, with grep-like location info
+  SUFFIX,      // print suffixes that can be attached to a given word
+  TRACE        // check each word and print nothing of its own
+};             // automatic spelling to standard output with gcc error format
 int filter_mode = NORMAL;
 int printgood = 0;  // print only good words and lines
 int printtrace = 0; // report the decisions taken while checking input words
@@ -241,6 +247,14 @@ const char* io_enc = nullptr;  // I/O character encoding
 const char* dic_enc[DMAX];  // dictionary encoding
 char* path = nullptr;
 int dmax = 0;  // dictionary count
+
+bool grep_color = false; // colorize GREP output modes
+std::string grep_colors[4] = { // color escape sequences: fn, ln, se, ms
+  "35",
+  "35",
+  "36",
+  "1;31",
+};
 
 // functions
 
@@ -685,6 +699,57 @@ char* mymkdtemp(char *templ) {
 #endif
 }
 
+bool read_colors(char const* envname) {
+  char* colors = getenv(envname);
+  if (!colors || !*colors)
+    return false;
+
+  return true;
+}
+
+void cprintf(int color, char const* format, ...) {
+  if (grep_color)
+    fprintf(stdout, "\e[%sm", grep_colors[color].c_str());
+  va_list args;
+  va_start(args, format);
+  vfprintf(stdout, format, args);
+  va_end(args);
+  if (grep_color)
+    fprintf(stdout, "\e[0m");
+}
+
+void print_grep_pre(char const* filename, int lineno) {
+  if (filename) {
+    cprintf(0, "%s", filename);
+    cprintf(2, ":");
+  }
+  cprintf(1, "%d", lineno);
+  cprintf(2, ": ");
+}
+
+void print_grep(char const* filename, int lineno, std::string const& token,
+                char const* suggestion = nullptr) {
+  print_grep_pre(filename, lineno);
+  cprintf(3, "%s", token.c_str());
+  if (suggestion)
+    fprintf(stdout, " -> %s\n", suggestion);
+  else
+    fprintf(stdout, "\n");
+}
+
+void print_grep(char const* filename, int lineno, char const* buffer,
+                std::vector<std::pair<int, int>> spans = {}) {
+  print_grep_pre(filename, lineno);
+  int last = 0;
+  for (auto const& s : spans) {
+    if (s.first > 0)
+      fprintf(stdout, "%.*s", s.first - last, buffer + last);
+    cprintf(3, "%.*s", s.second, buffer + s.first);
+    last = s.first + s.second;
+  }
+  fprintf(stdout, "%s\n", buffer + last);
+}
+
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   char buf[MAXLNLEN];
   std::vector<std::string> dicwords;
@@ -695,10 +760,12 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   int verbose_mode = 0;
   int d = 0;
   char* odftmpdir = nullptr;
+  std::vector<std::pair<int, int>> bad_words;
 
   bool io_is_utf8 = io_enc && strcmp(io_enc, "UTF-8") == 0;
 
   std::string filename_prefix = (multiple_files) ? filename + std::string(": ") : "";
+  char const* maybe_filename = (multiple_files ? currentfilename : nullptr);
 
   const char* extension = (filename) ? basename(filename, '.') : nullptr;
   TextParser* parser = get_parser(format, extension, pMS[0]);
@@ -763,6 +830,7 @@ nextline:
 #endif
     bad = 0;
     pos = 0;
+    bad_words.clear();
 
     // execute commands
     if (filter_mode == PIPE) {
@@ -851,15 +919,24 @@ nextline:
         token = parser->get_word(token);
         mystrrep(token, ENTITY_APOS, "'");
         switch (filter_mode) {
+          case GREPONLY:
           case BADWORD: {
             int info;
             if (!check(pMS, &d, token, &info, nullptr)) {
               bad = 1;
-              if (!printgood)
+              if (!printgood) {
+                if (filter_mode == GREPONLY) {
+                  print_grep(maybe_filename, lineno, token);
+                } else {
+                  fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
+                }
+              }
+            } else if (printgood) {
+              if (filter_mode == GREPONLY) {
+                print_grep(maybe_filename, lineno, token);
+              } else {
                 fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
-            } else {
-              if (printgood)
-                fprintf(stdout, "%s%s\n", filename_prefix.c_str(), token.c_str());
+              }
             }
             continue;
           }
@@ -876,10 +953,15 @@ nextline:
             goto nextline;
           }
 
+          case GREP:
           case BADLINE: {
             int info;
             if (!check(pMS, &d, parser->get_word(token), &info, nullptr)) {
               bad = 1;
+
+              int start = parser->get_tokenpos() + pos;
+              int len = static_cast<int>(token.size());
+              bad_words.emplace_back(start, len);
             }
             continue;
           }
@@ -887,7 +969,8 @@ nextline:
           case AUTO0:
           case AUTO:
           case AUTO2:
-          case AUTO3: {
+          case AUTO3:
+          case GREPSUGGEST: {
             FILE* f = (filter_mode == AUTO) ? stderr : stdout;
             int info;
             if (!check(pMS, &d, parser->get_word(token), &info, nullptr)) {
@@ -902,7 +985,11 @@ nextline:
                 // which can cause an infinite loop if the suggestion is
                 // also misspelled; if EOF, the outer loop will see it next
                 (void)parser->next_token(token);
-                if (filter_mode == AUTO3) {
+                if (filter_mode == GREPSUGGEST) {
+                  print_grep(maybe_filename, lineno,
+                             chenc(orig_token, io_enc, ui_enc),
+                             chenc(wlst[0], dic_enc[d], ui_enc).c_str());
+                } else if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
                           lineno, chenc(orig_token, io_enc, ui_enc).c_str(),
                           chenc(wlst[0], dic_enc[d], ui_enc).c_str());
@@ -914,9 +1001,14 @@ nextline:
                           chenc(orig_token, io_enc, ui_enc).c_str());
                   fprintf(f, "%s\n", chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 }
-              } else if (filter_mode == AUTO3) {
-                fprintf(f, "%s:%d: Locate: %s\n", currentfilename, lineno,
-                        chenc(token, io_enc, ui_enc).c_str());
+              } else {
+                if (filter_mode == GREPSUGGEST) {
+                  print_grep(maybe_filename, lineno,
+                             chenc(token, io_enc, ui_enc));
+                } else if (filter_mode == AUTO3) {
+                  fprintf(f, "%s:%d: Locate: %s\n", currentfilename, lineno,
+                          chenc(token, io_enc, ui_enc).c_str());
+                }
               }
             }
             continue;
@@ -1017,6 +1109,7 @@ nextline:
             }
             continue;
           }
+
           case NORMAL: {
             int info;
             std::string root;
@@ -1076,6 +1169,16 @@ nextline:
         case BADLINE: {
           if (((printgood) && (!bad)) || (!printgood && (bad)))
             fprintf(stdout, "%s\n", buf);
+          break;
+        }
+
+        case GREP: {
+          if (!printgood && bad) {
+            print_grep(maybe_filename, lineno, buf, bad_words);
+          }
+          else if (printgood && !bad) {
+            print_grep(maybe_filename, lineno, buf);
+          }
           break;
         }
 
@@ -1955,6 +2058,16 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s",
               gettext("  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"));
       fprintf(stderr, "%s", gettext("  -D\t\tshow available dictionaries\n"));
+      fprintf(
+          stderr, "%s",
+          gettext("  -g\t\tprint lines with misspelled words, with location\n"));
+      fprintf(stderr, "%s", gettext("  -gH\t\talways print file names\n"));
+      fprintf(
+          stderr, "%s",
+          gettext("  -go\t\tprint misspelled words, with location\n"));
+      fprintf(
+          stderr, "%s",
+          gettext("  -gs\t\tprint misspelled words and first suggestion, with location\n"));
       fprintf(stderr, "%s", gettext("  -G\t\tprint only correct words or lines\n"));
       fprintf(stderr, "%s", gettext("  -h, --help\tdisplay this help and exit\n"));
       fprintf(stderr, "%s", gettext("  -H\t\tHTML input file format\n"));
@@ -2120,6 +2233,14 @@ int main(int argc, char** argv) {
       */
       if (filter_mode != PIPE)
         filter_mode = AUTO3;
+    } else if ((strcmp(argv[i], "-g") == 0)) {
+      filter_mode = GREP;
+    } else if ((strcmp(argv[i], "-gH") == 0)) {
+      multiple_files = true;
+    } else if ((strcmp(argv[i], "-go") == 0)) {
+      filter_mode = GREPONLY;
+    } else if ((strcmp(argv[i], "-gs") == 0)) {
+      filter_mode = GREPSUGGEST;
     } else if ((strcmp(argv[i], "-G") == 0)) {
       printgood = 1;
     } else if ((strcmp(argv[i], "-1") == 0)) {
@@ -2128,6 +2249,9 @@ int main(int argc, char** argv) {
       showpath = 1;
     } else if ((strcmp(argv[i], "-r") == 0)) {
       warn = 1;
+    } else if ((strcmp(argv[i], "--color") == 0)) {
+      grep_color = true;
+      read_colors("HUNSPELL_COLORS") || read_colors("GREP_COLORS");
     } else if ((strcmp(argv[i], "--check-url") == 0)) {
       checkurl = 1;
     } else if ((strcmp(argv[i], "--check-apostrophe") == 0)) {
