@@ -251,6 +251,10 @@ specifies either the ASCII or the Unicode apostrophe as a word character
 .IP \fB\-\-check\-url\fR
 Check URLs, e-mail addresses and directory paths.
 
+.IP \fB\-\-color\fR
+Colorize grep-like output
+.RI ( \-g , \-go , \-gs ).
+
 .IP \fB\-D\fR
 Show the detected path of the loaded dictionary, the search path,
 and the available dictionaries.
@@ -275,6 +279,28 @@ base dictionary.
 
 .IP \fB\-G\fR
 Print only correct words or lines.
+
+.IP \fB\-g\fR
+Print lines with misspelled words and their location. The location
+always includes the line number. If more than one file was specified,
+or if
+.I \-gH
+was specified, the location also includes the file name.
+
+.IP \fB\-gH\fR
+Always include the file name in modes that would do so when multiple
+files are specified.
+
+.IP \fB\-go\fR
+Print misspelled words and their location. The location always includes the
+line number. If more than one file was specified, or if
+.I \-gH
+was specified, the location also includes the file name.
+
+.IP \fB\-gs\fR
+Same as
+.IR \-go ,
+except also print the the first suggestion when there is one.
 
 .IP \fB\-H\fR
 The input file is in SGML/HTML format.
