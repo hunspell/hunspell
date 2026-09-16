@@ -2347,7 +2347,6 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
         if (soldi != 0) {
           i = soldi;
-          soldi = 0;
           len = oldlen;
           cmin = oldcmin;
           cmax = oldcmax;
