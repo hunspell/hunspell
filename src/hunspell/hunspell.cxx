@@ -146,6 +146,7 @@ private:
   std::unique_ptr<AffixMgr> pAMgr; // pAMgr depends on m_HMgrs
   std::unique_ptr<SuggestMgr> pSMgr; // pSMgr depends on pAMgr
   std::string affixpath;
+  std::string affixkey;  // the key the affix file was opened with, empty for none
   std::string encoding;
   const struct cs_info* csconv;
   int langnum;
@@ -195,7 +196,8 @@ private:
 
 HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key)
   : m_trace(std::make_unique<TraceCtx>(nullptr, nullptr))
-  , affixpath(affpath) {
+  , affixpath(affpath)
+  , affixkey(key ? key : "") {
   csconv = nullptr;
   utf8 = 0;
   complexprefixes = 0;
@@ -231,6 +233,9 @@ HunspellImpl::~HunspellImpl() {
 
 // load extra dictionaries
 int HunspellImpl::add_dic(const char* dpath, const char* key) {
+  // the affix file is read again for this dictionary, so it needs its key
+  if (!key && !affixkey.empty())
+    key = affixkey.c_str();
   m_HMgrs.push_back(std::make_unique<HashMgr>(dpath, affixpath.c_str(), key));
   return 0;
 }
