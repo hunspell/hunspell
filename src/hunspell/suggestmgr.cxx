@@ -2205,6 +2205,9 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
         (su1[diffpos[1]] == su2[diffpos[0]]))
       *is_swap = 1;
   } else {
+    if (!*s1 || !*s2)
+      return 0;
+
     size_t i;
     std::string t(s2);
     // decapitalize dictionary word
