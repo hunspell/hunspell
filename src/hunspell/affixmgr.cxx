@@ -1531,7 +1531,7 @@ int AffixMgr::cpdcase_check(const std::string& word, int pos) {
 }
 
 struct metachar_data {
-  signed short btpp;  // metacharacter (*, ?) position for backtracking
+  size_t btpp;        // metacharacter (*, ?) position for backtracking
   signed short btwp;  // word position for metacharacters
   int btnum;          // number of matched characters in metacharacter
 };
