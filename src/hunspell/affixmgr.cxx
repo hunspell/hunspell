@@ -1923,6 +1923,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 ((compoundforbidflag && TESTAFF(sfx->getCont(), compoundforbidflag, sfx->getContLen())) ||
                  (compoundend && TESTAFF(sfx->getCont(), compoundend, sfx->getContLen())))) {
               rv = nullptr;
+              // the suffix is dropped with the word it built
+              sfx = nullptr;
             }
           }
 
