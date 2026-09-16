@@ -391,7 +391,8 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       }
       char* dest = letters + strlen(letters);  // append wordchars
       size_t c1 = len + 1;
-      size_t c2 = len + 1;
+      // the room left in letters, keeping one byte for the terminator
+      size_t c2 = sizeof(letters) - (dest - letters) - 1;
       conv = iconv_open(fix_encoding_name(io_enc), fix_encoding_name(denc));
       if (conv == (iconv_t)-1) {
         fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), denc,
