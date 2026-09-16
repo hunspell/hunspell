@@ -926,26 +926,24 @@ nextline:
           case STEM: {
             std::vector<std::string> result =
               pMS[d]->stem(chenc(token, io_enc, dic_enc[d]));
-            for (const auto& i : result) {
-              fprintf(stdout, "%s %s\n", token.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
-            }
             if (result.empty() && !token.empty() && token[token.size() - 1] == '.') {
               token.resize(token.size() - 1);
-              result = pMS[d]->stem(token);
-              for (const auto& i : result) {
-                fprintf(stdout, "%s %s\n", token.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
-              }
+              result = pMS[d]->stem(chenc(token, io_enc, dic_enc[d]));
+            }
+            std::string token_ui = chenc(token, io_enc, ui_enc);
+            for (const auto& i : result) {
+              fprintf(stdout, "%s %s\n", token_ui.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
             }
             if (result.empty())
-              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc).c_str());
+              fprintf(stdout, "%s\n", token_ui.c_str());
             fprintf(stdout, "\n");
             continue;
           }
 
           case SUFFIX: {
-            std::vector<std::string> wlst = pMS[d]->suffix_suggest(token);
+            std::vector<std::string> wlst = pMS[d]->suffix_suggest(chenc(token, io_enc, dic_enc[d]));
             for (const auto& j : wlst) {
-              fprintf(stdout, "Suffix Suggestions are %s \n", chenc(j, dic_enc[d], io_enc).c_str());
+              fprintf(stdout, "Suffix Suggestions are %s \n", chenc(j, dic_enc[d], ui_enc).c_str());
             }
             fflush(stdout);
             continue;
@@ -953,18 +951,16 @@ nextline:
           case ANALYZE: {
             std::vector<std::string> result =
               pMS[d]->analyze(chenc(token, io_enc, dic_enc[d]));
-            for (const auto& i : result) {
-              fprintf(stdout, "%s %s\n", token.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
-            }
             if (result.empty() && !token.empty() && token[token.size() - 1] == '.') {
               token.resize(token.size() - 1);
-              result = pMS[d]->analyze(token);
-              for (const auto& i : result) {
-                fprintf(stdout, "%s %s\n", token.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
-              }
+              result = pMS[d]->analyze(chenc(token, io_enc, dic_enc[d]));
+            }
+            std::string token_ui = chenc(token, io_enc, ui_enc);
+            for (const auto& i : result) {
+              fprintf(stdout, "%s %s\n", token_ui.c_str(), chenc(i, dic_enc[d], ui_enc).c_str());
             }
             if (result.empty())
-              fprintf(stdout, "%s\n", chenc(token, dic_enc[d], ui_enc).c_str());
+              fprintf(stdout, "%s\n", token_ui.c_str());
             fprintf(stdout, "\n");
             continue;
           }
