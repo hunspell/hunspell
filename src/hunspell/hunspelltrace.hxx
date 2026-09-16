@@ -102,6 +102,11 @@ class TraceCtx {
   TraceCtx(HunspellTraceCallback callback, void* userdata)
       : m_callback(callback), m_userdata(userdata) {}
 
+  void set(HunspellTraceCallback callback, void* userdata) {
+    m_callback = callback;
+    m_userdata = userdata;
+  }
+
   bool on() const { return m_callback && m_suppressed == 0; }
 
   void emit(const std::string& line) const {

@@ -141,7 +141,7 @@ private:
   std::vector<std::unique_ptr<HashMgr>> m_HMgrs;
   std::unique_ptr<TraceCtx> m_trace;
   TraceCtx* active_trace() const {
-    return (m_trace && m_trace->on()) ? m_trace.get() : nullptr;
+    return m_trace->on() ? m_trace.get() : nullptr;
   }
   std::unique_ptr<AffixMgr> pAMgr; // pAMgr depends on m_HMgrs
   std::unique_ptr<SuggestMgr> pSMgr; // pSMgr depends on pAMgr
@@ -194,7 +194,8 @@ private:
 };
 
 HunspellImpl::HunspellImpl(const char* affpath, const char* dpath, const char* key)
-  : affixpath(affpath) {
+  : m_trace(std::make_unique<TraceCtx>(nullptr, nullptr))
+  , affixpath(affpath) {
   csconv = nullptr;
   utf8 = 0;
   complexprefixes = 0;
@@ -2300,10 +2301,7 @@ const char* HunspellImpl::get_version() const {
 }
 
 void HunspellImpl::set_trace_callback(HunspellTraceCallback callback, void* userdata) {
-  if (callback)
-    m_trace.reset(new TraceCtx(callback, userdata));
-  else
-    m_trace.reset();
+  m_trace->set(callback, userdata);
 }
 
 int HunspellImpl::input_conv(const char* word, char* dest, size_t destsize) {
