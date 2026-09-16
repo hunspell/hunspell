@@ -1086,7 +1086,12 @@ int AffixMgr::condlen(const std::string& s) {
 
 int AffixMgr::encodeit(AffEntry& entry, const std::string& cs) {
   if (cs.compare(".") != 0) {
-    entry.numconds = (char)condlen(cs);
+    int n = condlen(cs);
+    if (n > std::numeric_limits<unsigned char>::max()) {
+      HUNSPELL_WARNING(stderr, "error: condition length %d is over max limit\n", n);
+      return 1;
+    }
+    entry.numconds = (unsigned char)n;
     const size_t cslen = cs.size();
     const size_t short_part = std::min<size_t>(MAXCONDLEN, cslen);
     memcpy(entry.c.conds, cs.data(), short_part);
