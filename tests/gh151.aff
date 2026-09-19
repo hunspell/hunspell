@@ -1,0 +1,5 @@
+# a second part that starts at a doubled letter gets one letter put back, so it may
+# be one letter shorter on the surface than COMPOUNDMIN asks for
+SIMPLIFIEDTRIPLE
+COMPOUNDMIN 4
+COMPOUNDFLAG A

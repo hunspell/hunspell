@@ -1780,16 +1780,22 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
   setcminmax(&cmin, &cmax, word.c_str(), len);
 
+  // with SIMPLIFIEDTRIPLE a second part that starts at a doubled letter is one letter longer
+  // than the surface shows, so the split can go one letter past cmax
+  size_t cmaxtriple = simplifiedtriple ? (utf8 ? utf8_next(word, cmax) : cmax + 1) : cmax;
+
   st.assign(word);
 
-  for (size_t i = cmin; i < cmax; ++i) {
+  for (size_t i = cmin; i < cmaxtriple; ++i) {
     // go to end of the UTF-8 character
     if (utf8) {
       for (; is_utf8_cont(st[i]); i++)
         ;
-      if (i >= cmax)
+      if (i >= cmaxtriple)
         return nullptr;
     }
+    if (i >= cmax && !(i > 2 && word[i - 1] == word[i - 2]))
+      break;
 
     words = oldwords;
     int onlycpdrule = (words) ? 1 : 0;
@@ -2066,8 +2072,15 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               if (striple) {
                 checkedstriple = 1;
                 i--;  // check "fahrt" instead of "ahrt" in "Schiffahrt"
-              } else if (i > 2 && i <= word.size() && word[i - 1] == word[i - 2])
+              } else if (i > 2 && i <= word.size() && word[i - 1] == word[i - 2]) {
                 striple = 1;
+                // past cmax the surface split is too short, so only the form with the letter
+                // put back is tried
+                if (i >= cmax) {
+                  checkedstriple = 1;
+                  i--;
+                }
+              }
             }
 
             rv = lookup(st.c_str() + i, st.size() - i);  // perhaps without prefix
