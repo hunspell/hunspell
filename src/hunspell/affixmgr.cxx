@@ -2563,10 +2563,10 @@ int AffixMgr::compound_check_morph(const std::string& word,
               p = affix_check_morph(st, 0, i, scratch, compoundmiddle);
             }
           }
+          presult.push_back(MSEP_FLD);
+          presult.append(MORPH_PART);
+          presult.append(st, 0, i);
           if (!p.empty()) {
-            presult.push_back(MSEP_FLD);
-            presult.append(MORPH_PART);
-            presult.append(st, 0, i);
             line_uniq_app(p, MSEP_REC);
             if (!p.empty() && p[0] != MSEP_FLD)
               presult.push_back(MSEP_FLD);
@@ -2767,7 +2767,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
         if (!rv && compoundend && !onlycpdrule) {
           sfx = nullptr;
           pfx = nullptr;
-          rv = affix_check(word, i, word.size() - i, scratch, compoundend);
+          rv = affix_check(word, i, word.size() - i, scratch, compoundend, IN_CPD_END);
         }
 
         if (!rv && !defcpdtable.empty() && words) {
