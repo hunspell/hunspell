@@ -354,12 +354,14 @@ void line_uniq_app(std::string& text, char breakchar) {
 
 // append s to ends of every lines in text
 std::string& strlinecat(std::string& str, const std::string& apd) {
-  size_t pos = 0;
-  while ((pos = str.find('\n', pos)) != std::string::npos) {
-    str.insert(pos, apd);
-    pos += apd.length() + 1;
+  std::string result;
+  size_t pos = 0, end;
+  while ((end = str.find('\n', pos)) != std::string::npos) {
+    result.append(str, pos, end - pos).append(apd).push_back('\n');
+    pos = end + 1;
   }
-  str.append(apd);
+  result.append(str, pos, std::string::npos).append(apd);
+  str.swap(result);
   return str;
 }
 
