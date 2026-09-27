@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hunspell 1.7.1\n"
 "Report-Msgid-Bugs-To: https://github.com/hunspell/hunspell/issues\n"
-"POT-Creation-Date: 2022-08-25 16:40+0100\n"
+"POT-Creation-Date: 2026-09-27 14:37+0000\n"
 "PO-Revision-Date: 2024-10-15 03:16+0000\n"
 "Last-Translator: David Crazz <dawwid2016@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -19,58 +19,57 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.8-rc\n"
 
-#: src/tools/hunspell.cxx:261 src/tools/hunspell.cxx:379
+#: src/tools/hunspell.cxx:282 src/tools/hunspell.cxx:402
 #, c-format
 msgid "error - iconv_open: %s -> %s\n"
 msgstr "错误 - iconv_open: %s -> %s\n"
 
-#: src/tools/hunspell.cxx:275
+#: src/tools/hunspell.cxx:298
 #, c-format
 msgid "error - iconv: %s -> %s\n"
 msgstr "错误 - iconv: %s -> %s\n"
 
-#: src/tools/hunspell.cxx:320 src/tools/hunspell.cxx:342
-#, c-format
-msgid "error - iconv_open: UTF-8 -> %s\n"
-msgstr "错误 - iconv_open: UTF-8 -> %s\n"
+#: src/tools/hunspell.cxx:342 src/tools/hunspell.cxx:364
+#, fuzzy, c-format
+#| msgid "error - iconv_open: %s -> %s\n"
+msgid "error - iconv_open: %s -> UTF-8\n"
+msgstr "错误 - iconv_open: %s -> %s\n"
 
-#: src/tools/hunspell.cxx:670 src/tools/hunspell.cxx:1582
+#: src/tools/hunspell.cxx:621
+msgid "error - missing HOME variable\n"
+msgstr "错误 - 缺少HOME变量\n"
+
+#: src/tools/hunspell.cxx:746 src/tools/hunspell.cxx:1647
 msgid "Can't create tmp dir"
 msgstr "无法创建 tmp 目录"
 
-#: src/tools/hunspell.cxx:681 src/tools/hunspell.cxx:693
-#: src/tools/hunspell.cxx:1565 src/tools/hunspell.cxx:1595
-#: src/tools/hunspell.cxx:1608
-msgid "Can't open inputfile"
-msgstr "无法打开输入文件"
-
-#: src/tools/hunspell.cxx:683 src/tools/hunspell.cxx:1597
-#: src/tools/hunspell.cxx:1996 src/tools/hunspell.cxx:2171
-#: src/tools/hunspell.cxx:2188
+#: src/tools/hunspell.cxx:750 src/tools/hunspell.cxx:1653
+#: src/tools/hunspell.cxx:2124 src/tools/hunspell.cxx:2348
+#: src/tools/hunspell.cxx:2365
 #, c-format
 msgid "Can't open %s.\n"
 msgstr "无法打开 %s。\n"
 
-#: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:1352
-#: src/tools/hunspell.cxx:1464
-#, c-format
-msgid "error - missing HOME variable\n"
-msgstr "错误 - 缺少HOME变量\n"
+#: src/tools/hunspell.cxx:763 src/tools/hunspell.cxx:773
+#: src/tools/hunspell.cxx:1630 src/tools/hunspell.cxx:1665
+#: src/tools/hunspell.cxx:1676
+msgid "Can't open inputfile"
+msgstr "无法打开输入文件"
 
-#: src/tools/hunspell.cxx:853
+#: src/tools/hunspell.cxx:929
 #, c-format
 msgid "Line %d: %s -> "
 msgstr "行 %d: %s -> "
 
-#: src/tools/hunspell.cxx:1133
+#: src/tools/hunspell.cxx:1221
 msgid "FORBIDDEN!"
 msgstr "禁止!"
 
-#: src/tools/hunspell.cxx:1135
+#: src/tools/hunspell.cxx:1223
 msgid "Spelling mistake?"
 msgstr "拼写错误?"
 
-#: src/tools/hunspell.cxx:1137
+#: src/tools/hunspell.cxx:1225
 #, c-format
 msgid ""
 "\t%s\t\tFile: %s\n"
@@ -82,7 +81,7 @@ msgstr ""
 #. TRANSLATORS: the capital letters are shortcuts, mark one letter similarly
 #. in your translation and translate the standalone letter accordingly later
 #.
-#: src/tools/hunspell.cxx:1196
+#: src/tools/hunspell.cxx:1284
 msgid ""
 "\n"
 "[SPACE] R)epl A)ccept I)nsert U)ncap S)tem Q)uit e(X)it or ? for help\n"
@@ -90,7 +89,7 @@ msgstr ""
 "\n"
 "[空格] R)替换 A)接受 I)插入 U)小写 S)词根 Q)退出 X)退出或?寻求帮助\n"
 
-#: src/tools/hunspell.cxx:1265
+#: src/tools/hunspell.cxx:1363
 msgid ""
 "Whenever a word is found that is not in the dictionary\n"
 "it is printed on the first line of the screen.  If the dictionary\n"
@@ -104,7 +103,7 @@ msgstr ""
 "在每一个旁边，   你可以选择替换这个词 \n"
 "完全的，或者选择一个建议的词。\n"
 
-#: src/tools/hunspell.cxx:1271
+#: src/tools/hunspell.cxx:1369
 msgid ""
 "\n"
 "Commands are:\n"
@@ -114,27 +113,27 @@ msgstr ""
 "命令是:\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1272
+#: src/tools/hunspell.cxx:1370
 msgid "R\tReplace the misspelled word completely.\n"
 msgstr "R\t将拼写错误的单词完全替换。\n"
 
-#: src/tools/hunspell.cxx:1273
+#: src/tools/hunspell.cxx:1371
 msgid "Space\tAccept the word this time only.\n"
 msgstr "空格\t只接受这次的词。\n"
 
-#: src/tools/hunspell.cxx:1275
+#: src/tools/hunspell.cxx:1373
 msgid "A\tAccept the word for the rest of this session.\n"
 msgstr "A\t在本次会话的剩余时间里接受这个词。\n"
 
-#: src/tools/hunspell.cxx:1277
+#: src/tools/hunspell.cxx:1375
 msgid "I\tAccept the word, and put it in your private dictionary.\n"
 msgstr "I\t接受这个词，并把它放在你的私人字典里。\n"
 
-#: src/tools/hunspell.cxx:1279
+#: src/tools/hunspell.cxx:1377
 msgid "U\tAccept and add lowercase version to private dictionary.\n"
 msgstr "U\t接受并将小写版本加入私人字典。\n"
 
-#: src/tools/hunspell.cxx:1281
+#: src/tools/hunspell.cxx:1379
 msgid ""
 "S\tAsk a stem and a model word and store them in the private dictionary.\n"
 "\tThe stem will be accepted also with the affixes of the model word.\n"
@@ -142,28 +141,28 @@ msgstr ""
 "S\t询问一个词干和一个示范词，并将它们储存在私人词典中。\n"
 "\t该词干也将被接受，并带有示范词的词缀。\n"
 
-#: src/tools/hunspell.cxx:1285
+#: src/tools/hunspell.cxx:1383
 msgid "0-n\tReplace with one of the suggested words.\n"
 msgstr "0-n\t用建议中的一个词代替。\n"
 
-#: src/tools/hunspell.cxx:1287
+#: src/tools/hunspell.cxx:1385
 msgid ""
 "X\tWrite the rest of this file, ignoring misspellings, and start next file.\n"
 msgstr "X\t写下这个文件的其余部分，忽略错误的拼写，并开始下一个文件。\n"
 
-#: src/tools/hunspell.cxx:1290
+#: src/tools/hunspell.cxx:1388
 msgid "Q\tQuit immediately. Asks for confirmation. Leaves file unchanged.\n"
 msgstr "Q\t立即退出。要求确认。保留文件不动。\n"
 
-#: src/tools/hunspell.cxx:1292
+#: src/tools/hunspell.cxx:1390
 msgid "^Z\tSuspend program. Restart with fg command.\n"
 msgstr "^Z\t暂停程序。用fg命令重新启动。\n"
 
-#: src/tools/hunspell.cxx:1293
+#: src/tools/hunspell.cxx:1391
 msgid "?\tShow this help screen.\n"
 msgstr "?\t显示这个帮助界面。\n"
 
-#: src/tools/hunspell.cxx:1294
+#: src/tools/hunspell.cxx:1392
 msgid ""
 "\n"
 "-- Type space to continue -- \n"
@@ -174,93 +173,93 @@ msgstr ""
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "R)epl" before
-#: src/tools/hunspell.cxx:1306
+#: src/tools/hunspell.cxx:1404
 msgid "r"
 msgstr "r"
 
-#: src/tools/hunspell.cxx:1315
+#: src/tools/hunspell.cxx:1413
 msgid "Replace with: "
 msgstr "替换为: "
 
 #. TRANSLATORS: translate these letters according to the shortcut letter
 #. used
 #. previously in the  translation of "U)ncap" and I)nsert before
-#. TRANSLATORS: translate this letter according to the shortcut letter
-#. used
-#. previously in the  translation of "U)ncap" and I)nsert before
-#: src/tools/hunspell.cxx:1339 src/tools/hunspell.cxx:1375
+#: src/tools/hunspell.cxx:1437
 msgid "u"
 msgstr "u"
 
-#: src/tools/hunspell.cxx:1340 src/tools/hunspell.cxx:1375
+#: src/tools/hunspell.cxx:1438
 msgid "i"
 msgstr "i"
 
-#: src/tools/hunspell.cxx:1368 src/tools/hunspell.cxx:1480
+#: src/tools/hunspell.cxx:1450 src/tools/hunspell.cxx:1545
 #, c-format
 msgid "Cannot update personal dictionary."
 msgstr "无法更新个人词典。"
 
-#: src/tools/hunspell.cxx:1376
+#. TRANSLATORS: translate this letter according to the shortcut letter
+#. used
+#. previously in the  translation of "U)ncap" and I)nsert before
+#: src/tools/hunspell.cxx:1457
 msgid "a"
 msgstr "a"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "S)tem" before
-#: src/tools/hunspell.cxx:1384
+#: src/tools/hunspell.cxx:1465
 msgid "s"
 msgstr "s"
 
-#: src/tools/hunspell.cxx:1399
+#: src/tools/hunspell.cxx:1480
 msgid "New word (stem): "
 msgstr "新词（词干）: "
 
-#: src/tools/hunspell.cxx:1427
+#: src/tools/hunspell.cxx:1508
 msgid "Model word (a similar dictionary word): "
 msgstr "示范词（一个类似的字典词） "
 
-#: src/tools/hunspell.cxx:1487
+#: src/tools/hunspell.cxx:1552
 msgid "Model word must be in the dictionary. Press any key!"
 msgstr "示范词必须在字典中。按任何键!"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "e(X)it" before
-#: src/tools/hunspell.cxx:1497
+#: src/tools/hunspell.cxx:1562
 msgid "x"
 msgstr "x"
 
 #. TRANSLATORS: translate this letter according to the shortcut letter
 #. used
 #. previously in the  translation of "Q)uit" before
-#: src/tools/hunspell.cxx:1503
+#: src/tools/hunspell.cxx:1568
 msgid "q"
 msgstr "q"
 
-#: src/tools/hunspell.cxx:1506
+#: src/tools/hunspell.cxx:1571
 msgid "Are you sure you want to throw away your changes? "
 msgstr "您确定要丢弃您的更改吗？ "
 
 #. TRANSLATORS: translate this letter according to the shortcut
 #. * letter y)es
-#: src/tools/hunspell.cxx:1509
+#: src/tools/hunspell.cxx:1574
 msgid "y"
 msgstr "y"
 
-#: src/tools/hunspell.cxx:1618
+#: src/tools/hunspell.cxx:1686
 msgid "Can't create tempfile"
 msgstr "无法创建临时文件"
 
-#: src/tools/hunspell.cxx:1663
+#: src/tools/hunspell.cxx:1731
 msgid "Can't open outputfile"
 msgstr "无法打开输出文件"
 
-#: src/tools/hunspell.cxx:1816
+#: src/tools/hunspell.cxx:1923
 msgid "Usage: hunspell [OPTION]... [FILE]...\n"
 msgstr "用法：hunspell [选项]... [文件]...\n"
 
-#: src/tools/hunspell.cxx:1817
+#: src/tools/hunspell.cxx:1924
 msgid ""
 "Check spelling of each FILE. Without FILE, check standard input.\n"
 "\n"
@@ -268,103 +267,136 @@ msgstr ""
 "检查每个文件的拼写。如果没有文件，检查标准输入。\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1819
+#: src/tools/hunspell.cxx:1926
 msgid "  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"
 msgstr "  -1\t\t只检查行中的第一个字段(分隔符 = 制表器)\n"
 
-#: src/tools/hunspell.cxx:1821
+#: src/tools/hunspell.cxx:1928
 msgid "  -a\t\tIspell's pipe interface\n"
 msgstr "  -a\t\tIspell 的管道接口\n"
 
-#: src/tools/hunspell.cxx:1822
+#: src/tools/hunspell.cxx:1929
 msgid "  --check-url\tcheck URLs, e-mail addresses and directory paths\n"
 msgstr "  --check-url\t检查 URL、电子邮件地址和目录路径\n"
 
-#: src/tools/hunspell.cxx:1827
+#: src/tools/hunspell.cxx:1934
 msgid "  --check-apostrophe\tcheck Unicode typographic apostrophe\n"
 msgstr "  --check-apostrophe\t检查 Unicode 字体撇号\n"
 
-#: src/tools/hunspell.cxx:1829
+#: src/tools/hunspell.cxx:1936
 msgid "  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"
 msgstr "  -d d[,d2,...]\t使用 d (d2等)字典\n"
 
-#: src/tools/hunspell.cxx:1830
+#: src/tools/hunspell.cxx:1937
 msgid "  -D\t\tshow available dictionaries\n"
 msgstr "  -D\t\t显示可用的字典\n"
 
-#: src/tools/hunspell.cxx:1831
+#: src/tools/hunspell.cxx:1938
 msgid "  -G\t\tprint only correct words or lines\n"
 msgstr "  -G\t\t只打印正确的单词或行\n"
 
-#: src/tools/hunspell.cxx:1832
+#: src/tools/hunspell.cxx:1939
 msgid "  -h, --help\tdisplay this help and exit\n"
 msgstr "  -h, --help\t显示此帮助并退出\n"
 
-#: src/tools/hunspell.cxx:1833
+#: src/tools/hunspell.cxx:1940
 msgid "  -H\t\tHTML input file format\n"
 msgstr "  -H\t\tHTML 输入文件格式\n"
 
-#: src/tools/hunspell.cxx:1834
+#: src/tools/hunspell.cxx:1941
 msgid "  -i enc\tinput encoding\n"
 msgstr "  -i enc\t输入编码\n"
 
-#: src/tools/hunspell.cxx:1835
+#: src/tools/hunspell.cxx:1942
 msgid "  -l\t\tprint misspelled words\n"
 msgstr "  -l\t\t打印拼写错误的单词\n"
 
-#: src/tools/hunspell.cxx:1836
+#: src/tools/hunspell.cxx:1943
 msgid "  -L\t\tprint lines with misspelled words\n"
 msgstr "  -L\t\t打印拼错单词的行\n"
 
-#: src/tools/hunspell.cxx:1838
+#: src/tools/hunspell.cxx:1945
 msgid "  -m \t\tanalyze the words of the input text\n"
 msgstr "  -m \t\t分析输入文本的单词\n"
 
-#: src/tools/hunspell.cxx:1839
+#: src/tools/hunspell.cxx:1946
 msgid "  -n\t\tnroff/troff input file format\n"
 msgstr "  -n\t\tnroff/troff 输入文件格式\n"
 
-#: src/tools/hunspell.cxx:1843
+#: src/tools/hunspell.cxx:1950
 msgid "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"
 msgstr "  -O\t\tOpenDocument (ODF 或平面 ODF)输入文件格式\n"
 
-#: src/tools/hunspell.cxx:1844
+#: src/tools/hunspell.cxx:1951
 msgid "  -p dict\tset dict custom dictionary\n"
 msgstr "  -p dict\t设置 dict 自定义字典\n"
 
-#: src/tools/hunspell.cxx:1846
+#: src/tools/hunspell.cxx:1953
+msgid ""
+"  --no-default-personal\n"
+"\t\tdon't use the default personal dictionary\n"
+msgstr ""
+
+#: src/tools/hunspell.cxx:1956
 msgid "  -r\t\twarn of the potential mistakes (rare words)\n"
 msgstr "  -r\t\t警告潜在的错误（罕见词）\n"
 
-#: src/tools/hunspell.cxx:1849
+#: src/tools/hunspell.cxx:1959
 msgid "  -P password\tset password for encrypted dictionaries\n"
 msgstr "  -P password\t为加密字典设置密码\n"
 
-#: src/tools/hunspell.cxx:1850
+#: src/tools/hunspell.cxx:1960
 msgid "  -s \t\tstem the words of the input text\n"
 msgstr "  -s \t\t对输入的文字进行词根处理\n"
 
-#: src/tools/hunspell.cxx:1851
+#: src/tools/hunspell.cxx:1961
 msgid "  -S \t\tsuffix words of the input text\n"
 msgstr "  -S \t\t输入文本的后缀词\n"
 
-#: src/tools/hunspell.cxx:1852
+#: src/tools/hunspell.cxx:1962
 msgid "  -t\t\tTeX/LaTeX input file format\n"
 msgstr "  -t\t\tTeX/LaTeX 输入文件格式\n"
 
-#: src/tools/hunspell.cxx:1853
+#: src/tools/hunspell.cxx:1964
+msgid "  --trace\treport how each input word was decided\n"
+msgstr ""
+
+#: src/tools/hunspell.cxx:1966
+#, fuzzy
+#| msgid "  -L\t\tprint lines with misspelled words\n"
+msgid "  -u\t\tprint the line number, misspelled word and first suggestion\n"
+msgstr "  -L\t\t打印拼错单词的行\n"
+
+#: src/tools/hunspell.cxx:1969
+msgid ""
+"  -U\t\tprint the input text with each misspelled word replaced by its\n"
+"\t\tfirst suggestion\n"
+msgstr ""
+
+#: src/tools/hunspell.cxx:1972
+msgid "  -u2\t\tprint the replacements that -U would make, as a sed script\n"
+msgstr ""
+
+#: src/tools/hunspell.cxx:1975
+#, fuzzy
+#| msgid "  -L\t\tprint lines with misspelled words\n"
+msgid ""
+"  -u3\t\tprint the file name and line number with each misspelled word\n"
+msgstr "  -L\t\t打印拼错单词的行\n"
+
+#: src/tools/hunspell.cxx:1977
 msgid "  -v, --version\tprint version number\n"
 msgstr "  -v, --version\t打印版本号\n"
 
-#: src/tools/hunspell.cxx:1855
+#: src/tools/hunspell.cxx:1979
 msgid "  -vv\t\tprint Ispell compatible version number\n"
 msgstr "  -vv\t\t打印 Ispell 兼容的版本号\n"
 
-#: src/tools/hunspell.cxx:1856
+#: src/tools/hunspell.cxx:1980
 msgid "  -w\t\tprint misspelled words (= lines) from one word/line input.\n"
 msgstr "  -w\t\t从一个单词/行输入中打印拼写错误的单词（= 行）。\n"
 
-#: src/tools/hunspell.cxx:1858
+#: src/tools/hunspell.cxx:1982
 msgid ""
 "  -X\t\tXML input file format\n"
 "\n"
@@ -372,7 +404,7 @@ msgstr ""
 "  -X\t\tXML 输入文件格式\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1862
+#: src/tools/hunspell.cxx:1986
 msgid ""
 "Example: hunspell -d en_US file.txt    # interactive spelling\n"
 "         hunspell -i utf-8 file.txt    # check UTF-8 encoded file\n"
@@ -407,14 +439,22 @@ msgstr ""
 "         hunspell -p words *.odt\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1877
+#: src/tools/hunspell.cxx:2001
 msgid "Bug reports: http://hunspell.github.io/\n"
 msgstr "错误报告：http://hunspell.github.io/\n"
 
-#: src/tools/hunspell.cxx:1885
+#: src/tools/hunspell.cxx:2009
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "Copyright (C) 2002-2014 László Németh. License: MPL/GPL/LGPL.\n"
+#| "\n"
+#| "Based on OpenOffice.org's Myspell library.\n"
+#| "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
+#| "\n"
 msgid ""
 "\n"
-"Copyright (C) 2002-2014 László Németh. License: MPL/GPL/LGPL.\n"
+"Copyright (C) 2002-2022 László Németh. License: MPL/GPL/LGPL.\n"
 "\n"
 "Based on OpenOffice.org's Myspell library.\n"
 "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n"
@@ -427,7 +467,7 @@ msgstr ""
 "Myspell 的版权 (C) Kevin Hendricks，2001-2002，许可证：BSD。\n"
 "\n"
 
-#: src/tools/hunspell.cxx:1890
+#: src/tools/hunspell.cxx:2014
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE,\n"
@@ -437,7 +477,7 @@ msgstr ""
 "保证；甚至不保证适销对路或适合某一特定用途。\n"
 "在法律允许的范围内。\n"
 
-#: src/tools/hunspell.cxx:2067
+#: src/tools/hunspell.cxx:2233
 #, c-format
 msgid ""
 "SEARCH PATH:\n"
@@ -446,11 +486,11 @@ msgstr ""
 "搜索路径:\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:2071
+#: src/tools/hunspell.cxx:2237
 msgid "AVAILABLE DICTIONARIES (path is not mandatory for -d option):\n"
 msgstr "可用的字典（路径对于 -d 选项不是必需的）：\n"
 
-#: src/tools/hunspell.cxx:2085 src/tools/hunspell.cxx:2105
+#: src/tools/hunspell.cxx:2251 src/tools/hunspell.cxx:2271
 #, c-format
 msgid ""
 "LOADED DICTIONARY:\n"
@@ -461,16 +501,20 @@ msgstr ""
 "%s\n"
 "%s\n"
 
-#: src/tools/hunspell.cxx:2108
+#: src/tools/hunspell.cxx:2274
 #, c-format
 msgid "error - %s exceeds dictionary limit.\n"
 msgstr "错误 - %s 超出字典限制。\n"
 
-#: src/tools/hunspell.cxx:2114
+#: src/tools/hunspell.cxx:2280
 #, c-format
 msgid "Can't open affix or dictionary files for dictionary named \"%s\".\n"
 msgstr "无法打开名为“%s”的字典的词缀或字典文件。\n"
 
-#: src/tools/hunspell.cxx:2201
+#: src/tools/hunspell.cxx:2378
 msgid "Hunspell has been compiled without Ncurses user interface.\n"
 msgstr "Hunspell 已在没有 Ncurses 用户界面的情况下编译。\n"
+
+#, c-format
+#~ msgid "error - iconv_open: UTF-8 -> %s\n"
+#~ msgstr "错误 - iconv_open: UTF-8 -> %s\n"
