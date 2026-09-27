@@ -1,0 +1,18 @@
+> huisdeur
+analyze(huisdeur) =  pa:huis st:huis po:noun pa:deur st:deur po:noun
+stem(huisdeur) = huisdeur
+> huissdeur
+analyze(huissdeur) =  pa:huiss pa:deur st:deur po:noun
+stem(huissdeur) = huissdeur
+> huisdeuren
+analyze(huisdeuren) =  pa:huis st:huis po:noun pa:deuren  st:deur po:noun fl:P
+stem(huisdeuren) = huisdeur
+> huissdeuren
+analyze(huissdeuren) =  pa:huiss pa:deuren  st:deur po:noun fl:P
+stem(huissdeuren) = huissdeur
+> huistuinen
+analyze(huistuinen) =  pa:huis st:huis po:noun pa:tuinen  st:tuin po:noun fl:P
+stem(huistuinen) = huistuin
+> huisstuinen
+analyze(huisstuinen) =  pa:huiss pa:tuinen  st:tuin po:noun fl:P
+stem(huisstuinen) = huisstuin

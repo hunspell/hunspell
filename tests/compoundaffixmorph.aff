@@ -1,0 +1,12 @@
+# morphological analysis of compound words whose parts carry affixes
+COMPOUNDBEGIN B
+COMPOUNDEND E
+COMPOUNDPERMITFLAG C
+ONLYINCOMPOUND O
+
+# linking s on the first part
+SFX S Y 1
+SFX S 0 s/BOC .
+
+SFX P Y 1
+SFX P 0 en .

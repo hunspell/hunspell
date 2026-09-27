@@ -188,6 +188,7 @@ trace_circumfix.dic \
 trace_compound.dic \
 trace_reject.dic \
 trace_xprod.dic \
+compoundaffixmorph.dic \
 abi-check.sh
 
 clean-local:
@@ -866,6 +867,10 @@ trace_xprod.dic \
 trace_xprod.good \
 trace_xprod.wrong \
 trace_xprod.trace \
+compoundaffixmorph.aff \
+compoundaffixmorph.dic \
+compoundaffixmorph.good \
+compoundaffixmorph.morph \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt

@@ -2867,9 +2867,9 @@ int AffixMgr::compound_check_morph(const std::string& word,
             ((!checkcompounddup || (rv != rv_first)))) {
           std::string m;
           if (compoundflag)
-            m = affix_check_morph(word, i, word.size() - i, scratch, compoundflag);
+            m = affix_check_morph(word, i, word.size() - i, scratch, compoundflag, IN_CPD_END);
           if (m.empty() && compoundend) {
-            m = affix_check_morph(word, i, word.size() - i, scratch, compoundend);
+            m = affix_check_morph(word, i, word.size() - i, scratch, compoundend, IN_CPD_END);
           }
           result.append(presult);
           if (!m.empty()) {
