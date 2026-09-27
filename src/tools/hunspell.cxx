@@ -41,11 +41,13 @@
 #define __USE_MISC
 #endif
 
+#include <algorithm>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sstream>
 #include <string>
 #include <string.h>
+#include <vector>
 #include <config.h>
 #include "../hunspell/atypes.hxx"
 #include "../hunspell/hunspell.hxx"
@@ -2194,27 +2196,47 @@ int main(int argc, char** argv) {
     std::string path_std_str = ".";
     path_std_str.append(PATHSEP); // <- check path in local directory
     path_std_str.append(PATHSEP); // <- check path in root directory
-    if (getenv("DICPATH")) {
-      path_std_str.append(getenv("DICPATH")).append(PATHSEP);
-    }
-    if (getenv("XDG_DATA_DIRS")) {
-      char* dir = strtok(getenv("XDG_DATA_DIRS"), ":");
-      while (dir != NULL) {
-        path_std_str.append(dir).append("/hunspell:");
-        dir = strtok(NULL, ":");
+    std::vector<std::string> dirs;
+    // each entry of a PATHSEP separated list, in order, once
+    auto add_dirs = [&dirs](const std::string& list, const char* suffix,
+                           bool absolute_only = false) {
+      size_t start = 0;
+      while (start <= list.size()) {
+        size_t end = list.find(PATHSEP, start);
+        if (end == std::string::npos)
+          end = list.size();
+        if (end > start && (!absolute_only || list[start] == '/')) {
+          std::string dir = list.substr(start, end - start) + suffix;
+          if (std::find(dirs.begin(), dirs.end(), dir) == dirs.end())
+            dirs.push_back(dir);
+        }
+        start = end + 1;
       }
+    };
+    if (getenv("DICPATH")) {
+      add_dirs(getenv("DICPATH"), "");
     }
-    path_std_str.append(LIBDIR).append(PATHSEP);
+#ifndef WIN32
+    // XDG Base Directory Specification: relative entries are invalid, and an unset or empty
+    // XDG_DATA_DIRS means the default below
+    const char* xdg_data_dirs = getenv("XDG_DATA_DIRS");
+    add_dirs(xdg_data_dirs && *xdg_data_dirs ? xdg_data_dirs : "/usr/local/share:/usr/share",
+             "/hunspell", true);
+#endif
+    add_dirs(LIBDIR, "");
     if (HOME) {
       const char * userooodir[] = USEROOODIR;
       for (auto& i : userooodir) {
-        path_std_str += HOME;
-        path_std_str += DIRSEP;
-        path_std_str.append(i).append(PATHSEP);
+        add_dirs(std::string(HOME) + DIRSEP + i, "");
       }
-      path_std_str.append(OOODIR);
-      path_std_str.append(PATHSEP).append(LODIR);
+      add_dirs(OOODIR, "");
+      add_dirs(LODIR, "");
     }
+    for (auto& dir : dirs) {
+      path_std_str.append(dir).append(PATHSEP);
+    }
+    if (!dirs.empty())
+      path_std_str.pop_back();
     path = mystrdup(path_std_str.c_str());
   }
 
