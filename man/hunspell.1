@@ -407,7 +407,22 @@ Similar to
 .I \-d. 
 .TP
 .B DICPATH
-Dictionary path.
+Dictionary path: a list of folders, separated by colons (semicolons on
+Windows), searched before the standard folders.
+.TP
+.B XDG_DATA_HOME
+Folder of the user's own data. Dictionaries installed in its
+.I hunspell
+subfolder are found without a path. If it is not set,
+.I $HOME/.local/share
+is used.
+.TP
+.B XDG_DATA_DIRS
+Colon-separated list of folders of shared data. Dictionaries in the
+.I hunspell
+subfolder of each are found without a path. If it is not set,
+.I /usr/local/share:/usr/share
+is used.
 .TP
 .B WORDLIST
 Equivalent to 
@@ -427,6 +442,19 @@ See hunspell(5).
 .PP
 .BI $HOME/.hunspell_default.
 Default path to personal dictionary.
+.PP
+A dictionary named without a path is searched for in the current
+folder, then in DICPATH, then in the
+.I hunspell
+subfolders of XDG_DATA_HOME and XDG_DATA_DIRS (not on Windows), then in
+the standard system folders such as
+.IR /usr/share/hunspell .
+On Windows
+.I %USERPROFILE%\(rsAppData\(rsRoaming\(rshunspell
+is also searched.
+The
+.I \-D
+option prints the full search path.
 .SH SEE ALSO
 .B hunspell (3), hunspell(5)
 .SH AUTHOR
