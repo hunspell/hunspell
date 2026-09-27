@@ -24,7 +24,10 @@ and commit the new baseline.
 
 ## Checklist
 
-1. Bump `AC_INIT` version in `configure.ac`.
+1. Bump `AC_INIT` version in `configure.ac`, and the same version in
+   `msvc/config.h` and `msvc/Hunspell.rc`. Rerun `configure` so the
+   generated `src/hunspell/hunversion.h`, which is also committed, picks
+   it up.
 2. Update `-version-info` in `src/hunspell/Makefile.am`.
 3. Add a `NEWS` entry.
 4. `make check` (and `make dist`, build it from a clean dir).
