@@ -232,6 +232,7 @@ enum {
 int filter_mode = NORMAL;
 int printgood = 0;  // print only good words and lines
 int printtrace = 0; // report the decisions taken while checking input words
+int nodefaultprivdic = 0; // leave out the default personal dictionary
 int showpath = 0;   // show detected path of the dictionary
 int checkurl = 0;   // check URLs and mail addresses
 int checkapos = 0;  // force typographic apostrophe
@@ -610,7 +611,12 @@ const char* basename(const char* s, char c) {
 
 // Append w to the personal dictionary, the -p one or else the default one of dicname, and clear
 // w. Returns -1 when there is no home folder, 0 when the file cannot be written, 1 on success.
+// Without -p and with --no-default-personal the words are kept for this session only.
 int save_dicwords(std::vector<std::string>& w) {
+  if (!privdicname && nodefaultprivdic) {
+    w.clear();
+    return 1;
+  }
   if (!HOME) {
     fprintf(stderr, "%s", gettext("error - missing HOME variable\n"));
     return -1;
@@ -1944,6 +1950,9 @@ int main(int argc, char** argv) {
               "  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"));
       fprintf(stderr, "%s", gettext("  -p dict\tset dict custom dictionary\n"));
       fprintf(stderr, "%s",
+              gettext("  --no-default-personal\n\t\tdon't use the default personal "
+                      "dictionary\n"));
+      fprintf(stderr, "%s",
               gettext("  -r\t\twarn of the potential mistakes (rare words)\n"));
       fprintf(
           stderr, "%s",
@@ -2022,6 +2031,8 @@ int main(int argc, char** argv) {
         filter_mode = ANALYZE;
     } else if ((strcmp(argv[i], "--trace") == 0)) {
       printtrace = 1;
+    } else if ((strcmp(argv[i], "--no-default-personal") == 0)) {
+      nodefaultprivdic = 1;
     } else if ((strcmp(argv[i], "-s") == 0)) {
       /*
        if -a was used, don't override, i.e. keep ispell compatability
@@ -2290,11 +2301,13 @@ int main(int argc, char** argv) {
 #endif
     buf.append(DICBASENAME);
     buf.append(basename(dicname, DIRSEPCH));
-    load_privdic(buf.c_str(), pMS[0]);
+    if (!nodefaultprivdic)
+      load_privdic(buf.c_str(), pMS[0]);
     if (!privdicname) {
       buf.assign(DICBASENAME);
       buf.append(basename(dicname, DIRSEPCH));
-      load_privdic(buf.c_str(), pMS[0]);
+      if (!nodefaultprivdic)
+        load_privdic(buf.c_str(), pMS[0]);
     } else {
       buf.assign(HOME);
 #ifndef WIN32

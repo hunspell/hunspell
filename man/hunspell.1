@@ -3,7 +3,7 @@
 .SH NAME
 hunspell \- spell checker, stemmer and morphological analyzer
 .SH SYNOPSIS
-hunspell [\-1aDGHhLlmnOrstvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-p dict] [\-vv] [\-\-version] [text/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff file(s)]
+hunspell [\-1aDGHhLlmnOrstvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-p dict] [\-\-no\-default\-personal] [\-vv] [\-\-version] [text/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff file(s)]
 .SH DESCRIPTION
 .I Hunspell
 is fashioned after the
@@ -324,6 +324,14 @@ environment variable. Otherwise it depends on the locale settings. The
 following environment variables are searched: LC_ALL,
 LC_MESSAGES, and LANG. If none are set then the default personal
 dictionary is $HOME/.hunspell_default.
+
+.IP \fB\-\-no\-default\-personal\fR
+Don't use the default personal dictionary. A dictionary named with
+.I \-p
+or WORDLIST is still used, and words added during the session are saved
+to it. Without one, added words are kept for the session only. This gives
+the same result for every user, for example when checking files in a
+shared repository.
 
 .IP \fB\-r\fR
 Warn of rare words, which are also potential spelling mistakes.
