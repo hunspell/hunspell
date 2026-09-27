@@ -1,3 +1,37 @@
+2026-09-27: Hunspell 1.7.4 release:
+  - New --trace option, and Hunspell::set_trace_callback in the library,
+    to report how each word was accepted or rejected, for dictionary
+    developers
+  - Add version macros in hunversion.h, and
+    Hunspell_get_library_version / Hunspell::get_library_version
+    (#549, #753)
+  - Search $XDG_DATA_HOME/hunspell (default ~/.local/share/hunspell)
+    and the hunspell folder of each $XDG_DATA_DIRS entry for
+    dictionaries, and %APPDATA%\hunspell on Windows (#637, #1138, #1140)
+  - Search LibreOffice's dictionary folders, recursively, on Windows and
+    POSIX (#1021, zdenop)
+  - New --no-default-personal option to leave out ~/.hunspell_<dict>
+    (#1028)
+  - Fix morphological analysis of compound words whose parts carry
+    affixes (László Németh, tdf#173389)
+  - CHECKCOMPOUNDPATTERN conditions match flags from continuation
+    classes (#1143)
+  - Much faster ICONV handling with a trie (ssvb), and shorter ICONV/REP
+    keys are retried when the longest is anchored (#1126)
+  - Lower memory use when loading dictionaries (rvandermeulen)
+  - Unicode 16.0 character tables (#927)
+  - Affix and compound fixes: #106, #151, #489, #749, #1045, #1060,
+    #1122
+  - Suggestion fixes: #175, #712
+  - Morphology fixes: #186, #211, #303, #490
+  - Command line fixes: #100, #201, #353, #687, #910, and -u3 output
+    (#1147)
+  - Man page corrections and additions (#87, #488, #1147)
+  - oss-fuzz fixes and hardening, and a new morphfuzzer
+  - Require C++14
+  - Build fixes: MSVC, abi-check (#1117, #1134)
+  - Merge in weblate translations, new: Irish, Venetian
+
 2026-05-04: Hunspell 1.7.3 release:
   - Fix stack-buffer-overflow in Hunzip::getline (reported and fixed
     by MarkLee131)
