@@ -131,7 +131,6 @@
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
 #define USEROOODIR {                       \
-  ".config/hunspell",                      \
   ".openoffice.org/3/user/wordbook",       \
   ".openoffice.org2/user/wordbook",        \
   ".openoffice.org2.0/user/wordbook",      \
@@ -2218,7 +2217,12 @@ int main(int argc, char** argv) {
     }
 #ifndef WIN32
     // XDG Base Directory Specification: relative entries are invalid, and an unset or empty
-    // XDG_DATA_DIRS means the default below
+    // variable means its default, ~/.local/share or /usr/local/share:/usr/share
+    const char* xdg_data_home = getenv("XDG_DATA_HOME");
+    if (xdg_data_home && *xdg_data_home == '/')
+      add_dirs(xdg_data_home, "/hunspell");
+    else if (HOME)
+      add_dirs(std::string(HOME) + "/.local/share", "/hunspell");
     const char* xdg_data_dirs = getenv("XDG_DATA_DIRS");
     add_dirs(xdg_data_dirs && *xdg_data_dirs ? xdg_data_dirs : "/usr/local/share:/usr/share",
              "/hunspell", true);
