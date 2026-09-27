@@ -70,7 +70,7 @@
 
 #define LIBDIR "C:\\Hunspell\\"
 #define USEROOODIR {                                    \
-  "AppData\\Roaming\\hunspell"    \
+  "AppData\\Roaming\\hunspell",                         \
   "Application Data\\OpenOffice.org 2\\user\\wordbook", \
   "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
 }
