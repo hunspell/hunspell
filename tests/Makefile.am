@@ -190,7 +190,8 @@ trace_compound.dic \
 trace_reject.dic \
 trace_xprod.dic \
 compoundaffixmorph.dic \
-abi-check.sh
+abi-check.sh \
+listdicpath.sh
 
 clean-local:
 	-rm -rf testSubDir
@@ -874,4 +875,5 @@ compoundaffixmorph.good \
 compoundaffixmorph.morph \
 utf8_nonbmp.test \
 abi-check.sh \
-abi-baseline.txt
+abi-baseline.txt \
+listdicpath.sh
