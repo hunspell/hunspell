@@ -1823,6 +1823,8 @@ int listdicpath(char* dir, int len) {
     return 0;
   struct dirent* de;
   while ((de = readdir(d))) {
+    if (strncmp(de->d_name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
+      continue;
     len = strlen(de->d_name);
     if ((len > 4 && strcmp(de->d_name + len - 4, ".dic") == 0) ||
         (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
