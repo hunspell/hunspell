@@ -1812,12 +1812,8 @@ int listdicpath(char* dir, int len) {
       continue;
     if (name[0] == '.')  // skip ".", "..", and dotfiles
       continue;
-    if (de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      // recurse so LO's share\extensions\dict-XX\*.dic layout is found
-      std::string sub = buf + name;
-      listdicpath(&sub[0], sub.size());
+    if (de.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
       continue;
-    }
     if (strncmp(name, "hyph_", 5) == 0)  // hyphenation tables, not spell dicts
       continue;
     len = strlen(name);
