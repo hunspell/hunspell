@@ -132,6 +132,22 @@ Then run:
     make
     sudo make install
 
+# Compiling the library with CMake
+
+CMake (3.15 or newer) can build and install `libhunspell` only. The
+`hunspell` tool, the other executables and the tests are still built with
+Autotools, see above.
+
+    cmake -S . -B build
+    cmake --build build
+    cmake --install build --prefix "$HOME/hunspell-root"
+
+Pass `-DBUILD_SHARED_LIBS=ON` for a shared library; the default is static.
+The installed package can then be used from another CMake project:
+
+    find_package(hunspell REQUIRED)
+    target_link_libraries(app PRIVATE hunspell::hunspell)
+
 # Compiling on Windows
 
 ## Compiling with Mingw64 and MSYS2
