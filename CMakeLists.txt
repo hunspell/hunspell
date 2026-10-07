@@ -25,7 +25,7 @@ set_target_properties(hunspell PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN ON)
 
-install(TARGETS hunspell EXPORT HunspellTargets)
+install(TARGETS hunspell EXPORT hunspell-targets)
 install(FILES
   src/hunspell/hunspell.hxx
   src/hunspell/hunspell.h
@@ -35,14 +35,15 @@ install(FILES
   src/hunspell/atypes.hxx
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hunspell)
 
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfig.cmake
-  "include(\"\${CMAKE_CURRENT_LIST_DIR}/HunspellTargets.cmake\")\n")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/hunspell-config.cmake
+  "include(\"\${CMAKE_CURRENT_LIST_DIR}/hunspell-targets.cmake\")\n")
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfigVersion.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/hunspell-config-version.cmake
   COMPATIBILITY SameMajorVersion)
-install(EXPORT HunspellTargets NAMESPACE Hunspell::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Hunspell)
+install(EXPORT hunspell-targets NAMESPACE hunspell::
+  FILE hunspell-targets.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hunspell)
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Hunspell)
+  ${CMAKE_CURRENT_BINARY_DIR}/hunspell-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/hunspell-config-version.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hunspell)
