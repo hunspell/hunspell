@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.15)
 project(hunspell VERSION 1.7.5 LANGUAGES CXX)
 
 include(GNUInstallDirs)
@@ -17,10 +17,8 @@ if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(hunspell PUBLIC HUNSPELL_STATIC)
 endif()
 
-# Only the symbols marked LIBHUNSPELL_DLL_EXPORTED are public, as with autotools.
 set_target_properties(hunspell PROPERTIES
   OUTPUT_NAME hunspell-1.7
-  # libtool -version-info 2:1:2 (see src/hunspell/Makefile.am)
   VERSION 0.2.1
   SOVERSION 0
   CXX_EXTENSIONS OFF
@@ -37,16 +35,14 @@ install(FILES
   src/hunspell/atypes.hxx
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hunspell)
 
-# find_package(Hunspell) support, generated here rather than from a template.
-set(HUNSPELL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/Hunspell)
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfig.cmake
   "include(\"\${CMAKE_CURRENT_LIST_DIR}/HunspellTargets.cmake\")\n")
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfigVersion.cmake
   COMPATIBILITY SameMajorVersion)
 install(EXPORT HunspellTargets NAMESPACE Hunspell::
-  DESTINATION ${HUNSPELL_CMAKE_DIR})
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Hunspell)
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/HunspellConfigVersion.cmake
-  DESTINATION ${HUNSPELL_CMAKE_DIR})
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Hunspell)
