@@ -76,6 +76,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "atypes.hxx"
@@ -103,6 +104,9 @@ struct AffixScratch {
   std::string pfx_check_twosfx;  // PfxEntry::check_twosfx[_morph]
   std::string sfx_check_word;    // SfxEntry::checkword
   std::string sfx_check_twosfx;  // SfxEntry::check_twosfx[_morph]
+
+  // the results of AffixMgr::second_suffix_check_morph, by its arguments
+  std::unordered_map<std::string, std::string> second_suffix_morph;
 
   // where the affix path reports its decisions, or null while nothing is
   // listening
@@ -263,6 +267,12 @@ class AffixMgr {
                                  const FLAG cclass = FLAG_NULL,
                                  const FLAG needflag = FLAG_NULL,
                                  char in_compound = IN_CPD_NOT);
+  std::string second_suffix_check_morph(const std::string& word,
+                                        int sfxopts,
+                                        PfxEntry* ppfx,
+                                        AffixScratch& scratch,
+                                        const FLAG cclass,
+                                        const FLAG needflag);
 
   std::string prefix_check_twosfx_morph(const std::string& word,
                                         int start,

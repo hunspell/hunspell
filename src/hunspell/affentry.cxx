@@ -1023,7 +1023,7 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
       if (ppfx) {
         // handle conditional suffix
         if ((contclass) && TESTAFF(contclass, ep->getFlag(), contclasslen)) {
-          std::string st = pmyMgr->suffix_check_morph(tmpword, 0, tmpl, 0, nullptr, scratch, aflag, needflag);
+          std::string st = pmyMgr->second_suffix_check_morph(tmpword, 0, nullptr, scratch, aflag, needflag);
           if (!st.empty()) {
             if (ppfx->getMorph()) {
               result.append(ppfx->getMorph());
@@ -1033,15 +1033,14 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
             mychomp(result);
           }
         } else {
-          std::string st = pmyMgr->suffix_check_morph(tmpword, 0, tmpl, optflags, ppfx, scratch, aflag,
-                                                      needflag);
+          std::string st = pmyMgr->second_suffix_check_morph(tmpword, optflags, ppfx, scratch, aflag, needflag);
           if (!st.empty()) {
             result.append(st);
             mychomp(result);
           }
         }
       } else {
-        std::string st = pmyMgr->suffix_check_morph(tmpword, 0, tmpl, 0, nullptr, scratch, aflag, needflag);
+        std::string st = pmyMgr->second_suffix_check_morph(tmpword, 0, nullptr, scratch, aflag, needflag);
         if (!st.empty()) {
           result.append(st);
           mychomp(result);

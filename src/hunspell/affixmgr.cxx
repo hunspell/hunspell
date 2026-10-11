@@ -3326,6 +3326,30 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
   return result;
 }
 
+// suffix_check_morph of the whole of word, taken as what is left once a first suffix is removed.
+// many first suffixes can leave the same word, so each distinct check runs once per scratch. many
+// suffixes can analyse that word the same way, so each analysis is kept once
+std::string AffixMgr::second_suffix_check_morph(const std::string& word,
+                                                int sfxopts,
+                                                PfxEntry* ppfx,
+                                                AffixScratch& scratch,
+                                                const FLAG cclass,
+                                                const FLAG needflag) {
+  // the arguments after word have a fixed size, so the key cannot be ambiguous
+  std::string key(word);
+  key.append(reinterpret_cast<const char*>(&sfxopts), sizeof(sfxopts));
+  key.append(reinterpret_cast<const char*>(&ppfx), sizeof(ppfx));
+  key.append(reinterpret_cast<const char*>(&cclass), sizeof(cclass));
+  key.append(reinterpret_cast<const char*>(&needflag), sizeof(needflag));
+  auto it = scratch.second_suffix_morph.find(key);
+  if (it == scratch.second_suffix_morph.end()) {
+    DistinctRecords result(MSEP_REC);
+    result.append(suffix_check_morph(word, 0, word.size(), sfxopts, ppfx, scratch, cclass, needflag));
+    it = scratch.second_suffix_morph.emplace(std::move(key), result.join()).first;
+  }
+  return it->second;
+}
+
 // check if word with affixes is correctly spelled
 struct hentry* AffixMgr::affix_check(const std::string& word,
                                      int start,
