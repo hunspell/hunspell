@@ -671,6 +671,16 @@ static bool secure_filename(const char* filename) {
   return true;
 }
 
+static std::string sed_escape(const std::string& text, const char* special) {
+  std::string out;
+  for (char c : text) {
+    if (c != '\0' && strchr(special, c))
+      out += '\\';
+    out += c;
+  }
+  return out;
+}
+
 // a name that starts with '-' gets a "./" in front, so that it reads as a file name, not an option
 static std::string file_operand(const char* filename) {
   if (filename[0] == '-')
@@ -912,8 +922,9 @@ nextline:
                           lineno, chenc(orig_token, io_enc, ui_enc).c_str(),
                           chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 } else if (filter_mode == AUTO2) {
-                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno, orig_token.c_str(),
-                          best_io.c_str(), buf);
+                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno,
+                          sed_escape(orig_token, "\\/.*[]^$").c_str(),
+                          sed_escape(best_io, "\\/&").c_str(), buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
                           chenc(orig_token, io_enc, ui_enc).c_str());
