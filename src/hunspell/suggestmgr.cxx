@@ -2159,6 +2159,8 @@ int SuggestMgr::leftcommonsubstring(
     // decapitalise dictionary word
     if ((*s1 != *s2) && (((unsigned char)*s1) != csconv[((unsigned char)*s2)].clower))
       return 0;
+    if (*s1 == '\0')
+      return 0;
     do {
       s1++;
       s2++;
