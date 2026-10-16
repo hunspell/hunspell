@@ -1560,7 +1560,7 @@ int AffixMgr::defcpd_check(hentry*** words,
 
   std::vector<metachar_data> btinfo(1);
 
-  short bt = 0;
+  size_t bt = 0;
 
   (*words)[wnum] = rv;
 
