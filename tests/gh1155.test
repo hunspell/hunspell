@@ -1,0 +1,3 @@
+#!/bin/sh
+SRCDIR="$(cd "$(dirname "$0")" && pwd)"
+./gh1155 "$SRCDIR"/gh1155

@@ -507,6 +507,12 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
 // remove word (personal dictionary function for standalone applications)
 int HashMgr::remove(const std::string& word) {
   struct hentry* dp = lookup(word.c_str(), word.size());
+  if (!dp) {
+    // Affixed forms need their own entry to override the generating rule.
+    if (add(word))
+      return 1;
+    dp = lookup(word.c_str(), word.size());
+  }
   while (dp) {
     if ((dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) &&
         dp->alen < std::numeric_limits<short>::max()) {
