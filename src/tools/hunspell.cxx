@@ -671,6 +671,13 @@ static bool secure_filename(const char* filename) {
   return true;
 }
 
+// a name that starts with '-' gets a "./" in front, so that it reads as a file name, not an option
+static std::string file_operand(const char* filename) {
+  if (filename[0] == '-')
+    return std::string("./") + filename;
+  return filename;
+}
+
 char* mymkdtemp(char *templ) {
 #ifdef _WIN32
   (void)templ;
@@ -738,7 +745,7 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+    sbuf << "unzip -p \"" << file_operand(filename) << "\" content.xml | sed "
             "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g;s/<\\/\\?text:span[^>]*>//g\" "
             ">" << odftmpdir << "/content.xml";
     if (system(sbuf.str().c_str()) != 0) {
@@ -1650,7 +1657,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     // break 1-line XML of zipped ODT documents at </style:style> and </text:p>
     // to avoid tokenization problems (fgets could stop within an XML tag)
     std::ostringstream sbuf;
-    sbuf << "unzip -p \"" << filename << "\" content.xml | sed "
+    sbuf << "unzip -p \"" << file_operand(filename) << "\" content.xml | sed "
             "\"s/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\n\\2/g\" "
             ">" << odftmpdir << "/content.xml";
     if (system(sbuf.str().c_str()) != 0) {
@@ -1730,7 +1737,8 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
       fclose(text);
       if (bZippedOdf && odffilename && secure_filename(odffilename)) {
         std::ostringstream sbuf;
-        sbuf << "zip -j \"" << odffilename << "\" \"" << filename << "\"";
+        sbuf << "zip -j \"" << file_operand(odffilename) << "\" \"" << file_operand(filename)
+             << "\"";
         if (system(sbuf.str().c_str()) != 0)
           perror("write failed");
       }
