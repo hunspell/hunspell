@@ -10,9 +10,9 @@ int main(int argc, char** argv) {
   std::string base(argv[1]);
   Hunspell h((base + ".aff").c_str(), (base + ".dic").c_str());
   int failures = 0;
-  auto check = [&](const char* word, bool expected) {
+  auto check = [&](const std::string& word, bool expected) {
     if (h.spell(word) != expected) {
-      fprintf(stderr, "FAIL: spell(%s) should be %s\n", word, expected ? "true" : "false");
+      fprintf(stderr, "FAIL: spell(%s) should be %s\n", word.c_str(), expected ? "true" : "false");
       ++failures;
     }
   };
