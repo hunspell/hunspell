@@ -915,6 +915,23 @@ int AffixMgr::build_sfxtree(SfxEntry* sfxptr) {
   return 0;
 }
 
+namespace {
+  // the tree can be as deep as it has entries, so the walk keeps its path in a vector
+  template <typename T> T* link_in_order(T* ptr, T* nptr) {
+    std::vector<T*> path;
+    while (ptr || !path.empty()) {
+      for (; ptr; ptr = ptr->getNextNE())
+        path.push_back(ptr);
+      ptr = path.back();
+      path.pop_back();
+      ptr->setNext(nptr);
+      nptr = ptr;
+      ptr = ptr->getNextEQ();
+    }
+    return nptr;
+  }
+}
+
 // convert from binary tree to sorted list
 int AffixMgr::process_pfx_tree_to_list() {
   for (int i = 1; i < SETSIZE; i++) {
@@ -924,12 +941,7 @@ int AffixMgr::process_pfx_tree_to_list() {
 }
 
 PfxEntry* AffixMgr::process_pfx_in_order(PfxEntry* ptr, PfxEntry* nptr) {
-  if (ptr) {
-    nptr = process_pfx_in_order(ptr->getNextNE(), nptr);
-    ptr->setNext(nptr);
-    nptr = process_pfx_in_order(ptr->getNextEQ(), ptr);
-  }
-  return nptr;
+  return link_in_order(ptr, nptr);
 }
 
 // convert from binary tree to sorted list
@@ -941,12 +953,7 @@ int AffixMgr::process_sfx_tree_to_list() {
 }
 
 SfxEntry* AffixMgr::process_sfx_in_order(SfxEntry* ptr, SfxEntry* nptr) {
-  if (ptr) {
-    nptr = process_sfx_in_order(ptr->getNextNE(), nptr);
-    ptr->setNext(nptr);
-    nptr = process_sfx_in_order(ptr->getNextEQ(), ptr);
-  }
-  return nptr;
+  return link_in_order(ptr, nptr);
 }
 
 // reinitialize the PfxEntry links NextEQ and NextNE to speed searching
