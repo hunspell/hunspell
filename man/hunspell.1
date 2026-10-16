@@ -3,7 +3,7 @@
 .SH NAME
 hunspell \- spell checker, stemmer and morphological analyzer
 .SH SYNOPSIS
-hunspell [\-1aDGHhLlmnOrstUuvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-P password] [\-p dict] [\-\-no\-default\-personal] [\-\-trace] [\-u2] [\-u3] [\-vv] [\-\-version] [text/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff file(s)]
+hunspell [\-1aDGHhLlmnOrstUuvwX] [\-\-check\-url] [\-\-check\-apostrophe] [\-d dict[,dict2,...]] [\-\-help] [\-i enc] [\-P password] [\-p dict] [\-\-no\-default\-personal] [\-\-trace] [\-u2] [\-u3] [\-vv] [\-\-version] [\-\-] [text/OpenDocument/TeX/LaTeX/HTML/SGML/XML/nroff/troff file(s)]
 .SH DESCRIPTION
 .I Hunspell
 is fashioned after the
@@ -385,6 +385,10 @@ Print misspelled words (= lines) from one word/line input.
 
 .IP \fB\-X\fR
 The input file is in XML format.
+
+.IP \fB\-\-\fR
+End the options. Every argument after it is a file name, even one that
+starts with a hyphen. The options also end at the first file name.
 
 .SH EXAMPLES
 .TP

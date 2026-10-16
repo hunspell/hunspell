@@ -2145,17 +2145,24 @@ int main(int argc, char** argv) {
       checkurl = 1;
     } else if ((strcmp(argv[i], "--check-apostrophe") == 0)) {
       checkapos = 1;
-    } else if ((arg_files == -1) &&
-               ((argv[i][0] != '-') && (argv[i][0] != '\0'))) {
+    } else if (strcmp(argv[i], "--") == 0) {
+      if (i + 1 < argc)
+        arg_files = i + 1;
+      break;
+    } else if ((argv[i][0] != '-') && (argv[i][0] != '\0')) {
+      // every argument from the first file on is a file
       arg_files = i;
-      if (!exist(argv[i])) {  // first check (before time-consuming dic. load)
-        fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);
-#ifdef HAVE_CURSES_H
-        endwin();
-#endif
-        exit(1);
-      }
+      break;
     }
+  }
+
+  // check the first file before the slow dictionary load
+  if (arg_files != -1 && !exist(argv[arg_files])) {
+    fprintf(stderr, gettext("Can't open %s.\n"), argv[arg_files]);
+#ifdef HAVE_CURSES_H
+    endwin();
+#endif
+    exit(1);
   }
 
   multiple_files = (arg_files > 0) && (argc - arg_files > 1);
