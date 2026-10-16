@@ -1895,11 +1895,13 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
             }
 
             if (scpd > 0 && would_continue) {
-                // under these conditions we loop again, but the assumption above
-                // appears to be that cmin and cmax are the original values they
-                // had in the outside loop
+                // undo this pattern's rewrite and move to the next pattern, as the end of the loop
+                // does
+                i = soldi;
+                len = oldlen;
                 cmin = oldcmin;
                 cmax = oldcmax;
+                scpd++;
             }
             continue;
         }
