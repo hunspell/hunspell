@@ -2187,7 +2187,7 @@ std::vector<std::string> HunspellImpl::spellml(const std::string& in_word) {
 std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_word) {
   std::vector<std::string> slst;
   struct hentry* he = nullptr;
-  int len;
+  size_t len;
   std::string w2;
   const char* word;
   const char* ignoredchars = pAMgr->get_ignore();
@@ -2201,10 +2201,10 @@ std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_wo
       remove_ignored_chars(w2, ignoredchars);
     }
     word = w2.c_str();
-    len = (int)w2.size();
+    len = w2.size();
   } else {
     word = root_word.c_str();
-    len = (int)root_word.size();
+    len = root_word.size();
   }
 
   if (!len)
