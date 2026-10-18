@@ -3255,11 +3255,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
         }
         if (complexprefixes && HENTRY_DATA(rv))
           result.append(HENTRY_DATA2(rv));
-        if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          result.push_back(MSEP_FLD);
-          result.append(MORPH_STEM);
-          result.append(HENTRY_WORD(rv));
-        }
+        append_morph_stem(result, rv, complexprefixes);
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
           result.push_back(MSEP_FLD);
@@ -3298,11 +3294,7 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
         }
         if (complexprefixes && HENTRY_DATA(rv))
           result.append(HENTRY_DATA2(rv));
-        if (!HENTRY_FIND(rv, MORPH_STEM)) {
-          result.push_back(MSEP_FLD);
-          result.append(MORPH_STEM);
-          result.append(HENTRY_WORD(rv));
-        }
+        append_morph_stem(result, rv, complexprefixes);
 
         if (!complexprefixes && HENTRY_DATA(rv)) {
           result.push_back(MSEP_FLD);

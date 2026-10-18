@@ -1,0 +1,9 @@
+SET UTF-8
+COMPLEXPREFIXES
+WORDCHARS _
+PFX A Y 1
+PFX A 0 tek . dp:tek
+PFX B Y 1
+PFX B 0 met/A . dp:met
+SFX C Y 1
+SFX C 0 _test_ . is:test
