@@ -1,0 +1,8 @@
+SET UTF-8
+WORDCHARS '’
+ICONV 3
+ICONV ’ '
+ICONV x y
+ICONV y z
+SFX S Y 1
+SFX S 0 s .

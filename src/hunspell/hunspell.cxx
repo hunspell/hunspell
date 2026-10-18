@@ -1646,26 +1646,39 @@ int HunspellImpl::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
 }
 
 int HunspellImpl::add(const std::string& word) {
-  if (!m_HMgrs.empty())
-    return m_HMgrs[0]->add(word);
+  if (!m_HMgrs.empty()) {
+    std::string converted;
+    input_conv(word, converted);
+    return m_HMgrs[0]->add(converted);
+  }
   return 0;
 }
 
 int HunspellImpl::add_with_flags(const std::string& word, const std::string& flags, const std::string& desc) {
-  if (!m_HMgrs.empty())
-    return m_HMgrs[0]->add_with_flags(word, flags, desc);
+  if (!m_HMgrs.empty()) {
+    std::string converted;
+    input_conv(word, converted);
+    return m_HMgrs[0]->add_with_flags(converted, flags, desc);
+  }
   return 0;
 }
 
 int HunspellImpl::add_with_affix(const std::string& word, const std::string& example) {
-  if (!m_HMgrs.empty())
-    return m_HMgrs[0]->add_with_affix(word, example);
+  if (!m_HMgrs.empty()) {
+    std::string converted, converted_example;
+    input_conv(word, converted);
+    input_conv(example, converted_example);
+    return m_HMgrs[0]->add_with_affix(converted, converted_example);
+  }
   return 0;
 }
 
 int HunspellImpl::remove(const std::string& word) {
-  if (!m_HMgrs.empty())
-    return m_HMgrs[0]->remove(word);
+  if (!m_HMgrs.empty()) {
+    std::string converted;
+    input_conv(word, converted);
+    return m_HMgrs[0]->remove(converted);
+  }
   return 0;
 }
 

@@ -145,7 +145,9 @@ The add(), add_with_affix() and remove() are helper functions for
 implementing a personal dictionary, used to add and remove words from
 the base dictionary at run time. The add_with_affix() function uses a
 second root word as the model for the affixation and compounding of
-the new word.
+the new word. Word arguments, including the example, undergo the
+input conversions specified by ICONV, as in spell(). Callers should pass
+unconverted words to these functions.
 .PP
 The get_dic_encoding() function returns "ISO8859-1" or the character
 encoding defined in the affix file with the "SET" keyword.
