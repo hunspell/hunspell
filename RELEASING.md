@@ -25,10 +25,13 @@ and commit the new baseline.
 ## Checklist
 
 1. Bump `AC_INIT` version in `configure.ac`, and the same version in
-   `msvc/config.h` and `msvc/Hunspell.rc`. Rerun `configure` so the
-   generated `src/hunspell/hunversion.h`, which is also committed, picks
-   it up.
-2. Update `-version-info` in `src/hunspell/Makefile.am`.
+   `msvc/config.h`, `msvc/Hunspell.rc` and the `project()` line of
+   `CMakeLists.txt`. Rerun `configure` so the generated
+   `src/hunspell/hunversion.h`, which is also committed, picks it up.
+2. Update `-version-info` in `src/hunspell/Makefile.am`. Then set
+   `VERSION` in `CMakeLists.txt` to `current - age`.`age`.`revision`
+   and `SOVERSION` to `current - age`, to match the library file names
+   libtool makes. For `2:1:2` that is `VERSION 0.2.1` and `SOVERSION 0`.
 3. Add a `NEWS` entry.
 4. `make check` (and `make dist`, build it from a clean dir).
 5. Commit, `git tag vX.Y.Z`, push, attach the `make dist` tarball to
