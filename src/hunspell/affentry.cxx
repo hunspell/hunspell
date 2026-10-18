@@ -499,11 +499,7 @@ std::string PfxEntry::check_morph(const std::string& word,
               result.append(morphcode);
             } else
               result.append(getKey());
-            if (!HENTRY_FIND(he, MORPH_STEM)) {
-              result.push_back(MSEP_FLD);
-              result.append(MORPH_STEM);
-              result.append(HENTRY_WORD(he));
-            }
+            append_morph_stem(result, he, pmyMgr->get_complexprefixes());
             // store the pointer of the hash entry
             if (HENTRY_DATA(he)) {
               result.push_back(MSEP_FLD);

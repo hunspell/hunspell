@@ -1869,11 +1869,7 @@ std::string SuggestMgr::suggest_morph(const std::string& in_w) {
         !(TESTAFF(rv->astr, pAMgr->get_forbiddenword(), rv->alen) ||
           TESTAFF(rv->astr, pAMgr->get_needaffix(), rv->alen) ||
           TESTAFF(rv->astr, pAMgr->get_onlyincompound(), rv->alen))) {
-      if (!HENTRY_FIND(rv, MORPH_STEM)) {
-        result.push_back(MSEP_FLD);
-        result.append(MORPH_STEM);
-        result.append(w);
-      }
+      append_morph_stem(result, rv, complexprefixes);
       if (HENTRY_DATA(rv)) {
         result.push_back(MSEP_FLD);
         result.append(HENTRY_DATA2(rv));

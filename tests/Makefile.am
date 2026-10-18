@@ -4,11 +4,13 @@ SUBDIRS = suggestiontest
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/hunspell -I$(top_builddir)/src/hunspell $(HUNSPELL_STATIC_DEFINE)
 
-check_PROGRAMS = gh1032 gh1058 gh1155
+check_PROGRAMS = gh1032 gh1058 gh1155 gh1055
 gh1032_SOURCES = gh1032.cxx
 gh1032_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
 gh1058_SOURCES = gh1058.cxx
 gh1058_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
+gh1055_SOURCES = gh1055.cxx
+gh1055_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
 gh1155_SOURCES = gh1155.cxx
 gh1155_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
 
@@ -166,6 +168,7 @@ gh353.dic \
 gh1032.test \
 gh1058.test \
 gh1155.test \
+gh1055.test \
 gh1002.dic \
 gh-hunzip-overflow.test \
 gh1086.test \
@@ -200,6 +203,10 @@ clean-local:
 	-rm -rf testSubDir
         
 EXTRA_DIST = \
+gh1055.cxx \
+gh1055.aff \
+gh1055.dic \
+gh1055.test \
 gh1155.cxx \
 gh1155.aff \
 gh1155.dic \
