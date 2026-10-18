@@ -1,0 +1,4 @@
+&agrave; foo
+foo &agrave; foo
+foo&agrave; foo
+foo &agrave;
