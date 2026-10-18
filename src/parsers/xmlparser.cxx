@@ -127,14 +127,14 @@ bool XMLParser::next_token(const char* PATTERN[][2],
         } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           state = ST_WORD;
           token = head;
-          head += strlen(latin1);
+          head += strlen(latin1) - 1;
         } else if (line[actual][head] == '&') {
           state = ST_CHAR_ENTITY;
         }
         break;
       case ST_WORD:  // wordchar
         if ((latin1 = get_latin1(line[actual].c_str() + head))) {
-          head += strlen(latin1);
+          head += strlen(latin1) - 1;
         } else if ((is_wordchar(APOSTROPHE) ||
                     (is_utf8() && is_wordchar(UTF8_APOS))) &&
                    strncmp(line[actual].c_str() + head, ENTITY_APOS,

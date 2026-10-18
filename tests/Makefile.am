@@ -176,6 +176,7 @@ gh1018.test \
 gh1044.test \
 gh646.test \
 gh910.test \
+gh686.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -818,6 +819,11 @@ gh910.aff \
 gh910.dic \
 gh910.pers \
 gh910.txt \
+gh686.test \
+gh686.aff \
+gh686.dic \
+gh686.txt \
+gh686.html \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

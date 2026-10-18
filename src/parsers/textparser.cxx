@@ -188,12 +188,12 @@ bool TextParser::next_token(std::string &t) {
         } else if ((latin1 = get_latin1(line[actual].c_str() + head))) {
           state = 1;
           token = head;
-          head += strlen(latin1);
+          head += strlen(latin1) - 1;
         }
         break;
       case 1:  // wordchar
         if ((latin1 = get_latin1(line[actual].c_str() + head))) {
-          head += strlen(latin1);
+          head += strlen(latin1) - 1;
         } else if ((is_wordchar(APOSTROPHE) ||
                     (is_utf8() && is_wordchar(UTF8_APOS))) &&
                    !line[actual].empty() && line[actual][head] == '\'' &&

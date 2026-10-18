@@ -1,0 +1,28 @@
+#!/bin/sh
+# A Latin-1 character entity must not swallow the character after it, so
+# "&agrave; foo" is two words, not one, and an entity at the end of a line
+# is still checked (issue #686).
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+CR=$(printf "\r")
+expected='&agrave;
+&agrave;
+foo&agrave;
+&agrave;'
+out=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh686" -l "$DIR/gh686.txt" 2>&1 | tr -d "$CR")
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: gh686 text mode, got:"
+    echo "$out"
+    exit 1
+fi
+expected='&agrave;
+foo&agrave;'
+out=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh686" -H -l "$DIR/gh686.html" 2>&1 | tr -d "$CR")
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: gh686 HTML mode, got:"
+    echo "$out"
+    exit 1
+fi
+echo "PASS: gh686"
+exit 0
