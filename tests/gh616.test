@@ -1,0 +1,24 @@
+#!/bin/sh
+SRCDIR="$(cd "$(dirname "$0")" && pwd)"
+./gh616_api "$SRCDIR/gh616" || exit 1
+HUNSPELL="${HUNSPELL:-$SRCDIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$SRCDIR/../libtool}"
+PERS=$(mktemp) || exit 1
+trap 'rm -f "$PERS"' EXIT HUP INT TERM
+# Personal additions, exclusions and word/model syntax retain issue #337's
+# conversion, but non-idempotent ICONV must not run twice.
+printf "foo’bar\nxfoo\nnew’word/seed’root\n*seed’root\n" > "$PERS"
+got=$(printf "foo’bar\nfoo'bar\nxfoo\nnew’words\nseed’root\n" |
+  $LIBTOOL --mode=execute "$HUNSPELL" -i UTF-8 -d "$SRCDIR/gh616" -p "$PERS" -l) || exit 1
+if [ "$got" != "seed’root" ]; then
+  echo "FAIL: personal dictionary ICONV: $got"
+  exit 1
+fi
+# @ adds a word in memory through the pipe protocol.
+: > "$PERS"
+got=$(printf '@xfoo\nxfoo\n' |
+  $LIBTOOL --mode=execute "$HUNSPELL" -i UTF-8 -d "$SRCDIR/gh616" -p "$PERS" -a) || exit 1
+if ! printf '%s\n' "$got" | grep -qx '\*'; then
+  echo "FAIL: pipe addition ICONV: $got"
+  exit 1
+fi

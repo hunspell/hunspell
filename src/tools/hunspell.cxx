@@ -534,10 +534,7 @@ void print_trace(void* userdata, int depth, const char* line) {
 int putdic(const std::string& in_word, Hunspell* pMS, const char* context = nullptr) {
   std::string word = chenc(in_word, ui_enc, dic_enc[0], context);
 
-  std::string buf;
-  pMS->input_conv(word.c_str(), buf);
-  word = std::move(buf);
-
+  // Runtime dictionary APIs apply ICONV to the word and model separately.
   if (word.empty())
     return 0;
 
