@@ -1022,7 +1022,7 @@ struct hentry* HunspellImpl::checkword(const std::string& w, int* info, std::str
         // - not a dictionary word with a typo and
         // - not two words written separately,
         // - or if it's an arbitrary number accepted by compound rules (e.g. 999%)
-        if (he && !isdigit(word[0]))
+        if (he && !isdigit((unsigned char)word[0]))
         {
           std::vector<std::string> slst;
           bool simple;

@@ -157,7 +157,7 @@ int LaTeXParser::look_pattern(int col) {
     const char* k = PATTERN[i].pat[col];
     if (!k)
       continue;
-    while ((*k != '\0') && (tolower(*j) == *k)) {
+    while ((*k != '\0') && (tolower((unsigned char)*j) == *k)) {
       j++;
       k++;
     }
@@ -249,8 +249,8 @@ bool LaTeXParser::next_token(std::string& t) {
         }
         break;
       case 3:  // command
-        if ((tolower(line[actual][head]) < 'a') ||
-            (tolower(line[actual][head]) > 'z')) {
+        if ((tolower((unsigned char)line[actual][head]) < 'a') ||
+            (tolower((unsigned char)line[actual][head]) > 'z')) {
           state = 0;
           head--;
         }

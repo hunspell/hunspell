@@ -86,7 +86,7 @@ int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
   for (unsigned int i = 0; i < len; i++) {
     const char* j = line[actual].c_str() + head;
     const char* k = p[i][column];
-    while ((*k != '\0') && (tolower(*j) == *k)) {
+    while ((*k != '\0') && (tolower((unsigned char)*j) == *k)) {
       j++;
       k++;
     }
@@ -201,7 +201,7 @@ bool XMLParser::next_token(const char* PATTERN[][2],
         }
         break;
       case ST_CHAR_ENTITY:  // SGML element
-        if ((tolower(line[actual][head]) == ';')) {
+        if ((tolower((unsigned char)line[actual][head]) == ';')) {
           state = prevstate;
           if (head)
             head--;
