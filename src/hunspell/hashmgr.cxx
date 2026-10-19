@@ -1036,7 +1036,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     }
 
     /* parse in the try string */
-    if ((line.compare(0, 4, "FLAG", 4) == 0) && line.size() > 4 && isspace(line[4])) {
+    if ((line.compare(0, 4, "FLAG", 4) == 0) && line.size() > 4 && isspace((unsigned char)line[4])) {
       if (flag_mode != FLAG_CHAR) {
         HUNSPELL_WARNING(stderr,
                          "error: line %d: multiple definitions of the FLAG "
@@ -1095,14 +1095,14 @@ int HashMgr::load_config(const char* affpath, const char* key) {
       }
     }
 
-    if ((line.compare(0, 2, "AF", 2) == 0) && line.size() > 2 && isspace(line[2])) {
+    if ((line.compare(0, 2, "AF", 2) == 0) && line.size() > 2 && isspace((unsigned char)line[2])) {
       if (!parse_aliasf(line, afflst)) {
         delete afflst;
         return 1;
       }
     }
 
-    if ((line.compare(0, 2, "AM", 2) == 0) && line.size() > 2 && isspace(line[2])) {
+    if ((line.compare(0, 2, "AM", 2) == 0) && line.size() > 2 && isspace((unsigned char)line[2])) {
       if (!parse_aliasm(line, afflst)) {
         delete afflst;
         return 1;
@@ -1123,7 +1123,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     // don't check the full affix file, yet
     if (((line.compare(0, 3, "SFX", 3) == 0) ||
          (line.compare(0, 3, "PFX", 3) == 0)) &&
-            line.size() > 3 && isspace(line[3]) &&
+            line.size() > 3 && isspace((unsigned char)line[3]) &&
             !reptable.empty()) // (REP table is in the end of Afrikaans aff file)
       break;
   }
