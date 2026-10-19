@@ -938,7 +938,7 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
     // or null terminating the shorter string
 
     std::string& tmpword = scratch.sfx_check_twosfx;
-    tmpword.assign(word, start);
+    tmpword.assign(word, start, std::string::npos);
     tmpword.resize(tmpl);
     tmpword.append(strip);
     tmpl += strip.size();
@@ -1004,7 +1004,7 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
     // or null terminating the shorter string
 
     std::string& tmpword = scratch.sfx_check_twosfx;
-    tmpword.assign(word, start);
+    tmpword.assign(word, start, std::string::npos);
     tmpword.resize(tmpl);
     tmpword.append(strip);
     tmpl += strip.size();
