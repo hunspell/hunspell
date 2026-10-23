@@ -304,7 +304,8 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
     if ((strcmp(denc, "UTF-8") != 0) && !vec_wordchars.empty()) {
       const char* wchars = vec_wordchars.c_str();
       size_t c1 = vec_wordchars.size();
-      size_t c2 = MAXLNLEN;
+      // keep one byte of text_conv for the terminator
+      size_t c2 = sizeof(text_conv) - 1;
       char* dest = text_conv;
       iconv_t conv = iconv_open("UTF-8", fix_encoding_name(denc));
       if (conv == (iconv_t)-1) {
@@ -314,6 +315,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       } else {
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
+        *dest = '\0';
         u8_u16(new_wordchars_utf16, text_conv);
         std::sort(new_wordchars_utf16.begin(), new_wordchars_utf16.end());
         wordchars_utf16 = new_wordchars_utf16.data();
