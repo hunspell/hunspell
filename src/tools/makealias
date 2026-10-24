@@ -45,7 +45,7 @@ AFF=`basename $2 .aff`
 
 # Alias definitions must be between FLAG type definition and SFX/PFX lines.
 # copy aff content before SFX/PFX lines
-sed '/^[SP]FX/,$d;s/\s\+$//' $2 >"${AFF}_alias.aff"
+sed '/^[SP]FX/,$d;s/[[:space:]]*$//' $2 >"${AFF}_alias.aff"
 
 awk $AWK_ARG -v affixes="${AFF}_alias.$$" '
 # Mirror HashMgr::load_tables: a morph-field section is introduced by
@@ -240,7 +240,7 @@ END {
         for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>"'${AFF}_alias.aff'"
     }
 }' $1 $2 >"${DIC}_alias.dic" || { rm -f "${AFF}_alias.$$"; exit 1; }
-sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
+sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/[[:space:]]*$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
 
 rm ${AFF}_alias.$$
