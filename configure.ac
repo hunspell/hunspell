@@ -66,25 +66,22 @@ AC_ARG_WITH(
 	[with_ui=no]
 )
 AS_IF([test "x$with_ui" != xno], [
-	AC_CHECK_LIB([ncursesw],[tparm],[
+	AC_CHECK_LIB([ncursesw],[initscr],[
 		CURSESLIB=-lncursesw
         AC_CHECK_LIB([tinfow],[tgetent], [
             CURSESLIB="$CURSESLIB -ltinfow"
         ])
-	],[AC_CHECK_LIB([curses],[tparm],[
+	],[AC_CHECK_LIB([curses],[initscr],[
 		CURSESLIB=-lcurses
         AC_CHECK_LIB([tinfo],[tgetent], [
             CURSESLIB="$CURSESLIB -ltinfo"
         ])
-	],[AC_CHECK_LIB([ncurses],[tparm],[
+	],[AC_CHECK_LIB([ncurses],[initscr],[
 		CURSESLIB=-lncurses
         AC_CHECK_LIB([tinfo],[tgetent], [
             CURSESLIB="$CURSESLIB -ltinfo"
         ])
-	],
-    [-ltinfo])],
-    [-ltinfo])],
-    [-ltinfow])
+	])])])
    if test "$CURSESLIB" != "" ; then
 	echo Compiling with curses user interface.
 	AC_CHECK_HEADERS([curses.h])
@@ -110,8 +107,8 @@ AS_IF([test "x$with_readline" != xno],
 		TERMLIB=-ltinfow
     ],[AC_CHECK_LIB([tinfo],[tgetent], [
 		TERMLIB=-ltinfo
-    ],[AC_CHECK_LIB([curses],[tparm],[
-		TERMLIB=-lncurses
+    ],[AC_CHECK_LIB([curses],[tgetent],[
+		TERMLIB=-lcurses
 	],[AC_CHECK_LIB([termcap],[tgetent],[
 		TERMLIB=-ltermcap
 	])])])])
