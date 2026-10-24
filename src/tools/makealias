@@ -90,7 +90,8 @@ BEGIN{
       # load old AF and AM fields
       while ((getline var < mindiff) > 0) {
           if (var~/^AF /) {
-                  b[n] = gensub(" #.*$", "", 1, substr(var, 4))
+                  b[n] = substr(var, 4)
+                  sub(/ #.*$/, "", b[n])
                   a[b[n]] = n
                   n = n + 1
           }
