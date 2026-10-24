@@ -1324,11 +1324,18 @@ int dialog(TextParser* parser,
   char firstletter = '\0';
 
   while ((c = getch())) {
+    if ((firstletter != '\0') && ((c < '0') || (c > '9'))) {
+      firstletter = '\0';
+      dialogscreen(parser, token, filename, forbidden, wlst);
+      if (c == 27 || c == 127 || c == 8 || c == KEY_BACKSPACE)
+        continue;
+    }
     switch (c) {
       case '0':
       case '1':
         if ((firstletter == '\0') && (wlst.size() > 10)) {
           firstletter = c;
+          printw("%c", c);
           break;
         }
       // fallthrough
@@ -1344,9 +1351,12 @@ int dialog(TextParser* parser,
         if (firstletter == '1') {
           c += 10;
         }
+        firstletter = '\0';
         c -= '0';
-        if (c >= static_cast<int>(wlst.size()))
+        if (c >= static_cast<int>(wlst.size())) {
+          dialogscreen(parser, token, filename, forbidden, wlst);
           break;
+        }
         if (checkapos) {
           std::string sbuf(wlst[c]);
           mystrrep(sbuf, "'", UTF8_APOS);
