@@ -11,7 +11,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIRS([m4])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 # The major and minor parts form the .pc file library name. All three
 # parts are substituted into the public hunversion.h header.

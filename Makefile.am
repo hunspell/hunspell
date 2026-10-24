@@ -11,3 +11,7 @@ pkgconf_DATA = hunspell.pc
 
 EXTRA_DIST = license.myspell license.hunspell \
         ChangeLog.O COPYING.LESSER COPYING.MPL hunspell.pc.in CMakeLists.txt
+
+# The tarball names it README, the name packagers install
+dist-hook:
+	cp -p $(srcdir)/README.md $(distdir)/README
