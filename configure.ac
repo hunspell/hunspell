@@ -53,6 +53,13 @@ dnl internationalization macros
 AM_GNU_GETTEXT_VERSION(0.20)
 AM_GNU_GETTEXT([external])
 
+AC_ARG_ENABLE([tools],
+	[AS_HELP_STRING([--disable-tools],[build only the library, without the tools, their translations and the tests])],
+	[],
+	[enable_tools=yes]
+)
+AM_CONDITIONAL([BUILD_TOOLS], [test "x$enable_tools" != xno])
+
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages],[
 	AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")
 	CPPFLAGS="$CPPFLAGS -DHUNSPELL_WARNING_ON"
