@@ -26,8 +26,14 @@ AC_SUBST(PC_CFLAGS)
 
 # In-tree consumers need HUNSPELL_STATIC for static-only builds so the
 # public headers skip the dllimport/dllexport annotations on Windows.
-AS_IF([test "x$enable_shared" = xno], [HUNSPELL_STATIC_DEFINE=-DHUNSPELL_STATIC])
+# The installed hunvisapi.h records it too, for consumers without pkg-config.
+HUNSPELL_STATIC_ONLY=0
+AS_IF([test "x$enable_shared" = xno], [
+	HUNSPELL_STATIC_DEFINE=-DHUNSPELL_STATIC
+	HUNSPELL_STATIC_ONLY=1
+])
 AC_SUBST(HUNSPELL_STATIC_DEFINE)
+AC_SUBST(HUNSPELL_STATIC_ONLY)
 
 # Checks for programs.
 AC_PROG_CXX
