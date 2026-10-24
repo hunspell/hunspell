@@ -1,3 +1,8 @@
+XXXX-XX-XX: Hunspell 1.7.6 release:
+  - add, add_with_flags, add_with_affix and remove apply the dictionary's
+    ICONV rules to the word, as spell does, so a caller that converted the
+    word itself must stop doing so (#616)
+
 2026-10-04: Hunspell 1.7.5 release:
   - -D lists only the dictionaries directly in each search folder, and
     no longer recurses into subfolders or lists hyphenation tables
