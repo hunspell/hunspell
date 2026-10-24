@@ -115,11 +115,14 @@ AS_IF([test "x$with_readline" != xno],
 	LDSAVE=$LDFLAGS
 	LDFLAGS="$LDFLAGS $TERMLIB"
 	AC_CHECK_LIB([readline],[readline],[
-		AC_CHECK_HEADER([readline/readline.h],[
+		AC_CHECK_DECL([rl_set_key],[
 			READLINELIB="-lreadline $TERMLIB"
 			echo Using the readline library.
 			AC_DEFINE([HAVE_READLINE],[1],
 			["Define if you have fancy command input editing with Readline"])
+		],[],[
+#include <stdio.h>
+#include <readline/readline.h>
 		])
 	])
 ])
