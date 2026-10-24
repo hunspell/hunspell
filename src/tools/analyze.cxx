@@ -41,7 +41,7 @@
 
 #include "../hunspell/hunspell.hxx"
 
-#ifndef WIN32
+#ifndef _WIN32
 using namespace std;
 #endif
 

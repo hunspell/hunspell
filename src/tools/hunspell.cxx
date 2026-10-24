@@ -67,7 +67,7 @@
 // for debugging only
 //#define LOG
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 
 #define LIBDIR "C:\\Hunspell\\"
@@ -619,7 +619,7 @@ int save_dicwords(std::vector<std::string>& w) {
     return -1;
   }
   std::string sbuf(HOME);
-#ifndef WIN32
+#ifndef _WIN32
   sbuf.append("/");
 #endif
   size_t offset = sbuf.size();
@@ -701,7 +701,7 @@ static bool secure_filename(const char* filename) {
 }
 
 char* mymkdtemp(char *templ) {
-#ifdef WIN32
+#ifdef _WIN32
   (void)templ;
   char *odftmpdir = tmpnam(NULL);
   if (!odftmpdir) {
@@ -1790,7 +1790,7 @@ char* exist2(char* dir, int len, const char* name, const char* ext) {
 // the dict-* subfolders of a LibreOffice share/extensions folder, sorted by name
 std::vector<std::string> list_dict_extensions(const std::string& dir) {
   std::vector<std::string> subdirs;
-#if !defined(WIN32) || defined(__MINGW32__)
+#if !defined(_WIN32) || defined(__MINGW32__)
   DIR* d = opendir(dir.c_str());
   if (!d)
     return subdirs;
@@ -1824,7 +1824,7 @@ int listdicpath(char* dir, int len) {
   const char* sep = (len == 0) ? "" : DIRSEP;
   buf.assign(dir, len);
   buf.append(sep);
-#if !defined(WIN32) || defined(__MINGW32__)
+#if !defined(_WIN32) || defined(__MINGW32__)
   DIR* d = opendir(buf.c_str());
   if (!d)
     return 0;
@@ -2224,7 +2224,7 @@ int main(int argc, char** argv) {
     if (getenv("DICPATH")) {
       add_dirs(getenv("DICPATH"), "");
     }
-#ifndef WIN32
+#ifndef _WIN32
     // XDG Base Directory Specification: relative entries are invalid, and an unset or empty
     // variable means its default, ~/.local/share or /usr/local/share:/usr/share
     const char* xdg_data_home = getenv("XDG_DATA_HOME");
@@ -2328,7 +2328,7 @@ int main(int argc, char** argv) {
   /* open the private dictionaries */
   if (HOME) {
     buf.assign(HOME);
-#ifndef WIN32
+#ifndef _WIN32
     buf.append("/");
 #endif
     buf.append(DICBASENAME);
@@ -2342,7 +2342,7 @@ int main(int argc, char** argv) {
         load_privdic(buf.c_str(), pMS[0]);
     } else {
       buf.assign(HOME);
-#ifndef WIN32
+#ifndef _WIN32
       buf.append("/");
 #endif
       buf.append(privdicname);
