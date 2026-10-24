@@ -9,11 +9,6 @@ TOOLS="$SRCDIR/../src/tools"
 HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
 
-if ! command -v gawk >/dev/null 2>&1; then
-    echo "SKIP: gh211 (gawk not available)"
-    exit 77
-fi
-
 WORK=$(mktemp -d) || exit 1
 trap 'rm -rf "$WORK"' EXIT
 cd "$WORK" || exit 1
