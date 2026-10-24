@@ -3,6 +3,8 @@ SRCDIR="$(cd "$(dirname "$0")" && pwd)"
 ./gh616_api "$SRCDIR/gh616" || exit 1
 HUNSPELL="${HUNSPELL:-$SRCDIR/../src/tools/hunspell}"
 LIBTOOL="${LIBTOOL:-$SRCDIR/../libtool}"
+# The personal dictionary is read in the encoding of the locale
+export LC_ALL=C.UTF-8
 PERS=$(mktemp) || exit 1
 trap 'rm -f "$PERS"' EXIT HUP INT TERM
 # Personal additions, exclusions and word/model syntax retain issue #337's
