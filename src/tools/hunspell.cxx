@@ -123,9 +123,9 @@
 #include "../parsers/odfparser.hxx"
 
 #define LIBDIR                \
-  DATADIR "/hunspell:"        \
-  DATADIR "/myspell:"         \
-  DATADIR "/myspell/dicts:"   \
+  HUNSPELL_DATADIR "/hunspell:"        \
+  HUNSPELL_DATADIR "/myspell:"         \
+  HUNSPELL_DATADIR "/myspell/dicts:"   \
   "/usr/share/hunspell:"      \
   "/usr/share/myspell:"       \
   "/usr/share/myspell/dicts:" \
