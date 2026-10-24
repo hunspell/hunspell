@@ -287,6 +287,7 @@ sug2.sug \
 sug2.wrong \
 wordpair.aff \
 wordpair.dic \
+wordpair.good \
 wordpair.wrong \
 sugutf.aff \
 sugutf.dic \
@@ -302,6 +303,7 @@ ph.sug \
 ph.wrong \
 ph2.aff \
 ph2.dic \
+ph2.good \
 ph2.sug \
 ph2.wrong \
 alias.aff \
@@ -746,9 +748,11 @@ forceucase.wrong \
 nepali.aff \
 nepali.dic \
 nepali.good \
+nepali.wrong \
 hu.aff \
 hu.dic \
 hu.good \
+hu.wrong \
 warn.aff \
 warn.dic \
 warn.good \
