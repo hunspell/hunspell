@@ -47,7 +47,7 @@ AFF=`basename $2 .aff`
 # copy aff content before SFX/PFX lines
 sed '/^[SP]FX/,$d;s/\s\+$//' $2 >"${AFF}_alias.aff"
 
-awk $AWK_ARG '
+awk $AWK_ARG -v affixes="${AFF}_alias.$$" '
 # Mirror HashMgr::load_tables: a morph-field section is introduced by
 # a tab, or by a (whitespace + 2 chars + colon) marker like " po:".
 # Headwords may legitimately contain spaces, so a plain space cannot
@@ -226,10 +226,10 @@ FILENAME ~ /.aff$/ && /^[PS]FX/ && NF > 4 {
         }
         end = " " a2[$0]
     }
-    print begin end >>"/dev/stderr"
+    print begin end >>affixes
     next
 }
-FILENAME ~ /.aff$/ { print $0 >>"/dev/stderr" }
+FILENAME ~ /.aff$/ { print $0 >>affixes }
 END {
     if (n>1) {
         print "AF", n-1 >>"'${AFF}_alias.aff'"
@@ -239,7 +239,7 @@ END {
         print "AM", m-1 >>"'${AFF}_alias.aff'"
         for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>"'${AFF}_alias.aff'"
     }
-}' $1 $2 >"${DIC}_alias.dic" 2>"${AFF}_alias.$$"
+}' $1 $2 >"${DIC}_alias.dic" || { rm -f "${AFF}_alias.$$"; exit 1; }
 sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/\s\+$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
 
