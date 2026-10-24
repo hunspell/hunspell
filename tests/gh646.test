@@ -2,7 +2,9 @@
 DIR="$(dirname "$0")"
 HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
-out=$(timeout 10 $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh646" -u3 "$DIR/gh646.txt" 2>&1)
+TIMEOUT=
+command -v timeout > /dev/null 2>&1 && TIMEOUT="timeout 10"
+out=$($TIMEOUT $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh646" -u3 "$DIR/gh646.txt" 2>&1)
 rc=$?
 if [ $rc -ne 0 ]; then
     echo "FAIL: gh646 hung or crashed with exit code $rc"
