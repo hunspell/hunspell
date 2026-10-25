@@ -73,15 +73,8 @@
 #define LIBDIR "C:\\Hunspell\\"
 #define USEROOODIR {                                    \
   "AppData\\Roaming\\hunspell",                         \
-  "Application Data\\OpenOffice.org 2\\user\\wordbook", \
   "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
 }
-#define OOODIR                                                 \
-  "C:\\Program files\\OpenOffice.org 2.4\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.3\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.2\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.1\\share\\dict\\ooo\\;" \
-  "C:\\Program files\\OpenOffice.org 2.0\\share\\dict\\ooo\\"
 #define HOME getenv("USERPROFILE")
 #define LODIR                                               \
   "C:\\Program Files\\LibreOffice\\share\\extensions;"      \
@@ -131,24 +124,8 @@
   "/usr/share/myspell/dicts:" \
   "/Library/Spelling"
 #define USEROOODIR {                       \
-  ".openoffice.org/3/user/wordbook",       \
-  ".openoffice.org2/user/wordbook",        \
-  ".openoffice.org2.0/user/wordbook",      \
   ".config/libreoffice/4/user/wordbook",   \
   "Library/Spelling" }
-#define OOODIR                                       \
-  "/opt/openoffice.org/basis3.0/share/dict/ooo:"     \
-  "/usr/lib/openoffice.org/basis3.0/share/dict/ooo:" \
-  "/opt/openoffice.org2.4/share/dict/ooo:"           \
-  "/usr/lib/openoffice.org2.4/share/dict/ooo:"       \
-  "/opt/openoffice.org2.3/share/dict/ooo:"           \
-  "/usr/lib/openoffice.org2.3/share/dict/ooo:"       \
-  "/opt/openoffice.org2.2/share/dict/ooo:"           \
-  "/usr/lib/openoffice.org2.2/share/dict/ooo:"       \
-  "/opt/openoffice.org2.1/share/dict/ooo:"           \
-  "/usr/lib/openoffice.org2.1/share/dict/ooo:"       \
-  "/opt/openoffice.org2.0/share/dict/ooo:"           \
-  "/usr/lib/openoffice.org2.0/share/dict/ooo"
 #define HOME getenv("HOME")
 #define LODIR                                       \
   "/opt/libreoffice/share/extensions:"              \
@@ -2242,7 +2219,6 @@ int main(int argc, char** argv) {
       for (auto& i : userooodir) {
         add_dirs(std::string(HOME) + DIRSEP + i, "");
       }
-      add_dirs(OOODIR, "");
       // LibreOffice installs each dictionary extension in its own share/extensions/dict-XX
       size_t first_lodir = dirs.size();
       add_dirs(LODIR, "");
