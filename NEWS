@@ -2,6 +2,22 @@ XXXX-XX-XX: Hunspell 1.7.6 release:
   - add, add_with_flags, add_with_affix and remove apply the dictionary's
     ICONV rules to the word, as spell does, so a caller that converted the
     word itself must stop doing so (#616)
+  - The hunspell tool no longer searches the OpenOffice.org 2.x and 3
+    folders or LibreOffice's user wordbook folder for dictionaries, and
+    searches /Library/Spelling and ~/Library/Spelling only on macOS
+  - On Windows, search the share\hunspell, share\myspell and
+    share\myspell\dicts folders of the installation that holds
+    hunspell.exe
+  - New configure option --disable-tools to build and install only the
+    library
+  - A static-only build records that in the installed hunvisapi.h, so
+    its users need not define HUNSPELL_STATIC
+  - Install the Hungarian hunspell.5 in hu/man5
+  - Use Mozilla's own FileMgr and csutil code in MOZILLA_CLIENT builds
+  - Man page: the fallback dictionary is en_US
+  - Build fixes: MinGW, the BSDs, macOS, makealias without gawk or GNU
+    sed, readline and curses detection, and the release tarball ships
+    the CMake files and all the test data
 
 2026-10-04: Hunspell 1.7.5 release:
   - -D lists only the dictionaries directly in each search folder, and
