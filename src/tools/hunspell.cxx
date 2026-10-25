@@ -121,11 +121,9 @@
   HUNSPELL_DATADIR "/myspell/dicts:"   \
   "/usr/share/hunspell:"      \
   "/usr/share/myspell:"       \
-  "/usr/share/myspell/dicts:" \
-  "/Library/Spelling"
+  "/usr/share/myspell/dicts"
 #define USEROOODIR {                       \
-  ".config/libreoffice/4/user/wordbook",   \
-  "Library/Spelling" }
+  ".config/libreoffice/4/user/wordbook" }
 #define HOME getenv("HOME")
 #define LODIR                                       \
   "/opt/libreoffice/share/extensions:"              \
@@ -2214,11 +2212,17 @@ int main(int argc, char** argv) {
              "/hunspell", true);
 #endif
     add_dirs(LIBDIR, "");
+#ifdef __APPLE__
+    add_dirs("/Library/Spelling", "");
+#endif
     if (HOME) {
       const char * userooodir[] = USEROOODIR;
       for (auto& i : userooodir) {
         add_dirs(std::string(HOME) + DIRSEP + i, "");
       }
+#ifdef __APPLE__
+      add_dirs(std::string(HOME) + "/Library/Spelling", "");
+#endif
       // LibreOffice installs each dictionary extension in its own share/extensions/dict-XX
       size_t first_lodir = dirs.size();
       add_dirs(LODIR, "");
