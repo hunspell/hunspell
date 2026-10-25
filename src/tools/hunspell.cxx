@@ -71,10 +71,6 @@
 #include <windows.h>
 
 #define LIBDIR "C:\\Hunspell\\"
-#define USEROOODIR {                                    \
-  "AppData\\Roaming\\hunspell",                         \
-  "AppData\\Roaming\\LibreOffice\\4\\user\\wordbook"    \
-}
 #define HOME getenv("USERPROFILE")
 #define LODIR                                               \
   "C:\\Program Files\\LibreOffice\\share\\extensions;"      \
@@ -122,8 +118,6 @@
   "/usr/share/hunspell:"      \
   "/usr/share/myspell:"       \
   "/usr/share/myspell/dicts"
-#define USEROOODIR {                       \
-  ".config/libreoffice/4/user/wordbook" }
 #define HOME getenv("HOME")
 #define LODIR                                       \
   "/opt/libreoffice/share/extensions:"              \
@@ -2216,10 +2210,9 @@ int main(int argc, char** argv) {
     add_dirs("/Library/Spelling", "");
 #endif
     if (HOME) {
-      const char * userooodir[] = USEROOODIR;
-      for (auto& i : userooodir) {
-        add_dirs(std::string(HOME) + DIRSEP + i, "");
-      }
+#ifdef _WIN32
+      add_dirs(std::string(HOME) + "\\AppData\\Roaming\\hunspell", "");
+#endif
 #ifdef __APPLE__
       add_dirs(std::string(HOME) + "/Library/Spelling", "");
 #endif
