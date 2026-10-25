@@ -1788,6 +1788,25 @@ std::vector<std::string> list_dict_extensions(const std::string& dir) {
   return subdirs;
 }
 
+#ifdef _WIN32
+// the share folder beside the folder of this executable, so C:\msys64\mingw64\share for
+// C:\msys64\mingw64\bin\hunspell.exe
+std::string exe_datadir() {
+  char exe[MAX_PATH];
+  DWORD len = GetModuleFileNameA(nullptr, exe, MAX_PATH);
+  if (len == 0 || len == MAX_PATH)
+    return std::string();
+  std::string dir(exe, len);
+  for (int i = 0; i < 2; ++i) {
+    size_t sep = dir.find_last_of("\\/");
+    if (sep == std::string::npos)
+      return std::string();
+    dir.resize(sep);
+  }
+  return dir + "\\share";
+}
+#endif
+
 int listdicpath(char* dir, int len) {
   std::string buf;
   const char* sep = (len == 0) ? "" : DIRSEP;
@@ -2206,6 +2225,11 @@ int main(int argc, char** argv) {
              "/hunspell", true);
 #endif
     add_dirs(LIBDIR, "");
+#ifdef _WIN32
+    std::string datadir = exe_datadir();
+    if (!datadir.empty())
+      add_dirs(datadir + "\\hunspell;" + datadir + "\\myspell;" + datadir + "\\myspell\\dicts", "");
+#endif
 #ifdef __APPLE__
     add_dirs("/Library/Spelling", "");
 #endif
