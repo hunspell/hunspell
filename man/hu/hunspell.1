@@ -64,8 +64,8 @@ töltődnek be a kiegészítő szótárak (ami pedig meghatározza
 a javaslattevést). Az első szótár mindig alapszótár.
 .PP
 Az alapértelmezett szótár a környezet nyelvi beállításától függ
-az Unix rendszereken. Locale hiányában a
-.BR /usr/share/hunspell/default
+az Unix rendszereken. Locale hiányában az
+.BR en_US
 az alapértelmezett szótár. 
 .PP
 A megadott útvonal lehet abszolút és relatív is. Relatív
@@ -122,7 +122,7 @@ Ha még nem volna, telepítsük az unzip programot a kapcsoló használata előt
 A felhasználó saját szótárának beállítására szolgál.
 
 Az alapértelmezett saját szótár a
-.BR $HOME/.hunspell_default
+.BR $HOME/.hunspell_en_US
 állomány. Ha szótárat is megadunk a
 .I \-d
 kapcsolóval, vagy a
@@ -347,13 +347,7 @@ A saját szótár helyének megadására szolgál. Szerepe megegyezik a
 .I \-p
 kapcsolóval.
 .SH ÁLLOMÁNYOK
-.BI /usr/share/default.aff
-Az alapértelmezett ragozási táblázat. Lásd hunspell(4).
-.PP
-.BI /usr/share/default.dic
-Az alapértelmezett szótár az előző ragozási táblázathoz.
-Lásd hunspell(4).
-.BI $HOME/.hunspell_default
+.BI $HOME/.hunspell_szótárnév
 Az alapértelmezett saját szótár. Az állományt létrehozza
 a Hunspell, ha nem létezik. Lásd ispell(1).
 .SH LÁSD MÉG
