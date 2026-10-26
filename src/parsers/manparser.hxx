@@ -49,7 +49,7 @@ class ManParser : public TextParser {
  protected:
  public:
   explicit ManParser(const char* wc);
-  ManParser(const w_char* wordchars, int len);
+  ManParser(const w_char* wordchars, size_t len);
   virtual ~ManParser();
 
   virtual bool next_token(std::string&);

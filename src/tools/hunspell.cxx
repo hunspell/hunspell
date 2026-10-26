@@ -175,7 +175,7 @@ std::string wordchars;
 char* dicpath = nullptr;
 const w_char* wordchars_utf16 = nullptr;
 std::vector<w_char> new_wordchars_utf16;
-int wordchars_utf16_len;
+size_t wordchars_utf16_len;
 char* dicname = nullptr;
 char* privdicname = nullptr;
 const char* currentfilename = nullptr;
@@ -346,7 +346,8 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         if (res != (size_t)-1) {
           std::vector<w_char> w;
           u8_u16(w, std::string(u8, dest));
-          unsigned short idx = w.empty() ? 0 : (w[0].h << 8) + w[0].l;
+          // h and l are single bytes, so the combined code fits in 16 bits.
+          unsigned short idx = w.empty() ? 0 : static_cast<unsigned short>((w[0].h << 8) + w[0].l);
           if (unicodeisalpha(idx)) {
             *pletters = (char)i;
             pletters++;
@@ -609,7 +610,7 @@ int save_dicwords(std::vector<std::string>& w) {
 char* mystrdup(const char* s) {
   char* d = nullptr;
   if (s) {
-    int sl = strlen(s) + 1;
+    size_t sl = strlen(s) + 1;
     d = (char*)malloc(sl);
     if (d)
       memcpy(d, s, sl);
@@ -857,8 +858,8 @@ nextline:
 
     if (pos >= 0) {
       parser->put_line(buf + pos);
-      int prev_byte_offset = 0;
-      int prev_char_offset = 0;
+      size_t prev_byte_offset = 0;
+      size_t prev_char_offset = 0;
       std::string token;
       while (parser->next_token(token)) {
         token = parser->get_word(token);
@@ -996,10 +997,10 @@ nextline:
               }
               fflush(stdout);
             } else {
-              int byte_offset = parser->get_tokenpos() + pos;
-              int char_offset = prev_char_offset;
+              size_t byte_offset = parser->get_tokenpos() + pos;
+              size_t char_offset = prev_char_offset;
               if (io_is_utf8) {
-                for (int i = prev_byte_offset; i < byte_offset; i++) {
+                for (size_t i = prev_byte_offset; i < byte_offset; i++) {
                   if ((buf[i] & 0xc0) != 0x80)
                     char_offset++;
                 }
@@ -1014,9 +1015,9 @@ nextline:
                 j = chenc(j, dic_enc[d], io_enc);
               }
               if (wlst.empty()) {
-                fprintf(stdout, "# %s %d", token.c_str(), char_offset);
+                fprintf(stdout, "# %s %zu", token.c_str(), char_offset);
               } else {
-                fprintf(stdout, "& %s %u %d: ", token.c_str(), static_cast<unsigned int>(wlst.size()), char_offset);
+                fprintf(stdout, "& %s %u %zu: ", token.c_str(), static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", wlst[0].c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
@@ -1040,10 +1041,10 @@ nextline:
               }
               fflush(stdout);
             } else {
-              int byte_offset = parser->get_tokenpos() + pos;
-              int char_offset = prev_char_offset;
+              size_t byte_offset = parser->get_tokenpos() + pos;
+              size_t char_offset = prev_char_offset;
               if (io_is_utf8) {
-                for (int i = prev_byte_offset; i < byte_offset; i++) {
+                for (size_t i = prev_byte_offset; i < byte_offset; i++) {
                   if ((buf[i] & 0xc0) != 0x80)
                     char_offset++;
                 }
@@ -1059,10 +1060,10 @@ nextline:
               }
               std::string token_ui = chenc(token, io_enc, ui_enc);
               if (wlst.empty()) {
-                fprintf(stdout, "# %s %d", token_ui.c_str(),
+                fprintf(stdout, "# %s %zu", token_ui.c_str(),
                         char_offset);
               } else {
-                fprintf(stdout, "& %s %u %d: ", token_ui.c_str(),
+                fprintf(stdout, "& %s %u %zu: ", token_ui.c_str(),
                         static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", wlst[0].c_str());
               }
@@ -1840,7 +1841,7 @@ std::string exe_datadir() {
 }
 #endif
 
-int listdicpath(char* dir, int len) {
+int listdicpath(char* dir, size_t len) {
   std::string buf;
   const char* sep = (len == 0) ? "" : DIRSEP;
   buf.assign(dir, len);

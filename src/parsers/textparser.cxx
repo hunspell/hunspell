@@ -68,7 +68,7 @@ TextParser::TextParser(const char* wordchars) {
   init(wordchars);
 }
 
-TextParser::TextParser(const w_char* wordchars, int len) {
+TextParser::TextParser(const w_char* wordchars, size_t len) {
   init(wordchars, len);
 }
 
@@ -121,7 +121,7 @@ void TextParser::init(const char* wordchars) {
   }
 }
 
-void TextParser::init(const w_char* wc_utf8, int len) {
+void TextParser::init(const w_char* wc_utf8, size_t len) {
   actual = 0;
   head = 0;
   token = 0;

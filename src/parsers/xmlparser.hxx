@@ -48,7 +48,7 @@
 class XMLParser : public TextParser {
  public:
   explicit XMLParser(const char* wc);
-  XMLParser(const w_char* wordchars, int len);
+  XMLParser(const w_char* wordchars, size_t len);
   bool next_token(const char* p[][2],
                   unsigned int len,
                   const char* p2[][2],

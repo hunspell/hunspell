@@ -68,10 +68,10 @@ class TextParser {
   int utf8;    // UTF-8 character encoding
   int next_char(const char* line, size_t* pos);
   const w_char* wordchars_utf16;
-  int wclen;
+  size_t wclen;
 
  public:
-  TextParser(const w_char* wordchars, int len);
+  TextParser(const w_char* wordchars, size_t len);
   explicit TextParser(const char* wc);
   virtual ~TextParser();
 
@@ -94,7 +94,7 @@ class TextParser {
   bool alloc_token(size_t token, size_t* head, std::string& out);
 private:
   void init(const char*);
-  void init(const w_char* wordchars, int len);
+  void init(const w_char* wordchars, size_t len);
 };
 
 #endif

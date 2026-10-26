@@ -51,7 +51,7 @@ ManParser::ManParser(const char* wordchars)
   : TextParser(wordchars) {
 }
 
-ManParser::ManParser(const w_char* wordchars, int len)
+ManParser::ManParser(const w_char* wordchars, size_t len)
   : TextParser(wordchars, len) {
 }
 

@@ -75,7 +75,7 @@ XMLParser::XMLParser(const char* wordchars)
     , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
-XMLParser::XMLParser(const w_char* wordchars, int len)
+XMLParser::XMLParser(const w_char* wordchars, size_t len)
     : TextParser(wordchars, len)
     , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
