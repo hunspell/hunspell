@@ -1653,13 +1653,15 @@ int AffixMgr::defcpd_check(hentry*** words,
           return 1;
       }
       // backtrack
-      if (bt)
-        do {
-          ok = 1;
-          btinfo[bt - 1].btnum--;
-          pp = btinfo[bt - 1].btpp;
-          wp = btinfo[bt - 1].btwp + (signed short)btinfo[bt - 1].btnum;
-        } while ((btinfo[bt - 1].btnum < 0) && --bt);
+      while (bt) {
+        ok = 1;
+        btinfo[bt - 1].btnum--;
+        pp = btinfo[bt - 1].btpp;
+        wp = btinfo[bt - 1].btwp + (signed short)btinfo[bt - 1].btnum;
+        if (btinfo[bt - 1].btnum >= 0)
+          break;
+        --bt;
+      }
     } while (bt);
 
     if (ok && ok2 && (!all || (i.size() <= pp)))
