@@ -206,8 +206,8 @@ class AffixMgr {
   AffixMgr(const char* affpath, const std::vector<std::unique_ptr<HashMgr>>& ptr, const char* key = nullptr);
   ~AffixMgr();
   struct hentry* affix_check(const std::string& word,
-                             int start,
-                             int len,
+                             size_t start,
+                             size_t len,
                              AffixScratch& scratch,
                              const unsigned short needflag = (unsigned short)0,
                              char in_compound = IN_CPD_NOT,
@@ -215,23 +215,23 @@ class AffixMgr {
                              PfxEntry** found_pfx = nullptr,
                              SfxEntry** found_sfx = nullptr);
   struct hentry* prefix_check(const std::string& word,
-                              int start,
-                              int len,
+                              size_t start,
+                              size_t len,
                               char in_compound,
                               AffixScratch& scratch,
                               const FLAG needflag = FLAG_NULL,
                               const FLAG avoidflag = FLAG_NULL);
   inline int isSubset(const char* s1, const char* s2);
   struct hentry* prefix_check_twosfx(const std::string& word,
-                                     int start,
-                                     int len,
+                                     size_t start,
+                                     size_t len,
                                      char in_compound,
                                      AffixScratch& scratch,
                                      const FLAG needflag = FLAG_NULL);
-  inline int isRevSubset(const char* s1, const char* end_of_s2, int len);
+  inline int isRevSubset(const char* s1, const char* end_of_s2, size_t len);
   struct hentry* suffix_check(const std::string& word,
-                              int start,
-                              int len,
+                              size_t start,
+                              size_t len,
                               int sfxopts,
                               PfxEntry* ppfx,
                               AffixScratch& scratch,
@@ -240,28 +240,28 @@ class AffixMgr {
                               char in_compound = IN_CPD_NOT,
                               const FLAG avoidflag = FLAG_NULL);
   struct hentry* suffix_check_twosfx(const std::string& word,
-                                     int start,
-                                     int len,
+                                     size_t start,
+                                     size_t len,
                                      int sfxopts,
                                      PfxEntry* ppfx,
                                      AffixScratch& scratch,
                                      const FLAG needflag = FLAG_NULL);
 
   std::string affix_check_morph(const std::string& word,
-                                int start,
-                                int len,
+                                size_t start,
+                                size_t len,
                                 AffixScratch& scratch,
                                 const FLAG needflag = FLAG_NULL,
                                 char in_compound = IN_CPD_NOT);
   std::string prefix_check_morph(const std::string& word,
-                                 int start,
-                                 int len,
+                                 size_t start,
+                                 size_t len,
                                  char in_compound,
                                  AffixScratch& scratch,
                                  const FLAG needflag = FLAG_NULL);
   std::string suffix_check_morph(const std::string& word,
-                                 int start,
-                                 int len,
+                                 size_t start,
+                                 size_t len,
                                  int sfxopts,
                                  PfxEntry* ppfx,
                                  AffixScratch& scratch,
@@ -276,21 +276,21 @@ class AffixMgr {
                                         const FLAG needflag);
 
   std::string prefix_check_twosfx_morph(const std::string& word,
-                                        int start,
-                                        int len,
+                                        size_t start,
+                                        size_t len,
                                         char in_compound,
                                         AffixScratch& scratch,
                                         const FLAG needflag = FLAG_NULL);
   std::string suffix_check_twosfx_morph(const std::string& word,
-                                        int start,
-                                        int len,
+                                        size_t start,
+                                        size_t len,
                                         int sfxopts,
                                         PfxEntry* ppfx,
                                         AffixScratch& scratch,
                                         const FLAG needflag = FLAG_NULL);
 
   std::string morphgen(const char* ts,
-                       int wl,
+                       size_t wl,
                        const unsigned short* ap,
                        unsigned short al,
                        const char* morph,
@@ -310,12 +310,12 @@ class AffixMgr {
 
   short get_syllable(const std::string& word);
   int cpdrep_check(const std::string& word,
-                   int len,
+                   size_t len,
                    AffixScratch& scratch,
                    bool& timelimit_exceeded,
                    std::chrono::steady_clock::time_point clock_time_start);
   int cpdwordpair_check(const std::string& word,
-                        int len,
+                        size_t len,
                         AffixScratch& scratch,
                         bool& timelimit_exceeded,
                         std::chrono::steady_clock::time_point clock_time_start);
@@ -335,7 +335,7 @@ class AffixMgr {
                    hentry* rv,
                    hentry** rwords,
                    char all);
-  int cpdcase_check(const std::string& word, int len);
+  int cpdcase_check(const std::string& word, size_t len);
   inline int candidate_check(const std::string& word, AffixScratch& scratch);
   void setcminmax(size_t* cmin, size_t* cmax, const char* word, size_t len);
   struct hentry* compound_check(const std::string& word,

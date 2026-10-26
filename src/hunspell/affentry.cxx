@@ -268,8 +268,8 @@ bool PfxEntry::applies_to(const struct hentry* he,
 
 // check if this prefix entry matches
 struct hentry* PfxEntry::checkword(const std::string& word,
-                                   int start,
-                                   int len,
+                                   size_t start,
+                                   size_t len,
                                    char in_compound,
                                    const FLAG needflag,
                                    AffixScratch& scratch) {
@@ -285,7 +285,10 @@ struct hentry* PfxEntry::checkword(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return nullptr;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if (tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) {
     // generate new root word by removing prefix and adding
@@ -359,8 +362,8 @@ struct hentry* PfxEntry::checkword(const std::string& word,
 
 // check if this prefix entry matches
 struct hentry* PfxEntry::check_twosfx(const std::string& word,
-                                      int start,
-                                      int len,
+                                      size_t start,
+                                      size_t len,
                                       char in_compound,
                                       const FLAG needflag,
                                       AffixScratch& scratch) {
@@ -369,7 +372,10 @@ struct hentry* PfxEntry::check_twosfx(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return nullptr;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
       (tmpl + strip.size() >= numconds)) {
@@ -409,8 +415,8 @@ struct hentry* PfxEntry::check_twosfx(const std::string& word,
 
 // check if this prefix entry matches
 std::string PfxEntry::check_twosfx_morph(const std::string& word,
-                                         int start,
-                                         int len,
+                                         size_t start,
+                                         size_t len,
                                          char in_compound,
                                          const FLAG needflag,
                                          AffixScratch& scratch) {
@@ -419,7 +425,10 @@ std::string PfxEntry::check_twosfx_morph(const std::string& word,
   // So if the remaining root word has positive length
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return result;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
       (tmpl + strip.size() >= numconds)) {
@@ -457,8 +466,8 @@ std::string PfxEntry::check_twosfx_morph(const std::string& word,
 
 // check if this prefix entry matches
 std::string PfxEntry::check_morph(const std::string& word,
-                                  int start,
-                                  int len,
+                                  size_t start,
+                                  size_t len,
                                   char in_compound,
                                   const FLAG needflag,
                                   AffixScratch& scratch) {
@@ -469,7 +478,10 @@ std::string PfxEntry::check_morph(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return result;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
       (tmpl + strip.size() >= numconds)) {
@@ -802,8 +814,8 @@ bool SfxEntry::applies_to(const struct hentry* he,
 
 // see if this suffix is present in the word
 struct hentry* SfxEntry::checkword(const std::string& word,
-                                   int start,
-                                   int len,
+                                   size_t start,
+                                   size_t len,
                                    int optflags,
                                    PfxEntry* ppfx,
                                    const FLAG cclass,
@@ -833,7 +845,10 @@ struct hentry* SfxEntry::checkword(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return nullptr;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
   // the second condition is not enough for UTF-8 strings
   // it checked in test_condition()
 
@@ -899,15 +914,15 @@ struct hentry* SfxEntry::checkword(const std::string& word,
     }
   } else if (t) {
     trace(*t, "test length have=%d need=%d -> fail, too little is left of the"
-              " word to test", tmpl, (int)numconds);
+              " word to test", static_cast<int>(tmpl), (int)numconds);
   }
   return nullptr;
 }
 
 // see if two-level suffix is present in the word
 struct hentry* SfxEntry::check_twosfx(const std::string& word,
-                                      int start,
-                                      int len,
+                                      size_t start,
+                                      size_t len,
                                       int optflags,
                                       PfxEntry* ppfx,
                                       const FLAG needflag,
@@ -925,7 +940,10 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return nullptr;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
       (tmpl + strip.size() >= numconds)) {
@@ -970,8 +988,8 @@ struct hentry* SfxEntry::check_twosfx(const std::string& word,
 
 // see if two-level suffix is present in the word
 std::string SfxEntry::check_twosfx_morph(const std::string& word,
-                                         int start,
-                                         int len,
+                                         size_t start,
+                                         size_t len,
                                          int optflags,
                                          PfxEntry* ppfx,
                                          const FLAG needflag,
@@ -991,7 +1009,10 @@ std::string SfxEntry::check_twosfx_morph(const std::string& word,
   // and if there are enough chars in root word and added back strip chars
   // to meet the number of characters conditions, then test it
 
-  int tmpl = len - appnd.size(); // length of tmpword
+  if (len < appnd.size())
+    return result;
+
+  size_t tmpl = len - appnd.size(); // length of tmpword
 
   if ((tmpl > 0 || (tmpl == 0 && pmyMgr->get_fullstrip())) &&
       (tmpl + strip.size() >= numconds)) {
