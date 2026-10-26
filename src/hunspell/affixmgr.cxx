@@ -3041,7 +3041,7 @@ struct hentry* AffixMgr::suffix_check(const std::string& word,
     ++candidates;
     trace_affix(*t, "sfx", this, *se);
     TraceScope trace_depth(t);
-    suffix_applicable(ppfx, se, cclass, in_compound, t);
+    (void)suffix_applicable(ppfx, se, cclass, in_compound, t);
   };
 
   // first handle the special case of 0 length suffixes
