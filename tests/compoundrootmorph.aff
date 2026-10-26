@@ -1,0 +1,6 @@
+# a later split of a compound is still analysed after an earlier split
+# was given up because its second part is forbidden
+COMPOUNDBEGIN B
+COMPOUNDEND E
+COMPOUNDROOT R
+FORBIDDENWORD F

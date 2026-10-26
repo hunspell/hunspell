@@ -201,6 +201,7 @@ trace_compound.dic \
 trace_reject.dic \
 trace_xprod.dic \
 compoundaffixmorph.dic \
+compoundrootmorph.dic \
 abi-check.sh \
 listdicpath.sh
 
@@ -908,6 +909,10 @@ compoundaffixmorph.aff \
 compoundaffixmorph.dic \
 compoundaffixmorph.good \
 compoundaffixmorph.morph \
+compoundrootmorph.aff \
+compoundrootmorph.dic \
+compoundrootmorph.good \
+compoundrootmorph.morph \
 utf8_nonbmp.test \
 abi-check.sh \
 abi-baseline.txt \

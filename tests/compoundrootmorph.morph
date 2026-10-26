@@ -1,0 +1,5 @@
+> abcdefgh
+analyze(abcdefgh) =  pa:abc st:abc pa:defgh
+analyze(abcdefgh) =  pa:abcde st:abcde pa:fgh
+stem(abcdefgh) = abc
+stem(abcdefgh) = abcde

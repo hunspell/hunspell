@@ -2726,6 +2726,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
             (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
              TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen))) {
           st[i] = ch;
+          wordnum = oldwordnum;
+          numsyllable = oldnumsyllable;
           continue;
         }
 
@@ -2821,6 +2823,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
              TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen)) &&
             (!TESTAFF(rv->astr, needaffix, rv->alen))) {
           st[i] = ch;
+          wordnum = oldwordnum;
+          numsyllable = oldnumsyllable;
           continue;
         }
 
