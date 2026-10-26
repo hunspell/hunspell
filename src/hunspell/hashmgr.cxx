@@ -490,7 +490,8 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 size_t HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::vector<w_char> &workbuf) {
   size_t len;
   if (utf8) {
-    len = u8_u16(workbuf, word);
+    u8_u16(workbuf, word);
+    len = workbuf.size();
     *captype = get_captype_utf8(workbuf, langnum);
   } else {
     len = word.size();
