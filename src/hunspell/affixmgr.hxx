@@ -305,7 +305,7 @@ class AffixMgr {
                       const unsigned short* ap,
                       unsigned short al,
                       const char* bad,
-                      int,
+                      size_t badl,
                       const char*);
 
   short get_syllable(const std::string& word);

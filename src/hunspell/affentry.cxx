@@ -355,7 +355,7 @@ struct hentry* PfxEntry::checkword(const std::string& word,
     }
   } else if (t) {
     trace(*t, "test length have=%d -> fail, nothing would be left of the word",
-          tmpl);
+          static_cast<int>(tmpl));
   }
   return nullptr;
 }

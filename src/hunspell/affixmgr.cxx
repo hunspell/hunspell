@@ -3653,7 +3653,7 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
                               const unsigned short* ap,
                               unsigned short al,
                               const char* bad,
-                              int badl,
+                              size_t badl,
                               const char* phon) {
   int nh = 0;
   // first add root word to list
