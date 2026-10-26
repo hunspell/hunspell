@@ -483,7 +483,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
 }
 
 #ifdef LOG
-void log(char* message) {
+void log(const char* message) {
   FILE* f = fopen(LOGFILE, "a");
   if (f) {
     fprintf(f, "%s\n", message);
@@ -685,8 +685,22 @@ char* mymkdtemp(char *templ) {
 #endif
 }
 
+// read a whole line, however long, without its newline
+static bool read_line(FILE* f, std::string& line) {
+  char chunk[MAXLNLEN];
+  line.clear();
+  while (fgets(chunk, MAXLNLEN, f)) {
+    line.append(chunk);
+    if (!line.empty() && line.back() == '\n') {
+      line.pop_back();
+      return true;
+    }
+  }
+  return !line.empty();
+}
+
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
-  char buf[MAXLNLEN];
+  std::string line;
   std::vector<std::string> dicwords;
   int pos;
   int bad;
@@ -755,8 +769,8 @@ void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   }
 
 nextline:
-  while (fgets(buf, MAXLNLEN, fileid)) {
-    buf[strcspn(buf, "\n")] = 0;
+  while (read_line(fileid, line)) {
+    const char* buf = line.c_str();
     lineno++;
 #ifdef LOG
     log(buf);
