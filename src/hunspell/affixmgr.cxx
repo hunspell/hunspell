@@ -209,8 +209,6 @@ AffixMgr::AffixMgr(const char* affpath,
     sFlag[i] = nullptr;
   }
 
-  memset(contclasses, 0, CONTSIZE * sizeof(char));
-
   if (parse_file(affpath, key)) {
     fprintf(stderr, "Failure loading aff file %s\n", affpath);
   }
@@ -4899,7 +4897,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             havecontclass = 1;
             for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
-              contclasses[(entry->contclass)[_i]] = 1;
+              contclasses[(entry->contclass)[_i]] = true;
             }
           } else {
             entry->appnd = std::string(start_piece, iter);

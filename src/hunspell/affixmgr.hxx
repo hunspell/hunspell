@@ -71,6 +71,7 @@
 #ifndef AFFIXMGR_HXX_
 #define AFFIXMGR_HXX_
 
+#include <bitset>
 #include <chrono>
 #include <cstdio>
 
@@ -194,8 +195,8 @@ class AffixMgr {
   int fullstrip;
 
   int havecontclass;           // boolean variable
-  char contclasses[CONTSIZE];  // flags of possible continuing classes (twofold
-                               // affix)
+  std::bitset<CONTSIZE> contclasses;  // flags of possible continuing classes (twofold
+                                      // affix)
 
  public:
   // Turns a condition around, so that a group keeps its meaning once the text
