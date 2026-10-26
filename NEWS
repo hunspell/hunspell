@@ -1,7 +1,21 @@
-XXXX-XX-XX: Hunspell 1.7.6 release:
+2026-10-26: Hunspell 1.7.6 release:
   - add, add_with_flags, add_with_affix and remove apply the dictionary's
     ICONV rules to the word, as spell does, so a caller that converted the
     word itself must stop doing so (#616)
+  - A personal dictionary exclusion such as *afterwards also rejects the
+    word when the dictionary has it only as an affixed form (#1155)
+  - stem and analyze give st: stem fields again with COMPLEXPREFIXES
+  - analyze lists every analysis of a compound word, where a rejected
+    split of the word could hide the splits after it
+  - The text and XML parsers check the character after a character
+    entity such as &agrave; (#686)
+  - The interactive mode shows the first digit of a two digit
+    suggestion number (#158)
+  - The -a pipe interface checks a line of any length in one piece
+    (#220)
+  - The hunspell tool takes -- as the end of the options, the -u2 sed
+    script escapes the word and the suggestion, and a zipped ODF file
+    whose name starts with - can be checked
   - The hunspell tool no longer searches the OpenOffice.org 2.x and 3
     folders or LibreOffice's user wordbook folder for dictionaries, and
     searches /Library/Spelling and ~/Library/Spelling only on macOS
@@ -14,10 +28,16 @@ XXXX-XX-XX: Hunspell 1.7.6 release:
     its users need not define HUNSPELL_STATIC
   - Install the Hungarian hunspell.5 in hu/man5
   - Use Mozilla's own FileMgr and csutil code in MOZILLA_CLIENT builds
-  - Man page: the fallback dictionary is en_US
+  - A CMake build of the library, as an alternative to configure (see
+    README.md)
+  - New configure option --enable-werror, off by default
+  - Man page: the fallback dictionary is en_US, the SYNOPSIS lists -u,
+    -U, -u2, -u3, -P and --trace (#1159), and -a reads a file with the
+    pipe protocol too
   - Build fixes: MinGW, the BSDs, macOS, makealias without gawk or GNU
     sed, readline and curses detection, and the release tarball ships
     the CMake files and all the test data
+  - oss-fuzz and Coverity fixes and hardening
 
 2026-10-04: Hunspell 1.7.5 release:
   - -D lists only the dictionaries directly in each search folder, and

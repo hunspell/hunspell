@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(hunspell VERSION 1.7.5 LANGUAGES CXX)
+project(hunspell VERSION 1.7.6 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -19,7 +19,7 @@ endif()
 
 set_target_properties(hunspell PROPERTIES
   OUTPUT_NAME hunspell-1.7
-  VERSION 0.2.1
+  VERSION 0.2.2
   SOVERSION 0
   CXX_EXTENSIONS OFF
   CXX_VISIBILITY_PRESET hidden
