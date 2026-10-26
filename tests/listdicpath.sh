@@ -11,7 +11,8 @@ mkdir -p "$DIR/sub"
 touch "$DIR/top.dic" "$DIR/hyph_top.dic" "$DIR/sub/nested.dic"
 ln -s .. "$DIR/sub/loop"
 
-LIST=$(DICPATH="$DIR" $LIBTOOL --mode=execute "$HUNSPELL" -D -a /dev/null 2>&1 >/dev/null)
+# a Windows build separates folders with a backslash
+LIST=$(DICPATH="$DIR" $LIBTOOL --mode=execute "$HUNSPELL" -D -a /dev/null 2>&1 >/dev/null | tr '\\' '/')
 
 if ! echo "$LIST" | grep -qx "$DIR/top"; then
     echo "listdicpath: $DIR/top is not listed"
