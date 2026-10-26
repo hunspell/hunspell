@@ -572,6 +572,10 @@ int HashMgr::add(const std::string& word) {
 }
 
 int HashMgr::add_with_flags(const std::string& word, const std::string& flags, const std::string& desc) {
+  // the flags and the description have the same length limit as the word
+  if (flags.size() > std::numeric_limits<unsigned short>::max() ||
+      desc.size() > std::numeric_limits<unsigned short>::max())
+    return 1;
   remove_forbidden_flag(word);
   int captype;
   unsigned short *df;
