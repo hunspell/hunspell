@@ -1470,7 +1470,7 @@ int AffixMgr::cpdpat_check(const std::string& word,
     size_t len;
     bool right_text_ok = isSubset(i.pattern2.c_str(), word.c_str() + pos);
     bool left_flag_ok = right_text_ok &&
-        (!r1 || !i.cond || join_side_has_flag(r1, i.cond, p1, s1));
+        (!i.cond || join_side_has_flag(r1, i.cond, p1, s1));
     bool right_flag_ok = left_flag_ok &&
         (!r2 || !i.cond2 || join_side_has_flag(r2, i.cond2, p2, s2));
     // zero length pattern => only TESTAFF
