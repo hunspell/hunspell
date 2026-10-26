@@ -55,7 +55,7 @@
 
 int main(int argc, char** argv) {
   int i;
-  int al;
+  size_t al;
 
   FILE* wrdlst;
   FILE* afflst;
@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
       ap = nullptr;
     }
 
-    int wl = strlen(ts);
+    size_t wl = strlen(ts);
 
     numwords = 0;
     wlist[numwords].word = mystrdup(ts);
@@ -161,7 +161,7 @@ int parse_aff_file(FILE* afflst) {
   int i, j;
   int numents = 0;
   char achar = '\0';
-  short ff = 0;
+  char ff = 0;
   struct affent* ptr = nullptr;
   struct affent* nptr = nullptr;
   char* line = (char*)malloc(MAX_LN_LEN);
@@ -269,7 +269,7 @@ int parse_aff_file(FILE* afflst) {
               case 4: {
                 encodeit(nptr, piece);
               }
-                fprintf(stderr, "   affix: %s %d, strip: %s %d\n", nptr->appnd,
+                fprintf(stderr, "   affix: %s %zu, strip: %s %zu\n", nptr->appnd,
                         nptr->appndl, nptr->strip, nptr->stripl);
                 // no break
               default:
@@ -316,13 +316,14 @@ int parse_aff_file(FILE* afflst) {
 }
 
 void encodeit(struct affent* ptr, char* cs) {
-  int nc;
+  size_t nc;
   int neg;
   int grp;
   int n;
   int ec;
   int nm;
-  int i, j, k;
+  size_t i;
+  int j, k;
   unsigned char mbr[MAX_WD_LEN];
 
   /* now clear the conditions array */
@@ -375,7 +376,7 @@ void encodeit(struct affent* ptr, char* cs) {
             ptr->conds[j] = ptr->conds[j] | (1 << n);
           for (j = 0; j < nm; j++) {
             k = (unsigned int)mbr[j];
-            ptr->conds[k] = ptr->conds[k] & ~(1 << n);
+            ptr->conds[k] = static_cast<char>(ptr->conds[k] & ~(1 << n));
           }
         }
         neg = 0;
@@ -397,12 +398,13 @@ void encodeit(struct affent* ptr, char* cs) {
     }
     i++;
   }
-  ptr->numconds = n;
+  /* n counts the conditions of one affix line, which is at most MAX_LN_LEN characters */
+  ptr->numconds = static_cast<unsigned short>(n);
   return;
 }
 
 /* add a prefix to word */
-void pfx_add(const char* word, int len, struct affent* ep, int num) {
+void pfx_add(const char* word, size_t len, struct affent* ep, int num) {
   struct affent* aent;
   int cond;
   unsigned char* cp;
@@ -437,7 +439,7 @@ void pfx_add(const char* word, int len, struct affent* ep, int num) {
 }
 
 /* add a suffix to a word */
-void suf_add(const char* word, int len, struct affent* ep, int num) {
+void suf_add(const char* word, size_t len, struct affent* ep, int num) {
   struct affent* aent;
   int cond;
   unsigned char* cp;
@@ -472,7 +474,7 @@ void suf_add(const char* word, int len, struct affent* ep, int num) {
   }
 }
 
-int expand_rootword(const char* ts, int wl, const char* ap) {
+int expand_rootword(const char* ts, size_t wl, const char* ap) {
   int i;
   int nh = 0;
 
@@ -490,7 +492,7 @@ int expand_rootword(const char* ts, int wl, const char* ap) {
         for (i = 0; i < numpfx; i++) {
           if (strchr(ap, (ptable[i].aep)->achar)) {
             if ((ptable[i].aep)->xpflg & XPRODUCT) {
-              int nwl = strlen(wlist[j].word);
+              size_t nwl = strlen(wlist[j].word);
               pfx_add(wlist[j].word, nwl, ptable[i].aep, ptable[i].num);
             }
           }
@@ -514,7 +516,7 @@ int expand_rootword(const char* ts, int wl, const char* ap) {
 char* mystrsep(char** stringp, const char delim) {
   char* rv = nullptr;
   char* mp = *stringp;
-  int n = strlen(mp);
+  size_t n = strlen(mp);
   if (n > 0) {
     char* dp = (char*)memchr(mp, (int)((unsigned char)delim), n);
     if (dp) {
@@ -541,7 +543,7 @@ char* mystrsep(char** stringp, const char delim) {
 char* mystrdup(const char* s) {
   char* d = nullptr;
   if (s) {
-    int sl = strlen(s) + 1;
+    size_t sl = strlen(s) + 1;
     d = (char*)malloc(sl);
     if (d)
       memcpy(d, s, sl);
@@ -550,7 +552,7 @@ char* mystrdup(const char* s) {
 }
 
 void mychomp(char* s) {
-  int k = strlen(s);
+  size_t k = strlen(s);
   if ((k > 0) && (*(s + k - 1) == '\n'))
     *(s + k - 1) = '\0';
   if ((k > 1) && (*(s + k - 2) == '\r'))

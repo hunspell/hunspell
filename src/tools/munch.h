@@ -61,11 +61,11 @@
 struct affent {
   char* appnd;
   char* strip;
-  short appndl;
-  short stripl;
+  size_t appndl;
+  size_t stripl;
   char achar;
   char xpflg;
-  short numconds;
+  unsigned short numconds;
   char conds[SET_SIZE];
 };
 
@@ -130,12 +130,12 @@ int add_word(char*);
 
 struct hentry* lookup(const char*);
 
-void aff_chk(const char* word, int len);
+void aff_chk(const char* word, size_t len);
 
-void pfx_chk(const char* word, int len, struct affent* ep, int num);
+void pfx_chk(const char* word, size_t len, struct affent* ep, int num);
 
 void suf_chk(const char* word,
-             int len,
+             size_t len,
              struct affent* ep,
              int num,
              struct affent* pfxent,
@@ -143,11 +143,11 @@ void suf_chk(const char* word,
 
 void add_affix_char(struct hentry* hent, char ac);
 
-int expand_rootword(const char*, int, const char*);
+int expand_rootword(const char*, size_t, const char*);
 
-void pfx_add(const char* word, int len, struct affent* ep, int num);
+void pfx_add(const char* word, size_t len, struct affent* ep, int num);
 
-void suf_add(const char* word, int len, struct affent* ep, int num);
+void suf_add(const char* word, size_t len, struct affent* ep, int num);
 
 char* mystrsep(char** stringp, const char delim);
 
