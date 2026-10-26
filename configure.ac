@@ -66,6 +66,15 @@ AC_ARG_ENABLE([tools],
 )
 AM_CONDITIONAL([BUILD_TOOLS], [test "x$enable_tools" != xno])
 
+AC_ARG_ENABLE([werror],
+	[AS_HELP_STRING([--enable-werror],[compile with -Wall -Wextra -Wconversion and treat warnings as errors])],
+	[],
+	[enable_werror=no]
+)
+AS_IF([test "x$enable_werror" != xno], [
+	CXXFLAGS="$CXXFLAGS -Wall -Wextra -Wconversion -Werror"
+])
+
 AC_ARG_WITH(warnings,[  --with-warnings         compile with warning messages],[
 	AC_DEFINE(HUNSPELL_WARNING_ON,1,"Define if you need warning messages")
 	CPPFLAGS="$CPPFLAGS -DHUNSPELL_WARNING_ON"

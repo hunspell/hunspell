@@ -33,7 +33,8 @@ and commit the new baseline.
    and `SOVERSION` to `current - age`, to match the library file names
    libtool makes. For `2:1:2` that is `VERSION 0.2.1` and `SOVERSION 0`.
 3. Add a `NEWS` entry.
-4. `make check` (and `make dist`, build it from a clean dir).
+4. `make check`, in a tree configured with `--enable-werror` (and
+   `make dist`, build it from a clean dir).
 5. Commit, `git tag vX.Y.Z`, push, attach the `make dist` tarball to
    the GitHub release.
 
