@@ -99,7 +99,7 @@ void code2table(struct item* tree, char** table, char* code, int deep) {
 
 struct item* newitem(int c, struct item* l, struct item* r, int t) {
   struct item* ni = (struct item*)malloc(sizeof(struct item));
-  ni->type = t;
+  ni->type = static_cast<char>(t); /* one of the code_ enum values */
   ni->word = 0;
   ni->count = c;
   ni->left = l;
@@ -118,13 +118,13 @@ int get_freqdata(struct item*** dest, FILE* f, unsigned short* termword) {
   for (i = 0; i < CODELEN; i++)
     freq[i] = 0;
   while ((j = getc(f)) != -1 && (k = getc(f)) != -1) {
-    u.c[0] = j;
-    u.c[1] = k;
+    u.c[0] = static_cast<char>(j);
+    u.c[1] = static_cast<char>(k);
     freq[u.word]++;
   }
   if (j != -1) {
     u.c[0] = 1;
-    u.c[1] = j;
+    u.c[1] = static_cast<char>(j);
   } else {
     u.c[0] = 0;
     u.c[1] = 0;
@@ -136,7 +136,7 @@ int get_freqdata(struct item*** dest, FILE* f, unsigned short* termword) {
   for (i = 0, n = 0; i < CODELEN; i++)
     if (freq[i]) {
       (*dest)[n] = newitem(freq[i], nullptr, nullptr, code_LEAF);
-      (*dest)[n]->word = i;
+      (*dest)[n]->word = static_cast<unsigned short>(i);
       n++;
     }
   /* terminal sequence (also contains the last odd byte of the file) */
@@ -169,9 +169,10 @@ int write_bits(FILE* f, char* bitbuf, int* bits, char* code) {
   while (*code) {
     int b = (*bits) % 8;
     if (!b)
-      bitbuf[(*bits) / 8] = ((*code) - '0') << 7;
+      bitbuf[(*bits) / 8] = static_cast<char>(((*code) - '0') << 7);
     else
-      bitbuf[(*bits) / 8] |= (((*code) - '0') << (7 - b));
+      bitbuf[(*bits) / 8] = static_cast<char>(
+          bitbuf[(*bits) / 8] | (((*code) - '0') << (7 - b)));
     (*bits)++;
     code++;
     if (*bits == BUFSIZE * 8) {
@@ -254,8 +255,8 @@ int encode_file(char** table,
   /* file encoding */
   bits = 0;
   while ((cx[0] = getc(f)) != -1 && (cx[1] = getc(f)) != -1) {
-    u.c[0] = cx[0];
-    u.c[1] = cx[1];
+    u.c[0] = static_cast<char>(cx[0]);
+    u.c[1] = static_cast<char>(cx[1]);
     if (write_bits(f2, bitbuf, &bits, table[u.word]) != 0)
       return 1;
   }
@@ -313,12 +314,12 @@ int prefixcompress(FILE* f, FILE* tempfile) {
       *p = buf[k];
     }
     if (m > 0) {
-      *p = m + 31; /* 33-46 */
+      *p = static_cast<char>(m + 31); /* 33-46 */
       p++;
     }
     if (i > 0 && buf[i - 1] == '\n') {
       size_t nmemb = p - buf2 + 1;
-      *p = c;
+      *p = static_cast<char>(c); /* 0-30 */
       if (fwrite(buf2, 1, nmemb, tempfile) != nmemb)
         return 1;
     } else {
