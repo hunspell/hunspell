@@ -200,6 +200,10 @@ to the spell-checking code.
 It is recommended that programmatic interfaces prefix every data line
 with an uparrow to protect themselves against future changes in
 .IR hunspell .
+A file given to
+.B \-a
+by name, or redirected into it, is read as this protocol too: a line of
+it that starts with one of these characters is a command, not text.
 .IP ""
 To summarize these:
 .IP ""
