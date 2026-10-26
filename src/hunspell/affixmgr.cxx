@@ -2496,8 +2496,10 @@ int AffixMgr::compound_check_morph(const std::string& word,
       // forbid dictionary stems with COMPOUNDFORBIDFLAG in
       // compound words, overriding the effect of COMPOUNDPERMITFLAG
       if ((rv) && compoundforbidflag &&
-              TESTAFF(rv->astr, compoundforbidflag, rv->alen) && !hu_mov_rule)
-          continue;
+              TESTAFF(rv->astr, compoundforbidflag, rv->alen) && !hu_mov_rule) {
+        st[i] = ch;
+        continue;
+      }
 
       // search homonym with compound flag
       while ((rv) && !hu_mov_rule &&
@@ -2595,6 +2597,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
             TESTAFF(pfx->getCont(), compoundforbidflag, pfx->getContLen())) ||
            (sfx && sfx->getCont() &&
             TESTAFF(sfx->getCont(), compoundforbidflag, sfx->getContLen())))) {
+        st[i] = ch;
         continue;
       }
 
@@ -2604,6 +2607,7 @@ int AffixMgr::compound_check_morph(const std::string& word,
             TESTAFF(pfx->getCont(), compoundend, pfx->getContLen())) ||
            (sfx && sfx->getCont() &&
             TESTAFF(sfx->getCont(), compoundend, sfx->getContLen())))) {
+        st[i] = ch;
         continue;
       }
 
@@ -2619,8 +2623,10 @@ int AffixMgr::compound_check_morph(const std::string& word,
 
       // check forbiddenwords
       if ((rv) && (rv->astr) && (TESTAFF(rv->astr, forbiddenword, rv->alen) ||
-                                 TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen)))
+                                 TESTAFF(rv->astr, ONLYUPCASEFLAG, rv->alen))) {
+        st[i] = ch;
         continue;
+      }
 
       // increment word number, if the second root has a compoundroot flag
       if ((rv) && (compoundroot) &&
