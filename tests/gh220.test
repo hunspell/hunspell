@@ -1,0 +1,24 @@
+#!/bin/sh
+# A line longer than the 8 KB read buffer must be checked as one line, so a
+# word at the buffer boundary is not split, the offsets keep counting from the
+# start of the line, and only one end-of-line blank is printed (issue #220).
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+CR=$(printf "\r")
+line=$(awk 'BEGIN { s = "  "; for (i = 0; i < 2100; i++) s = s "foo "; print s "xyzzy" }')
+expected='# xyzzy 8402'
+out=$(printf '%s\n' "$line" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh220" -a 2>&1 |
+  tr -d "$CR" | sed 1d | grep -v '^\*$')
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: gh220 pipe mode, got:"
+    echo "$out"
+    exit 1
+fi
+out=$(printf '%s\n' "$line" | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh220" -L 2>&1 | tr -d "$CR")
+if [ "$out" != "$line" ]; then
+    echo "FAIL: gh220 -L did not print the whole line"
+    exit 1
+fi
+echo "PASS: gh220"
+exit 0

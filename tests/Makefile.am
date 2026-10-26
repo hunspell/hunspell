@@ -180,6 +180,7 @@ gh1044.test \
 gh646.test \
 gh910.test \
 gh686.test \
+gh220.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -831,6 +832,9 @@ gh686.aff \
 gh686.dic \
 gh686.txt \
 gh686.html \
+gh220.test \
+gh220.aff \
+gh220.dic \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \
