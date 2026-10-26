@@ -1414,7 +1414,7 @@ int AffixMgr::cpdwordpair_check(const std::string& word,
         candidate.insert(i, 1, ' ');
         if (candidate_check(candidate, scratch)) {
           pair_found = 1;
-          pair = candidate;
+          pair = std::move(candidate);
           break;
         }
         candidate.erase(i, 1);

@@ -1804,7 +1804,7 @@ std::vector<std::string> list_dict_extensions(const std::string& dir) {
     std::string entry = dir + DIRSEP + de->d_name;
     struct stat st;
     if (stat(entry.c_str(), &st) == 0 && S_ISDIR(st.st_mode))
-      subdirs.push_back(entry);
+      subdirs.push_back(std::move(entry));
   }
   closedir(d);
 #else
@@ -2245,7 +2245,7 @@ int main(int argc, char** argv) {
         if (end > start && (!absolute_only || list[start] == '/')) {
           std::string dir = list.substr(start, end - start) + suffix;
           if (std::find(dirs.begin(), dirs.end(), dir) == dirs.end())
-            dirs.push_back(dir);
+            dirs.push_back(std::move(dir));
         }
         start = end + 1;
       }
