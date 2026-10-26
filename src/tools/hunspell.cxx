@@ -706,14 +706,12 @@ char* mymkdtemp(char *templ) {
 
 // read a whole line, however long, without its newline
 static bool read_line(FILE* f, std::string& line) {
-  char chunk[MAXLNLEN];
   line.clear();
-  while (fgets(chunk, MAXLNLEN, f)) {
-    line.append(chunk);
-    if (!line.empty() && line.back() == '\n') {
-      line.pop_back();
+  int c;
+  while ((c = getc(f)) != EOF) {
+    if (c == '\n')
       return true;
-    }
+    line.push_back((char)c);
   }
   return !line.empty();
 }
