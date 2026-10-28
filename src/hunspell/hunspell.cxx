@@ -103,6 +103,7 @@ public:
  std::vector<std::string> analyze(const std::string& word);
  int get_langnum() const;
  bool input_conv(const std::string& word, std::string& dest);
+ bool entry_input_conv(const std::string& word, std::string& dest);
  bool spell(const std::string& word,
             std::vector<std::string>& candidate_stack,
             int* info = nullptr,
@@ -1648,7 +1649,8 @@ size_t HunspellImpl::mkinitsmall2(std::string& u8, std::vector<w_char>& u16) {
 int HunspellImpl::add(const std::string& word) {
   if (!m_HMgrs.empty()) {
     std::string converted;
-    input_conv(word, converted);
+    if (!entry_input_conv(word, converted))
+      return 1;
     return m_HMgrs[0]->add(converted);
   }
   return 0;
@@ -1657,7 +1659,8 @@ int HunspellImpl::add(const std::string& word) {
 int HunspellImpl::add_with_flags(const std::string& word, const std::string& flags, const std::string& desc) {
   if (!m_HMgrs.empty()) {
     std::string converted;
-    input_conv(word, converted);
+    if (!entry_input_conv(word, converted))
+      return 1;
     return m_HMgrs[0]->add_with_flags(converted, flags, desc);
   }
   return 0;
@@ -1666,8 +1669,8 @@ int HunspellImpl::add_with_flags(const std::string& word, const std::string& fla
 int HunspellImpl::add_with_affix(const std::string& word, const std::string& example) {
   if (!m_HMgrs.empty()) {
     std::string converted, converted_example;
-    input_conv(word, converted);
-    input_conv(example, converted_example);
+    if (!entry_input_conv(word, converted) || !entry_input_conv(example, converted_example))
+      return 1;
     return m_HMgrs[0]->add_with_affix(converted, converted_example);
   }
   return 0;
@@ -1676,7 +1679,8 @@ int HunspellImpl::add_with_affix(const std::string& word, const std::string& exa
 int HunspellImpl::remove(const std::string& word) {
   if (!m_HMgrs.empty()) {
     std::string converted;
-    input_conv(word, converted);
+    if (!entry_input_conv(word, converted))
+      return 1;
     return m_HMgrs[0]->remove(converted);
   }
   return 0;
@@ -2053,6 +2057,19 @@ bool HunspellImpl::input_conv(const std::string& word, std::string& dest) {
   }
   dest.assign(word);
   return false;
+}
+
+// ICONV of a word for the run-time dictionary. A dictionary entry holds at most 65535 bytes, so
+// the conversion stops past that length and a longer result is reported as false.
+bool HunspellImpl::entry_input_conv(const std::string& word, std::string& dest) {
+  const size_t maxlen = std::numeric_limits<unsigned short>::max();
+  RepList* rl = pAMgr ? pAMgr->get_iconvtable() : nullptr;
+  if (rl) {
+    rl->conv(word, dest, maxlen);
+    return dest.size() <= maxlen;
+  }
+  dest.assign(word);
+  return true;
 }
 
 // return the beginning of the element (attr == NULL) or the attribute
