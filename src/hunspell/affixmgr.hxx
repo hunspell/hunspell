@@ -78,6 +78,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "atypes.hxx"
@@ -424,7 +425,11 @@ class AffixMgr {
   bool parse_breaktable(const std::string& line, FileMgr* af);
   bool parse_checkcpdtable(const std::string& line, FileMgr* af);
   bool parse_defcpdtable(const std::string& line, FileMgr* af);
-  bool parse_affix(const std::string& line, const char at, FileMgr* af, char* dupflags);
+  bool parse_affix(const std::string& line,
+                   const char at,
+                   FileMgr* af,
+                   char* dupflags,
+                   std::unordered_set<std::string>& affix_rules);
 
   bool circumfix_ok(PfxEntry* pfx, SfxEntry* sfx, const TraceCtx* t) const;
   void trace_avoidflag(TraceCtx* t, const FLAG avoidflag, const struct hentry* stem) const;

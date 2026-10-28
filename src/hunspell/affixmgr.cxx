@@ -313,6 +313,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
   // checking flag duplication
   char dupflags[CONTSIZE];
   char dupflags_ini = 1;
+  std::unordered_set<std::string> affix_rules;
 
   // first line indicator for removing byte order mark
   int firstline = 1;
@@ -745,7 +746,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
         memset(dupflags, 0, sizeof(dupflags));
         dupflags_ini = 0;
       }
-      if (!parse_affix(line, ft, afflst, dupflags)) {
+      if (!parse_affix(line, ft, afflst, dupflags, affix_rules)) {
         finishFileMgr(afflst);
         return 1;
       }
@@ -4729,7 +4730,8 @@ public:
 bool AffixMgr::parse_affix(const std::string& line,
                           const char at,
                           FileMgr* af,
-                          char* dupflags) {
+                          char* dupflags,
+                          std::unordered_set<std::string>& affix_rules) {
   int numents = 0;  // number of AffEntry structures to parse
 
   unsigned short aflag = 0;  // affix char identifier
@@ -4819,6 +4821,8 @@ bool AffixMgr::parse_affix(const std::string& line,
 
   // now parse numents affentries for this affix
   AffEntry* entry = affentries.first_entry();
+  // the text of each rule line from its strip field to the end
+  std::vector<std::string> rules;
   for (int ent = 0; ent < numents; ++ent) {
     std::string nl;
     if (!af->getline(nl))
@@ -4864,6 +4868,7 @@ bool AffixMgr::parse_affix(const std::string& line,
         // piece 3 - is string to strip or 0 for null
         case 2: {
           np++;
+          rules.emplace_back(start_piece, nl.cend());
           entry->strip = std::string(start_piece, iter);
           if (complexprefixes) {
             if (utf8)
@@ -5030,7 +5035,13 @@ bool AffixMgr::parse_affix(const std::string& line,
   // now create SfxEntry or PfxEntry objects and use links to
   // build an ordered (sorted by affix string) list
   auto start = affentries.begin(), end = affentries.end();
-  for (auto affentry = start; affentry != end; ++affentry) {
+  auto rule = rules.begin();
+  for (auto affentry = start; affentry != end; ++affentry, ++rule) {
+    // a rule repeated for the same affix gives only the same matches again
+    if (!affix_rules.insert(std::string{at, xprod} + std::to_string(aflag) + ' ' + *rule).second) {
+      delete *affentry;
+      continue;
+    }
     if (at == 'P') {
       build_pfxtree(static_cast<PfxEntry*>(*affentry));
     } else {
