@@ -181,6 +181,7 @@ gh646.test \
 gh910.test \
 gh686.test \
 gh220.test \
+gh688.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -840,6 +841,11 @@ gh686.html \
 gh220.test \
 gh220.aff \
 gh220.dic \
+gh688.test \
+gh688_utf.aff \
+gh688_utf.dic \
+gh688_latin1.aff \
+gh688_latin1.dic \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

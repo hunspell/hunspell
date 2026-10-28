@@ -226,11 +226,15 @@ static const char* fix_encoding_name(const char* enc) {
 #endif
 
 /* change character encoding */
-std::string chenc(const std::string& st, const char* enc1, const char* enc2, const char* context = nullptr) {
+/* failed, if given, is set instead of printing an error when a character
+   has no counterpart in enc2 */
+std::string chenc(const std::string& st, const char* enc1, const char* enc2, const char* context = nullptr,
+                  bool* failed = nullptr) {
 #ifndef HAVE_ICONV
   (void)enc1;
   (void)enc2;
   (void)context;
+  (void)failed;
   return st;
 #else
   if (st.empty())
@@ -262,9 +266,13 @@ std::string chenc(const std::string& st, const char* enc1, const char* enc2, con
         break;
     }
     if (res == (size_t)-1) {
-      if (context)
-        fprintf(stderr, "%s: ", context);
-      fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc1, enc2);
+      if (failed) {
+        *failed = true;
+      } else {
+        if (context)
+          fprintf(stderr, "%s: ", context);
+        fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc1, enc2);
+      }
     }
     iconv_close(conv);
     out.resize(dest - &out[0]);
@@ -631,8 +639,14 @@ char* scanline(const char* message) {
 
 // check words in the dictionaries (and set first checked dictionary)
 bool check(Hunspell** pMS, int* d, const std::string& token, int* info, std::string* root) {
+  int fit = -1;
   for (int i = 0; i < dmax; ++i) {
-    std::string buf = chenc(token, io_enc, dic_enc[*d]);
+    // a word with a character that the encoding of the dictionary lacks
+    // is not in the dictionary
+    bool unconvertible = false;
+    std::string buf = chenc(token, io_enc, dic_enc[*d], nullptr, &unconvertible);
+    if (!unconvertible && fit == -1)
+      fit = *d;
     mystrrep(buf, ENTITY_APOS, "'");
     if (checkapos && buf.find('\'') != std::string::npos)
       return false;
@@ -640,20 +654,24 @@ bool check(Hunspell** pMS, int* d, const std::string& token, int* info, std::str
     // dictionaries)
     if (strcmp(dic_enc[*d], "UTF-8") != 0)
       mystrrep(buf, UTF8_APOS, "'");
-    if ((pMS[*d]->spell(buf, info, root) &&
-         !(warn && (*info & SPELL_WARN))) ||
-        // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV
-        // support,
-        // need also ASCII apostrophes (eg. French dictionaries)
-        ((strcmp(dic_enc[*d], "UTF-8") == 0) &&
-         buf.find(UTF8_APOS) != std::string::npos &&
-         pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'"), info, root) &&
-         !(warn && (*info & SPELL_WARN)))) {
+    if (!unconvertible &&
+        ((pMS[*d]->spell(buf, info, root) &&
+          !(warn && (*info & SPELL_WARN))) ||
+         // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV
+         // support,
+         // need also ASCII apostrophes (eg. French dictionaries)
+         ((strcmp(dic_enc[*d], "UTF-8") == 0) &&
+          buf.find(UTF8_APOS) != std::string::npos &&
+          pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'"), info, root) &&
+          !(warn && (*info & SPELL_WARN))))) {
       return true;
     }
     if (++(*d) == dmax)
       *d = 0;
   }
+  // suggest from a dictionary that can hold the word
+  if (fit != -1)
+    *d = fit;
   return false;
 }
 
