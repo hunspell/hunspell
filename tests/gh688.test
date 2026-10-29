@@ -1,0 +1,34 @@
+#!/bin/sh
+# With a UTF-8 and an ISO8859-1 dictionary, a word with a character that
+# ISO8859-1 lacks must not be checked in the ISO8859-1 dictionary as the part
+# that converts (nothing for "приветт", "Käse" for "Käseпривет"), nor get
+# its suggestions from there, and must not print iconv errors (issue #688).
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+export LC_ALL=C.UTF-8
+CR=$(printf "\r")
+expected='приветт
+Käseпривет'
+out=$(printf 'привет Käse приветт Käseпривет\n' |
+  $LIBTOOL --mode=execute "$HUNSPELL" -i UTF-8 -d "$DIR/gh688_utf,$DIR/gh688_latin1" -l 2>&1 |
+  tr -d "$CR")
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: gh688 list mode, got:"
+    echo "$out"
+    exit 1
+fi
+# After "Käse" was found in the ISO8859-1 dictionary, the suggestions for
+# "Käseпривет" come from the UTF-8 one.
+expected='*
+& Käseпривет 1 5: Привет'
+out=$(printf 'Käse Käseпривет\n' |
+  $LIBTOOL --mode=execute "$HUNSPELL" -i UTF-8 -d "$DIR/gh688_utf,$DIR/gh688_latin1" -a 2>&1 |
+  tr -d "$CR" | sed 1d)
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: gh688 pipe mode, got:"
+    echo "$out"
+    exit 1
+fi
+echo "PASS: gh688"
+exit 0
