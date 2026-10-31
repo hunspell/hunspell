@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CXXFLAGS: -Wall -Wextra -Werror
+
+jobs:
+  linux:
+    name: Ubuntu ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: gcc, cxx: g++, configure: --with-ui --with-readline }
+          - { name: clang, cxx: clang++ }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake autopoint gettext libtool clang \
+            libncurses-dev libreadline-dev
+      - name: Configure
+        run: |
+          autoreconf -vfi
+          ./configure CXX=${{ matrix.cxx }} ${{ matrix.configure }}
+      - name: Build
+        run: make -j$(nproc)
+      - name: Check
+        run: make -j$(nproc) check || { cat tests/test-suite.log; exit 1; }
+      - name: Distcheck
+        if: matrix.name == 'gcc'
+        run: make -j$(nproc) distcheck
+
+  alpine:
+    name: Alpine (musl)
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    steps:
+      - name: Install dependencies
+        run: apk add --no-cache build-base autoconf automake libtool gettext-dev bash
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: |
+          autoreconf -vfi
+          ./configure
+      - name: Build
+        run: make -j$(nproc)
+      - name: Check
+        run: make -j$(nproc) check || { cat tests/test-suite.log; exit 1; }
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          brew install autoconf automake libtool gettext
+          echo "$(brew --prefix gettext)/bin" >> "$GITHUB_PATH"
+      - name: Configure
+        run: |
+          autoreconf -vfi
+          ./configure
+      - name: Build
+        run: make -j$(sysctl -n hw.ncpu)
+      - name: Check
+        run: make -j$(sysctl -n hw.ncpu) check || { cat tests/test-suite.log; exit 1; }
+
+  windows:
+    name: Windows MSYS2 MINGW64
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            autoconf automake make
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-libtool
+            mingw-w64-x86_64-libiconv
+            mingw-w64-x86_64-gettext
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: |
+          autoreconf -vfi
+          ./configure
+      - name: Build
+        run: make -j$(nproc)
+      - name: Check
+        run: make -j$(nproc) check || { cat tests/test-suite.log; exit 1; }
+
+  cmake:
+    name: CMake ${{ matrix.os }} ${{ matrix.shared == 'ON' && 'shared' || 'static' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        shared: ['ON', 'OFF']
+    env:
+      CXXFLAGS: ''
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DBUILD_SHARED_LIBS=${{ matrix.shared }}
+      - name: Build
+        run: cmake --build build --config Release
+      - name: Install
+        run: cmake --install build --config Release --prefix "${{ github.workspace }}/root"
