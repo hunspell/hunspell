@@ -273,6 +273,9 @@ std::string chenc(const std::string& st, const char* enc1, const char* enc2, con
           fprintf(stderr, "%s: ", context);
         fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc1, enc2);
       }
+    } else if (res > 0 && failed) {
+      // iconv may replace a character that enc2 lacks and count it, instead of failing
+      *failed = true;
     }
     iconv_close(conv);
     out.resize(dest - &out[0]);
