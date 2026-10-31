@@ -131,7 +131,7 @@ static struct {
                {{"\\Cref", nullptr}, 1},
                // x?color.sty
                {{"\\color", nullptr}, 1},
-               {{"\\colorbox", nullptr}, 2},
+               {{"\\colorbox", nullptr}, 1},
                {{"\\definecolor", nullptr}, 3},
                {{"\\fcolorbox", nullptr}, 2},
                {{"\\pagecolor", nullptr}, 1},

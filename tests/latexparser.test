@@ -1,12 +1,14 @@
 #!/bin/sh
 # In LaTeX mode the words inside math, verbatim and listing environments, the
 # arguments of commands such as \include and the column spec of tabular are not
-# checked, and nothing after them is skipped, so only the final word is reported.
+# checked, and nothing after them is skipped. The text in a \colorbox is checked,
+# so only that and the final word are reported.
 DIR="$(dirname "$0")"
 HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
 CR=$(printf "\r")
-expected='qqcontrol'
+expected='qqboxtext
+qqcontrol'
 out=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/latexparser" -t -l "$DIR/latexparser.tex" 2>&1 | tr -d "$CR")
 if [ "$out" != "$expected" ]; then
     echo "FAIL: latexparser, got:"
