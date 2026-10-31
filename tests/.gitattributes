@@ -2,3 +2,5 @@
 *.good text eol=lf
 *.wrong text eol=lf
 *.morph text eol=lf
+*.root text eol=lf
+*.trace text eol=lf
