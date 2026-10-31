@@ -182,6 +182,7 @@ gh910.test \
 gh686.test \
 gh220.test \
 gh688.test \
+latexparser.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -846,6 +847,10 @@ gh688_utf.aff \
 gh688_utf.dic \
 gh688_latin1.aff \
 gh688_latin1.dic \
+latexparser.test \
+latexparser.aff \
+latexparser.dic \
+latexparser.tex \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

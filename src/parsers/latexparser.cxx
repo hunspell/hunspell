@@ -151,7 +151,11 @@ LaTeXParser::LaTeXParser(const w_char* wordchars, size_t len)
 
 LaTeXParser::~LaTeXParser() = default;
 
+// the longest pattern that matches wins, so an entry and a longer one that starts with it can
+// be listed in any order
 int LaTeXParser::look_pattern(int col) {
+  int best = -1;
+  size_t best_len = 0;
   for (unsigned int i = 0; i < PATTERN_LEN; i++) {
     const char* j = line[actual].c_str() + head;
     const char* k = PATTERN[i].pat[col];
@@ -161,10 +165,13 @@ int LaTeXParser::look_pattern(int col) {
       j++;
       k++;
     }
-    if (*k == '\0')
-      return i;
+    size_t len = size_t(k - PATTERN[i].pat[col]);
+    if (*k == '\0' && len > best_len) {
+      best = int(i);
+      best_len = len;
+    }
   }
-  return -1;
+  return best;
 }
 
 /*
