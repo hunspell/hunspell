@@ -57,7 +57,6 @@ static struct {
                {{"$", "$"}, 0},
                {{"$$", "$$"}, 0},
                {{"\'\'", nullptr}, 1},
-               {{"\\Ref", nullptr}, 1},
                {{"\\[", "\\]"}, 0},
                {{"\\\\[", "]"}, 0},
                {{"\\addcontentsline", nullptr}, 2},
@@ -122,13 +121,10 @@ static struct {
                // babel.sty
                {{"\\selectlanguage", nullptr}, 1},
                // biblatex.sty
-               {{"\\Autocite", nullptr}, 1},
-               {{"\\Textcite", nullptr}, 1},
                {{"\\autocite", nullptr}, 1},
                {{"\\textcite", nullptr}, 1},
                // cleveref.sty
                {{"\\cref", nullptr}, 1},
-               {{"\\Cref", nullptr}, 1},
                // x?color.sty
                {{"\\color", nullptr}, 1},
                {{"\\colorbox", nullptr}, 1},
@@ -144,10 +140,7 @@ static struct {
                {{"\\begin{LVerbatim}", "\\end{LVerbatim}"}, 0},
                {{"\\begin{SaveVerbatim}", "\\end{SaveVerbatim}"}, 0},
                {{"\\begin{VerbatimOut}", "\\end{VerbatimOut}"}, 0},
-               {{"\\begin{Verbatim}", "\\end{Verbatim}"}, 0},
                // glossaries.sty
-               {{"\\Gls", nullptr}, 1},
-               {{"\\Glspl", nullptr}, 1},
                {{"\\gls", nullptr}, 1},
                {{"\\glspl", nullptr}, 1},
                // graphicx.sty et al.
@@ -180,7 +173,7 @@ LaTeXParser::LaTeXParser(const w_char* wordchars, size_t len)
 LaTeXParser::~LaTeXParser() = default;
 
 // the longest pattern that matches wins, so an entry and a longer one that starts with it can
-// be listed in any order
+// be listed in any order, and case is ignored on both sides
 int LaTeXParser::look_pattern(int col) {
   int best = -1;
   size_t best_len = 0;
@@ -189,7 +182,7 @@ int LaTeXParser::look_pattern(int col) {
     const char* k = PATTERN[i].pat[col];
     if (!k)
       continue;
-    while ((*k != '\0') && (tolower((unsigned char)*j) == *k)) {
+    while ((*k != '\0') && (tolower((unsigned char)*j) == tolower((unsigned char)*k))) {
       j++;
       k++;
     }
