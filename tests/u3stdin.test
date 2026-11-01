@@ -1,0 +1,16 @@
+#!/bin/sh
+# -u3 names standard input as "(standard input)" when no file is given.
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+export LC_ALL=C
+CR=$(printf "\r")
+expected='(standard input):1: Locate: wrod | Try: word'
+out=$(printf 'word wrod\n' | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/u3stdin" -u3 2>&1 | tr -d "$CR")
+if [ "$out" != "$expected" ]; then
+    echo "FAIL: u3stdin, got:"
+    echo "$out"
+    exit 1
+fi
+echo "PASS: u3stdin"
+exit 0

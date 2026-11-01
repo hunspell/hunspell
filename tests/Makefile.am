@@ -183,6 +183,7 @@ gh686.test \
 gh220.test \
 gh688.test \
 latexparser.test \
+u3stdin.test \
 ofz51432.test \
 ofz5627151457255424.test \
 gh1095.test \
@@ -851,6 +852,9 @@ latexparser.test \
 latexparser.aff \
 latexparser.dic \
 latexparser.tex \
+u3stdin.test \
+u3stdin.aff \
+u3stdin.dic \
 ofz51432.aff \
 ofz51432.dic \
 ofz51432.test \

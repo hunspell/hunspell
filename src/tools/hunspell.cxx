@@ -2426,6 +2426,7 @@ int main(int argc, char** argv) {
   }
 
   if (arg_files == -1) {
+    currentfilename = gettext("(standard input)");
     pipe_interface(pMS, format, stdin, nullptr);
   } else if (filter_mode != NORMAL) {
     for (int i = arg_files; i < argc; i++) {
