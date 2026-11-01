@@ -22,7 +22,7 @@ jobs:
           - { name: gcc, cxx: g++, configure: --with-ui --with-readline }
           - { name: clang, cxx: clang++ }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: apk add --no-cache build-base autoconf automake libtool gettext-dev bash
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Configure
         run: |
           autoreconf -vfi
@@ -61,7 +61,7 @@ jobs:
     name: macOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           brew install autoconf automake libtool gettext
@@ -92,7 +92,7 @@ jobs:
             mingw-w64-ucrt-x86_64-libtool
             mingw-w64-ucrt-x86_64-libiconv
             mingw-w64-ucrt-x86_64-gettext
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Configure
         run: |
           autoreconf -vfi
@@ -113,7 +113,7 @@ jobs:
     env:
       CXXFLAGS: ''
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Configure
         run: cmake -S . -B build -DBUILD_SHARED_LIBS=${{ matrix.shared }}
       - name: Build
