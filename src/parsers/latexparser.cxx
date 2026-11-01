@@ -118,6 +118,14 @@ static struct {
                {{"\\vspace", nullptr}, 1},
                // amsmath.sty
                {{"\\eqref", nullptr}, 1},
+               {{"\\begin{alignat*}", "\\end{alignat*}"}, 0},
+               {{"\\begin{alignat}", "\\end{alignat}"}, 0},
+               {{"\\begin{flalign*}", "\\end{flalign*}"}, 0},
+               {{"\\begin{flalign}", "\\end{flalign}"}, 0},
+               {{"\\begin{gather*}", "\\end{gather*}"}, 0},
+               {{"\\begin{gather}", "\\end{gather}"}, 0},
+               {{"\\begin{multline*}", "\\end{multline*}"}, 0},
+               {{"\\begin{multline}", "\\end{multline}"}, 0},
                // babel.sty
                {{"\\selectlanguage", nullptr}, 1},
                // biblatex.sty
