@@ -14,12 +14,22 @@ from a document, against a dictionary installed the normal way.
 
 ## What is out of scope
 
-1. Wrong spelling results, missing words, and bad suggestions. Those
+1. A crafted dictionary. Dictionaries are installed data, from a
+   distribution package, an extension the user chose, or the embedding
+   application's own download service, and an extension can already
+   run code as the user. A bug that needs a crafted dictionary is
+   fixed as an ordinary bug, with no advisory and no CVE. If a CVE is
+   assigned for one anyway, we will ask for it to be marked disputed.
+2. Wrong spelling results, missing words, and bad suggestions. Those
    are dictionary questions and belong to the dictionary project for
    the language concerned.
-2. High memory use or slow checking on input built to be pathological.
-3. Bugs in the applications that embed Hunspell. Report those to the
+3. High memory use or slow checking on input built to be pathological.
+4. Bugs in the applications that embed Hunspell. Report those to the
    application.
+
+One report per root cause. A variant of an issue already reported, or
+of a fix under review, earns no separate credit, and a finding against
+code that is in no release is fixed on master without an advisory.
 
 Hunspell is fuzzed continuously by oss-fuzz, which has its own tracker
 and its own disclosure deadline. Findings that arrive that way are

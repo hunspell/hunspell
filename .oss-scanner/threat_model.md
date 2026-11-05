@@ -10,10 +10,15 @@ passed to spell, suggest, analyze, stem and generate. A word can be any byte seq
 dictionary encoding, of any length. A word that starts with "<?xml" is read as an XML query by
 spellml, so that parser is reached from ordinary input too.
 
-Dictionaries (.aff and .dic files, .hz compressed files, and personal word lists) are a weaker
-boundary. They are normally installed from a distribution package or an extension, so a
-malicious dictionary needs the user to install it. Memory safety bugs in dictionary parsing are
-still in scope, at a lower severity than the same bug reached from a word.
+Dictionaries (.aff and .dic files, .hz compressed files, and personal word lists) are installed
+data, not untrusted input. The applications that embed Hunspell get them from the same places
+they get code: a distribution package, an office suite or browser extension, or the vendor's own
+download service, and a personal word list is the user's own file. Whoever can place a
+dictionary on a machine can already run programs there. The library is still hardened against
+malformed dictionaries and the fuzzers feed it malformed dictionaries, because a crash on a
+broken dictionary is a bug we fix. It is not a security boundary: a bug that needs a crafted
+dictionary is fixed on master as an ordinary bug, credited in the commit, with no advisory and no
+CVE.
 
 ## Components that matter most and least
 
@@ -43,23 +48,27 @@ still in scope, at a lower severity than the same bug reached from a word.
 
 ## How we rate severity
 
-- An out of bounds write, use after free or double free reached from a checked word: critical.
-- An out of bounds read reached from a checked word: high.
-- The same bugs reached only through a crafted dictionary: one level lower.
-- A null dereference, assertion failure or other clean crash: medium from a word, low from a
-  dictionary.
-- Slow checking, high memory use and timeouts: out of scope, as in SECURITY.md. oss-fuzz already
-  reports these.
+- An out of bounds write, use after free or double free reached from a checked word with a
+  well-formed dictionary: critical.
+- An out of bounds read reached the same way: high.
+- A null dereference, assertion failure or other clean crash reached the same way: medium.
+- Anything reached only with a crafted dictionary: a bug, not a security finding, whatever the
+  sanitizer prints. We still want it.
+- A crash that needs an allocation to fail first, slow checking, high memory use and timeouts:
+  out of scope, as in SECURITY.md. oss-fuzz already reports these.
 - Wrong spelling results or bad suggestions: not security issues.
 
 ## Anything to leave alone
 
-- Bugs that need Hunspell::add, remove or add_with_affix called with a crafted word on a crafted
-  dictionary are low. The common embedding applications do not call these with document text.
+- Bugs that need Hunspell::add, remove or add_with_affix called with a crafted word are low. The
+  common embedding applications do not call these with document text.
 - Integer overflow that only wraps a count and is caught later without a memory error is low.
 - Findings that oss-fuzz has already reported against the same commit need not be sent again.
 
 ## How reports and patches should look
 
-A reproducer file and the sanitizer output are the most useful parts. A patch should be the
-smallest change that fixes the bug, on master, in the style of the surrounding code.
+One report per root cause, with the input that triggers it and the sanitizer output; several
+crashes with one cause are one report. A finding against code that is in no release is fixed on
+master without an advisory. A variant of an issue already reported, or of a fix under review,
+earns no separate credit. A patch should be the smallest change that fixes the bug, on master, in
+the style of the surrounding code.
