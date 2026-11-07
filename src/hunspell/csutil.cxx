@@ -243,7 +243,7 @@ class is_any_of {
   bool operator()(char c) const { return chars.find(c) != std::string::npos; }
 
  private:
-  std::string chars;
+  const std::string& chars;
 };
 }
 
@@ -251,7 +251,8 @@ std::string::const_iterator mystrsep(const std::string &str,
                                      std::string::const_iterator& start) {
   auto end = str.end();
 
-  is_any_of op(" \t");
+  const std::string blanks(" \t");
+  is_any_of op(blanks);
   // don't use isspace() here, the string can be in some random charset
   // that's way different than the locale's
   auto sp = start;
