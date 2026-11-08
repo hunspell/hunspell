@@ -2340,7 +2340,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                   return nullptr;
 
                 // check first part
-                if (i < word.size() && word.compare(i, rv->blen, rv->word, rv->blen) == 0) {
+                if (i < word.size() && i + rv->blen <= st.size() &&
+                    word.compare(i, rv->blen, rv->word, rv->blen) == 0) {
                   char r = st[i + rv->blen];
                   st[i + rv->blen] = '\0';
 
