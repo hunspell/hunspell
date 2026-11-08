@@ -344,7 +344,11 @@ int parse_aff_file(FILE* afflst) {
                 break;
               }
               case 4: {
-                encodeit(nptr, piece);
+                if (encodeit(nptr, piece)) {
+                  fprintf(stderr, "Error: condition %s has more than %d positions\n", piece,
+                          std::numeric_limits<uint32_t>::digits);
+                  return 1;
+                }
               }
                 fprintf(stderr, "   affix: %s %zu, strip: %s %zu\n", nptr->appnd,
                         nptr->appndl, nptr->strip, nptr->stripl);
@@ -392,7 +396,7 @@ int parse_aff_file(FILE* afflst) {
   return 0;
 }
 
-void encodeit(struct affent* ptr, char* cs) {
+int encodeit(struct affent* ptr, char* cs) {
   size_t nc;
   int neg;
   int grp;
@@ -405,7 +409,7 @@ void encodeit(struct affent* ptr, char* cs) {
 
   /* now clear the conditions array */
   for (i = 0; i < SET_SIZE; i++)
-    ptr->conds[i] = (unsigned char)0;
+    ptr->conds[i] = 0;
 
   /* now parse the string to create the conds array */
   nc = strlen(cs);
@@ -417,7 +421,7 @@ void encodeit(struct affent* ptr, char* cs) {
   i = 0;
   if (strcmp(cs, ".") == 0) {
     ptr->numconds = 0;
-    return;
+    return 0;
   }
   while (i < nc) {
     unsigned char c = *((unsigned char*)(cs + i));
@@ -442,18 +446,20 @@ void encodeit(struct affent* ptr, char* cs) {
       ec = 1;
     }
     if (ec) {
+      if (n >= std::numeric_limits<uint32_t>::digits)
+        return 1;
       if (grp == 1) {
         if (neg == 0) {
           for (j = 0; j < nm; j++) {
             k = (unsigned int)mbr[j];
-            ptr->conds[k] = ptr->conds[k] | (1 << n);
+            ptr->conds[k] = ptr->conds[k] | (1u << n);
           }
         } else {
           for (j = 0; j < SET_SIZE; j++)
-            ptr->conds[j] = ptr->conds[j] | (1 << n);
+            ptr->conds[j] = ptr->conds[j] | (1u << n);
           for (j = 0; j < nm; j++) {
             k = (unsigned int)mbr[j];
-            ptr->conds[k] = static_cast<char>(ptr->conds[k] & ~(1 << n));
+            ptr->conds[k] = ptr->conds[k] & ~(1u << n);
           }
         }
         neg = 0;
@@ -465,9 +471,9 @@ void encodeit(struct affent* ptr, char* cs) {
         if (c == '.') {
           /* wild card character so set them all */
           for (j = 0; j < SET_SIZE; j++)
-            ptr->conds[j] = ptr->conds[j] | (1 << n);
+            ptr->conds[j] = ptr->conds[j] | (1u << n);
         } else {
-          ptr->conds[(unsigned int)c] = ptr->conds[(unsigned int)c] | (1 << n);
+          ptr->conds[(unsigned int)c] = ptr->conds[(unsigned int)c] | (1u << n);
         }
       }
       n++;
@@ -477,7 +483,7 @@ void encodeit(struct affent* ptr, char* cs) {
   }
   /* n counts the conditions of one affix line, which is at most MAX_LN_LEN characters */
   ptr->numconds = static_cast<unsigned short>(n);
-  return;
+  return 0;
 }
 
 /* search for a prefix */
@@ -500,7 +506,7 @@ void pfx_chk(const char* word, size_t len, struct affent* ep, int num) {
       /* now go through the conds and make sure they all match */
       unsigned char* cp = (unsigned char*)tword.c_str();
       for (cond = 0; cond < aent->numconds; cond++) {
-        if ((aent->conds[*cp++] & (1 << cond)) == 0)
+        if ((aent->conds[*cp++] & (1u << cond)) == 0)
           break;
       }
 
@@ -544,7 +550,7 @@ void suf_chk(const char* word,
       unsigned char* cp = (unsigned char*)(tword.c_str() + tword.size());
 
       for (cond = aent->numconds; --cond >= 0;) {
-        if ((aent->conds[*--cp] & (1 << cond)) == 0)
+        if ((aent->conds[*--cp] & (1u << cond)) == 0)
           break;
       }
       if (cond < 0) {
@@ -721,7 +727,7 @@ void pfx_add(const char* word, size_t len, struct affent* ep, int num) {
     if ((len > aent->stripl) && (len >= aent->numconds)) {
       cp = (unsigned char*)word;
       for (cond = 0; cond < aent->numconds; cond++) {
-        if ((aent->conds[*cp++] & (1 << cond)) == 0)
+        if ((aent->conds[*cp++] & (1u << cond)) == 0)
           break;
       }
       if (cond >= aent->numconds) {
@@ -757,7 +763,7 @@ void suf_add(const char* word, size_t len, struct affent* ep, int num) {
     if ((len > aent->stripl) && (len >= aent->numconds)) {
       cp = (unsigned char*)(word + len);
       for (cond = aent->numconds; --cond >= 0;) {
-        if ((aent->conds[*--cp] & (1 << cond)) == 0)
+        if ((aent->conds[*--cp] & (1u << cond)) == 0)
           break;
       }
       if (cond < 0) {

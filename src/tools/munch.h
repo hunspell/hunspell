@@ -66,7 +66,7 @@ struct affent {
   char achar;
   char xpflg;
   unsigned short numconds;
-  char conds[SET_SIZE];
+  uint32_t conds[SET_SIZE];
 };
 
 struct affixptr {
@@ -120,7 +120,7 @@ struct dwords wlist[MAX_WORDS]; /* list words found */
 
 int parse_aff_file(FILE* afflst);
 
-void encodeit(struct affent* ptr, char* cs);
+int encodeit(struct affent* ptr, char* cs);
 
 int load_tables(FILE* wrdlst);
 
