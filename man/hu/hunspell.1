@@ -323,11 +323,11 @@ könyvtárból.
 .B hunspell -l szöveg.html
 A megadott állomány hibás szavainak kiírása.
 .TP
-.B hunspell -l *.odt | sort | uniq >nem_ismert_szavak
+.B hunspell -l \-\- *.odt | sort | uniq >nem_ismert_szavak
 Az aktuális könyvtárban található összes OpenDocument szöveges állomány
 nem ismert szavainak állományba mentése (az ismétlődők kiszűrésével).
 .TP
-.B hunspell -p nem_ismert_szavak_de_jok *.odt
+.B hunspell -p nem_ismert_szavak_de_jok \-\- *.odt
 Az aktuális könyvtárban található OpenDocument szöveges állományok
 interaktív ellenőrzése saját szótár megadásával. A példában szereplő
 saját szótár nem más, mint az előzőleg elmentett nem_ismert_szavak állománya,

@@ -405,16 +405,16 @@ Interactive spell checking of an HTML file with the en_US dictionary.
 .B hunspell \-d en_US,en_US_med medical.txt
 Interactive spell checking with multiple dictionaries.
 .TP
-.B hunspell *.odt
+.B hunspell \-\- *.odt
 Interactive spell checking of ODF documents.
 .TP
-.B hunspell \-l *.odt
+.B hunspell \-l \-\- *.odt
 List bad words of ODF documents
 .TP
-.B hunspell \-l *.odt | sort | uniq >unrecognized
+.B hunspell \-l \-\- *.odt | sort | uniq >unrecognized
 Save unrecognized words of ODF documents (removing duplicates).
 .TP
-.B hunspell -p unrecognized_but_good *.odt
+.B hunspell \-p unrecognized_but_good \-\- *.odt
 Interactive spell checking of ODF documents, using the previously
 saved and reduced word list, as a personal dictionary, to speed up
 spell checking.

@@ -2053,18 +2053,18 @@ int main(int argc, char** argv) {
               "Example: hunspell -d en_US file.txt    # interactive spelling\n"
               "         hunspell -i utf-8 file.txt    # check UTF-8 encoded "
               "file\n"
-              "         hunspell -l *.odt             # print misspelled words "
+              "         hunspell -l -- *.odt          # print misspelled words "
               "of ODF files\n\n"
               "         # Quick fix of ODF documents by personal dictionary "
               "creation\n\n"
               "         # 1 Make a reduced list from misspelled and unknown "
               "words:\n\n"
-              "         hunspell -l *.odt | sort | uniq >words\n\n"
+              "         hunspell -l -- *.odt | sort | uniq >words\n\n"
               "         # 2 Delete misspelled words of the file by a text "
               "editor.\n"
               "         # 3 Use this personal dictionary to fix the deleted "
               "words:\n\n"
-              "         hunspell -p words *.odt\n\n"));
+              "         hunspell -p words -- *.odt\n\n"));
       fprintf(stderr, "%s", gettext("Bug reports: http://hunspell.github.io/\n"));
       exit(0);
     } else if ((strcmp(argv[i], "-vv") == 0) || (strcmp(argv[i], "-v") == 0) ||
