@@ -250,7 +250,9 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
 
   /* report each decision spell() makes to the given callback, for dictionary
    * debugging. A null callback turns reporting off again. The userdata is
-   * handed back to the callback untouched.
+   * handed back to the callback untouched. The callback runs in the middle
+   * of a check, so it may call set_trace_callback on this object, but must
+   * not spell, suggest, analyze, stem or generate with it.
    */
   void set_trace_callback(HunspellTraceCallback callback, void* userdata);
 };
