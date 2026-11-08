@@ -4910,19 +4910,24 @@ bool AffixMgr::parse_affix(const std::string& line,
                 reverseword(entry->appnd);
             }
 
+            size_t len;
             if (pHMgr->is_aliasf()) {
               int index = atoi(dash_str.c_str());
-              entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
-                  index, &(entry->contclass), af);
-              if (!entry->contclasslen)
+              len = pHMgr->get_aliasf(index, &(entry->contclass), af);
+              if (!len)
                 HUNSPELL_WARNING(stderr,
                                  "error: bad affix flag alias: \"%s\"\n",
                                  dash_str.c_str());
             } else {
-              entry->contclasslen = (unsigned short)pHMgr->decode_flags(
-                  &(entry->contclass), dash_str, af);
-              std::sort(entry->contclass, entry->contclass + entry->contclasslen);
+              len = pHMgr->decode_flags(&(entry->contclass), dash_str, af);
+              std::sort(entry->contclass, entry->contclass + len);
             }
+            if (len > std::numeric_limits<unsigned short>::max()) {
+              HUNSPELL_WARNING(stderr, "error: line %d: continuation class of %zu flags is over max limit\n",
+                               af->getlinenum(), len);
+              return false;
+            }
+            entry->contclasslen = (unsigned short)len;
 
             havecontclass = 1;
             for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
