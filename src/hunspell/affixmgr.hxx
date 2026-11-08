@@ -309,7 +309,7 @@ class AffixMgr {
                       size_t badl,
                       const char*);
 
-  short get_syllable(const std::string& word);
+  int get_syllable(const std::string& word);
   int cpdrep_check(const std::string& word,
                    size_t len,
                    AffixScratch& scratch,
@@ -341,7 +341,7 @@ class AffixMgr {
   void setcminmax(size_t* cmin, size_t* cmax, const char* word, size_t len);
   struct hentry* compound_check(const std::string& word,
                                 short wordnum,
-                                short numsyllable,
+                                int numsyllable,
                                 short maxwordnum,
                                 short wnum,
                                 hentry** words,
@@ -353,7 +353,7 @@ class AffixMgr {
 
   int compound_check_morph(const std::string& word,
                            short wordnum,
-                           short numsyllable,
+                           int numsyllable,
                            short maxwordnum,
                            short wnum,
                            hentry** words,

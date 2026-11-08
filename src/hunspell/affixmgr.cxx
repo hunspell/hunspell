@@ -1699,21 +1699,21 @@ inline int AffixMgr::candidate_check(const std::string& word, AffixScratch& scra
 }
 
 // calculate number of syllable for compound-checking
-short AffixMgr::get_syllable(const std::string& word) {
+int AffixMgr::get_syllable(const std::string& word) {
   if (cpdmaxsyllable == 0)
     return 0;
 
-  short num = 0;
+  int num = 0;
 
   if (!utf8) {
-    num = (short)std::count_if(word.begin(), word.end(),
+    num = (int)std::count_if(word.begin(), word.end(),
           [&](char c) {
             return std::binary_search(cpdvowels.begin(), cpdvowels.end(), c);
           });
   } else if (!cpdvowels_utf16.empty()) {
     std::vector<w_char> w;
     u8_u16(w, word);
-    num = (short)std::count_if(w.begin(), w.end(),
+    num = (int)std::count_if(w.begin(), w.end(),
           [&](w_char wc) {
             return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
           });
@@ -1743,7 +1743,7 @@ void AffixMgr::setcminmax(size_t* cmin, size_t* cmax, const char* word, size_t l
 // hu_mov_rule = spec. Hungarian rule (XXX)
 struct hentry* AffixMgr::compound_check(const std::string& word,
                                         short wordnum,
-                                        short numsyllable,
+                                        int numsyllable,
                                         short maxwordnum,
                                         short wnum,
                                         hentry** words,
@@ -1752,7 +1752,8 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                                         char is_sug,
                                         int* info,
                                         AffixScratch& scratch) {
-  short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
+  int oldnumsyllable, oldnumsyllable2;
+  short oldwordnum, oldwordnum2;
   hentry *rv = nullptr, *rv_first;
   std::string st;
   char ch = '\0', affixed;
@@ -2255,9 +2256,9 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
               if (sfxappnd) {
                 std::string tmp(sfxappnd);
                 reverseword(tmp);
-                numsyllable -= short(get_syllable(tmp) + sfxextra);
+                numsyllable -= get_syllable(tmp) + sfxextra;
               } else {
-                numsyllable -= short(sfxextra);
+                numsyllable -= sfxextra;
               }
 
               // + 1 word, if syllable number of the prefix > 1 (hungarian
@@ -2410,7 +2411,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 // hu_mov_rule = spec. Hungarian rule (XXX)
 int AffixMgr::compound_check_morph(const std::string& word,
                                    short wordnum,
-                                   short numsyllable,
+                                   int numsyllable,
                                    short maxwordnum,
                                    short wnum,
                                    hentry** words,
@@ -2419,7 +2420,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
                                    std::string& result,
                                    const std::string* partresult,
                                    AffixScratch& scratch) {
-  short oldnumsyllable, oldnumsyllable2, oldwordnum, oldwordnum2;
+  int oldnumsyllable, oldnumsyllable2;
+  short oldwordnum, oldwordnum2;
   hentry *rv = nullptr, *rv_first;
   std::string st, presult;
   char ch, affixed = 0;
@@ -2841,9 +2843,9 @@ int AffixMgr::compound_check_morph(const std::string& word,
           if (sfxappnd) {
             std::string tmp(sfxappnd);
             reverseword(tmp);
-            numsyllable -= short(get_syllable(tmp) + sfxextra);
+            numsyllable -= get_syllable(tmp) + sfxextra;
           } else {
-            numsyllable -= short(sfxextra);
+            numsyllable -= sfxextra;
           }
 
           // + 1 word, if syllable number of the prefix > 1 (hungarian
