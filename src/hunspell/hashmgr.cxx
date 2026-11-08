@@ -156,7 +156,7 @@ struct hentry* HashMgr::lookup(const char* word, size_t len) const {
   if (!dp)
     return nullptr;
   for (; dp != nullptr; dp = dp->next) {
-    if (strcmp(word, dp->word) == 0)
+    if (dp->blen == len && memcmp(word, dp->word, len) == 0)
       return dp;
   }
   return nullptr;
