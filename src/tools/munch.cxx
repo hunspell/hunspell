@@ -356,6 +356,10 @@ int parse_aff_file(FILE* afflst) {
           }
           free(piece);
         }
+        if (!nptr->strip || !nptr->appnd) {
+          fprintf(stderr, "Error: entry %d of affix %c has fewer than four fields\n", j + 1, ptr->achar);
+          return 1;
+        }
         nptr++;
       }
       if (ft == 'P') {
