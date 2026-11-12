@@ -144,13 +144,13 @@ void TextParser::init(const w_char* wc_utf8, size_t len) {
   }
 }
 
-int TextParser::next_char(const char* ln, size_t* pos) {
-  if (*(ln + *pos) == '\0')
+int TextParser::next_char(const std::string& ln, size_t* pos) {
+  if (*pos >= ln.size())
     return 1;
   if (utf8) {
-    if (*(ln + *pos) >> 7) {
+    if (ln[*pos] >> 7) {
       // jump to next UTF-8 character
-      for ((*pos)++; (*(ln + *pos) & 0xc0) == 0x80; (*pos)++)
+      for ((*pos)++; *pos < ln.size() && (ln[*pos] & 0xc0) == 0x80; (*pos)++)
         ;
     } else {
       (*pos)++;
@@ -160,9 +160,9 @@ int TextParser::next_char(const char* ln, size_t* pos) {
   return 0;
 }
 
-void TextParser::put_line(const char* word) {
+void TextParser::put_line(const std::string& word) {
   actual = (actual + 1) % MAXPREVLINE;
-  line[actual].assign(word);
+  line[actual] = word;
   token = 0;
   head = 0;
   check_urls();
@@ -214,7 +214,7 @@ bool TextParser::next_token(std::string &t) {
         }
         break;
     }
-    if (next_char(line[actual].c_str(), &head))
+    if (next_char(line[actual], &head))
       return false;
   }
 }
@@ -285,7 +285,7 @@ void TextParser::check_urls() {
         break;
     }
     urlline[url_head] = false;
-    if (next_char(line[actual].c_str(), &url_head))
+    if (next_char(line[actual], &url_head))
       return;
   }
 }

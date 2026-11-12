@@ -90,7 +90,7 @@ bool ManParser::next_token(std::string& t) {
         }
         break;
     }
-    if (next_char(line[actual].c_str(), &head)) {
+    if (next_char(line[actual], &head)) {
       state = 0;
       return false;
     }

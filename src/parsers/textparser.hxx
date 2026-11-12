@@ -66,7 +66,7 @@ class TextParser {
   size_t token;// begin of token
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
-  int next_char(const char* line, size_t* pos);
+  int next_char(const std::string& line, size_t* pos);
   const w_char* wordchars_utf16;
   size_t wclen;
 
@@ -75,7 +75,7 @@ class TextParser {
   explicit TextParser(const char* wc);
   virtual ~TextParser();
 
-  void put_line(const char* line);
+  void put_line(const std::string& line);
   std::string get_line() const;
   std::string get_prevline(int n) const;
   virtual bool next_token(std::string&);

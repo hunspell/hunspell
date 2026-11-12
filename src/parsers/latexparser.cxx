@@ -315,7 +315,7 @@ bool LaTeXParser::next_token(std::string& t) {
         } else if (line[actual][head] == ']')
           depth--;
     }  // case
-    if (next_char(line[actual].c_str(), &head)) {
+    if (next_char(line[actual], &head)) {
       if (state == 5)
         state = 0;
       return false;

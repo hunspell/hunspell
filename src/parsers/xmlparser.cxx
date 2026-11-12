@@ -208,7 +208,7 @@ bool XMLParser::next_token(const char* PATTERN[][2],
             head--;
         }
     }
-    if (next_char(line[actual].c_str(), &head))
+    if (next_char(line[actual], &head))
       return false;
   }
   //FIXME No return, in function returning non-void

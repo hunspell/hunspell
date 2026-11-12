@@ -738,6 +738,12 @@ static bool read_line(FILE* f, std::string& line) {
   return !line.empty();
 }
 
+// print a line with its NUL bytes, followed by a newline
+static void print_line(const std::string& line) {
+  fwrite(line.data(), 1, line.size(), stdout);
+  fputc('\n', stdout);
+}
+
 void pipe_interface(Hunspell** pMS, int format, FILE* fileid, char* filename) {
   std::string line;
   std::vector<std::string> dicwords;
@@ -878,7 +884,7 @@ nextline:
     }    // end filter_mode == PIPE
 
     if (pos >= 0) {
-      parser->put_line(buf + pos);
+      parser->put_line(line.substr(pos));
       size_t prev_byte_offset = 0;
       size_t prev_char_offset = 0;
       std::string token;
@@ -903,10 +909,10 @@ nextline:
             int info;
             if (!check(pMS, &d, parser->get_word(token), &info, nullptr)) {
               if (!printgood)
-                fprintf(stdout, "%s\n", buf);
+                print_line(line);
             } else {
               if (printgood)
-                fprintf(stdout, "%s\n", buf);
+                print_line(line);
             }
             goto nextline;
           }
@@ -1100,14 +1106,13 @@ nextline:
 
       switch (filter_mode) {
         case AUTO: {
-          std::string pLine = parser->get_line();
-          fprintf(stdout, "%s\n", pLine.c_str());
+          print_line(parser->get_line());
           break;
         }
 
         case BADLINE: {
           if (((printgood) && (!bad)) || (!printgood && (bad)))
-            fprintf(stdout, "%s\n", buf);
+            print_line(line);
           break;
         }
 
