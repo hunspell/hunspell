@@ -1980,6 +1980,8 @@ std::vector<std::string> HunspellImpl::generate(const std::string& word, const s
   if (!pSMgr || pl.empty())
     return slst;
   std::vector<std::string> pl2 = analyze(word);
+  if (pl2.empty())
+    return slst;
   int captype = NOCAP, abbv = 0;
   std::string cw;
   cleanword(cw, word, &captype, &abbv);
