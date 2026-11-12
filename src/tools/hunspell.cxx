@@ -1650,7 +1650,8 @@ int interactive_line(TextParser* parser,
   }
 
 ki2:
-  fprintf(tempfile, "%s", parser->get_line().c_str());
+  const std::string checked = parser->get_line();
+  fwrite(checked.data(), 1, checked.size(), tempfile);
   return dialogexit;
 }
 
@@ -1725,9 +1726,12 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
     exit(1);
   }
 
-  while (fgets(buf, MAXLNLEN, text)) {
+  std::string line;
+  while (read_line(text, line)) {
+    if (!feof(text))
+      line.push_back('\n');
     if (check) {
-      parser->put_line(buf);
+      parser->put_line(line);
       dialogexit = interactive_line(
           parser, pMS, odffilename ? odffilename : filename, tempfile);
       switch (dialogexit) {
@@ -1754,7 +1758,7 @@ void interactive_interface(Hunspell** pMS, char* filename, int format) {
         }
       }
     } else {
-      fprintf(tempfile, "%s", buf);
+      fwrite(line.data(), 1, line.size(), tempfile);
     }
   }
   fclose(text);
