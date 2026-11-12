@@ -197,6 +197,7 @@ gh106.dic \
 gh1045.dic \
 gh1060.dic \
 gh151.dic \
+gh1171.dic \
 trace_avoidflag.dic \
 trace_basic.dic \
 trace_circumfix.dic \
@@ -886,6 +887,10 @@ gh1060.aff \
 gh1060.dic \
 gh1060.good \
 gh1060.wrong \
+gh1171.aff \
+gh1171.dic \
+gh1171.good \
+gh1171.morph \
 gh151.aff \
 gh151.dic \
 gh151.good \

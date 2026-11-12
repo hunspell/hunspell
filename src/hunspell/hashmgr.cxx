@@ -162,6 +162,17 @@ struct hentry* HashMgr::lookup(const char* word, size_t len) const {
   return nullptr;
 }
 
+// both entries have no affix flags and the same morphological description, or none
+static bool same_entry_without_flags(const struct hentry* a, const struct hentry* b) {
+  if (a->astr || a->alen != 0 || b->astr || b->alen != 0)
+    return false;
+  const char* a_data = HENTRY_DATA(a);
+  const char* b_data = HENTRY_DATA(b);
+  if (!a_data || !b_data)
+    return a_data == b_data;
+  return strcmp(a_data, b_data) == 0;
+}
+
 // add a word to the hash table (private)
 int HashMgr::add_word(const std::string& in_word,
                       size_t wcl,
@@ -387,9 +398,7 @@ int HashMgr::add_word(const std::string& in_word,
           delete desc_copy;
           delete word_copy;
           return 0;
-        } else if (!dp->astr && dp->alen == 0 &&
-                   !hp->astr && hp->alen == 0) {
-          // word already exists with no flags, skip duplicate
+        } else if (same_entry_without_flags(dp, hp)) {
           release_flags(hp->astr, hp->var & H_OPT_OWNFLAGS);
           arena_free(hp);
           delete desc_copy;
@@ -417,9 +426,7 @@ int HashMgr::add_word(const std::string& in_word,
         delete desc_copy;
         delete word_copy;
         return 0;
-      } else if (!dp->astr && dp->alen == 0 &&
-                 !hp->astr && hp->alen == 0) {
-        // word already exists with no flags, skip duplicate
+      } else if (same_entry_without_flags(dp, hp)) {
         release_flags(hp->astr, hp->var & H_OPT_OWNFLAGS);
         arena_free(hp);
         delete desc_copy;

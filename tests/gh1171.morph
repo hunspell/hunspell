@@ -1,0 +1,7 @@
+> fue
+analyze(fue) =  st:fue
+analyze(fue) =  st:ir
+analyze(fue) =  st:ser
+stem(fue) = fue
+stem(fue) = ir
+stem(fue) = ser
