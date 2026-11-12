@@ -103,8 +103,7 @@ int main(int, char** argv) {
           std::vector<std::string> pl2 = pMS->generate(next, pl);
           if (!pl2.empty()) {
             p->change_token(pl2[0].c_str());
-            // jump over the (possibly un)modified word
-            (void)p->next_token(next);
+            p->skip_replacement();
           }
         }
       }

@@ -85,10 +85,7 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size)
                 break;
             parser.change_token(replacements[repidx % replacements.size()].c_str());
             ++repidx;
-            // change_token resets head to token start, so consume the
-            // replacement to avoid re-replacing it in an infinite loop
-            if (!parser.next_token(token))
-                break;
+            parser.skip_replacement();
         }
     }
 

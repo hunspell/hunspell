@@ -939,10 +939,7 @@ nextline:
                 std::string best_io = chenc(wlst[0], dic_enc[d], io_enc);
                 std::string orig_token(token);
                 parser->change_token(best_io.c_str());
-                // consume the replacement token to avoid re-checking it,
-                // which can cause an infinite loop if the suggestion is
-                // also misspelled; if EOF, the outer loop will see it next
-                (void)parser->next_token(token);
+                parser->skip_replacement();
                 if (filter_mode == AUTO3) {
                   fprintf(f, "%s:%d: Locate: %s | Try: %s\n", currentfilename,
                           lineno, chenc(orig_token, io_enc, ui_enc).c_str(),

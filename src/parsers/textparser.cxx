@@ -108,6 +108,7 @@ void TextParser::init(const char* wordchars) {
   actual = 0;
   head = 0;
   token = 0;
+  replacement_end = 0;
   state = 0;
   utf8 = 0;
   checkurl = 0;
@@ -125,6 +126,7 @@ void TextParser::init(const w_char* wc_utf8, size_t len) {
   actual = 0;
   head = 0;
   token = 0;
+  replacement_end = 0;
   state = 0;
   utf8 = 1;
   checkurl = 0;
@@ -230,10 +232,16 @@ int TextParser::change_token(const char* word) {
     line[actual].append(word);
     line[actual].append(remainder);
     head = token;
+    replacement_end = token + strlen(word);
     check_urls();
     return 1;
   }
   return 0;
+}
+
+// move on to the text after the last replacement
+void TextParser::skip_replacement() {
+  head = replacement_end;
 }
 
 std::string TextParser::get_word(const std::string &tok) {

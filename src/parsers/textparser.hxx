@@ -64,6 +64,7 @@ class TextParser {
   int actual;  // actual line
   size_t head; // head position
   size_t token;// begin of token
+  size_t replacement_end; // position just after the last replaced text
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
   int next_char(const std::string& line, size_t* pos);
@@ -81,6 +82,7 @@ class TextParser {
   virtual bool next_token(std::string&);
   virtual std::string get_word(const std::string &tok);
   virtual int change_token(const char* word);
+  void skip_replacement();
   void set_url_checking(int check);
 
   size_t get_tokenpos();
