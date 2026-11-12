@@ -149,7 +149,8 @@ bool XMLParser::next_token(const char* PATTERN[][2],
                        0 &&
                    is_wordchar(line[actual].c_str() + head + strlen(UTF8_APOS))) {
           head += strlen(UTF8_APOS) - 1;
-        } else if (!is_wordchar(line[actual].c_str() + head)) {
+        } else if ((prevstate == ST_ATTRIB && line[actual][head] == quotmark) ||
+                   !is_wordchar(line[actual].c_str() + head)) {
           // in-word patterns
           if ((pattern3_num = look_pattern(PATTERN3, PATTERN_LEN3, 0)) != -1) {
             size_t pos = line[actual].find(PATTERN3[pattern3_num][1], head);
