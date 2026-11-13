@@ -1,0 +1,12 @@
+#!/bin/sh
+# A dictionary compressed with hzip into less than one 64 KiB block loads and checks words.
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+out=$(printf 'words hello helo\n' | $LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/hzip-short" -l 2>&1)
+if [ "$out" != "helo" ]; then
+    echo "FAIL: hzip-short printed: $out"
+    exit 1
+fi
+echo "PASS: hzip-short"
+exit 0

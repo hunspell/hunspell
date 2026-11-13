@@ -201,7 +201,7 @@ int Hunzip::getbuf() {
 }
 
 bool Hunzip::is_open() {
-  return fin.is_open();
+  return bufsiz > 0;
 }
 
 bool Hunzip::getline(std::string& dest) {
