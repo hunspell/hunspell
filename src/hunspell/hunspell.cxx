@@ -87,6 +87,10 @@
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
 #define MAXSPELLMLLEN 8192
 
+static bool is_spellml(const std::string& word) {
+  return word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0;
+}
+
 class HunspellImpl
 {
 public:
@@ -1248,7 +1252,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
     return slst;
 
   // process XML input of the simplified API (see manual)
-  if (word.compare(0, sizeof(SPELL_XML) - 3, SPELL_XML, sizeof(SPELL_XML) - 3) == 0) {
+  if (is_spellml(word)) {
     if (word.size() > MAXSPELLMLLEN)
       return slst;
     return spellml(word);
@@ -1507,7 +1511,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
       if (dash_pos == scw.size())
         last = true;
       std::string chunk = scw.substr(prev_pos, dash_pos - prev_pos);
-      if (chunk != word && !spell(chunk, spell_candidate_stack, nullptr, nullptr, suggest_start)) {
+      if (chunk != word && !is_spellml(chunk) &&
+          !spell(chunk, spell_candidate_stack, nullptr, nullptr, suggest_start)) {
         std::vector<std::string> nlst = suggest(chunk, suggest_candidate_stack, suggest_start);
         if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_GLOBAL_MS)
             return slst;
@@ -1518,6 +1523,8 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
             wspace.append("-");
             wspace.append(scw.substr(dash_pos + 1));
           }
+          if (word_too_long(wspace))
+            continue;
           int info = 0;
           if (pAMgr && pAMgr->get_forbiddenword())
             checkword(wspace, &info, nullptr, suggest_start);
