@@ -186,6 +186,21 @@ LaTeXParser::LaTeXParser(const w_char* wordchars, size_t len)
 
 LaTeXParser::~LaTeXParser() = default;
 
+static bool is_ascii_letter(char c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+// a command has arguments only when its name is followed, after any spaces, line ends or '*', by
+// '{' or '['. Letters right after the matched entry belong to a longer command name.
+static bool before_first_argument(const std::string& ln, size_t pos) {
+  if (pos >= ln.size())
+    return true;
+  char c = ln[pos];
+  if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '*' || c == '{' || c == '[')
+    return true;
+  return is_ascii_letter(c) && pos > 0 && is_ascii_letter(ln[pos - 1]);
+}
+
 // the longest pattern that matches wins, so an entry and a longer one that starts with it can
 // be listed in any order, and case is ignored on both sides
 int LaTeXParser::look_pattern(int col) {
@@ -302,6 +317,9 @@ bool LaTeXParser::next_token(std::string& t) {
           slash = 0;
           head++;
           break;
+        } else if (depth == 0 && arg == 0 && !before_first_argument(line[actual], head)) {
+          state = 0;
+          continue;
         } else if (line[actual][head] == '\\') {
           slash = 1;
         } else if ((line[actual][head] == '{') ||
@@ -318,8 +336,11 @@ bool LaTeXParser::next_token(std::string& t) {
               (depth < 0)) {
             state = 0;  // XXX not handles the last optional arg.
           }
-        } else if (line[actual][head] == ']')
+        } else if (line[actual][head] == ']') {
           depth--;
+          if (depth == 0)
+            opt = 1;
+        }
     }  // case
     if (next_char(line[actual], &head)) {
       if (state == 5)

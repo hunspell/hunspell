@@ -1,13 +1,16 @@
 #!/bin/sh
 # In LaTeX mode the words inside math, verbatim and listing environments, the
 # arguments of commands such as \include and the column spec of tabular are not
-# checked, and nothing after them is skipped. The text in a \colorbox is checked,
-# so only that and the final word are reported.
+# checked, and nothing after them is skipped. A command that starts with the name
+# of one of those, but has no argument, skips nothing. The text in a \colorbox is
+# checked, so only that, the word after such a command and the final word are
+# reported.
 DIR="$(dirname "$0")"
 HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
 CR=$(printf "\r")
-expected='qqboxtext
+expected='qqafterend
+qqboxtext
 qqcontrol'
 out=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/latexparser" -t -l "$DIR/latexparser.tex" 2>&1 | tr -d "$CR")
 if [ "$out" != "$expected" ]; then
