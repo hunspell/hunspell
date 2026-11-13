@@ -14,8 +14,8 @@ exit
 
 filecheck()
 {
-  if [ ! -f $1 ]; then
-    echo File not found: $1
+  if [ ! -f "$1" ]; then
+    echo File not found: "$1"
     exit
   fi
 }
@@ -24,30 +24,31 @@ case $# in
 0|1|3) usage;;
 esac
 
+MINDIFF=
 if [ "$1" = "--minimize-diff" ]; then
-  filecheck $2.aff
-  AWK_ARG="-v mindiff=$2.aff"
+  filecheck "$2.aff"
+  MINDIFF="$2.aff"
   shift; shift
 fi
 
 case $1 in
-*.dic) filecheck $1;;
+*.dic) filecheck "$1";;
 *) usage;;
 esac
 
 case $2 in
-*.aff) filecheck $2;;
+*.aff) filecheck "$2";;
 *) usage;;
 esac
 
-DIC=`basename $1 .dic`
-AFF=`basename $2 .aff`
+DIC=`basename "$1" .dic`
+AFF=`basename "$2" .aff`
 
 # Alias definitions must be between FLAG type definition and SFX/PFX lines.
 # copy aff content before SFX/PFX lines
-sed '/^[SP]FX/,$d;s/[[:space:]]*$//' $2 >"${AFF}_alias.aff"
+sed '/^[SP]FX/,$d;s/[[:space:]]*$//' "$2" >"${AFF}_alias.aff"
 
-awk $AWK_ARG -v affixes="${AFF}_alias.$$" '
+awk -v mindiff="$MINDIFF" -v affixes="${AFF}_alias.$$" -v aliasaff="${AFF}_alias.aff" '
 # Mirror HashMgr::load_tables: a morph-field section is introduced by
 # a tab, or by a (whitespace + 2 chars + colon) marker like " po:".
 # Headwords may legitimately contain spaces, so a plain space cannot
@@ -232,15 +233,15 @@ FILENAME ~ /.aff$/ && /^[PS]FX/ && NF > 4 {
 FILENAME ~ /.aff$/ { print $0 >>affixes }
 END {
     if (n>1) {
-        print "AF", n-1 >>"'${AFF}_alias.aff'"
-        for(i=1;i<n;i++) print "AF", b[i],"#",i >>"'${AFF}_alias.aff'"
+        print "AF", n-1 >>aliasaff
+        for(i=1;i<n;i++) print "AF", b[i],"#",i >>aliasaff
     }
     if (m>1) {
-        print "AM", m-1 >>"'${AFF}_alias.aff'"
-        for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>"'${AFF}_alias.aff'"
+        print "AM", m-1 >>aliasaff
+        for(i=1;i<m;i++) print "AM " ltrim(c[i]) >>aliasaff
     }
-}' $1 $2 >"${DIC}_alias.dic" || { rm -f "${AFF}_alias.$$"; exit 1; }
+}' "$1" "$2" >"${DIC}_alias.dic" || { rm -f "${AFF}_alias.$$"; exit 1; }
 sed -n '/^[SP]FX/,$p' "${AFF}_alias.$$" | sed 's/[[:space:]]*$//' >>"${AFF}_alias.aff"
 echo "output: ${DIC}_alias.dic, ${AFF}_alias.aff"
 
-rm ${AFF}_alias.$$
+rm "${AFF}_alias.$$"
