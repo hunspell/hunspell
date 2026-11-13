@@ -703,6 +703,21 @@ static std::string sed_escape(const std::string& text, const char* special) {
   return out;
 }
 
+// the number that s/text/.../N needs to reach the occurrence of text at pos, or 0 when sed's
+// scan from the left steps over pos
+static int sed_occurrence(const std::string& line, const std::string& text, size_t pos) {
+  int n = 0;
+  size_t from = 0;
+  size_t found;
+  while ((found = line.find(text, from)) != std::string::npos && found <= pos) {
+    ++n;
+    if (found == pos)
+      return n;
+    from = found + text.size();
+  }
+  return 0;
+}
+
 // a name that starts with '-' gets a "./" in front, so that it reads as a file name, not an option
 static std::string file_operand(const char* filename) {
   if (filename[0] == '-')
@@ -938,6 +953,10 @@ nextline:
               if (!wlst.empty()) {
                 std::string best_io = chenc(wlst[0], dic_enc[d], io_enc);
                 std::string orig_token(token);
+                std::string line_before;
+                if (filter_mode == AUTO2)
+                  line_before = parser->get_line();
+                size_t start = parser->get_tokenpos();
                 parser->change_token(best_io.c_str());
                 parser->skip_replacement();
                 if (filter_mode == AUTO3) {
@@ -945,9 +964,16 @@ nextline:
                           lineno, chenc(orig_token, io_enc, ui_enc).c_str(),
                           chenc(wlst[0], dic_enc[d], ui_enc).c_str());
                 } else if (filter_mode == AUTO2) {
-                  fprintf(f, "%ds/%s/%s/g; # %s\n", lineno,
-                          sed_escape(orig_token, "\\/.*[]^$").c_str(),
-                          sed_escape(best_io, "\\/&").c_str(), buf);
+                  std::string line_after = parser->get_line();
+                  size_t end = parser->get_replacement_end();
+                  size_t rest = line_after.size() - end;
+                  std::string removed = line_before.substr(start, line_before.size() - rest - start);
+                  std::string inserted = line_after.substr(start, end - start);
+                  int n = sed_occurrence(line_before, removed, start);
+                  if (n)
+                    fprintf(f, "%ds/%s/%s/%d; # %s\n", lineno,
+                            sed_escape(removed, "\\/.*[]^$").c_str(),
+                            sed_escape(inserted, "\\/&").c_str(), n, buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
                           chenc(orig_token, io_enc, ui_enc).c_str());

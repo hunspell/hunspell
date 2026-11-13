@@ -1,0 +1,25 @@
+#!/bin/sh
+# The sed script that -u2 prints turns the input into the text that -U prints, for plain text and
+# for HTML.
+DIR="$(dirname "$0")"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
+for input in u2sed.txt u2sed.html; do
+    case $input in
+    *.html) mode=-H;;
+    *) mode=;;
+    esac
+    expected=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/u2sed" $mode -U "$DIR/$input" 2>/dev/null)
+    script=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/u2sed" $mode -u2 "$DIR/$input")
+    actual=$(LC_ALL=C sed -e "$script" "$DIR/$input")
+    if [ "$actual" != "$expected" ]; then
+        echo "FAIL: u2sed $input"
+        echo "-U gives:"
+        echo "$expected"
+        echo "sed with the -u2 script gives:"
+        echo "$actual"
+        exit 1
+    fi
+done
+echo "PASS: u2sed"
+exit 0

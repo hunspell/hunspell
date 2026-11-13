@@ -86,6 +86,7 @@ class TextParser {
   void set_url_checking(int check);
 
   size_t get_tokenpos();
+  size_t get_replacement_end() const;
   int is_wordchar(const char* w);
   inline int is_utf8() { return utf8; }
   const char* get_latin1(const char* s);

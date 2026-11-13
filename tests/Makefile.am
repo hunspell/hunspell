@@ -175,6 +175,7 @@ gh616.test \
 gh1002.dic \
 gh-hunzip-overflow.test \
 hzip-short.test \
+u2sed.test \
 gh1086.test \
 gh1018.test \
 gh1044.test \
@@ -794,6 +795,11 @@ gh1002.aff \
 gh1002.dic \
 gh1002.wrong \
 gh1002.sug \
+u2sed.aff \
+u2sed.dic \
+u2sed.html \
+u2sed.test \
+u2sed.txt \
 hzip-short.aff.hz \
 hzip-short.dic.hz \
 hzip-short.test \

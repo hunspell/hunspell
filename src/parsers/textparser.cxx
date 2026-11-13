@@ -225,6 +225,10 @@ size_t TextParser::get_tokenpos() {
   return token;
 }
 
+size_t TextParser::get_replacement_end() const {
+  return replacement_end;
+}
+
 int TextParser::change_token(const char* word) {
   if (word) {
     std::string remainder(line[actual].substr(head));
