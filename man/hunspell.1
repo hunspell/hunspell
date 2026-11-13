@@ -110,10 +110,11 @@ Finally, if the word does not appear in the dictionary, and
 there are no near misses, then the line contains a '#', a space,
 the misspelled word, a space,
 and the character offset from the beginning of the line.
-Each sentence of text input is terminated
+Each line of text input is terminated
 with an additional blank line, indicating that
 .I hunspell
 has completed processing the input line.
+A line with no words to check gives only the blank line.
 .IP ""
 These output lines can be summarized as follows:
 .RS
