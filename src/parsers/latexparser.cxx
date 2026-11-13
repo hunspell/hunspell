@@ -164,7 +164,13 @@ static struct {
                {{"\\inputencoding", nullptr}, 1},
                // listings.sty
                {{"\\begin{lstlisting}", "\\end{lstlisting}"}, 0},
-               {{"\\lstset", nullptr}, 1}};
+               {{"\\lstset", nullptr}, 1},
+               // varioref.sty
+               {{"\\fullref", nullptr}, 1},
+               {{"\\vpageref", nullptr}, 1},
+               {{"\\vpagerefrange", nullptr}, 2},
+               {{"\\vref", nullptr}, 1},
+               {{"\\vrefrange", nullptr}, 2}};
 
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
 
