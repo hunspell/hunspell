@@ -631,7 +631,7 @@ char* mystrdup(const char* s) {
 
 #ifdef HAVE_CURSES_H
 char* scanline(const char* message) {
-  char input[INPUTLEN];
+  char input[INPUTLEN + 1];
   printw("%s", message);
   echo();
   getnstr(input, INPUTLEN);
