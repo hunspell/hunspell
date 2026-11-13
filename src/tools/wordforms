@@ -10,11 +10,13 @@ case $1 in
 -s) fx=1; shift;;
 -p) fx=2; shift;;
 esac
-test -h /tmp/wordforms.aff && rm /tmp/wordforms.aff
-ln -s "$PWD/$1" /tmp/wordforms.aff
+dir=`mktemp -d "${TMPDIR:-/tmp}/wordforms.XXXXXX"` || exit 1
+trap 'rm -f "$dir/wordforms.aff" "$dir/wordforms.dic"; rmdir "$dir"' EXIT
+trap 'exit 1' HUP INT TERM
+ln -s "$PWD/$1" "$dir/wordforms.aff"
 # prepared dic only with the query word
-echo 1 >/tmp/wordforms.dic
-grep "^$3/" $2 >>/tmp/wordforms.dic
+echo 1 >"$dir/wordforms.dic"
+grep "^$3/" $2 >>"$dir/wordforms.dic"
 # match awk's locale to the dictionary's SET encoding so a multibyte
 # letter is not sliced in half by length()/substr() below
 case `grep -i '^SET' "$1" | head -n 1 | awk '{print $2}'` in
@@ -38,4 +40,4 @@ for (j in pfx) {if (wlen<=pfxc[j]) continue;
       print (pfx[j]=="0" ? "" : pfx[j]) substr($1, pfxc[j]+1, wlen-clen-pfxc[j]) (sfx[i]=="0" ? "": sfx[i]) }}
 }
 }
-' /tmp/wordforms.aff - | hunspell -d /tmp/wordforms -G -l
+' "$dir/wordforms.aff" - | hunspell -d "$dir/wordforms" -G -l
