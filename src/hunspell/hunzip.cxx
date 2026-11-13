@@ -207,7 +207,7 @@ bool Hunzip::is_open() {
 bool Hunzip::getline(std::string& dest) {
   char linebuf[BUFSIZE];
   int l = 0, eol = 0, left = 0, right = 0;
-  if (bufsiz == -1)
+  if (bufsiz <= 0)
     return false;
   // Stop one byte before BUFSIZE so the post-loop linebuf[l] = '\0' below
   // (and the right-suffix path) always have room for the terminator without
