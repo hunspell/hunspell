@@ -703,6 +703,16 @@ static std::string sed_escape(const std::string& text, const char* special) {
   return out;
 }
 
+// a backslash right after a byte of 0x80 or higher reads as the second byte of a character in
+// Big5, GBK, GB18030, Shift-JIS and Johab locales, and as an escape in others
+static bool backslash_after_high_byte(const std::string& text) {
+  for (size_t i = 1; i < text.size(); ++i) {
+    if (text[i] == '\\' && static_cast<unsigned char>(text[i - 1]) >= 0x80)
+      return true;
+  }
+  return false;
+}
+
 // the number that s/text/.../N needs to reach the occurrence of text at pos, or 0 when sed's
 // scan from the left steps over pos
 static int sed_occurrence(const std::string& line, const std::string& text, size_t pos) {
@@ -970,10 +980,13 @@ nextline:
                   std::string removed = line_before.substr(start, line_before.size() - rest - start);
                   std::string inserted = line_after.substr(start, end - start);
                   int n = sed_occurrence(line_before, removed, start);
+                  std::string pattern = sed_escape(removed, "\\/.*[]^$");
+                  std::string replacement = sed_escape(inserted, "\\/&");
+                  const char* comment = backslash_after_high_byte(pattern) ||
+                                        backslash_after_high_byte(replacement) ? "# " : "";
                   if (n)
-                    fprintf(f, "%ds/%s/%s/%d; # %s\n", lineno,
-                            sed_escape(removed, "\\/.*[]^$").c_str(),
-                            sed_escape(inserted, "\\/&").c_str(), n, buf);
+                    fprintf(f, "%s%ds/%s/%s/%d; # %s\n", comment, lineno, pattern.c_str(),
+                            replacement.c_str(), n, buf);
                 } else {
                   fprintf(f, gettext("Line %d: %s -> "), lineno,
                           chenc(orig_token, io_enc, ui_enc).c_str());

@@ -370,7 +370,10 @@ Print the replacements that
 .B \-U
 would make as a sed script, one substitution per line, each followed by the
 original line as a comment. The script is written in the encoding of the
-input text, so that it can be applied to the file.
+input text, so that it can be applied to the file. A substitution that would
+put a backslash right after a byte of 0x80 or higher is printed as a comment
+too, because sed reads such a pair as one character in some locales and as two
+in others.
 
 .IP \fB\-u3\fR
 Print one line for each misspelled word, giving the name of the file, the
