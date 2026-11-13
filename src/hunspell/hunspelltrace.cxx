@@ -89,8 +89,9 @@ void trace(const TraceCtx& context, const char* format, ...) {
   if (len > 0) {
     // vsnprintf writes its own terminator, so make room for it and drop it
     // again.
-    line.resize(len + 1);
-    vsnprintf(&line[0], len + 1, format, args);
+    size_t size = static_cast<size_t>(len) + 1;
+    line.resize(size);
+    vsnprintf(&line[0], size, format, args);
     line.pop_back();
   }
   va_end(args);
