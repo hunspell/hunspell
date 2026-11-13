@@ -13,7 +13,11 @@ esac
 dir=`mktemp -d "${TMPDIR:-/tmp}/wordforms.XXXXXX"` || exit 1
 trap 'rm -f "$dir/wordforms.aff" "$dir/wordforms.dic"; rmdir "$dir"' EXIT
 trap 'exit 1' HUP INT TERM
-ln -s "$PWD/$1" "$dir/wordforms.aff"
+case $1 in
+/*) aff="$1";;
+*) aff="$PWD/$1";;
+esac
+ln -s "$aff" "$dir/wordforms.aff"
 # prepared dic only with the query word
 echo 1 >"$dir/wordforms.dic"
 grep "^$3/" $2 >>"$dir/wordforms.dic"
