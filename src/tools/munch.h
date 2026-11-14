@@ -120,6 +120,8 @@ struct dwords wlist[MAX_WORDS]; /* list words found */
 
 int parse_aff_file(FILE* afflst);
 
+void free_affents(struct affent* ptr, int numents);
+
 int encodeit(struct affent* ptr, char* cs);
 
 int load_tables(FILE* wrdlst);

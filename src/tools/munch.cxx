@@ -306,8 +306,11 @@ int parse_aff_file(FILE* afflst) {
       /* now parse all of the sub entries*/
       nptr = ptr;
       for (j = 0; j < numents; j++) {
-        if (!fgets(line, MAX_LN_LEN, afflst))
+        if (!fgets(line, MAX_LN_LEN, afflst)) {
+          free_affents(ptr, numents);
+          free(line);
           return 1;
+        }
         mychomp(line);
         tp = line;
         i = 0;
@@ -347,6 +350,9 @@ int parse_aff_file(FILE* afflst) {
                 if (encodeit(nptr, piece)) {
                   fprintf(stderr, "Error: condition %s has more than %d positions\n", piece,
                           std::numeric_limits<uint32_t>::digits);
+                  free(piece);
+                  free_affents(ptr, numents);
+                  free(line);
                   return 1;
                 }
               }
@@ -362,6 +368,8 @@ int parse_aff_file(FILE* afflst) {
         }
         if (!nptr->strip || !nptr->appnd) {
           fprintf(stderr, "Error: entry %d of affix %c has fewer than four fields\n", j + 1, ptr->achar);
+          free_affents(ptr, numents);
+          free(line);
           return 1;
         }
         nptr++;
@@ -375,7 +383,7 @@ int parse_aff_file(FILE* afflst) {
             numpfx++;
           } else {
             fprintf(stderr, "prefix buffer ptable is full\n");
-            free(ptr);
+            free_affents(ptr, numents);
           }
         } else {
           if (numsfx < MAX_SUFFIXES) {
@@ -385,7 +393,7 @@ int parse_aff_file(FILE* afflst) {
             numsfx++;
           } else {
             fprintf(stderr, "suffix buffer stable is full\n");
-            free(ptr);
+            free_affents(ptr, numents);
           }
         }
         ptr = nullptr;
@@ -396,6 +404,16 @@ int parse_aff_file(FILE* afflst) {
   }
   free(line);
   return 0;
+}
+
+void free_affents(struct affent* ptr, int numents) {
+  if (!ptr)
+    return;
+  for (int k = 0; k < numents; k++) {
+    free(ptr[k].strip);
+    free(ptr[k].appnd);
+  }
+  free(ptr);
 }
 
 int encodeit(struct affent* ptr, char* cs) {
