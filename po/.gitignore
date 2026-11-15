@@ -1,3 +1,4 @@
 POTFILES
 remove-potcdate.sed
 *.gmo
+stamp-po
