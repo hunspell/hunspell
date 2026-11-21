@@ -129,7 +129,7 @@ class SuggestMgr {
 
   std::string suggest_morph(const std::string& word);
   std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern,
-                          std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::time_point::max());
+                          std::chrono::steady_clock::time_point start_time);
 
  private:
   void testsug(std::vector<std::string>& wlst,

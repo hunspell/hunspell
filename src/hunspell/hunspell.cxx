@@ -1554,6 +1554,7 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
   std::string result2;
   if (desc.empty())
     return slst;
+  auto stem_start = std::chrono::steady_clock::now();
   for (const auto& i : desc) {
     if (result2.size() > MAXMORPHRESULT)
       break;
@@ -1579,7 +1580,7 @@ std::vector<std::string> HunspellImpl::stem(const std::vector<std::string>& desc
           k.resize(is);
         std::vector<std::string> singlepl;
         singlepl.push_back(k);
-        std::string sg = pSMgr->suggest_gen(singlepl, k);
+        std::string sg = pSMgr->suggest_gen(singlepl, k, stem_start);
         if (!sg.empty()) {
           std::vector<std::string> gen = line_tok(sg, MSEP_REC);
           for (auto& j : gen) {
